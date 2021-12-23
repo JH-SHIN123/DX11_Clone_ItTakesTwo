@@ -22,7 +22,12 @@ HRESULT CMainApp::NativeConstruct()
 	m_pPxEventCallback = new CPxEventCallback;
 	m_bMouseLock = true;
 
+#ifdef __FULLSCREEN
+	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_FULLMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
+#else
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize(CGraphic_Device::TYPE_WINMODE, g_hWnd, g_hInst, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext, m_pPxEventCallback), E_FAIL);
+#endif
+
 	FAILED_CHECK_RETURN(m_pGameInstance->Reserve_Container(Level::LEVEL_END), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Timer(), E_FAIL);
@@ -30,7 +35,11 @@ HRESULT CMainApp::NativeConstruct()
 	UI_Generator->NativeConstruct(m_pDevice, m_pDeviceContext);
 	FAILED_CHECK_RETURN(CEnvironment_Generator::GetInstance()->NativeConstruct_Environment_Generator(m_pDevice, m_pDeviceContext), E_FAIL);
 
+#ifdef __START_LEVEL_LOGO
+	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_LOGO), E_FAIL);
+#else
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+#endif
 
 #ifdef __MAPLOADING_OFF
 	m_pGameInstance->Create_Ground();
@@ -49,10 +58,10 @@ HRESULT CMainApp::Run_App()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-#ifndef __TEST_JUN
+
 	if (g_bWndActivate && m_bMouseLock)
 		Lock_Mouse();
-#endif
+
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
 	if (m_dFrameAcc >= 1.0 / 60.0)

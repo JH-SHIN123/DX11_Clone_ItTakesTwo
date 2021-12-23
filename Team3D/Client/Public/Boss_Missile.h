@@ -49,6 +49,10 @@ private:
 	void Adjust_Angle(_double dTimeDelta);
 
 private:
+	void Explosion_Effect();
+	void Set_SmokeEffect(_bool IsActivate);
+
+private:
 	GameID::Enum m_eTarget_GameID;
 
 	_bool m_IsTargetCody = false;
@@ -80,6 +84,10 @@ private:
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerActorCom = nullptr;
 	PxRaycastBuffer		m_RaycastBuffer;
+
+private:
+	class CEffect_Boss_Missile_Smoke_Black* m_pEffect_Smoke_1 = nullptr;
+	class CEffect_Boss_Missile_Smoke_Color* m_pEffect_Smoke_2 = nullptr;
 
 public:
 	static CBoss_Missile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

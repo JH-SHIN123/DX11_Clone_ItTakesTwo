@@ -39,6 +39,7 @@ private:
 	_float4 m_vColor = { 0.980392218f, 0.201960814f, 0.147058856f, 1.000000000f };
 	_float m_fJumpTime = 0.f;
 	_float m_fJumpY = 0.f;
+	_float m_fDist = 0.f;
 
 	_float m_fScale_Pow = 7.f;
 	const _float m_fScale_Max = 13.f;

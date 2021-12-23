@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Timer_LaserTennis.h"
 #include "LaserTennis_Manager.h"
+#include "UI_Generator.h"
+#include "Script.h"
 
 CTimer_LaserTennis::CTimer_LaserTennis(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -21,7 +23,15 @@ void CTimer_LaserTennis::OnOff_Timer(_bool bOnOff)
 		m_dButton_Time = 0.0;
 		m_dLargeButton_Time = 0.0;
 		m_dLaserActivation_Time = 0.0;
+		m_dScriptTime = 0.0;
+		m_dSoundTime = 0.0;
+
 		m_iLaserActivation_Count = 0;
+		m_iSound_Count = 0;
+		m_iScript_Count = 0;
+
+		m_bScript = false;
+		m_bSoundCheck = false;
 	}
 }
 
@@ -44,6 +54,60 @@ HRESULT CTimer_LaserTennis::NativeConstruct(void * pArg)
 _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+
+	if (true == m_bReady)
+	{
+		m_dStartTime += dTimeDelta;
+
+		if (2.0 <= m_dStartTime && false == m_bSoundCheck)
+		{
+			m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+			m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_Ready.wav"), CHANNEL_LASERTENNISUI);
+			UI_CreateOnlyOnce(Default, Minigame_Countdown);
+			m_bSoundCheck = true;
+		}
+
+		if (7.0 <= m_dStartTime)
+		{
+			LASERTENNIS->Start_Game();
+			m_dStartTime = 0.0;
+			m_bReady = false;
+		}
+	}
+
+	if (true == m_bSoundCheck)
+	{
+		m_dSoundTime += dTimeDelta;
+
+		if (1.f <= m_dSoundTime)
+		{
+			if (0 == m_iSound_Count)
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+				m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_CountDown.wav"), CHANNEL_LASERTENNISUI);
+				++m_iSound_Count;
+			}
+			else if (1 == m_iSound_Count)
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+				m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_CountDown.wav"), CHANNEL_LASERTENNISUI);
+				++m_iSound_Count;
+			}
+			else if (2 == m_iSound_Count)
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+				m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_CountDown.wav"), CHANNEL_LASERTENNISUI);
+				++m_iSound_Count;
+			}
+			else if (3 == m_iSound_Count)
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+				m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_Start.wav"), CHANNEL_LASERTENNISUI);
+				++m_iSound_Count;
+			}
+			m_dSoundTime = 0.0;
+		}
+	}
 
 	if (true == m_bOnOff)
 	{
@@ -84,6 +148,47 @@ _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 				++m_iLaserActivation_Count;
 			}
 			m_dLaserActivation_Time = 0.0;
+		}
+	}
+
+	if (true == m_bScript)
+	{
+		m_dScriptTime += dTimeDelta;
+
+		if (1.2f <= m_dScriptTime && 0 == m_iScript_Count)
+		{
+			if (CLaserTennis_Manager::TARGET_CODY == LASERTENNIS->Get_Winner())
+			{
+				if (0 == m_iScript_Count)
+				{
+					m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+					m_pGameInstance->Play_Sound(TEXT("16.wav"), CHANNEL_LASERTENNISVOICE);
+					SCRIPT->Render_Script(23, CScript::HALF, 1.5f);
+					++m_iScript_Count;
+				}
+			}
+			else
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+				m_pGameInstance->Play_Sound(TEXT("17.wav"), CHANNEL_LASERTENNISVOICE);
+				SCRIPT->Render_Script(25, CScript::HALF, 1.5f);
+				++m_iScript_Count;
+			}
+
+			m_dScriptTime = 0.0;
+		}
+		else if (2.2f <= m_dScriptTime && 1 == m_iScript_Count)
+		{
+			if (CLaserTennis_Manager::TARGET_CODY == LASERTENNIS->Get_Winner())
+			{
+				SCRIPT->Render_Script(24, CScript::HALF, 2.f);
+				OnOff_Timer(false);
+			}
+			else
+			{
+				SCRIPT->Render_Script(26, CScript::HALF, 2.f);
+				OnOff_Timer(false);
+			}
 		}
 	}
 	return NO_EVENT;

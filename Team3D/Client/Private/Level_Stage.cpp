@@ -125,16 +125,17 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #endif // __TEST_TAEK
 	
 #ifdef __PLAY_CUTSCENE
-	/*if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
-	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
-		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
-	}*/
+	//if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
+	//{
+	//	CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
+	//	CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
+	//}
 #endif
 
 	/* For.EndingCredit */
 	if (m_pGameInstance->Key_Down(DIK_END))
 	{
+		m_pGameInstance->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 		m_iLevelStep = 2; 
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
 		ENDINGCREDIT->Create_Environment();
@@ -267,16 +268,16 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layersadasda", Level::LEVEL_STAGE, TEXT("GameObject_WarpGate"), &CWarpGate::WARPGATE_DESC(CWarpGate::MAIN_UMBRELLA, 1.0)), E_FAIL);
 
-	ROBOTDESC MoonBaboonDesc;
-	MoonBaboonDesc.vPosition = { 64.f, 0.f, 30.f, 1.f };
-	//MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
+	//ROBOTDESC MoonBaboonDesc;
+	//MoonBaboonDesc.vPosition = { 64.f, 0.f, 30.f, 1.f };
+	////MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
 
 	ROBOTDESC StarDesc;
 	StarDesc.vPosition = { 63.0f, 0.5f, 55.f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"º°", Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"·¹", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"·¹", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
 
 #endif
 
@@ -413,6 +414,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.45f, 0.45f, 0.45f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(0.45f, 0.45f, 0.45f,1.f));
 
 #ifndef __MAPLOADING_OFF
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Start.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ToyBoxButton_Back.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));

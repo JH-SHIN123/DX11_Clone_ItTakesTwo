@@ -255,7 +255,6 @@ _int CMay::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Falling_Dead(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
-			Ride_Ending_Rocket(dTimeDelta);
 		}
 		else
 		{
@@ -299,12 +298,25 @@ _int CMay::Tick(_double dTimeDelta)
 	// Control RadiarBlur - 제일 마지막에 호출
 	Trigger_RadiarBlur(dTimeDelta);
 
+	/* 히트타임 */
+	if (true == m_bHit)
+	{
+		m_dHitTime += dTimeDelta;
+
+		if (0.5f <= m_dHitTime)
+		{
+			m_bHit = false;
+			m_dHitTime = 0.0;
+		}
+	}
 	return NO_EVENT;
 }
 
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	Ride_Ending_Rocket(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
@@ -338,15 +350,23 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
-	if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+	if (true == m_bHit)
 	{
 		m_pModelCom->Set_DefaultVariables_Shadow();
-		m_pModelCom->Render_Model(0);
+		m_pModelCom->Render_Model(35);
 	}
-	else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+	else
 	{
-		m_pModelCom->Render_Model(30);
-		m_pModelCom->Render_Model(31);
+		if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+		{
+			m_pModelCom->Set_DefaultVariables_Shadow();
+			m_pModelCom->Render_Model(0);
+		}
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+		{
+			m_pModelCom->Render_Model(30);
+			m_pModelCom->Render_Model(31);
+		}
 	}
 
 	return S_OK;
@@ -435,6 +455,12 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
+	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 
 #pragma endregion
 
@@ -597,6 +623,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
@@ -616,6 +644,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 
@@ -790,12 +820,16 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_0))/* 벽점프 전 */
-		m_pActorCom->Set_Position(XMVectorSet(-830.374512f, 793.359192f, 192.788605f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저테니스 */
+		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_X))/* 우산 */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
+		Set_UFO(true);
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
+		m_IsEnding = true;
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -929,6 +963,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 		if (m_IsJumping == false)
 		{
+			EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_WALK);
 			m_pGameInstance->Stop_Sound(CHANNEL_MAY_RUN);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
@@ -945,6 +981,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		{
 			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_AirDash_Start && m_iAirDashCount == 0)
 			{
+				EFFECT->Add_Effect(Effect_Value::Dash, m_pTransformCom->Get_WorldMatrix());
+
 				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 				m_pGameInstance->Play_Sound(TEXT("May_Dash.wav"), CHANNEL_MAY_DASH, m_fMay_Dash_Volume);
 
@@ -1829,6 +1867,14 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
+			if (false == m_bPinBallScript_Once[0])
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+				m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
+				SCRIPT->Render_Script(37, CScript::HALF, 1.f);
+				m_bPinBallScript_Once[0] = true;
+			}
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
 
@@ -1878,6 +1924,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
+
+			if (5 == static_cast<CWarpGate*>(m_pTargetPtr)->Get_StageValue())
+			{
+				/* 레이저테니스 UI 지우셈 */
+				UI_Delete(Default, Minigame_Score);
+				UI_Delete(Default, Minigame_Title);
+			}
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -2030,14 +2083,20 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 342.838f, 199.3799f, 1.f));
+				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 345.838f, 199.3799f, 1.f));
 				((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_LaserRippedOff, UFO_Left);
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
+
 			}
 		}
-		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
+		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
@@ -2057,10 +2116,14 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eLASER_LASERTENNIS)
 		{
 			/* Hit Effect 생성 */
+			EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, m_pTransformCom->Get_WorldMatrix());
+
+			m_bHit = true;
 
 			/* HP 감소 */
-			LASERTENNIS->Set_CodyCount();
+			/* 순서 바꾸면 안됨 ㅇㅇ */
 			Set_MinigameHpBarReduction(30);
+			LASERTENNIS->Set_CodyCount();
 
 			m_IsCollide = false;
 		}
@@ -2142,12 +2205,14 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 {
 	if (m_IsActivateRobotLever == true)
 	{
-		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Left))
+		m_fLeverCutSceneTime += (_float)dTimeDelta;
+		if (m_fLeverCutSceneTime > 1.f)
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = false;
 			m_IsCollide = false;
+			m_fLeverCutSceneTime = 0.f;
 		}
 	}
 }
@@ -2158,7 +2223,7 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 		return;
 
 	_bool IsTriggerEnd = false;
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) || m_pGameInstance->Key_Down(DIK_I))
 		IsTriggerEnd = true;
 
 	if (m_IsPullVerticalDoor == true)
@@ -2294,7 +2359,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-#elif
+#else
 			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
@@ -2382,6 +2447,14 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 공 발사 */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
+				if (false == m_bPinBallScript_Once[1])
+				{
+					m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+					m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
+					SCRIPT->Render_Script(38, CScript::HALF, 1.f);
+					m_bPinBallScript_Once[1] = true;
+				}
+
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
 				m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Shot.wav"), CHANNEL_PINBALL_HANDLE);
@@ -2393,7 +2466,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
@@ -2409,7 +2482,7 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)
@@ -2506,6 +2579,13 @@ void CMay::Set_ActiveMinigameHpBar(_bool IsCheck)
 	m_pMinigameHpBar->Set_Active(IsCheck);
 }
 
+void CMay::Set_MinigameHpBarReset()
+{
+	m_pMinigameHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_Active(false);
+}
+
 void CMay::Set_MinigameHpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pMinigameHpBar || nullptr == m_pMinigameSubHpBar)
@@ -2522,7 +2602,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 	if (false == m_bLaserTennis)
 		return;
 
-	if (true == LASERTENNIS->Get_StartGame())
+	if (true == LASERTENNIS->Get_PushCoord())
 	{
 		m_pActorCom->Jump_Start(2.f);
 		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
@@ -2531,7 +2611,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Key_Down(DIK_I) || m_pGameInstance->Pad_Key_Down(DIP_B))
 	{
 		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
@@ -2540,7 +2620,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);
@@ -2736,8 +2816,9 @@ void CMay::Ride_Ending_Rocket(const _double dTimeDelta)
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)
 		{
 			m_pActorCom->Set_ZeroGravity(true, false, true);
-			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 			m_pTransformCom->Set_WorldMatrix(m_matEndingRocketMatrix);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vEndingRocketOffSetPos);
+			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 		}
 	}
 }

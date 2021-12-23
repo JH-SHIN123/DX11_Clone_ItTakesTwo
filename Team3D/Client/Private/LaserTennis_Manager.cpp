@@ -13,6 +13,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "HpBar.h"
+#include "Script.h"
 
 IMPLEMENT_SINGLETON(CLaserTennis_Manager)
 
@@ -148,9 +149,12 @@ void CLaserTennis_Manager::Decrease_PowerCoord()
 
 void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 {
-	/* 두번 째 준비 */
+	/* 두번째 준비 */
 	if (false == m_bReady)
 		return;
+
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Play_Sound(TEXT("AreYouReadyWindow_Button.wav"), CHANNEL_LASERTENNISUI);
 
 	m_bKeyCheck[eTarget] = true;
 
@@ -164,12 +168,12 @@ void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 		UI_Delete(Cody, Minigame_Ready_Cody);
 		UI_Delete(May, Minigame_Ready_May);
 
-		UI_CreateOnlyOnce(Default, Minigame_Countdown);
-
 		((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(true);
 
+		m_bPushCoord = true;
 		m_bStartGame = true;
+		m_pTimer_LaserTennis->Set_Ready();
 	}
 }
 
@@ -177,10 +181,24 @@ void CLaserTennis_Manager::Set_MayCount()
 {
 	++m_iMayCount;
 
+	if (1 == m_iMayCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("14.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(21, CScript::FULL, 1.f);
+	}
+
+	if (3 == m_iMayCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("15.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(22, CScript::FULL, 1.f);
+	}
+
 	if (4 <= m_iMayCount)
 	{
-		Reset_Game();
 		m_eWinner = CLaserTennis_Manager::TARGET_MAY;
+		Reset_Game();
 	}
 }
 
@@ -188,10 +206,24 @@ void CLaserTennis_Manager::Set_CodyCount()
 {
 	++m_iCodyCount;
 
+	if (1 == m_iCodyCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("12.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(19, CScript::FULL, 1.f);
+	}
+
+	if (3 == m_iCodyCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("13.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(20, CScript::FULL, 1.f);
+	}
+
 	if (4 <= m_iCodyCount)
 	{
-		Reset_Game();
 		m_eWinner = CLaserTennis_Manager::TARGET_CODY;
+		Reset_Game();
 	}
 }
 
@@ -283,14 +315,9 @@ void CLaserTennis_Manager::Active_LaserButtonLarge(_bool bActive)
 	m_pLaserButtonLarge[1]->Activation(bActive);
 }
 
-void CLaserTennis_Manager::Start_Game()
+void CLaserTennis_Manager::Push_Coord()
 {
-	//m_bStartGame = true;
-
-	/* 타이머 세팅 */
-	m_pTimer_LaserTennis->OnOff_Timer(true);
-
-	/* 카운트 UI */
+	/* Sound */
 	m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 	m_pGameInstance->Play_Sound(TEXT("StartButton_Push.wav"), CHANNEL_LASERPOWERCOORD);
 
@@ -298,15 +325,22 @@ void CLaserTennis_Manager::Start_Game()
 	for (_uint i = 0; i < 2; ++i)
 		m_pLaserPowerCoord[i]->Change_State();
 
-	/* 레이저 생성기 생성 */
-	Active_LaserActivation(1);
-	Active_LaserActivation(5);
-
 	/* 충돌 벽 생성 */
 	Active_CollisionWall();
 
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+	m_pGameInstance->Play_Sound(TEXT("11.wav"), CHANNEL_LASERTENNISVOICE);
+	SCRIPT->Render_Script(18, CScript::FULL, 1.f);
+}
+
+void CLaserTennis_Manager::Start_Game()
+{
 	/* 타이머 세팅 */
 	m_pTimer_LaserTennis->OnOff_Timer(true);
+
+	/* 레이저 생성기 생성 */
+	Active_LaserActivation(1);
+	Active_LaserActivation(5);
 }
 
 void CLaserTennis_Manager::Reset_Game()
@@ -352,11 +386,13 @@ void CLaserTennis_Manager::Reset_Game()
 
 	/* 타이머 종료 */
 	m_pTimer_LaserTennis->OnOff_Timer(false);
+	m_pTimer_LaserTennis->Set_Script();
 
 	/* 변수 초기화 */
 	ZeroMemory(m_bKeyCheck, sizeof(m_bKeyCheck));
 	m_bStartGame = false;
 	m_bReady = false;
+	m_bPushCoord = false;
 	m_iPowerCoordCount = 0;
 
 	m_iCodyCount = 0;
@@ -447,17 +483,27 @@ HRESULT CLaserTennis_Manager::Add_Wall(CWall_LaserTennis * pWall)
 HRESULT CLaserTennis_Manager::Create_StartUI()
 {
 	/* UI 다 띄우면 Ready = true */
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Play_Sound(TEXT("AreYouReadyWindow_Create.wav"), CHANNEL_LASERTENNISUI);
+
 	UI_CreateOnlyOnce(Cody, Minigame_Ready_Cody);
 	UI_CreateOnlyOnce(May, Minigame_Ready_May);
 
 	UI_CreateOnlyOnce(Default, Minigame_Title);
 
 	m_bReady = true;
+
+	((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReset();
+	((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReset();
+
 	return S_OK;
 }
 
 HRESULT CLaserTennis_Manager::Create_ResultUI()
 {
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_End.wav"), CHANNEL_LASERTENNISUI);
+
 	((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(false);
 	((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(false);
 
@@ -466,11 +512,14 @@ HRESULT CLaserTennis_Manager::Create_ResultUI()
 		UI_CreateOnlyOnce(Default, Minigame_Win_Cody);
 		DATABASE->Set_CodyMinigameWinCount(1);
 	}
-	else
+	else if(m_eWinner == CLaserTennis_Manager::TARGET_MAY)
 	{
 		UI_CreateOnlyOnce(Default, Minigame_Win_May);
 		DATABASE->Set_MayMinigameWinCount(1);
 	}
+
+	((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReset();
+	((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReset();
 
 	return S_OK;
 }

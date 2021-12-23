@@ -51,6 +51,7 @@ public: /* Setter */
 	void	Set_PlayerType(CPlayerActor::PLAYER_TYPE _ePlayerType) { m_ePlayerType = _ePlayerType; }
 	void	Set_ShapeFlag(_bool bValue);
 	void	Set_PlayerUp(_fvector vPlayerUp) { XMStoreFloat3(&m_vPlayerUp, vPlayerUp); }
+	void	Set_Gravity_Normally();
 
 	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }
@@ -58,6 +59,7 @@ public: /* Setter */
 	void	Set_CollideNormal(PxVec3 vNormal) { m_vCollideNormal = vNormal; }
 	void	Set_ReorderGravityStep(_uint iStep) { m_iReorderGravityStep = iStep; }
 	void	Set_HitNormal(PxVec3 vNormal) { m_vHitNormal = vNormal; }
+	
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

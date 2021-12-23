@@ -2,6 +2,8 @@
 #include "..\Public\Laser_TypeB.h"
 
 #include "DataStorage.h"
+#include "Cody.h"
+#include "May.h"
 
 CLaser_TypeB::CLaser_TypeB(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -64,24 +66,30 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 				/* 코디 타격 */
 				if (pUserData->eID == GameID::eCODY)
 				{
+					m_dDamagingDelay_Cody -= dTimeDelta;
+
 					/* 지속 타격 데미지*/
 					if (m_isHitCody)
 					{
 						if (m_dDamagingDelay_Cody <= 0.0)
 						{
 							// 데미지를 주는 함수
-
+							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
 							// 데미지 주기 초기화
-							m_dDamagingDelay_Cody = 0.3;
+							m_dDamagingDelay_Cody = 0.5;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
 					else
-					{
+					{		
 						// 데미지를 주는 함수
-
+						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
 						// 데미지 주기 초기화
-						m_dDamagingDelay_Cody = 0.3;
+						m_dDamagingDelay_Cody = 0.5;
+						m_isHitCody = true;
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else
@@ -93,24 +101,30 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 				/* 메이 타격 */
 				if (pUserData->eID == GameID::eMAY)
 				{
+					m_dDamagingDelay_May -= dTimeDelta;
+
 					/* 지속 타격 데미지*/
 					if (m_isHitMay)
 					{
 						if (m_dDamagingDelay_May <= 0.0)
 						{
 							// 데미지를 주는 함수
-
+							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
 							// 데미지 주기 초기화
-							m_dDamagingDelay_May = 0.3;
+							m_dDamagingDelay_May = 0.5;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
 					else
 					{
 						// 데미지를 주는 함수
-
+						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
 						// 데미지 주기 초기화
-						m_dDamagingDelay_May = 0.3;
+						m_dDamagingDelay_May = 0.5;
+						m_isHitMay = true;
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else

@@ -145,6 +145,7 @@ void CMoonBaboonCore::GoUp(_double dTimeDelta)
 
 	m_pTransformCom->Go_Up(dTimeDelta);
 	m_bMove = true;
+
 }
 
 void CMoonBaboonCore::Active_Pillar(_double TimeDelta)

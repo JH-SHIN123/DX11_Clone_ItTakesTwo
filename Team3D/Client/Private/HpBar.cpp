@@ -3,6 +3,7 @@
 
 #include "HpBarFrame.h"
 #include "UI_Generator.h"
+#include "Portrait.h"
 
 CHpBar::CHpBar(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -41,23 +42,8 @@ HRESULT CHpBar::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
-	//if (0 == m_iOption)
-	//{
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-	//}
-	//else if (1 == m_iOption)
-	//{
-	//	m_vMaxScale = m_UIDesc.vScale;
-
-	//	m_UIDesc.vScale.x = 106.f;
-	//	m_UIDesc.vScale.y = 102.f;
-	//	m_vMinScale = m_UIDesc.vScale;
-
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	//	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-	//}
-
+	m_fMaxHp = 120.f;
+	m_fHp = m_fMaxHp;
 
 	return S_OK;
 }
@@ -78,8 +64,6 @@ _int CHpBar::Tick(_double TimeDelta)
 		MayHpBar_Boss(TimeDelta);
 		break;
 	}
-
-	//Scale_Effect(TimeDelta);
 
 	return _int();
 }
@@ -117,6 +101,9 @@ void CHpBar::Set_Active(_bool IsCheck)
 	UI_CreateOnlyOnce(Cody, Portrait_Cody);
 	UI_CreateOnlyOnce(May, Portrait_May);
 
+	if (nullptr != m_pPortrait)
+		m_pPortrait->Set_Active(IsCheck);
+
 	if (nullptr != m_pHpBarFrame)
 	{
 		m_pHpBarFrame->Set_Active(IsCheck);
@@ -132,26 +119,18 @@ void CHpBar::Set_Active(_bool IsCheck)
 
 void CHpBar::Set_Hp(_float fHp)
 {
-	m_fHp += fHp;
+	m_fHp -= fHp;
 	m_IsHit = true;
 	m_fWatingTime = 0.f;
 	m_fRecoveryTime = 0.f;
 
 	if (m_ePlayerID == Player::Cody)
-	{
-		m_fRatio = (m_fHp / 120.f) / 2.f;
-
-		if (0.5f <= m_fRatio)
-			m_fRatio = 0.5f;
-	}
+		m_fRatio = 0.5f - (m_fHp / m_fMaxHp) / 2.f;
 	else if (m_ePlayerID == Player::May)
-	{
-		m_fRatio = 0.5f - (m_fHp / 120.f) / 2.f;
-		m_fDecreaseRateRatio = 0.5f;
+		m_fRatio = (m_fHp / m_fMaxHp) / 2.f;
 
-		if (0.f >= m_fRatio)
-			m_fRatio = 0.f;
-	}
+	if (0.f >= m_fHp)
+		m_fHp = 0.f;
 }
 
 void CHpBar::Set_ShaderOption(_int iOption)
@@ -174,6 +153,7 @@ HRESULT CHpBar::Ready_Component()
 HRESULT CHpBar::Ready_Layer_UI()
 {
 	CGameObject* pGameObject = nullptr;
+	_uint iOption = 0;
 
 	if (0 == m_iOption)
 	{
@@ -182,12 +162,25 @@ HRESULT CHpBar::Ready_Layer_UI()
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBarFrame"), nullptr, &pGameObject), E_FAIL);
 			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
 			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+
+			iOption = 0;
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Portrait_Cody"), &iOption, &pGameObject), E_FAIL);
+			m_pPortrait = static_cast<CPortrait*>(pGameObject);
+			m_pPortrait->Set_PlayerID(Player::Cody);
 		}
 		else
 		{
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MayHpBarFrame"), nullptr, &pGameObject), E_FAIL);
 			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
 			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+
+			iOption = 0;
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Portrait_May"), &iOption, &pGameObject), E_FAIL);
+			m_pPortrait = static_cast<CPortrait*>(pGameObject);
+			m_pPortrait->Set_PlayerID(Player::May);
+
+			m_fDecreaseRateRatio = 0.5f;
+			m_fRatio = 0.5f;
 		}
 	}
 	else
@@ -203,46 +196,14 @@ HRESULT CHpBar::Ready_Layer_UI()
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MaySubHpBarFrame"), nullptr, &pGameObject), E_FAIL);
 			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
 			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+
+			m_fDecreaseRateRatio = 0.5f;
+			m_fRatio = 0.5f;
 		}
 
 	}
 
 	return S_OK;
-}
-
-void CHpBar::Scale_Effect(_double TimeDelta)
-{
-	if (0 == m_iOption)
-		return;
-
-	if (true == m_IsActive)
-	{
-		if (m_vMaxScale.x >= m_UIDesc.vScale.x)
-		{
-			m_UIDesc.vScale.x += (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-
-		if (m_vMaxScale.y >= m_UIDesc.vScale.y)
-		{
-			m_UIDesc.vScale.y += (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-	}
-	else
-	{
-		if (m_vMinScale.x <= m_UIDesc.vScale.x)
-		{
-			m_UIDesc.vScale.x -= (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-
-		if (m_vMinScale.y <= m_UIDesc.vScale.y)
-		{
-			m_UIDesc.vScale.y -= (_float)TimeDelta;
-			m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
-		}
-	}
 }
 
 void CHpBar::Shake_Effect(_double TimeDelta)
@@ -299,15 +260,15 @@ void CHpBar::CodyHpBar_Boss(_double TimeDelta)
 			if (0.02f <= m_fRecoveryTime)
 			{
 				m_IsRecovery = true;
-				m_fHp -= 10.f;
+				m_fHp += 10.f;
 
-				if (0 >= m_fHp)
+				if (120.f <= m_fHp)
 				{
-					m_fHp = 0.f;
+					m_fHp = 120.f;
 					m_IsRecovery = false;
 				}
 
-				m_fRatio = (m_fHp / 120.f) / 2.f;
+				m_fRatio = 0.5f - (m_fHp / m_fMaxHp) / 2.f;
 				m_fDecreaseRateRatio = m_fRatio;
 				m_fRecoveryTime = 0.f;
 			}
@@ -350,15 +311,15 @@ void CHpBar::MayHpBar_Boss(_double TimeDelta)
 			if (0.02f <= m_fRecoveryTime)
 			{
 				m_IsRecovery = true;
-				m_fHp -= 10.f;
+				m_fHp += 10.f;
 
-				if (0 >= m_fHp)
+				if (120.f <= m_fHp)
 				{
-					m_fHp = 0.f;
+					m_fHp = 120.f;
 					m_IsRecovery = false;
 				}
 
-				m_fRatio = 0.5f - (m_fHp / 120.f) / 2.f;
+				m_fRatio = (m_fHp / 120.f) / 2.f;
 				m_fDecreaseRateRatio = m_fRatio;
 				m_fRecoveryTime = 0.f;
 			}
@@ -434,6 +395,7 @@ CGameObject * CHpBar::Clone_GameObject(void * pArg)
 
 void CHpBar::Free()
 {
+	Safe_Release(m_pPortrait);
 	Safe_Release(m_pHpBarFrame);
 	Safe_Release(m_pVIBuffer_RectCom);
 

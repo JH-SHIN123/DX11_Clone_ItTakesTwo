@@ -18,6 +18,7 @@ private:
 public:
 	/* 부스트 세팅 */
 	void Set_Boost() { m_bBoost = true; m_fCurSpeed = ENDING_ROCKET_BOOSTSPEED; }
+	_bool Get_Boost() { return m_bBoost; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;

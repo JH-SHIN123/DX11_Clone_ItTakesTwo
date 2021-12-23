@@ -54,11 +54,14 @@ enum ENGINE_DLL CHANNEL_TYPE
 	, CHANNEL_LASERBUTTONLARGE
 	, CHANNEL_LASERACTIVATION
 	, CHANNEL_LASERPOWERCOORD
+	, CHANNEL_LASERTENNISUI
+	, CHANNEL_LASERTENNISVOICE
 	, CHANNEL_PINBALL
 	, CHANNEL_PINBALL_HANDLE
 	, CHANNEL_PINBALL_BLOCKER
 	, CHANNEL_PINBALL_DOOR
 	, CHANNEL_PINBALL_HANDLEMOVE
+	, CHANNEL_PINBALLVOICE
 	/* Jung */
 	/* Taek */
 	, CHANNEL_TOYBOXBUTTON
@@ -68,6 +71,17 @@ enum ENGINE_DLL CHANNEL_TYPE
 	, CHANNEL_CUTSCENE
 	, CHANNEL_END
 };
+
+#define FADE_IN		1
+#define FADE_OUT	2
+
+typedef struct ENGINE_DLL tagSoundInfo
+{
+	_uint	iFadeOption;
+	_float	fCurrentVolume;
+	_float	fTargetVolume;
+	_float	fFadingSpeed;
+}SOUND_INFO;
 
 class ENGINE_DLL CSound_Manager final : public CBase
 {
@@ -86,20 +100,18 @@ public: /* Setter */
 	void Stop_SoundAll();
 	void Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume);
 
-	/* 사운드 이펙트 */
-
+public:
+	HRESULT Ready_SoundManager();
+	void	Update_Sound(_double dTimeDelta);
 	/* 사운드 보간 */
 	/* 사운드를 재생시킨 후 호출해야합니다.*/
 	/* 첫번째 채널, 두번째 채널, 보간 스피드, 첫번째 사운드볼륨, 두번째 사운드볼륨 */
 	/* 보간이 끝나면 첫번째 채널의 사운드는 자동 종료 됩니다. */
 	void Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpeed, _float fFirstVolume, _float fSecondVolume);
-	/* 사운드 페이드인아웃*/
-	/* 채널, Type(true == FadeIn, False == FadeOut) , 보간 스피드, 볼륨*/
-	void FadeInOut(_bool isFirstBGM, _bool bType, _float fLerpSpeed, _float fVolume);
-
-public:
-	HRESULT Ready_SoundManager();
-	void Update_Sound(_double dTimeDelta);
+	/* Se */
+	void Sound_FadeIn(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime);
+	void Sound_FadeOut(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime);
+	void Sound_Lerp(CHANNEL_TYPE eFadeIn, CHANNEL_TYPE eFadeOut, _float fTargetVolume_In, _float fTargetVolume_Out, _float fLerpTime);
 
 private:
 	typedef unordered_map<TCHAR*, FMOD_SOUND*> SOUNDS;
@@ -107,7 +119,7 @@ private:
 	FMOD_SYSTEM*	m_pSystem = nullptr;
 	FMOD_CHANNEL*	m_pChannel[CHANNEL_END];
 	SOUNDS			m_Sounds;
-
+	SOUND_INFO		m_SoundInfo[CHANNEL_END];
 	/* 사운드 이펙트 */
 	CHANNEL_TYPE	m_eFirstChannel = CHANNEL_END;
 	CHANNEL_TYPE	m_eSecondChannel = CHANNEL_END;
@@ -116,20 +128,17 @@ private:
 	_float			m_fMaxVolume = 0.f;
 	_float			m_fLerpSpeed = 0.f;
 	_bool			m_bLerp = false;
-
-	_bool			m_bType = false;
-	_bool			m_bFadeInOut = false;
-	_bool			m_bPlayingFirstBGM = false;
-	_float			m_fBGM_MaxVolume = 0.f;
-	_float			m_fBGM_FadingSpeed = 0.f;
-
+	/* */
+	//_bool			m_bType = false;
+	//_bool			m_bFadeInOut = false;
+	//_bool			m_bPlayingFirstBGM = false;
+	//_float			m_fBGM_MaxVolume = 0.f;
+	//_float			m_fBGM_FadingSpeed = 0.f;
 private:
 	HRESULT Add_Sound(char* pFilePath);
-
-private:
-	/* Update */
-	void Lerp_Sound_Update(_double dTimeDelta);
-	void FadeInOut_Sound_Update(_double dTimeDelta);
+	void	Lerp_Sound_Update(_double dTimeDelta);
+	void	SoundInfo_Update(_double dTimeDelta);
+	//void	FadeInOut_Sound_Update(_double dTimeDelta);
 
 public:
 	virtual void Free() override;

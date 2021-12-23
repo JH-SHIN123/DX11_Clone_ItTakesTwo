@@ -212,6 +212,7 @@ public:
 	void	Set_ActiveHpBar(_bool IsCheck);
 	void	Set_HpBarReduction(_float fDamage);
 	void	Set_ActiveMinigameHpBar(_bool IsCheck);
+	void	Set_MinigameHpBarReset();
 	void	Set_MinigameHpBarReduction(_float fDamage);
 
 	/* For. Ending */
@@ -389,6 +390,7 @@ private:
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
+	_float m_fLeverCutSceneTime = 0.f;
 
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
@@ -407,6 +409,11 @@ private:
 	/* Hye::For.LaserTennis */
 	_bool	m_bLaserTennis = false;
 	_uint	m_iHP = 12;
+
+	/* Hye::For.PlayerHit */
+	/* m_bHit를 True로 하면 일정시간동안 플레이어가 빨개집니다. */
+	_bool	m_bHit = false;
+	_double m_dHitTime = 0.0;
 
 	/* 진혁 */
 	_bool m_IsLaserRippedOff = false;
@@ -627,6 +634,8 @@ private: /* For. Ending */
 	_bool  m_fSecondFloor_Script_Once[6] = { false };
 
 
+	// Pinball Script Control
+	_bool  m_bPinBallScript_Once[2] = { false };
 };
 
 END

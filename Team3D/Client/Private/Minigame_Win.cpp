@@ -2,6 +2,8 @@
 #include "..\Public\Minigame_Win.h"
 
 #include "UI_Generator.h"
+#include "Cody.h"
+#include "May.h"
 
 CMinigame_Win::CMinigame_Win(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)

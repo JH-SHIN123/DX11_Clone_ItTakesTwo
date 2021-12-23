@@ -22,6 +22,8 @@ private:
 	Level::ID	m_ePreLevelID	= Level::LEVEL_END;
 	Level::ID	m_eNextLevelID	= Level::LEVEL_END;
 
+	CFontDraw*	m_pFont = nullptr;
+
 public:
 	static CLevel_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, Level::ID ePreLevelID, Level::ID eNextLevelID);
 	virtual void Free() override;

@@ -33,22 +33,6 @@ HRESULT CWallLaserTrap::NativeConstruct(void * pArg)
 
 _int CWallLaserTrap::Tick(_double TimeDelta)
 {
-// 
-// 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-// 	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-// 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-// 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-// 
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[0].vPosition, vPos - (vRight * m_vHalfSize.x) + (vUp * 0.01f));
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[1].vPosition, vPos + (vLook  * m_vHalfSize.y) + (vUp * 0.01f));
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[2].vPosition, vPos + (vRight * m_vHalfSize.x) + (vUp * 0.01f));
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[3].vPosition, vPos - (vLook  * m_vHalfSize.y) + (vUp * 0.01f));
-// 
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[0].vTextureUV, vLook);
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[1].vTextureUV, vRight);
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[2].vTextureUV, vLook);
-// 	XMStoreFloat4(&m_pPointInstanceBuffer[3].vTextureUV, vRight);
-
 	Check_Activate(TimeDelta);
 
 	return _int();

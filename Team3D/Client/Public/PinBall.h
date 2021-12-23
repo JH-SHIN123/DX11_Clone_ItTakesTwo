@@ -10,11 +10,12 @@ private:
 	virtual ~CPinBall() = default;
 
 public:/* Getter */
-	_bool Get_Failed()	  { return m_bFailed; };
-	_bool Get_StartGame() { return m_bStartGame; }
-	_bool Get_Ready()	  { return m_bReady; }
-	CTransform*	Get_Transform() { return m_pTransformCom; }
-	_fmatrix Get_WorldMatrix() { return m_pTransformCom->Get_WorldMatrix(); }
+	_bool Get_Failed()			 { return m_bFailed; };
+	_bool Get_StartGame()		 { return m_bStartGame; }
+	_bool Get_Ready()			 { return m_bReady; }
+	_bool Get_DeadType()		 { return m_bDeadType; }
+	CTransform*	Get_Transform()	 { return m_pTransformCom; }
+	_fmatrix Get_WorldMatrix()	 { return m_pTransformCom->Get_WorldMatrix(); }
 
 public:/* Setter */
 	void Set_Ready(_bool bReady) { m_bReady = bReady; }
@@ -53,6 +54,7 @@ private:
 	_bool				m_bSoundCheck = false;
 	_float4x4			m_ResetWorld;
 
+	_bool				m_bDeadType = false;
 private:
 	void MoveMent(_double dTimaDelta);
 

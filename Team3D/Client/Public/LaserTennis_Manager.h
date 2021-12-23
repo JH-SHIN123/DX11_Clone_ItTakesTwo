@@ -22,13 +22,11 @@ private:
 
 public:
 	enum TARGET { TARGET_CODY, TARGET_MAY, TARGET_END };
-private:
-	void Get_RandomArr(_uint iIndex);
-	_uint* m_pRandomArr = nullptr;
 
 public:/* Getter */
 	_bool	Get_StartGame() { return m_bStartGame; }
-	TARGET	Get_Winner() { return m_eWinner; }
+	_bool	Get_PushCoord() { return m_bPushCoord; }
+	TARGET	Get_Winner()	{ return m_eWinner; }
 
 public:/* Setter */
 	void Increase_PowerCoord();
@@ -39,6 +37,7 @@ public:/* Setter */
 
 public:
 	/* InGame */
+	void Push_Coord();
 	void Start_Game();
 	void Reset_Game();
 	void Active_LaserActivation(_uint iOption);
@@ -85,17 +84,22 @@ private:
 	_bool					m_bKeyCheck[TARGET_END];
 	_bool					m_bStartGame = false;
 	_bool					m_bReady = false;
+	_bool					m_bPushCoord = false;
 	_uint					m_iPowerCoordCount = 0;
 
 	_uint					m_iCodyCount = 0;
 	_uint					m_iMayCount = 0;
 	TARGET					m_eWinner = TARGET_END;
 
+	_uint*					m_pRandomArr = nullptr;
+
 private:
 	/* UI »ý¼º */
 	HRESULT Create_StartUI();
 	HRESULT Create_ResultUI();
+
 	void Active_CollisionWall();
+	void Get_RandomArr(_uint iIndex);
 
 public:
 	virtual void Free();

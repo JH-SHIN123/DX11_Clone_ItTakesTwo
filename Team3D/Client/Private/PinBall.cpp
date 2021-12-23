@@ -5,6 +5,7 @@
 #include "PinBall_Handle.h"
 #include "Effect_Generator.h"
 #include "PhysX.h"
+#include "Script.h"
 
 CPinBall::CPinBall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -28,6 +29,8 @@ void CPinBall::StartGame()
 	/* 초반 레일과의 단차 보정 */
 	vPosition = XMVectorSet(XMVectorGetX(vPosition), 756.9f, 189.f, 1.f);
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
+
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 1.5f);
 }
 
 void CPinBall::PlayerMove()
@@ -42,6 +45,7 @@ void CPinBall::PlayerMove()
 	(m_pDynamicActorCom->Get_Actor())->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
 	m_pDynamicActorCom->Update_DynamicActor();
+	((CPinBall_BallDoor*)CDataStorage::GetInstance()->Get_Pinball_BallDoor())->Set_Render(false);
 }
 
 void CPinBall::Goal(_fvector vGatePosition)
@@ -67,6 +71,9 @@ void CPinBall::Respawn()
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 	m_pDynamicActorCom->Update_DynamicActor();
+
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 0.7f);
+	((CPinBall_BallDoor*)CDataStorage::GetInstance()->Get_Pinball_BallDoor())->Set_Render(true);
 
 	m_bFailed = false;
 }
@@ -186,21 +193,22 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	/* Blocked */
 	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eBLOCKED)
 	{
-		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
-		m_pGameInstance->Play_Sound(TEXT("Pinball_Ball_Explode_Voice.wav"), CHANNEL_PINBALL);
-
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-
-		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
-		m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Hold.wav"), CHANNEL_PINBALL_HANDLE);
-
 		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
 
 		m_pDynamicActorCom->Get_Actor()->putToSleep();
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+		m_bDeadType = false;
 
+		/* Sound */
+		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
+		m_pGameInstance->Play_Sound(TEXT("Pinball_Ball_Explode_Voice.wav"), CHANNEL_PINBALL);
+		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
+		m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Hold.wav"), CHANNEL_PINBALL_HANDLE);
+
+		/* Effect */
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 755.7f));
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
@@ -209,21 +217,22 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	/* Blocked */
 	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eALIENSCREEN)
 	{
-		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
-		m_pGameInstance->Play_Sound(TEXT("Pinball_Ball_Explode.wav"), CHANNEL_PINBALL);
-
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-
-		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
-		m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Hold.wav"), CHANNEL_PINBALL_HANDLE);
-
 		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
 
 		m_pDynamicActorCom->Get_Actor()->putToSleep();
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+		m_bDeadType = true;
 
+		/* Sound */
+		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
+		m_pGameInstance->Play_Sound(TEXT("Pinball_Ball_Explode.wav"), CHANNEL_PINBALL);
+		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
+		m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Hold.wav"), CHANNEL_PINBALL_HANDLE);
+
+		/* Effect */
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 755.7f));
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
@@ -259,7 +268,7 @@ void CPinBall::MoveMent(_double dTimeDelta)
 HRESULT CPinBall::Ready_Component(void * pArg)
 {
 	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.75f);
+	PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
@@ -276,9 +285,7 @@ HRESULT CPinBall::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 
 	/* Trigger */
-
 	PxGeometry* TriggerGeom = new PxSphereGeometry(0.77f);
-
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

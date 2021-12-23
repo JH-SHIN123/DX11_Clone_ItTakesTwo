@@ -11,6 +11,7 @@
 #include "DataStorage.h"
 #include "Cody.h"
 #include "May.h"
+#include "Effect_Generator.h"
 
 CWarpGate::CWarpGate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -37,6 +38,12 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 
 	if(nullptr != m_pRespawnTunnel)
 		m_pRespawnTunnel->Set_Stage_Viewer(m_WarpGate_Desc.eStageValue);
+
+	_matrix SmokeWorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	SmokeWorldMatrix.r[3] += XMVectorSet(0.f, 1.8f, 0.f, 0.f);
+	SmokeWorldMatrix.r[3] -= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)) * 2.5f;
+	SmokeWorldMatrix.r[3] -= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * 2.f;
+	EFFECT->Add_Effect(Effect_Value::Gate_Smoke, SmokeWorldMatrix);
 
 	return S_OK;
 }

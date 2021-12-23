@@ -16,6 +16,7 @@
 #include"LaserTennis_Manager.h"
 #include"AlphaScreen.h"
 #include"Script.h"
+#include "SubCamera.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -395,12 +396,28 @@ void CMainCamera::KeyCheck(_double dTimeDelta)
 	}
 	/*if (m_pGameInstance->Key_Pressing(DIK_NUMPAD4))
 	{
-		m_pTransformCom->Go_Left(dTimeDelta);
+		m_pTransformCom->Go_Left(dTimeDelta * 8.f);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_NUMPAD6))
 	{
+<<<<<<< HEAD
 		m_pTransformCom->Go_Right(dTimeDelta);
 	}*/
+
+	//	m_pTransformCom->Go_Right(dTimeDelta* 8.f);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD8))
+	//{
+	//	m_pTransformCom->Go_Up(dTimeDelta* 8.f);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD2))
+	//{
+	//	m_pTransformCom->Go_Down(dTimeDelta* 8.f);
+	//}
+	//if (m_pGameInstance->Key_Pressing(DIK_NUMPAD5))
+	//{
+	//	m_pTransformCom->Go_Straight(dTimeDelta* 8.f);
+	//}
 
 }
 _float CMainCamera::Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash)
@@ -1309,8 +1326,11 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 				UI_CreateOnlyOnce(Cody, BlackScreenFadeInOut);
 				UI_Generator->Set_FadeInSpeed(Player::Cody, UI::BlackScreenFadeInOut, 5.f);
 			}
-			if(static_cast<CAlphaScreen*>(UI_Generator->Get_UIObject(Player::Cody, UI::BlackScreenFadeInOut))->Get_Alpha() >= 1.f)
+			if (static_cast<CAlphaScreen*>(UI_Generator->Get_UIObject(Player::Cody, UI::BlackScreenFadeInOut))->Get_Alpha() >= 1.f)
+			{
 				ReSet_Cam_FreeToAuto(true);
+				((CSubCamera*)(DATABASE->Get_SubCam()))->ReSet_Cam_FreeToAuto(true);
+			}
 		}
 		return NO_EVENT;
 	}
