@@ -270,7 +270,7 @@ void CMoonBaboonCore::Free()
 {
 	if (m_pEffectBossCore)
 	{
-		m_pEffectBossCore->HitOn();
+		m_pEffectBossCore->Set_Dead();
 		m_pEffectBossCore = nullptr;
 	}
 	Safe_Release(m_pCorePillar);
