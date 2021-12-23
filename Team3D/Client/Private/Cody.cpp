@@ -43,6 +43,7 @@
 /* For. UI */
 #include "HpBar.h"
 #include "MinigameHpBar.h"
+#include "PinBall_Handle.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -306,6 +307,9 @@ _int CCody::Tick(_double dTimeDelta)
 	m_pCamera = (CMainCamera*)CDataStorage::GetInstance()->Get_MainCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
+
+	/* Script */
+	PinBall_Script(dTimeDelta);
 
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -927,6 +931,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	}
 
 #pragma endregion
+
 }
 
 _uint CCody::Get_CurState() const
@@ -2356,6 +2361,13 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpDone		= true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
+
+			if (5 == static_cast<CWarpGate*>(m_pTargetPtr)->Get_StageValue())
+			{
+				/* 레이저테니스 UI 지우셈 */
+				UI_Delete(Default, Minigame_Score);
+				UI_Delete(Default, Minigame_Title);
+			}
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -2597,8 +2609,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_bHit = true;
 
 			/* HP 감소 */
-			LASERTENNIS->Set_MayCount();
+			/* 순서 바꾸면 안됨 ㅇㅇ */
 			Set_MinigameHpBarReduction(30);
+			LASERTENNIS->Set_MayCount();
 
 			m_IsCollide = false;
 		}
@@ -3522,6 +3535,13 @@ void CCody::Set_MinigameHpBarReduction(_float fDamage)
 	m_pMinigameSubHpBar->Set_Hp(fDamage);
 }
 
+void CCody::Set_MinigameHpBarReset()
+{
+	m_pMinigameHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_Active(false);
+}
+
 void CCody::WallLaserTrap(const _double dTimeDelta)
 {
 	if (false == m_IsWallLaserTrap_Touch)
@@ -4030,6 +4050,43 @@ void CCody::PinBall(const _double dTimeDelta)
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
 }
 
+void CCody::PinBall_Script(const _double dTimeDelta)
+{
+	if (false == m_bPinBallScript)
+		return;
+
+	m_dScriptTime += dTimeDelta;
+
+	if (0.5f <= m_dScriptTime && 0 == m_iScriptCount)
+	{
+		/* 첫번째 */
+		/* 메이가 잘못했을 때 */
+		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
+			SCRIPT->Render_Script(41, CScript::HALF, 2.f);
+
+		/* 코디가 잘못했을 때 */
+		else
+			SCRIPT->Render_Script(39, CScript::HALF, 2.f);
+
+		++m_iScriptCount;
+	}
+	if (2.8f <= m_dScriptTime && 1 == m_iScriptCount)
+	{
+		/* 두번째 */
+		/* 메이가 잘못했을 때 */
+		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
+			SCRIPT->Render_Script(42, CScript::HALF, 2.f);
+
+		/* 코디가 잘못했을 때 */
+		else
+			SCRIPT->Render_Script(40, CScript::HALF, 2.f);
+
+		m_iScriptCount = 0;
+		m_dScriptTime = 0.0;
+		m_bPinBallScript = false;
+	}
+}
+
 void CCody::Holding_BossUFO(const _double dTimeDelta)
 {
 	if (false == m_IsHolding_UFO)
@@ -4122,6 +4179,18 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
+	{
+		/* Sound */
+		/* 메이가 잘못했을 때 */
+		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
+			m_pGameInstance->Play_Sound(TEXT("22.wav"), CHANNEL_PINBALLVOICE);
+		/* 코디가 잘못했을 때 */
+		else
+			m_pGameInstance->Play_Sound(TEXT("21.wav"), CHANNEL_PINBALLVOICE);
+		m_bPinBallScript = true;
+	}
 
 	m_IsPinBall = false;
 	m_IsCollide = false;

@@ -212,6 +212,7 @@ public:
 	void	Set_ActiveHpBar(_bool IsCheck);
 	void	Set_HpBarReduction(_float fDamage);
 	void	Set_ActiveMinigameHpBar(_bool IsCheck);
+	void	Set_MinigameHpBarReset();
 	void	Set_MinigameHpBarReduction(_float fDamage);
 
 	/* For. Ending */
@@ -633,6 +634,8 @@ private: /* For. Ending */
 	_bool  m_fSecondFloor_Script_Once[6] = { false };
 
 
+	// Pinball Script Control
+	_bool  m_bPinBallScript_Once[2] = { false };
 };
 
 END

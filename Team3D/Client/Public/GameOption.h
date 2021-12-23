@@ -5,7 +5,7 @@
 //#define __FULLSCREEN
 //#define __START_LEVEL_LOGO
 //#define __PLAY_CUTSCENE
-
+ 
 /************************************************************************/
 
 /**
@@ -27,7 +27,7 @@
 */
 
 #ifdef _DEBUG
-#define __THREAD_NUM 4
+#define __THREAD_NUM 8
 #else
 #define __THREAD_NUM 4
 #endif
@@ -50,7 +50,7 @@
 /**
 * 메이 키보드로 컨트롤하려면 주석 해제.
 */
-#define __CONTROL_MAY_KEYBOARD
+//#define __CONTROL_MAY_KEYBOARD
  
 /************************************************************************/
  

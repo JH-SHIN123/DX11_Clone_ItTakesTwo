@@ -65,7 +65,7 @@ _int CRocket::Tick(_double dTimeDelta)
 		|| m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		m_bLaunch = true;
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 		UI_Delete(Cody, InputButton_InterActive);
 	}
 	if (m_bLaunch == true)
@@ -141,7 +141,7 @@ void CRocket::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 		m_PlayerID = GameID::eROCKET;
 	}
 }

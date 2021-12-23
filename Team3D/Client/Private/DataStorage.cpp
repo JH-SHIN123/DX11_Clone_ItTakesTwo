@@ -31,6 +31,8 @@ void CDataStorage::GoUp_BossFloor(_float fMaxdistance, _float fSpeed)
 		/* 2가 마지막 층 혹시 모를 예외처리*/
 		if (2 < m_iFloorIndex)
 			m_iFloorIndex = 2;
+
+		m_IsBossFloorUp = true;
 	}
 }
 

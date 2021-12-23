@@ -14,6 +14,7 @@
 #include "BossHpBar.h"
 #include "MoonUFO.h"
 #include "HpBar.h"
+#include "MoonBaboonCore.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -223,7 +224,6 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
 	{
-
 	case Client::CUFO::TARGET_CODY:
 		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
 		break;
@@ -233,8 +233,6 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-
 
 	_vector vDirForRotate = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 	_float vAngle = XMConvertToDegrees(XMVectorGetX(vDirForRotate));
@@ -316,7 +314,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 2;
+	_uint iGravitationalBombMaxCount = 8;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -387,22 +385,32 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 
 void CUFO::Core_Destroyed()
 {
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	for (_uint i = 0; i < 3; ++i)
 	{
-		m_ePattern = UFO_PATTERN::INTERACTION;
+		_bool IsBroken = ((CMoonBaboonCore*)DATABASE->Get_MoonBaboonCore(i))->Get_Broken();
+		_int iActive = ((CMoonBaboonCore*)DATABASE->Get_MoonBaboonCore(i))->Get_ActiveCore();
 
-		//m_pBossHpBar->Set_Ratio(0.11f);
-
-		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
-		if (3 != m_iPhaseChangeCount)
+		if (true == IsBroken && 1 == iActive)
 		{
-			m_pModelCom->Set_Animation(UFO_Laser_HitPod);
-			m_pModelCom->Set_NextAnimIndex(UFO_MH);
-			m_pMoonBaboon->Set_Animation(Moon_Ufo_Laser_HitPod, UFO_MH);
-		}
+			m_ePattern = UFO_PATTERN::INTERACTION;
 
-		m_IsLaserCreate = true;
-		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
+			if (false == m_IsHit)
+			{
+				m_pBossHpBar->Set_HpBarReduction(110);
+				m_IsHit = true;
+			}
+
+			/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
+			if (3 != m_iPhaseChangeCount)
+			{
+				m_pModelCom->Set_Animation(UFO_Laser_HitPod);
+				m_pModelCom->Set_NextAnimIndex(UFO_MH);
+				m_pMoonBaboon->Set_Animation(Moon_Ufo_Laser_HitPod, UFO_MH);
+			}
+
+			m_IsLaserCreate = true;
+			((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
+		}
 	}
 }
 
@@ -436,9 +444,8 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			/* 페이즈가 2번 진행됬다면 보스 Floor를 올려라 */
 			if (2 == m_iPhaseChangeCount)
 			{
-				_float fMaxDistance = 99.f;
+				_float fMaxDistance = 100.f;
 				DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
-
 			}
 		}
 	}
@@ -452,6 +459,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 		if (1.f <= m_fWaitingTime)
 		{
 			m_ePattern = UFO_PATTERN::LASER;
+			m_IsHit = false;
 
 			m_pModelCom->Set_Animation(UFO_Laser_MH);
 			m_pModelCom->Set_NextAnimIndex(UFO_Laser_MH);
@@ -856,6 +864,7 @@ HRESULT CUFO::Ready_StaticActor_Component()
 	_matrix matRotY = XMMatrixRotationZ(XMConvertToRadians(180.f));
 	BaseBone = matRotY * BaseBone;
 
+	BaseBone.r[3].m128_f32[1] += 0.05f;
 	m_pStaticTransformCom->Set_WorldMatrix(BaseBone);
 
 	CStaticActor::ARG_DESC ArgDesc;
@@ -1237,6 +1246,7 @@ void CUFO::GoUp(_double dTimeDelta)
 		m_fMaxY = 0.f;
 		m_IsGoUp = false;
 		m_fDistance = 0.f;
+		DATABASE->Set_BossFloorUp(false);
 		return;
 	}
 
