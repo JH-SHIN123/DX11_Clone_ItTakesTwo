@@ -21,6 +21,7 @@ public:
 
 public:
 	void Set_Dead();
+	void Player_Hit_Effect();
 
 protected:
 	CTransform*							m_pTransformCom = nullptr;

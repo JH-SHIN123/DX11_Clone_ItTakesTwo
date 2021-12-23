@@ -287,10 +287,12 @@ void  GS_MAIN(/*입력*/ point  VS_OUT In[1], /*출력*/ inout TriangleStream<GS_OUT
 void  GS_MAIN_NO_BILL(/*입력*/ point  VS_OUT_NO_BILL In[1], /*출력*/ inout TriangleStream<GS_OUT> TriStream)
 {
 	GS_OUT		Out[8];
+	[unroll]
+	for (int k = 0; k < 8; ++k)
+		Out[k] = (GS_OUT)0;
 
 	float3		vRight	= In[0].vRight;
 	float3		vUp		= In[0].vUp;
-	matrix		matVP	= mul(g_MainViewMatrix, g_MainProjMatrix);
 
 	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y * 0.5f);
 
@@ -309,12 +311,12 @@ void  GS_MAIN_NO_BILL(/*입력*/ point  VS_OUT_NO_BILL In[1], /*출력*/ inout Trian
 	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
 	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
 
-
 	Out[4].vPosition = Out[0].vPosition;
 	Out[5].vPosition = Out[1].vPosition;
 	Out[6].vPosition = Out[2].vPosition;
 	Out[7].vPosition = Out[3].vPosition;
 
+	matrix		matVP	= mul(g_MainViewMatrix, g_MainProjMatrix);
 	[unroll]
 	for (int i = 0; i < 4; ++i)
 	{
@@ -1231,6 +1233,27 @@ PS_OUT  PS_CIRCLE(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_ROCKET_CIRCLE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+	float fLenght = length(vCenter);
+	vDiffuse.a = 1.f;
+
+	vDiffuse.rgb = g_vColor;
+
+	vDiffuse.a = In.fTime;
+	Out.vColor = vDiffuse;
+
+	if (0.5f < length(vCenter))
+		discard;
+
+	return Out;
+}
+
 PS_OUT  PS_PINBALL_DUST(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1851,5 +1874,25 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_TRIPLE_UV();
 		GeometryShader = compile gs_5_0  GS_TRIPLE_UV();
 		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_SMOKE_COLOR_2();
+	}
+
+	pass EndingRocket_Boost // 23
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN_NO_BILL();
+		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL();
+		PixelShader = compile ps_5_0  PS_MOONBABOON_BOOSTER();
+	}
+
+	pass EndingRocket_Circle // 24
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_ROCKET_CIRCLE();
 	}
 }

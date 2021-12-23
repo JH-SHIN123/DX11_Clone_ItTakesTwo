@@ -2,12 +2,12 @@
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_EndingRocket_Smoke final : public CInGameEffect
+class CEffect_EndingRocket_Circle final : public CInGameEffect
 {
 private:
-	explicit CEffect_EndingRocket_Smoke(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_EndingRocket_Smoke(const CEffect_EndingRocket_Smoke& rhs);
-	virtual ~CEffect_EndingRocket_Smoke() = default; public:
+	explicit CEffect_EndingRocket_Circle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_EndingRocket_Circle(const CEffect_EndingRocket_Circle& rhs);
+	virtual ~CEffect_EndingRocket_Circle() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -48,8 +48,6 @@ private:
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
-	CTextures*							m_pTexturesCom_Distortion = nullptr;
-	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
 	_float m_fNextUV = 0.f;
 
@@ -57,11 +55,11 @@ private:
 	const _float  m_fSize_Power = 0.75f;
 	const _float  m_fInstance_SpeedPerSec = 0.5f;
 	const _double m_dInstance_Pos_Update_Time = 0.75;
-	const _float2 m_vDefaultSize = { 1.12f, 4.f };
-	const _float2 m_vBoostingSize = { 2.f, 12.f };
+	const _float2 m_vDefaultSize = { 0.5f, 0.5f };
+	const _float2 m_vBoostingSize = { 1.f, 1.f };
 
 public:
-	static CEffect_EndingRocket_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_EndingRocket_Circle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

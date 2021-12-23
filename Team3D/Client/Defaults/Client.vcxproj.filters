@@ -1146,6 +1146,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\00.Boost">
       <UniqueIdentifier>{e27e7bb3-542f-4bc1-bd36-05893033ff09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\01.Circle">
+      <UniqueIdentifier>{544d93d1-7555-4a67-a745-21f00989b2c4}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2126,6 +2129,12 @@
     <ClInclude Include="..\public\Effect_EndingRocket_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_EndingRocket_Boost.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\00.Boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_EndingRocket_Circle.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\01.Circle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3078,6 +3087,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_EndingRocket_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_EndingRocket_Boost.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\00.Boost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_EndingRocket_Circle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\EndingRocket\01.Circle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

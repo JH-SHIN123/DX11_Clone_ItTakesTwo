@@ -2035,6 +2035,12 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
+				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
+
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)

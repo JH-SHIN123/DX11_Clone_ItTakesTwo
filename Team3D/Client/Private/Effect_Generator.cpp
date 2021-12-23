@@ -90,6 +90,9 @@
 #include "Effect_MoonUFO_Laser_ColorSmoke.h"
 #include "Effect_MoonUFO_Laser_Burn.h"
 #include "Effect_MoonUFO_Laser_Particle.h"
+#include "Effect_EndingRocket_Smoke.h"
+#include "Effect_EndingRocket_Boost.h"
+#include "Effect_EndingRocket_Circle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -345,6 +348,15 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::Gate_Smoke:
 		lstrcpy(szPrototype, L"GameObject_Effect_GateSmoke");
+		break;
+	case Effect_Value::EndingRocket_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2D_EndingRocket_Smoke");
+		break;
+	case Effect_Value::EndingRocket_Boost:
+		lstrcpy(szPrototype, L"GameObject_2D_EndingRocket_Boost");
+		break;
+	case Effect_Value::EndingRocket_Circle:
+		lstrcpy(szPrototype, L"GameObject_2D_EndingRocket_Circle");
 		break;
 	default:
 		break;
@@ -655,6 +667,13 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_MoonUFO_Laser_ColorSmoke"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_MoonUFO_Laser_ColorSmoke", CEffect_MoonUFO_Laser_ColorSmoke::Create(pDevice, pDeviceContext, pData));
+
+	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_EndingRocket_Smoke"))
+	{
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_EndingRocket_Smoke", CEffect_EndingRocket_Smoke::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_EndingRocket_Boost", CEffect_EndingRocket_Boost::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_EndingRocket_Circle", CEffect_EndingRocket_Circle::Create(pDevice, pDeviceContext, pData));
+	}
 
 #pragma  endregion
 

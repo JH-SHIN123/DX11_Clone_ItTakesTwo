@@ -36,7 +36,7 @@ HRESULT CEffect_Boss_BrokenLaser_Smoke::NativeConstruct(void * pArg)
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
-	m_EffectDesc_Prototype.fLifeTime = 3.f;
+	m_EffectDesc_Prototype.fLifeTime = 5.f;
 	m_EffectDesc_Prototype.iTextureCount_U = 8;
 	m_EffectDesc_Prototype.iTextureCount_V = 8;
 
@@ -59,7 +59,7 @@ _int CEffect_Boss_BrokenLaser_Smoke::Tick(_double TimeDelta)
 
 	for (_int i = 0; i < m_EffectDesc_Prototype.iInstanceCount; ++i)
 	{
-		m_pInstanceBuffer[i].vTextureUV = Check_UV_Smoke(TimeDelta, i);
+		//m_pInstanceBuffer[i].vTextureUV = Check_UV_Smoke(TimeDelta, i);
 		m_pInstanceBuffer[i].vSize.x += (_float)TimeDelta * 3.75f;
 		m_pInstanceBuffer[i].vSize.y = m_pInstanceBuffer[i].vSize.x;
 
@@ -67,9 +67,11 @@ _int CEffect_Boss_BrokenLaser_Smoke::Tick(_double TimeDelta)
 		_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[i].vPosition);
 
 		vPos += vDir * (_float)TimeDelta * m_EffectDesc_Prototype.fLifeTime;
+
+		XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, vPos);
 	}
 
-	m_fAlphaTime -= (_float)TimeDelta * 0.75f;
+	m_fAlphaTime -= (_float)TimeDelta * 0.25f;
 	if (0.f >= m_fAlphaTime) m_fAlphaTime = 0.f;
 
 	return NO_EVENT;
