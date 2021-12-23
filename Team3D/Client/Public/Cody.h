@@ -439,6 +439,11 @@ private:
 	/* 죽었을 때 False로 바뀌고 리스폰시에 True로 바뀜 */
 	_bool	m_bRespawnCheck = false;
 
+	/* Hye::For.PlayerHit */
+	/* m_bHit를 True로 하면 일정시간동안 플레이어가 빨개집니다. */
+	_bool	m_bHit = false;
+	_double m_dHitTime = 0.0;
+
 	/* For.GravityTunnel */
 	_bool m_bGoToGravityCenter = false;
 	_bool m_IsInGravityPipe = false;

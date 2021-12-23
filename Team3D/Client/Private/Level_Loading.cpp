@@ -26,6 +26,8 @@ HRESULT CLevel_Loading::NativeConstruct(Level::ID ePreLevelID, Level::ID eNextLe
 		UI_Create(Default, LoadingBook);
 	}
 
+	m_pFont = (CFontDraw*)m_pGameInstance->Add_Component_Clone(Level::LEVEL_STATIC, TEXT("Component_FontDraw"));
+
 	return S_OK;
 }
 
@@ -64,6 +66,8 @@ HRESULT CLevel_Loading::Render()
 {
 	CLevel::Render();
 
+	m_pFont->Render_Font(TEXT("불러오는중"), _float2(1120.f, 675.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
+
 	return S_OK;
 }
 
@@ -82,6 +86,7 @@ CLevel_Loading * CLevel_Loading::Create(ID3D11Device * pDevice, ID3D11DeviceCont
 
 void CLevel_Loading::Free()
 {
+	Safe_Release(m_pFont);
 	Safe_Release(m_pLoading);
 
 	CLevel::Free();
