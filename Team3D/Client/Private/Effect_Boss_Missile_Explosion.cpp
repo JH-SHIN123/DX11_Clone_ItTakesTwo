@@ -72,7 +72,7 @@ _int CEffect_Boss_Missile_Explosion::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Missile_Explosion::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Boss_Missile_Explosion::Render(RENDER_GROUP::Enum eGroup)

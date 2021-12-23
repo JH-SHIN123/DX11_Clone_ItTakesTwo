@@ -1450,7 +1450,7 @@ PS_OUT  PS_MAIN_MISSILE_EXPLOSION(PS_IN_DOUBLEUV In)
 
 	Out.vColor = vDiff;
 	if (In.fTime > vDistortion.r)
-		Out.vColor.rgb *= vDistortion.rgb * In.fTime * 10.f;
+		Out.vColor.rgb *= vDistortion.rgb * In.fTime * 1.25f;
 
 	float2 vTexUV_3 = { vDiff.r , 0.f };
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);

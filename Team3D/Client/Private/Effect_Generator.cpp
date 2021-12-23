@@ -388,7 +388,7 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
-		MSG_BOX("Failed to LoadData UI");
+		MSG_BOX("Failed to LoadData Effect");
 		CloseHandle(hFile);
 		return E_FAIL;
 	}

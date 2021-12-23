@@ -42,6 +42,8 @@ HRESULT CEffect_Boss_BrokenLaser_Smoke::NativeConstruct(void * pArg)
 
 	m_EffectDesc_Clone.UVTime = 0.01f;
 
+	m_EffectDesc_Prototype.iInstanceCount = 10;
+
 	Check_Target_Matrix();
 	Ready_Smoke_Effect();
 
@@ -55,13 +57,17 @@ _int CEffect_Boss_BrokenLaser_Smoke::Tick(_double TimeDelta)
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 
-	m_pInstanceBuffer[0].vTextureUV = Check_UV_Smoke(TimeDelta);
-	m_pInstanceBuffer[0].vSize.x += (_float)TimeDelta * 3.75f;
-	m_pInstanceBuffer[0].vSize.y = m_pInstanceBuffer[0].vSize.x;
+	for (_int i = 0; i < m_EffectDesc_Prototype.iInstanceCount; ++i)
+	{
+		m_pInstanceBuffer[i].vTextureUV = Check_UV_Smoke(TimeDelta, i);
+		m_pInstanceBuffer[i].vSize.x += (_float)TimeDelta * 3.75f;
+		m_pInstanceBuffer[i].vSize.y = m_pInstanceBuffer[i].vSize.x;
 
-	m_pInstanceBuffer[1].vTextureUV = Check_UV_Smoke(TimeDelta);
-	m_pInstanceBuffer[1].vSize.x += (_float)TimeDelta * 3.75f;
-	m_pInstanceBuffer[1].vSize.y = m_pInstanceBuffer[1].vSize.x;
+		_vector vDir = XMLoadFloat3(&m_pInstance_Dir[i]);
+		_vector vPos = XMLoadFloat4(&m_pInstanceBuffer[i].vPosition);
+
+		vPos += vDir * (_float)TimeDelta * m_EffectDesc_Prototype.fLifeTime;
+	}
 
 	m_fAlphaTime -= (_float)TimeDelta * 0.75f;
 	if (0.f >= m_fAlphaTime) m_fAlphaTime = 0.f;
@@ -82,7 +88,7 @@ HRESULT CEffect_Boss_BrokenLaser_Smoke::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));
 	m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &i, sizeof(_int));
 	m_pPointInstanceCom->Set_Variable("g_fTime", &m_fAlphaTime, sizeof(_float));
-	m_pPointInstanceCom->Render(22, m_pInstanceBuffer, 2);
+	m_pPointInstanceCom->Render(22, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
@@ -101,27 +107,28 @@ void CEffect_Boss_BrokenLaser_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 
 HRESULT CEffect_Boss_BrokenLaser_Smoke::Ready_Smoke_Effect()
 {
-	m_pInstanceBuffer = new VTXMATRIX_CUSTOM_ST[2];
+	m_pInstanceBuffer	= new VTXMATRIX_CUSTOM_ST[m_EffectDesc_Prototype.iInstanceCount];
+	m_pInstance_Dir		= new _float3[m_EffectDesc_Prototype.iInstanceCount];
 
-	m_pInstanceBuffer[0].vRight = { 1.f, 0.f, 0.f, 0.f };
-	m_pInstanceBuffer[0].vUp = { 0.f, 1.f, 0.f, 0.f };
-	m_pInstanceBuffer[0].vLook = { 0.f, 0.f, 1.f, 0.f };
-	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pInstanceBuffer[0].vTextureUV = __super::Get_TexUV(m_EffectDesc_Prototype.iTextureCount_U, m_EffectDesc_Prototype.iTextureCount_V, true);
-	m_pInstanceBuffer[0].vSize = { 2.75f, 2.75f };
+	for (_int i = 0; i < m_EffectDesc_Prototype.iInstanceCount; ++i)
+	{
+		m_pInstanceBuffer[i].vRight = { 1.f, 0.f, 0.f, 0.f };
+		m_pInstanceBuffer[i].vUp = { 0.f, 1.f, 0.f, 0.f };
+		m_pInstanceBuffer[i].vLook = { 0.f, 0.f, 1.f, 0.f };
+		XMStoreFloat4(&m_pInstanceBuffer[i].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_pInstanceBuffer[i].vTextureUV = __super::Get_TexUV(m_EffectDesc_Prototype.iTextureCount_U, m_EffectDesc_Prototype.iTextureCount_V, true);
+		m_pInstanceBuffer[i].vSize = { 2.75f, 2.75f };
 
-	m_pInstanceBuffer[0].vRight = { 1.f, 0.f, 0.f, 0.f };
-	m_pInstanceBuffer[0].vUp = { 0.f, 1.f, 0.f, 0.f };
-	m_pInstanceBuffer[0].vLook = { 0.f, 0.f, 1.f, 0.f };
-	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pInstanceBuffer[0].vTextureUV = __super::Get_TexUV(m_EffectDesc_Prototype.iTextureCount_U, m_EffectDesc_Prototype.iTextureCount_V, true);
-	m_pInstanceBuffer[0].vSize = { 2.75f, 2.75f };
+		m_pInstance_Dir[i] = __super::Get_Dir_Rand(_int3(100, 100, 100));
+		m_pInstance_Dir[i].y *= 0.5f;
+	}
+
 	return S_OK;
 }
 
-_float4 CEffect_Boss_BrokenLaser_Smoke::Check_UV_Smoke(_double TimeDelta)
+_float4 CEffect_Boss_BrokenLaser_Smoke::Check_UV_Smoke(_double TimeDelta, _int iIndex)
 {
-	_float4 vUV = m_pInstanceBuffer[0].vTextureUV;
+	_float4 vUV = m_pInstanceBuffer[iIndex].vTextureUV;
 
 	if (-1.f == m_EffectDesc_Clone.UVTime)
 		return vUV;

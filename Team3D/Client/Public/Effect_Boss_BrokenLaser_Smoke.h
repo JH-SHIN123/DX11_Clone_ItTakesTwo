@@ -23,7 +23,7 @@ public:
 
 private:
 	HRESULT Ready_Smoke_Effect();
-	_float4 Check_UV_Smoke(_double TimeDelta);
+	_float4 Check_UV_Smoke(_double TimeDelta, _int iIndex);
 	void Check_Target_Matrix();
 
 private:
