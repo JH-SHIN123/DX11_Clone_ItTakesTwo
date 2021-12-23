@@ -14,6 +14,9 @@ private:
 	virtual ~CEffect_Boss_Core() = default; public:
 
 public:
+	void HitOn() { m_IsHit = true; }
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;

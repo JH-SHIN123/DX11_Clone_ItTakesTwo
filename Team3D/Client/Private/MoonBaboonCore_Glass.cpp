@@ -12,6 +12,12 @@ CMoonBaboonCore_Glass::CMoonBaboonCore_Glass(const CMoonBaboonCore_Glass& rhs)
 {
 }
 
+void CMoonBaboonCore_Glass::Set_Broken()
+{
+	if (m_bBroken) return;
+	m_bBroken = true;
+}
+
 void CMoonBaboonCore_Glass::Set_WorldMatrix()
 {
 	m_pTransformCom->Set_WorldMatrix(XMMatrixTranslation(m_vLocalPos.x + m_vOffsetPos.x, m_vLocalPos.y + m_vOffsetPos.y, m_vLocalPos.z + m_vOffsetPos.z) * m_pParentTransform->Get_WorldMatrix());
@@ -38,7 +44,7 @@ HRESULT CMoonBaboonCore_Glass::NativeConstruct(void* pArg)
 	m_pModelCom = m_pModelCom_Glass;
 
 	Set_WorldMatrix();
-	m_UserData.eID = GameID::eENVIRONMENT;
+	m_UserData.eID = GameID::eBOSSCORE;
 	m_UserData.pGameObject = this;
 
 	CStaticActor::ARG_DESC tArg;

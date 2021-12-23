@@ -34,25 +34,37 @@ HRESULT CHugeRock::NativeConstruct(void * pArg)
 
 _int CHugeRock::Tick(_double dTimeDelta)
 {
-	if (true == m_isDead)
-		return EVENT_DEAD;
+	//if (true == m_isDead)
+	//	return EVENT_DEAD;
 
 	CGameObject::Tick(dTimeDelta);
 
-	m_fScale += (_float)dTimeDelta * 5.f;
+	m_pTransformCom->Go_Down(dTimeDelta * 3.0);
 
-	if (m_fMaxScale <= m_fScale)
-		m_fScale = m_fMaxScale;
+	_float fMyPosY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	if (fMyPosY > fCodyY - 24.f)
+	{
+		ENDINGCREDIT->Set_Dead_Environment();
+		Create_Rocks();
+		return EVENT_DEAD;
+	}
 
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
-	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
+	//m_fScale += (_float)dTimeDelta * 5.f;
 
-	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+	//if (m_fMaxScale <= m_fScale)
+	//	m_fScale = m_fMaxScale;
+
+	//_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	//_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	//_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
+	//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
+
+	//m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
 	return NO_EVENT;
 }
@@ -61,8 +73,8 @@ _int CHugeRock::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
-	m_pDynamicActorCom->Update_DynamicActor();
-	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+	//m_pDynamicActorCom->Update_DynamicActor();
+	//m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -81,29 +93,29 @@ HRESULT CHugeRock::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-HRESULT CHugeRock::Render_ShadowDepth()
-{
-	CGameObject::Render_ShadowDepth();
+//HRESULT CHugeRock::Render_ShadowDepth()
+//{
+//	CGameObject::Render_ShadowDepth();
+//
+//	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+//	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+//	/* Skinned: 2 / Normal: 3 */
+//	m_pModelCom->Render_Model(3, 0, true);
+//
+//	return S_OK;
+//}
 
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-	/* Skinned: 2 / Normal: 3 */
-	m_pModelCom->Render_Model(3, 0, true);
-
-	return S_OK;
-}
-
-void CHugeRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
-{
-	CGameObject::Trigger(eStatus, eID, pGameObject);
-
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
-		ENDINGCREDIT->Set_Dead_Environment();
-		Create_Rocks();
-		Set_Dead();
-	}
-}
+//void CHugeRock::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
+//{
+//	CGameObject::Trigger(eStatus, eID, pGameObject);
+//
+//	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+//	{
+//		ENDINGCREDIT->Set_Dead_Environment();
+//		Create_Rocks();
+//		Set_Dead();
+//	}
+//}
 
 HRESULT CHugeRock::Ready_Component(void * pArg)
 {
@@ -111,34 +123,42 @@ HRESULT CHugeRock::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Rock"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	_vector vCodyPosition = ((CCody*)(DATABASE->GetCody()))->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-	_vector vPosition = XMVectorSet(0.f, XMVectorGetY(vCodyPosition) - 85.f, 0.f, 0.f);
+	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
+	Safe_AddRef(m_pCodyTransformCom);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	//_vector vCodyPosition = ((CCody*)(DATABASE->GetCody()))->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	//_vector vPosition = XMVectorSet(0.f, XMVectorGetY(vCodyPosition) - 85.f, 0.f, 0.f);
 
-	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
-	CDynamicActor::ARG_DESC tDynamicActorArg;
-	tDynamicActorArg.pTransform = m_pTransformCom;
-	tDynamicActorArg.fDensity = 1.f;
-	tDynamicActorArg.pGeometry = DynamicGeom;
-	tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
-	tDynamicActorArg.pUserData = &m_UserData;
+	_float fY;
+	memcpy(&fY, pArg, sizeof(_float));
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
-	Safe_Delete(DynamicGeom);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, fY - 24.f, 0.f, 1.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(17.f, 17.f, 17.f, 0.f));
+	m_pTransformCom->Set_Rotaion(XMVectorSet(0.f, _float(rand() % 360), 0.f, 0.f));
 
-	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	///* Dynamic */
+	//PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
+	//CDynamicActor::ARG_DESC tDynamicActorArg;
+	//tDynamicActorArg.pTransform = m_pTransformCom;
+	//tDynamicActorArg.fDensity = 1.f;
+	//tDynamicActorArg.pGeometry = DynamicGeom;
+	//tDynamicActorArg.vVelocity = PxVec3(0.f, 0.f, 0.f);
+	//tDynamicActorArg.pUserData = &m_UserData;
 
-	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(12.f);
-	CTriggerActor::ARG_DESC tTriggerArgDesc;
-	tTriggerArgDesc.pGeometry = TriggerGeom;
-	tTriggerArgDesc.pTransform = m_pTransformCom;
-	tTriggerArgDesc.pUserData = &m_UserData;
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_DynamicActor"), TEXT("Com_DynamicActor"), (CComponent**)&m_pDynamicActorCom, &tDynamicActorArg), E_FAIL);
+	//Safe_Delete(DynamicGeom);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
-	Safe_Delete(TriggerGeom);
+	//m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+	///* Trigger */
+	//PxGeometry* TriggerGeom = new PxSphereGeometry(12.f);
+	//CTriggerActor::ARG_DESC tTriggerArgDesc;
+	//tTriggerArgDesc.pGeometry = TriggerGeom;
+	//tTriggerArgDesc.pTransform = m_pTransformCom;
+	//tTriggerArgDesc.pUserData = &m_UserData;
+
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	//Safe_Delete(TriggerGeom);
 
 	return S_OK;
 }
@@ -182,8 +202,10 @@ void CHugeRock::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pDynamicActorCom);
-	Safe_Release(m_pTriggerActorCom);
+	Safe_Release(m_pCodyTransformCom);
+
+	//Safe_Release(m_pDynamicActorCom);
+	//Safe_Release(m_pTriggerActorCom);
 
 	CGameObject::Free();
 }

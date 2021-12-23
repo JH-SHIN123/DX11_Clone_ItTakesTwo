@@ -19,6 +19,9 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
+	_bool m_bEnding = false;
+
+private:
 	/* For.Component */
 	CTransform*	m_pTransformCom = nullptr;
 	CRenderer*	m_pRendererCom = nullptr;

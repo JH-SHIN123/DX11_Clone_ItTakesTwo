@@ -345,7 +345,6 @@ private:
 	_uint m_iCodyMinigameWinCount = 0;
 	_uint m_iMayMinigameWinCount = 0;
 
-
 public:
 	virtual void Free() override;
 };
