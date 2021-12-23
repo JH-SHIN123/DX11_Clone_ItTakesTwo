@@ -42,6 +42,7 @@
 
 /* For. UI */
 #include "HpBar.h"
+#include "MinigameHpBar.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -87,8 +88,6 @@ HRESULT CCody::NativeConstruct(void* pArg)
 
 	m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
 	m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
-
-
 
 	m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
 	m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
@@ -157,9 +156,29 @@ HRESULT CCody::Ready_UI()
 	UI_Create(Cody, PlayerMarker);
 
 	CGameObject* pGameObject = nullptr;
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBar"), nullptr, &pGameObject), E_FAIL);
+	_uint iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBar"), &iOption, &pGameObject), E_FAIL);
 	m_pHpBar = static_cast<CHpBar*>(pGameObject);
 	m_pHpBar->Set_PlayerID(Player::Cody);
+	m_pHpBar->Set_ShaderOption(0);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pSubHpBar = static_cast<CHpBar*>(pGameObject);
+	m_pSubHpBar->Set_PlayerID(Player::Cody);
+	m_pSubHpBar->Set_ShaderOption(0);
+
+	iOption = 0;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameCodyHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameHpBar->Set_PlayerID(Player::Cody);
+	m_pMinigameHpBar->Set_ShaderOption(0);
+
+	iOption = 1;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MinigameCodySubHpBar"), &iOption, &pGameObject), E_FAIL);
+	m_pMinigameSubHpBar = static_cast<CMinigameHpBar*>(pGameObject);
+	m_pMinigameSubHpBar->Set_PlayerID(Player::Cody);
+	m_pMinigameSubHpBar->Set_ShaderOption(0);
 
 	return S_OK;
 }
@@ -270,6 +289,21 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
+
+
+	if (m_pGameInstance->Key_Down(DIK_F8))
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Win_Cody);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_F5))
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Win_May);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_F6))
+	{
+		UI_CreateOnlyOnce(Default, Minigame_Score);
+	}
+
 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
@@ -460,6 +494,9 @@ void CCody::Free()
 
 	Safe_Release(m_pGauge_Circle);
 	Safe_Release(m_pHpBar);
+	Safe_Release(m_pSubHpBar);
+	Safe_Release(m_pMinigameHpBar);
+	Safe_Release(m_pMinigameSubHpBar);
 
 	Safe_Release(m_pActorCom);
 	Safe_Release(m_pTransformCom);
@@ -2336,6 +2373,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			m_pActorCom->Set_ZeroGravity(true, true, true);
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			m_bRespawnCheck = false;
 			m_IsDeadLine = true;
 
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
@@ -2464,6 +2502,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawnCheck = false;
 			m_bRespawn = true;
 		}
 		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
@@ -2471,6 +2510,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
+			m_bRespawnCheck = false;
 			m_bRespawn = true;
 		}
 		else if (m_eTargetGameID == GameID::eELECTRICBOX && false == m_bRespawn)
@@ -2483,6 +2523,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawnCheck = false;
 				m_bRespawn = true;
 			}
 		}
@@ -2497,6 +2538,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
  				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
+				m_bRespawnCheck = false;
 				m_bRespawn = true;
 			}
 			else
@@ -2537,11 +2579,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* Hit Effect 생성 */
 
 			/* HP 감소 */
-			m_iHP -= 3;
 			LASERTENNIS->Set_MayCount();
-
-			if (0 >= m_iHP)
-				m_iHP = 12;
+			Set_MinigameHpBarReduction(30);
 
 			m_IsCollide = false;
 		}
@@ -3408,6 +3447,34 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 	m_pHpBar->Set_Active(IsCheck);
 }
 
+void CCody::Set_HpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
+		return;
+
+	m_pHpBar->Set_Hp(fDamage);
+	m_pSubHpBar->Set_Active(true);
+	m_pSubHpBar->Set_Hp(fDamage);
+}
+
+void CCody::Set_ActiveMinigameHpBar(_bool IsCheck)
+{
+	if (nullptr == m_pMinigameHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Active(IsCheck);
+}
+
+void CCody::Set_MinigameHpBarReduction(_float fDamage)
+{
+	if (nullptr == m_pMinigameHpBar || nullptr == m_pMinigameSubHpBar)
+		return;
+
+	m_pMinigameHpBar->Set_Hp(fDamage);
+	m_pMinigameSubHpBar->Set_Active(true);
+	m_pMinigameSubHpBar->Set_Hp(fDamage);
+}
+
 void CCody::WallLaserTrap(const _double dTimeDelta)
 {
 	if (false == m_IsWallLaserTrap_Touch)
@@ -3461,6 +3528,7 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_dDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
+			m_bRespawnCheck = true;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			Enforce_IdleState();
 		}
@@ -3679,6 +3747,7 @@ void CCody::TakeRail(_double dTimeDelta)
 		m_bOnRailEnd = true;
 	}
 }
+
 void CCody::TakeRailEnd(_double dTimeDelta)
 {
 	if (m_bOnRailEnd)
@@ -3700,6 +3769,7 @@ void CCody::TakeRailEnd(_double dTimeDelta)
 		}
 	}
 }
+
 void CCody::ShowRailTargetTriggerUI()
 {
 	// Show UI
@@ -3814,6 +3884,7 @@ void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
 
 	Set_RadiarBlur(true);
 }
+
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
 	//if (m_bRadiarBlur) return;
@@ -4027,6 +4098,7 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
+		m_bRespawnCheck = true;
 		m_bFirstCheck = false;
 		m_bRespawn = false;
 		m_IsCollide = false;

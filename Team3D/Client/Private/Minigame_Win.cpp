@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Minigame_Win.h"
 
+#include "UI_Generator.h"
+
 CMinigame_Win::CMinigame_Win(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
 {
@@ -58,6 +60,15 @@ _int CMinigame_Win::Tick(_double TimeDelta)
 		m_UIDesc.vScale.x -= (_float)TimeDelta * 2000.f;
 		m_UIDesc.vScale.y -= (_float)TimeDelta * 2000.f;
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	}
+
+	m_fDeadTime += (_float)TimeDelta;
+
+	if (3.f <= m_fDeadTime)
+	{
+		UI_Delete(Default, Minigame_Win_Cody);
+		UI_Delete(Default, Minigame_Win_May);
+		UI_CreateOnlyOnce(Default, Minigame_Score);
 	}
 
 	return _int();

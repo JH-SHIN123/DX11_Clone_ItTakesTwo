@@ -375,6 +375,8 @@
     <ClInclude Include="..\Public\MayWallCameraTrigger.h" />
     <ClInclude Include="..\Public\MenuScreen.h" />
     <ClInclude Include="..\Public\MeshParticle.h" />
+    <ClInclude Include="..\Public\MinigameHpBar.h" />
+    <ClInclude Include="..\Public\MinigameHpBarFrame.h" />
     <ClInclude Include="..\Public\Minigame_Countdown.h" />
     <ClInclude Include="..\Public\Minigame_GaugeCircle.h" />
     <ClInclude Include="..\Public\Minigame_Ready.h" />
@@ -683,6 +685,8 @@
     <ClCompile Include="..\Private\MayWallCameraTrigger.cpp" />
     <ClCompile Include="..\Private\MenuScreen.cpp" />
     <ClCompile Include="..\Private\MeshParticle.cpp" />
+    <ClCompile Include="..\Private\MinigameHpBar.cpp" />
+    <ClCompile Include="..\Private\MinigameHpBarFrame.cpp" />
     <ClCompile Include="..\Private\Minigame_Countdown.cpp" />
     <ClCompile Include="..\Private\Minigame_GaugeCircle.cpp" />
     <ClCompile Include="..\Private\Minigame_Ready.cpp" />
