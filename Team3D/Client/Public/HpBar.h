@@ -50,6 +50,7 @@ private:
 
 private:
 	class CHpBarFrame*				m_pHpBarFrame = nullptr;
+	class CPortrait*				m_pPortrait = nullptr;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

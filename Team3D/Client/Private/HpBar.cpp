@@ -3,6 +3,7 @@
 
 #include "HpBarFrame.h"
 #include "UI_Generator.h"
+#include "Portrait.h"
 
 CHpBar::CHpBar(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -117,6 +118,9 @@ void CHpBar::Set_Active(_bool IsCheck)
 	UI_CreateOnlyOnce(Cody, Portrait_Cody);
 	UI_CreateOnlyOnce(May, Portrait_May);
 
+	if (nullptr != m_pPortrait)
+		m_pPortrait->Set_Active(IsCheck);
+
 	if (nullptr != m_pHpBarFrame)
 	{
 		m_pHpBarFrame->Set_Active(IsCheck);
@@ -174,6 +178,7 @@ HRESULT CHpBar::Ready_Component()
 HRESULT CHpBar::Ready_Layer_UI()
 {
 	CGameObject* pGameObject = nullptr;
+	_uint iOption = 0;
 
 	if (0 == m_iOption)
 	{
@@ -182,12 +187,22 @@ HRESULT CHpBar::Ready_Layer_UI()
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("CodyHpBarFrame"), nullptr, &pGameObject), E_FAIL);
 			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
 			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+
+			iOption = 0;
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Portrait_Cody"), &iOption, &pGameObject), E_FAIL);
+			m_pPortrait = static_cast<CPortrait*>(pGameObject);
+			m_pPortrait->Set_PlayerID(Player::Cody);
 		}
 		else
 		{
 			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("MayHpBarFrame"), nullptr, &pGameObject), E_FAIL);
 			m_pHpBarFrame = static_cast<CHpBarFrame*>(pGameObject);
 			m_pHpBarFrame->Set_PlayerID(m_ePlayerID);
+
+			iOption = 0;
+			FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("Portrait_May"), &iOption, &pGameObject), E_FAIL);
+			m_pPortrait = static_cast<CPortrait*>(pGameObject);
+			m_pPortrait->Set_PlayerID(Player::May);
 		}
 	}
 	else
@@ -434,6 +449,7 @@ CGameObject * CHpBar::Clone_GameObject(void * pArg)
 
 void CHpBar::Free()
 {
+	Safe_Release(m_pPortrait);
 	Safe_Release(m_pHpBarFrame);
 	Safe_Release(m_pVIBuffer_RectCom);
 
