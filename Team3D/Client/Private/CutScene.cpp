@@ -270,7 +270,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	if(m_dTime > 1.5f && m_dTime < 1.5f + dTimeDelta)
-		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 50, false);
+		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	if (m_iCutSceneTake == 0)
 	{
 		if (m_dTime < 25.02)
@@ -413,7 +413,7 @@ HRESULT CCutScene::Start_CutScene()
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
-	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 100, false);
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
