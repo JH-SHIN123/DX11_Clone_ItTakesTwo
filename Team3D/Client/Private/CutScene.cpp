@@ -225,10 +225,11 @@ _bool CCutScene::Tick_CutScene_Clear_Umbrella(_double dTimeDelta)
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 195.f, 1.f));
 			static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
+			static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(-635.f, 756.f, 197.f, 1.f));
 			// 메이 중력 초기화
-			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_PlayerUp(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Gravity_Normally();
 			m_iCutSceneTake++;
 		}
 	}
@@ -249,6 +250,8 @@ _bool CCutScene::Tick_CutScene_Clear_Rail(_double dTimeDelta)
 		if (m_dTime >= 6.0)
 		{
 			_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(270.f));
+			static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
+			static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Set_WorldMatrix(matRot);
 			static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(633.f,756.f,196.f,1.f));
 			static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Set_WorldMatrix(matRot);
@@ -526,6 +529,7 @@ HRESULT CCutScene::Start_CutScene_Clear_Rail()
 
 HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
+	CGameInstance::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
@@ -568,6 +572,9 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 
 HRESULT CCutScene::End_CutScene_Intro()
 {
+	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 1.f, 3.f);
+
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -621,6 +628,8 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 
 HRESULT CCutScene::End_CutScene_Boss_Intro()
 {
+	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Boss.wav"), CHANNEL_BGM, 0.f, true);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 1.f, 3.f);
 
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);

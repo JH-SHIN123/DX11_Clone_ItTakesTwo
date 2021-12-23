@@ -278,7 +278,9 @@ void CCody::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_MH, ANI_C_Rocket_MH, false);
 	m_pModelCom->Add_LerpInfo(ANI_C_Rocket_Exit, ANI_C_Jump_Land_High, false);
 
-	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_CodyCutSceneIntro, false);
+	m_pModelCom->Add_LerpInfo(ANI_C_MH, ANI_C_CodyCutSceneIntro, true, 5000.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_ActionMH, ANI_C_CodyCutSceneIntro, true, 5000.f);
+	m_pModelCom->Add_LerpInfo(ANI_C_Bhv_MH_Gesture_Small_Drumming, ANI_C_CodyCutSceneIntro, true, 5000.f);
 
 	return;
 }
@@ -289,7 +291,7 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-
+	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		m_pActorCom->Set_ZeroGravity(true, true, true);
@@ -307,6 +309,7 @@ _int CCody::Tick(_double dTimeDelta)
 
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//TEST
 
 #pragma region BasicActions
 	/////////////////////////////////////////////
@@ -331,7 +334,7 @@ _int CCody::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Warp_Wormhole(dTimeDelta);
 			Touch_FireDoor(dTimeDelta);
-			Falling_Dead(dTimeDelta);
+			Falling_Dead(dTimeDelta); 
 			WallLaserTrap(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
@@ -604,7 +607,12 @@ void CCody::KeyInput(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
 	{
-		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		DATABASE->Set_May_Stage(ST_PINBALL);
+		DATABASE->Set_Cody_Stage(ST_PINBALL);
+		//우산앞
+		//m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//배터리
+		m_pActorCom->Set_Position(XMVectorSet(-814.433655f, 791.810059f, 228.490845f, 1.f));
 		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
@@ -1875,9 +1883,9 @@ void CCody::Change_Size(const _double dTimeDelta)
 			{
 				m_bChangeSizeEffectOnce = false;
 				m_vScale = { 1.f, 1.f, 1.f };
-				m_IsSizeChanging = false;
 				m_eCurPlayerSize = SIZE_MEDIUM;
 				m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+				m_IsSizeChanging = false;
 				m_pModelCom->Set_Animation(ANI_C_MH);
 			}
 		}
@@ -2229,17 +2237,17 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 			{
-				m_pActorCom->Set_Position(XMVectorSet(71.1877518f, 23.28266802f, 179.620789f, 1.f));
+				m_pActorCom->Set_Position(XMVectorSet(71.1877518f, 23.28266802f, 179.770789f, 1.f));
 				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
 			}
 			else if (DATABASE->Get_Cody_Stage() == ST_PINBALL)
 			{
-				m_pActorCom->Set_Position(XMVectorSet(-814.433655f, 791.810059f, 228.490845f, 1.f));
-				m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
+				m_pActorCom->Set_Position(XMVectorSet(-814.513655f, 791.810059f, 228.3990845f, 1.f));
+				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 			}
 			else if (DATABASE->Get_Cody_Stage() == ST_RAIL)
 			{
-				m_pActorCom->Set_Position(XMVectorSet(1035.42493f, 743.288574f, 216.862808f, 1.f));
+				m_pActorCom->Set_Position(XMVectorSet(1035.44493f, 743.288574f, 216.964385f, 1.f));
 				m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(0.f));
 			}
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
@@ -2705,7 +2713,6 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 void CCody::Push_Battery(const _double dTimeDelta)
 {
 	// May가 배터리 들어온 상태에서 Lever 치고 컷씬이 등장하면 그때 -> ANI_C_MH
-	// 애니메이션 시작할때 WorldPos 저장. -> 끝나는 순간 마지막 위치로 WorldPos 변경 해야 함.
 	if (m_IsPushingBattery == true)
 	{
 		if (true == m_IsPipeBattery)
@@ -2718,7 +2725,7 @@ void CCody::Push_Battery(const _double dTimeDelta)
 				m_IsPushingBattery = false;
 				m_IsPipeBattery = false;
 				m_pModelCom->Set_Animation(ANI_C_MH);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_Fwd);
+				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			}
 		}
 
@@ -2727,8 +2734,12 @@ void CCody::Push_Battery(const _double dTimeDelta)
 	}
 	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 	{
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
+		{
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK) / 95.f, dTimeDelta );
+		}
 
-		if (m_pGameInstance->Key_Down(DIK_Q))
+		if (DATABASE->Get_GravityStageClear() == true)
 		{
 			m_IsPushingBattery = false;
 			m_IsCollide = false;
@@ -2736,11 +2747,16 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsStGravityCleared = true;
 		}
+
 	}
 
 	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_RAIL)
 	{
-		if (m_pGameInstance->Key_Down(DIK_Q))
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
+		{
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK) / 95.f, dTimeDelta);
+		}
+		if (DATABASE->Get_RailStageClear() == true)
 		{
 			m_IsPushingBattery = false;
 			m_IsCollide = false;
@@ -2752,13 +2768,21 @@ void CCody::Push_Battery(const _double dTimeDelta)
 
 	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_PINBALL)
 	{
-		if (m_pGameInstance->Key_Down(DIK_Q))
+		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
+		{
+			m_pActorCom->Move(m_pTransformCom->Get_State(CTransform::STATE_LOOK) / 95.f, dTimeDelta);
+		}
+		if (DATABASE->Get_PinBallStageClear() == true)
 		{
 			m_IsPushingBattery = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsStPinBallCleared = true;
+			m_pActorCom->Set_Scale(0.5f, 0.5f);
+			m_vScale = { 1.f, 1.f, 1.f };
+			m_eCurPlayerSize = SIZE_MEDIUM;
+			m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 		}
 	}
 
@@ -3458,6 +3482,18 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 	m_pHpBar->Set_Active(IsCheck);
 }
 
+void CCody::Set_Change_Size_After_UmbrellaCutScene()
+{
+	m_IsPushingBattery = false;
+	m_IsCollide = false;
+	m_pModelCom->Set_Animation(ANI_C_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+	m_IsStPinBallCleared = true;
+	m_pActorCom->Set_Scale(0.5f, 0.5f);
+	m_vScale = { 1.f, 1.f, 1.f };
+	m_eCurPlayerSize = SIZE_MEDIUM;
+	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+}
 void CCody::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
@@ -4117,5 +4153,3 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_dRespawnTime = 0.0;
 	}
 }
-
-

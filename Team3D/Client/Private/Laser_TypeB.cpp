@@ -73,6 +73,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.3;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -82,6 +83,8 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 
 						// 데미지 주기 초기화
 						m_dDamagingDelay_Cody = 0.3;
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else
@@ -102,6 +105,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 
 							// 데미지 주기 초기화
 							m_dDamagingDelay_May = 0.3;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -111,6 +115,8 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 
 						// 데미지 주기 초기화
 						m_dDamagingDelay_May = 0.3;
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else

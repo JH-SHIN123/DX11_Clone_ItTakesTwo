@@ -109,6 +109,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.5;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -119,7 +120,8 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 						// 데미지 주기 초기화
 						m_dDamagingDelay_Cody = 0.5;
 						m_isHitCody = true;
-	
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else
@@ -142,6 +144,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(10);
 							// 데미지 주기 초기화
 							m_dDamagingDelay_May = 0.5;
+							__super::Player_Hit_Effect();
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -152,6 +155,8 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 						// 데미지 주기 초기화
 						m_dDamagingDelay_May = 0.5;
 						m_isHitMay = true;
+						__super::Player_Hit_Effect();
+						__super::Player_Hit_Effect();
 					}
 				}
 				else
@@ -224,11 +229,17 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 		m_fLaserSizeX -= 15.f * (_float)dTimeDelta;
 
 		if (m_fLaserSizeX < 0.f)
+		{
 			return EVENT_DEAD;
+		}
 	}
 
 	if (nullptr != m_pLaserSmoke)
+	{
 		m_pLaserSmoke->Set_Pos(XMLoadFloat4(&m_vEndPoint));
+		if (true == m_isDead)
+			m_pLaserSmoke->Set_Dead();
+	}
 
 #ifdef __TEST_SE
 	if (m_pGameInstance->Key_Down(DIK_N))

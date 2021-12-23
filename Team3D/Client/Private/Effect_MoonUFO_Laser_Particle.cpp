@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "..\Public\Effect_Boss_Laser_Particle.h"
+#include "..\Public\Effect_MoonUFO_Laser_Particle.h"
 
-CEffect_Boss_Laser_Particle::CEffect_Boss_Laser_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_MoonUFO_Laser_Particle::CEffect_MoonUFO_Laser_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_Boss_Laser_Particle::CEffect_Boss_Laser_Particle(const CEffect_Boss_Laser_Particle & rhs)
+CEffect_MoonUFO_Laser_Particle::CEffect_MoonUFO_Laser_Particle(const CEffect_MoonUFO_Laser_Particle & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_Boss_Laser_Particle::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_MoonUFO_Laser_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
 	return S_OK;
 }
 
-HRESULT CEffect_Boss_Laser_Particle::NativeConstruct(void * pArg)
+HRESULT CEffect_MoonUFO_Laser_Particle::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -42,22 +42,16 @@ HRESULT CEffect_Boss_Laser_Particle::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CEffect_Boss_Laser_Particle::Tick(_double TimeDelta)
+_int CEffect_MoonUFO_Laser_Particle::Tick(_double TimeDelta)
 {
-   	if (false == m_IsActivate && 0.0 >= m_dControlTime)
+	if (m_dInstance_Pos_Update_Time + 1.5 <= m_dControlTime)
 		return EVENT_DEAD;
 
-	if (true == m_IsActivate && false == m_isDead)
+	m_dControlTime += TimeDelta;
+	if (true == m_IsActivate)
 	{
-		m_dControlTime += TimeDelta;
 		if (1.0 <= m_dControlTime)
 			m_dControlTime = 1.0;
-	}
-	else
-	{
-		m_dControlTime -= TimeDelta * 0.75f;
-		if (0.0 >= m_dControlTime)
-			m_dControlTime = 0.0;
 	}
 
 	Check_Instance(TimeDelta);
@@ -65,14 +59,14 @@ _int CEffect_Boss_Laser_Particle::Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-_int CEffect_Boss_Laser_Particle::Late_Tick(_double TimeDelta)
+_int CEffect_MoonUFO_Laser_Particle::Late_Tick(_double TimeDelta)
 {
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
-HRESULT CEffect_Boss_Laser_Particle::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_MoonUFO_Laser_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
-	_float fTime = (_float)m_dControlTime;
+	_float fTime = 1.f;// (_float)m_dControlTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
@@ -85,7 +79,7 @@ HRESULT CEffect_Boss_Laser_Particle::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CEffect_Boss_Laser_Particle::Check_Instance(_double TimeDelta)
+void CEffect_MoonUFO_Laser_Particle::Check_Instance(_double TimeDelta)
 {
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -108,11 +102,11 @@ void CEffect_Boss_Laser_Particle::Check_Instance(_double TimeDelta)
 	}
 }
 
-void CEffect_Boss_Laser_Particle::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_MoonUFO_Laser_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_Boss_Laser_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_MoonUFO_Laser_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 6.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
@@ -122,11 +116,11 @@ void CEffect_Boss_Laser_Particle::Instance_Pos(_float TimeDelta, _int iIndex)
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
 
-void CEffect_Boss_Laser_Particle::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_MoonUFO_Laser_Particle::Instance_UV(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_Boss_Laser_Particle::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
+void CEffect_MoonUFO_Laser_Particle::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
 
@@ -143,13 +137,13 @@ void CEffect_Boss_Laser_Particle::Reset_Instance(_double TimeDelta, _float4 vPos
 	m_pInstance_Dir[iIndex] = v3RandDir;
 }
 
-HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
+HRESULT CEffect_MoonUFO_Laser_Particle::Ready_InstanceBuffer()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pInstanceBuffer_STT				= new VTXMATRIX_CUSTOM_STT[iInstanceCount];
-	m_pInstance_Dir				= new _float3[iInstanceCount];
-	m_pInstance_Pos_UpdateTime			= new _double[iInstanceCount];
+	m_pInstanceBuffer_STT = new VTXMATRIX_CUSTOM_STT[iInstanceCount];
+	m_pInstance_Dir = new _float3[iInstanceCount];
+	m_pInstance_Pos_UpdateTime = new _double[iInstanceCount];
 
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -157,15 +151,15 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].vRight		= { 1.f, 0.f, 0.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vLook			= { 0.f, 0.f, 1.f, 0.f };
-		m_pInstanceBuffer_STT[iIndex].vPosition		= vMyPos;
+		m_pInstanceBuffer_STT[iIndex].vRight = { 1.f, 0.f, 0.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vLook = { 0.f, 0.f, 1.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vPosition = vMyPos;
 
-		m_pInstanceBuffer_STT[iIndex].vTextureUV	= { 0.f, 0.f, 1.f , 1.f };
-		m_pInstanceBuffer_STT[iIndex].fTime			= 1.f;
-		m_pInstanceBuffer_STT[iIndex].vSize			= m_vDefaultSize;
+		m_pInstanceBuffer_STT[iIndex].vTextureUV = { 0.f, 0.f, 1.f , 1.f };
+		m_pInstanceBuffer_STT[iIndex].fTime = 1.f;
+		m_pInstanceBuffer_STT[iIndex].vSize = m_vDefaultSize;
 
-		m_pInstance_Pos_UpdateTime[iIndex]			= m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
+		m_pInstance_Pos_UpdateTime[iIndex] = m_dInstance_Pos_Update_Time  * (_double(iIndex) / iInstanceCount);
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 		_float3 v3RandDir;
@@ -183,7 +177,7 @@ HRESULT CEffect_Boss_Laser_Particle::Ready_InstanceBuffer()
 	return S_OK;
 }
 
-_float3 CEffect_Boss_Laser_Particle::Get_Particle_Rand_Dir(_fvector vDefaultPos)
+_float3 CEffect_MoonUFO_Laser_Particle::Get_Particle_Rand_Dir(_fvector vDefaultPos)
 {
 	_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 	_vector vPos = vDefaultPos - vRandDir;
@@ -193,29 +187,29 @@ _float3 CEffect_Boss_Laser_Particle::Get_Particle_Rand_Dir(_fvector vDefaultPos)
 	return _float3();
 }
 
-CEffect_Boss_Laser_Particle * CEffect_Boss_Laser_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_MoonUFO_Laser_Particle * CEffect_MoonUFO_Laser_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_Boss_Laser_Particle*	pInstance = new CEffect_Boss_Laser_Particle(pDevice, pDeviceContext);
+	CEffect_MoonUFO_Laser_Particle*	pInstance = new CEffect_MoonUFO_Laser_Particle(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_Boss_Laser_Particle");
+		MSG_BOX("Failed to Create Instance - CEffect_MoonUFO_Laser_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_Boss_Laser_Particle::Clone_GameObject(void * pArg)
+CGameObject * CEffect_MoonUFO_Laser_Particle::Clone_GameObject(void * pArg)
 {
-	CEffect_Boss_Laser_Particle* pInstance = new CEffect_Boss_Laser_Particle(*this);
+	CEffect_MoonUFO_Laser_Particle* pInstance = new CEffect_MoonUFO_Laser_Particle(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_Boss_Laser_Particle");
+		MSG_BOX("Failed to Clone Instance - CEffect_MoonUFO_Laser_Particle");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_Boss_Laser_Particle::Free()
+void CEffect_MoonUFO_Laser_Particle::Free()
 {
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 
