@@ -54,6 +54,8 @@ HRESULT CSound_Manager::Ready_SoundManager()
 	FMOD_System_Create(&m_pSystem);
 	FMOD_System_Init(m_pSystem, CHANNEL_END, FMOD_INIT_NORMAL, NULL);
 
+	ZeroMemory(m_SoundInfo, sizeof(SOUND_INFO) * CHANNEL_END);
+
 	FAILED_CHECK_RETURN(Add_Sound("../Bin/Resources/Sound/"), E_FAIL);
 
 	FMOD_System_Update(m_pSystem);
@@ -64,7 +66,8 @@ HRESULT CSound_Manager::Ready_SoundManager()
 void CSound_Manager::Update_Sound(_double dTimeDelta)
 {
 	Lerp_Sound_Update(dTimeDelta);
-	FadeInOut_Sound_Update(dTimeDelta);
+	SoundInfo_Update(dTimeDelta);
+	//FadeInOut_Sound_Update(dTimeDelta);
 }
 
 void CSound_Manager::Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecondChannel, _float fLerpSpeed, _float fFirstVolume, _float fSecondVolume)
@@ -81,20 +84,64 @@ void CSound_Manager::Lerp_Sound(CHANNEL_TYPE eFirstChannel, CHANNEL_TYPE eSecond
 	m_bLerp = true;
 }
 
-void CSound_Manager::FadeInOut(_bool isFirstBGM, _bool bType, _float fLerpSpeed, _float fVolume)
+void CSound_Manager::Sound_FadeIn(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime)
 {
-	m_bPlayingFirstBGM = isFirstBGM;
-	m_fBGM_FadingSpeed = fLerpSpeed;
-	m_bType = bType;
+	if (fFadingTime <= 0.f) return;
 
-	/* FadeIn */
-	if (true == m_bType)
-		m_fBGM_MaxVolume = fVolume;
-	/* FadeOut */
+	FMOD_BOOL isPlaying;
+	if (FMOD_Channel_IsPlaying(m_pChannel[eChannel], &isPlaying) != FMOD_OK) return;
+	if (isPlaying != 1) return;
 
-	m_bFadeInOut = true;
-	m_bType = bType;
+	FMOD_Channel_GetVolume(m_pChannel[eChannel], &m_SoundInfo[eChannel].fCurrentVolume);
+	if (m_SoundInfo[eChannel].fCurrentVolume > fTargetVolume) return;
+
+	m_SoundInfo[eChannel].iFadeOption = FADE_IN;
+	m_SoundInfo[eChannel].fTargetVolume = fTargetVolume;
+	m_SoundInfo[eChannel].fFadingSpeed = (m_SoundInfo[eChannel].fTargetVolume - m_SoundInfo[eChannel].fCurrentVolume) / fFadingTime;
 }
+
+void CSound_Manager::Sound_FadeOut(CHANNEL_TYPE eChannel, _float fTargetVolume, _float fFadingTime)
+{
+	if (fFadingTime <= 0.f) return;
+
+	FMOD_BOOL isPlaying;
+	if (FMOD_Channel_IsPlaying(m_pChannel[eChannel], &isPlaying) != FMOD_OK) return;
+	if (isPlaying != 1) return;
+
+	FMOD_Channel_GetVolume(m_pChannel[eChannel], &m_SoundInfo[eChannel].fCurrentVolume);
+	if (m_SoundInfo[eChannel].fCurrentVolume < fTargetVolume) return;
+
+	m_SoundInfo[eChannel].iFadeOption = FADE_OUT;
+	m_SoundInfo[eChannel].fTargetVolume = fTargetVolume;
+	m_SoundInfo[eChannel].fFadingSpeed = (m_SoundInfo[eChannel].fCurrentVolume - m_SoundInfo[eChannel].fTargetVolume) / fFadingTime;
+}
+
+void CSound_Manager::Sound_Lerp(CHANNEL_TYPE eFadeIn, CHANNEL_TYPE eFadeOut, _float fTargetVolume_In, _float fTargetVolume_Out, _float fLerpTime)
+{
+	if (fLerpTime <= 0.f) return;
+
+	FMOD_BOOL isPlaying;
+	if (FMOD_Channel_IsPlaying(m_pChannel[eFadeIn], &isPlaying) != FMOD_OK) return;
+	if (FMOD_Channel_IsPlaying(m_pChannel[eFadeOut], &isPlaying) != FMOD_OK) return;
+
+	Sound_FadeIn(eFadeIn, fTargetVolume_In, fLerpTime);
+	Sound_FadeOut(eFadeOut, fTargetVolume_Out, fLerpTime);
+}
+
+//void CSound_Manager::FadeInOut(_bool isFirstBGM, _bool bType, _float fLerpSpeed, _float fVolume)
+//{
+//	m_bPlayingFirstBGM = isFirstBGM;
+//	m_fBGM_FadingSpeed = fLerpSpeed;
+//	m_bType = bType;
+//
+//	/* FadeIn */
+//	if (true == m_bType)
+//		m_fBGM_MaxVolume = fVolume;
+//	/* FadeOut */
+//
+//	m_bFadeInOut = true;
+//	m_bType = bType;
+//}
 
 HRESULT CSound_Manager::Add_Sound(char * pFilePath)
 {
@@ -174,48 +221,84 @@ void CSound_Manager::Lerp_Sound_Update(_double dTimeDelta)
 	Set_SoundVolume(m_eSecondChannel, m_fSecondVolume);
 }
 
-void CSound_Manager::FadeInOut_Sound_Update(_double dTimeDelta)
+void CSound_Manager::SoundInfo_Update(_double dTimeDelta)
 {
-	if (false == m_bFadeInOut)
-		return;
+	_float fTimeDelta = (_float)dTimeDelta;
 
-	CHANNEL_TYPE eType;
-
-	if (m_bPlayingFirstBGM == true)
-		eType = CHANNEL_TYPE::CHANNEL_BGM;
-	else
-		eType = CHANNEL_TYPE::CHANNEL_BGM2;
-
-	_float fVol;
-	FMOD_Channel_GetVolume(m_pChannel[eType], &fVol);
-
-	/* FadeIn */
-	if (true == m_bType)
+	for (_uint iIndex = 0; iIndex < CHANNEL_END; ++iIndex)
 	{
-		if (m_fBGM_MaxVolume <= fVol)
+		if (m_SoundInfo[iIndex].iFadeOption == FADE_IN)
 		{
-			Set_SoundVolume(eType, m_fBGM_MaxVolume);
-			m_bFadeInOut = false;
+			m_SoundInfo[iIndex].fCurrentVolume += fTimeDelta * m_SoundInfo[iIndex].fFadingSpeed;
+
+			if (m_SoundInfo[iIndex].fCurrentVolume >= m_SoundInfo[iIndex].fTargetVolume)
+			{
+				m_SoundInfo[iIndex].iFadeOption = 0;
+				m_SoundInfo[iIndex].fCurrentVolume = m_SoundInfo[iIndex].fTargetVolume;
+			}
+
+			Set_SoundVolume((CHANNEL_TYPE)iIndex, m_SoundInfo[iIndex].fCurrentVolume);
 		}
-		else
+		else if (m_SoundInfo[iIndex].iFadeOption == FADE_OUT)
 		{
-			Set_SoundVolume(eType, fVol + (_float)dTimeDelta * m_fBGM_FadingSpeed);
-		}
-	}
-	/* FadeOut */
-	else	
-	{
-		if (0.f >= fVol)
-		{
-			Set_SoundVolume(eType, 0.f);
-			m_bFadeInOut = false;
-		}
-		else
-		{
-			Set_SoundVolume(eType, fVol - (_float)dTimeDelta * m_fBGM_FadingSpeed);
+			m_SoundInfo[iIndex].fCurrentVolume -= fTimeDelta * m_SoundInfo[iIndex].fFadingSpeed;
+
+			if (m_SoundInfo[iIndex].fCurrentVolume <= m_SoundInfo[iIndex].fTargetVolume)
+			{
+				m_SoundInfo[iIndex].iFadeOption = 0;
+				m_SoundInfo[iIndex].fCurrentVolume = m_SoundInfo[iIndex].fTargetVolume;
+
+				if (m_SoundInfo[iIndex].fCurrentVolume <= 0.f)
+					Stop_Sound((CHANNEL_TYPE)iIndex);
+			}
+
+			Set_SoundVolume((CHANNEL_TYPE)iIndex, m_SoundInfo[iIndex].fCurrentVolume);
 		}
 	}
 }
+
+//void CSound_Manager::FadeInOut_Sound_Update(_double dTimeDelta)
+//{
+//	if (false == m_bFadeInOut)
+//		return;
+//
+//	CHANNEL_TYPE eType;
+//
+//	if (m_bPlayingFirstBGM == true)
+//		eType = CHANNEL_TYPE::CHANNEL_BGM;
+//	else
+//		eType = CHANNEL_TYPE::CHANNEL_BGM2;
+//
+//	_float fVol;
+//	FMOD_Channel_GetVolume(m_pChannel[eType], &fVol);
+//
+//	/* FadeIn */
+//	if (true == m_bType)
+//	{
+//		if (m_fBGM_MaxVolume <= fVol)
+//		{
+//			Set_SoundVolume(eType, m_fBGM_MaxVolume);
+//			m_bFadeInOut = false;
+//		}
+//		else
+//		{
+//			Set_SoundVolume(eType, fVol + (_float)dTimeDelta * m_fBGM_FadingSpeed);
+//		}
+//	}
+//	/* FadeOut */
+//	else	
+//	{
+//		if (0.f >= fVol)
+//		{
+//			Set_SoundVolume(eType, 0.f);
+//			m_bFadeInOut = false;
+//		}
+//		else
+//		{
+//			Set_SoundVolume(eType, fVol - (_float)dTimeDelta * m_fBGM_FadingSpeed);
+//		}
+//	}
+//}
 
 void CSound_Manager::Free()
 {
