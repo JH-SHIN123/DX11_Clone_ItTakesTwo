@@ -32,7 +32,7 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_DoorWay"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_Trigger"), (CComponent**)&m_pTransformCom_Trigger, &CTransform::TRANSFORM_DESC(0.15f, XMConvertToRadians(90.f))), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.7f, 36.15f, 1.f)); // 변경된 Pos
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f, 0.55f, 36.15f, 1.f)); // 변경된 Pos
 	_vector vTriggerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vTriggerPos.m128_f32[1] += 11.f;// +2.;
 	m_pTransformCom_Trigger->Set_State(CTransform::STATE_POSITION, vTriggerPos);
@@ -68,7 +68,7 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 	//
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_RB) && m_IsCollide
+	if (m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsCollide
 		|| m_pGameInstance->Key_Down(DIK_O) && m_IsCollide)
 	{
 		m_bPull = true;
@@ -119,7 +119,7 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 		m_fMoveDist += (_float)dTimeDelta;
 		_float fMyPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
 
-		if (0.7f <= fMyPos_Y)
+		if (0.55f <= fMyPos_Y)
 		{
 			m_pTransformCom->Go_Down(dTimeDelta);
 			m_pTransformCom_Trigger->Go_Down(dTimeDelta);
