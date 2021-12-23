@@ -55,15 +55,14 @@ HRESULT CMainCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vRotQuat = _float4(0.f, 0.f, 0.f, 1.f);
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 	
-	/* Hye */
 
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_SMALL] =	{ 0.f,1.f,-1.f,1.f};
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM] =	{ 0.f,7.f,-7.f,1.f };
 	m_vSizeEye[CCody::PLAYER_SIZE::SIZE_LARGE] =	{ 0.f,8.f,-8.f,1.f };
 
 	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_SMALL] = { 0.f,0.15f,0.0f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,3.f, 0.0f,1.f };
-	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,4.f,0.0f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM] = { 0.f,1.5f, 0.0f,1.f };
+	m_vSizeAt[CCody::PLAYER_SIZE::SIZE_LARGE] = { 0.f,5.5f,0.0f,1.f };
 
 	_matrix matStart = MakeViewMatrixByUp(m_vSizeEye[CCody::PLAYER_SIZE::SIZE_MEDIUM], m_vSizeAt[CCody::PLAYER_SIZE::SIZE_MEDIUM]);
 	XMStoreFloat4x4(&m_matBeginWorld, matStart);
@@ -234,6 +233,12 @@ HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
 {
 	m_pCamHelper->Start_Film(pFilmTag, CFilm::LScreen);
 
+	return S_OK;
+}
+
+HRESULT CMainCamera::Start_CamEffect(const _tchar * pEffectTag)
+{
+	m_pCamHelper->Start_CamEffect(pEffectTag,CFilm::LScreen);
 	return S_OK;
 }
 
@@ -827,7 +832,7 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 			break;
 		}
 	}
-	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Look", CFilm::LScreen);
+	m_pCamHelper->Start_CamEffect(L"Cam_Shake_Boss_InUFO", CFilm::LScreen);
 
 	if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult))
 		matResult = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
@@ -1559,7 +1564,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
 	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Rot_Right", CFilm::RScreen);
+		m_pCamHelper->Start_CamEffect(L"Cam_Shake_Destroy_Boss_Cylinder", CFilm::LScreen);
 		return NO_EVENT;
 	}
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))

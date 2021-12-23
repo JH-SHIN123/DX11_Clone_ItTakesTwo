@@ -52,7 +52,6 @@ HRESULT CMainApp::Run_App()
 #ifndef __TEST_JUN
 	if (g_bWndActivate && m_bMouseLock)
 		Lock_Mouse();
-
 #endif
 	m_dFrameAcc += m_pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
