@@ -74,7 +74,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						if (m_dDamagingDelay_Cody <= 0.0)
 						{
 							// 데미지를 주는 함수
-							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(40);
+							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.5;
 						}
@@ -83,7 +83,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 					else
 					{		
 						// 데미지를 주는 함수
-						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(40);
+						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
 						// 데미지 주기 초기화
 						m_dDamagingDelay_Cody = 0.5;
 						m_isHitCody = true;
@@ -106,7 +106,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						if (m_dDamagingDelay_May <= 0.0)
 						{
 							// 데미지를 주는 함수
-							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(40);
+							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
 							// 데미지 주기 초기화
 							m_dDamagingDelay_May = 0.5;
 						}
@@ -115,7 +115,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 					else
 					{
 						// 데미지를 주는 함수
-						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(40);
+						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
 						// 데미지 주기 초기화
 						m_dDamagingDelay_May = 0.5;
 						m_isHitMay = true;

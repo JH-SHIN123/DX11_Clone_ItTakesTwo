@@ -2052,7 +2052,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 342.838f, 199.3799f, 1.f));
+				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 345.838f, 199.3799f, 1.f));
 				((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_LaserRippedOff, UFO_Left);
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
