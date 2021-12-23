@@ -255,7 +255,6 @@ _int CMay::Tick(_double dTimeDelta)
 			Hook_UFO(dTimeDelta);
 			Falling_Dead(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
-			Ride_Ending_Rocket(dTimeDelta);
 		}
 		else
 		{
@@ -305,6 +304,8 @@ _int CMay::Tick(_double dTimeDelta)
 _int CMay::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	Ride_Ending_Rocket(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
@@ -796,6 +797,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_X))/* ¿ì»ê */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
+		m_IsEnding = true;
 #pragma endregion
 
 #pragma region 8Way_Move
@@ -2294,7 +2297,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
-#elif
+#else
 			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
@@ -2736,8 +2739,9 @@ void CMay::Ride_Ending_Rocket(const _double dTimeDelta)
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)
 		{
 			m_pActorCom->Set_ZeroGravity(true, false, true);
-			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 			m_pTransformCom->Set_WorldMatrix(m_matEndingRocketMatrix);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vEndingRocketOffSetPos);
+			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 		}
 	}
 }

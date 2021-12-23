@@ -353,7 +353,6 @@ _int CCody::Tick(_double dTimeDelta)
 			Holding_BossUFO(dTimeDelta);
 			In_JoyStick(dTimeDelta);
 			BossMissile_Control(dTimeDelta);
-			Ride_Ending_Rocket(dTimeDelta);
 		}
 		else
 		{
@@ -408,6 +407,8 @@ _int CCody::Tick(_double dTimeDelta)
 _int CCody::Late_Tick(_double dTimeDelta)
 {
 	CCharacter::Late_Tick(dTimeDelta);
+
+	Ride_Ending_Rocket(dTimeDelta);
 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
@@ -3304,8 +3305,9 @@ void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Rocket_MH)
 		{
 			m_pActorCom->Set_ZeroGravity(true, false, true);
-			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 			m_pTransformCom->Set_WorldMatrix(m_matEndingRocketMatrix);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vEndingRocketOffSetPos);
+			m_pActorCom->Set_Position(m_vEndingRocketOffSetPos);
 		}
 	}
 }

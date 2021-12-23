@@ -62,7 +62,6 @@ _int CEndingRocket::Late_Tick(_double dTimeDelta)
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
-	Ready_Players(dTimeDelta);
 	return NO_EVENT;
 }
 
