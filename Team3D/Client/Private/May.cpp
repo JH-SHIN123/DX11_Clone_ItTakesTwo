@@ -2991,8 +2991,8 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 
 			m_bMoveToRail = false;
 			m_bOnRail = false;
+			m_bOnRailEnd = false;
 			m_bOnRail_Effect = false;
-
 		}
 	}
 }
@@ -3136,7 +3136,7 @@ void CMay::MoveToTargetRail(_double dTimeDelta)
 
 void CMay::TakeRail(_double dTimeDelta)
 {
-	if (nullptr == m_pTargetRail || false == m_bOnRail) return;
+	if (nullptr == m_pTargetRail || false == m_bOnRail || true == m_bOnRailEnd) return;
 
 	/* 타는 애니메이션으로 변경 */
 	if (m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Key_Pressing(DIK_LEFT))
