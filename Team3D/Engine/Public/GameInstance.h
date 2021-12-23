@@ -107,6 +107,7 @@ public:
 	PxTriangleMesh*	Create_PxMesh(MESHACTOR_DESC pMeshActorDesc);
 	_bool			Raycast(const PxVec3& origin, const PxVec3& unitDir, const PxReal distance, PxRaycastCallback& hitCall, PxHitFlags hitFlags = PxHitFlags(PxHitFlag::eDEFAULT), const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL, const PxQueryCache* cache = NULL);
 	void			Create_Ground();
+	void			Resize_Actor(PxRigidActor* pActor, _float fScale);
 #pragma endregion
 
 #pragma region Pipeline_Manager

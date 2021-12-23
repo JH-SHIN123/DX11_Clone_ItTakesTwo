@@ -97,7 +97,10 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 		m_fAngle += fAngle;
 
 		if (m_fAngle >= 100.f)
+		{
+			((CPinBall*)(DATABASE->Get_Pinball()))->Set_TriggerCheck();
 			m_bReady = false;
+		}
 
 		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
 	}

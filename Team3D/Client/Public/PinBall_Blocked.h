@@ -24,6 +24,7 @@ public:
 
 private:
 	CStaticActor*	m_pStaticActorCom = nullptr;
+
 	PxRigidStatic*	m_pRightWall = nullptr;
 	PxRigidStatic*	m_pLeftWall = nullptr;
 
