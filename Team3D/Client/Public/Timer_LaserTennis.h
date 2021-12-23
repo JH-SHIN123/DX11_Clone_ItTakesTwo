@@ -12,6 +12,7 @@ private:
 
 public:/* Setter */
 	void OnOff_Timer(_bool bOnOff);
+	void Set_Ready() { m_bReady = true; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -19,7 +20,10 @@ public:
 	virtual _int	Tick(_double dTimeDelta) override;
 
 private:
+	_bool			m_bReady = false;
 	_bool			m_bOnOff = false;
+
+	_double			m_dStartTime = 0.0;
 	_double			m_dButton_Time = 0.0;
 	_double			m_dLargeButton_Time = 0.0;
 	_double			m_dLaserActivation_Time = 0.0;
