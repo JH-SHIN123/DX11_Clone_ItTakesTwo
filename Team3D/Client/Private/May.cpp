@@ -2603,7 +2603,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Key_Down(DIK_I) || m_pGameInstance->Pad_Key_Down(DIP_B))
 	{
 		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
@@ -2612,7 +2612,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);
