@@ -77,13 +77,13 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		m_bMayControl = true;
 		UI_Delete(Cody, InputButton_InterActive);
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 	}
 	else if (m_IsCrashed == true && m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
 	{
 		m_bCodyControl = true;
 		UI_Delete(Cody, InputButton_InterActive);
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 	}
 
 	if (m_bMayControl)
@@ -149,7 +149,7 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsCollide = false;
-		UI_Delete(May, InputButton_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 	}
 }
 
