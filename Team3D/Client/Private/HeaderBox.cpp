@@ -31,8 +31,7 @@ HRESULT CHeaderBox::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
-	if (FAILED(Ready_Component()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 
 	if (nullptr != pArg)
 		memcpy(&m_iOption, pArg, sizeof(_uint));

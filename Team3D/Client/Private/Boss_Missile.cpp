@@ -51,6 +51,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	if (m_bPlayerExplosion == true)
 	{
 		Explosion_Effect();
+		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
 
 		return EVENT_DEAD;
 	}

@@ -188,6 +188,7 @@ _int CUFO::Tick(_double dTimeDelta)
 
 	GoUp(dTimeDelta);
 
+	m_pMoonBaboon->Get_Model()->Update_Animation(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 
 	/* Light */
@@ -411,6 +412,25 @@ void CUFO::Core_Destroyed()
 			m_IsLaserCreate = true;
 			((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
 		}
+	}
+
+	/* 이건 테스트용 키 */
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
+	{
+		m_ePattern = UFO_PATTERN::INTERACTION;
+
+		//m_pBossHpBar->Set_Ratio(0.11f);
+
+		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
+		if (3 != m_iPhaseChangeCount)
+		{
+			m_pModelCom->Set_Animation(UFO_Laser_HitPod);
+			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+			m_pMoonBaboon->Set_Animation(Moon_Ufo_Laser_HitPod, UFO_MH);
+		}
+
+		m_IsLaserCreate = true;
+		((CLaser_TypeA*)DATABASE->Get_LaserTypeA())->Set_Dead();
 	}
 }
 
@@ -1279,6 +1299,20 @@ HRESULT CUFO::Set_MeshRenderGroup()
 	m_pModelCom->Set_MeshRenderGroup(5, tagRenderGroup::RENDER_NONALPHA);
 	m_pModelCom->Set_MeshRenderGroup(6, tagRenderGroup::RENDER_NONALPHA);
 	return S_OK;
+}
+
+void CUFO::Set_MissilePtrReset(_bool IsTargetCheck)
+{
+	if (true == IsTargetCheck)
+	{
+		m_pCodyMissile = nullptr;
+		Safe_Release(m_pCodyMissile);
+	}
+	else
+	{
+		m_pMayMissile = nullptr;
+		Safe_Release(m_pCodyMissile);
+	}
 }
 
 HRESULT CUFO::Add_GameObject_ToRenderGroup()

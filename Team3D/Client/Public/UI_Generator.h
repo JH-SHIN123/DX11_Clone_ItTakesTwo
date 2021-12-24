@@ -82,7 +82,7 @@ public:
 	void Set_FadeOut(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	void Set_MinigameReady(Player::ID ePlayer, UI::TRIGGER eTrigger);
 	void Set_MinigameReadyCheck(Player::ID ePlayer, _bool IsCheck);
-
+	void Set_AllActivation(_bool IsActivation);
 
 public:
 	HRESULT Add_Prototype_LogoTexture();

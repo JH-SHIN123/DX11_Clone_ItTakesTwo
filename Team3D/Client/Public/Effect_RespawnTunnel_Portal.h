@@ -32,6 +32,7 @@ private:
 	void Check_Smoke(_double TimeDelta);
 	_float4 Check_TexUV(_float4 vNowUV);
 	void Set_Shader_SmokeData();
+	void Check_Sound();
 
 private:
 	_double m_dAlphaTime = 0.0;

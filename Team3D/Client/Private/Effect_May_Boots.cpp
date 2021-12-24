@@ -104,12 +104,18 @@ void CEffect_May_Boots::Add_WalkingParticle(_bool IsRightFoot)
 {
 	EFFECT_DESC_CLONE Clone_Data;
 	_matrix ParentMatrix = XMMatrixIdentity();
+	_matrix BoneMatrix = XMMatrixIdentity();
+	_matrix MyWorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 	if (false == IsRightFoot)
-		ParentMatrix = XMLoadFloat4x4(&m_BoneMatrix_Left) * m_pTransformCom->Get_WorldMatrix();
+		BoneMatrix = XMLoadFloat4x4(&m_BoneMatrix_Left);
 	else
-		ParentMatrix = XMLoadFloat4x4(&m_BoneMatrix_Right) * m_pTransformCom->Get_WorldMatrix();
+		BoneMatrix = XMLoadFloat4x4(&m_BoneMatrix_Right);
 
+	ParentMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+
+	for (_int i = 0; i < 3; ++i)
+		ParentMatrix.r[i] = XMVector3Normalize(MyWorldMatrix.r[i]);
 
 	XMStoreFloat4x4(&Clone_Data.WorldMatrix, ParentMatrix);
 
