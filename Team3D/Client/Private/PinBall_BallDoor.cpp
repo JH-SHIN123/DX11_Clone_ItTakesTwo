@@ -100,6 +100,7 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 		{
 			((CPinBall*)(DATABASE->Get_Pinball()))->Set_TriggerCheck();
 			m_bReady = false;
+			m_bFinish = true;
 		}
 
 		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 100.f);
@@ -120,6 +121,7 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 
 			((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_Ready(true);
 			((CPinBall*)(DATABASE->Get_Pinball()))->Set_Ready(true);
+			m_bFinish = false;
 		}
 		m_pTransformCom->RotatePitch_Angle(-dTimeDelta, 100.f);
 	}

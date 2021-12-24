@@ -6,6 +6,7 @@
 #include "Effect_Generator.h"
 #include "PhysX.h"
 #include "Script.h"
+#include "UI_Generator.h"
 
 CPinBall::CPinBall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -198,6 +199,10 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
 
+		/* UI */
+		UI_Delete(May, InputButton_PS_InterActive);
+		((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
+
 		m_pDynamicActorCom->Get_Actor()->putToSleep();
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
@@ -221,6 +226,10 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
+
+		/* UI */
+		UI_Delete(May, InputButton_PS_InterActive);
+		((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
 
 		m_pDynamicActorCom->Get_Actor()->putToSleep();
 		m_pDynamicActorCom->Update_DynamicActor();
@@ -287,7 +296,7 @@ HRESULT CPinBall::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.77f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
