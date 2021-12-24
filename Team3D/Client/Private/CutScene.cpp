@@ -614,7 +614,7 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 HRESULT CCutScene::End_CutScene_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.15f, 3.f);
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -672,7 +672,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 HRESULT CCutScene::End_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Boss.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.15f, 3.f);
 
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
