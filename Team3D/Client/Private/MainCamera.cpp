@@ -531,70 +531,61 @@ _float CMainCamera::Find_Player_OnBossMiniRoom(_double dTimeDelta)
 	_vector vPlayerPos = m_pCody->Get_Position();
 	_float fFindProgress = 0.f;
 	_uint iCurNodeIdx = m_iNodeIdx[0];
-	if (iCurNodeIdx < 2)
+	
+	if (iCurNodeIdx > 0 && iCurNodeIdx < 23)
 	{
-		for (_uint i = 0; i < 2; i++)
+		for (_uint i = 0; i < 4; i++)
 			m_iNodeIdx[i] = i;
 		fFindProgress = DotProgress(0.6f);
-		if(fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
-	}
-	if (iCurNodeIdx < 8)
-	{
-		for (_uint i = 6; i < 8; i++)
-			m_iNodeIdx[i] = i;
+	
+		for (_uint i = 6; i < 10; i++)
+			m_iNodeIdx[i - 6] = i;
 		fFindProgress = DotProgress(0.6f);
-		if (fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
-	}
-	if (iCurNodeIdx < 12)
-	{
-		for (_uint i = 11; i < 12; i++)
-			m_iNodeIdx[i] = i;
+	
+	
+		for (_uint i = 11; i < 15; i++)
+			m_iNodeIdx[i - 11] = i;
 		fFindProgress = DotProgress(0.6f);
-		if (fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
+
 	}
-	if (iCurNodeIdx < 24)
-	{
-		for (_uint i = 23; i < 24; i++)
-			m_iNodeIdx[i] = i;
+	
+		for (_uint i = 23; i < 27; i++)
+			m_iNodeIdx[i-23] = i;
 		fFindProgress = DotProgress(0.5f);
-		if (fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
-	}
-	if (iCurNodeIdx < 29)
-	{
-		for (_uint i = 28; i < 29; i++)
-			m_iNodeIdx[i] = i;
+	
+		for (_uint i = 28; i < 32; i++)
+			m_iNodeIdx[i-28] = i;
 		fFindProgress = DotProgress(1.1f);
-		if (fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
-	}
-	if (iCurNodeIdx < 32)
-	{
-		for (_uint i = 31; i < 32; i++)
-			m_iNodeIdx[i] = i;
+	
+	
+		for (_uint i = 31; i < 35; i++)
+			m_iNodeIdx[i-31] = i;
 		fFindProgress = DotProgress(0.8f);
-		if (fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
-	}
-	if (iCurNodeIdx < 36)
-	{
-		for (_uint i = 35; i < 36; i++)
-			m_iNodeIdx[i] = i;
+	
+		for (_uint i = 35; i < 39; i++)
+			m_iNodeIdx[i-35] = i;
 		fFindProgress = DotProgress(0.5f);
-		if (fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
-	}
-	if (iCurNodeIdx < 42)
-	{
-		for (_uint i = 41; i < 42; i++)
-			m_iNodeIdx[i] = i;
+	
+		for (_uint i = 41; i < 45; i++)
+			m_iNodeIdx[i-41] = i;
 		fFindProgress = DotProgress(0.8f);
-		if (fFindProgress >= m_CamNodes[0]->dTime && fFindProgress < m_CamNodes[1]->dTime)
+		if (fFindProgress >= m_CamNodes[m_iNodeIdx[0]]->dTime && fFindProgress < m_CamNodes[m_iNodeIdx[1]]->dTime)
 			return fFindProgress;
-	}
+	
 
 	return 9999999999.f;
 }
@@ -608,19 +599,19 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 			XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 	}
-	_bool bCurCodyDeadLine = m_pCody->Get_IsDeadLine();
-	_bool bCurCodyRespawn = m_pCody->Get_IsRespawn();
-	if (bCurCodyDeadLine != m_bRespawn || bCurCodyRespawn != m_bRespawn)
-	{
+	
+	_bool bCurCodyRespawn = m_pCody->Get_RespawnCheck();
 
-	}
 	if (m_bRespawn != bCurCodyRespawn)
 	{
-		if (m_bRespawn == false &&  bCurCodyRespawn == true)	//리스폰중
-			m_bRespawn = bCurCodyRespawn;
-		else if (m_bRespawn == true && bCurCodyRespawn == false)	//살아낫다가 죽음?
+		if (m_bRespawn == false &&  bCurCodyRespawn == true)	
 		{
-			_float fFindProgress = Find_Player_OnBossMiniRoom(dTimeDelta);
+#ifdef __TEST_JUN
+		/*	_vector vTestPos = XMVectorSet(62.9158249f, 600.f, 1000.74860,1.f);
+			m_pCody->Get_Actor()->Set_Position(vTestPos);
+			m_pCody->Get_Transform()->Set_State(CTransform::STATE_POSITION,vTestPos );*/
+#endif
+		_float fFindProgress = Find_Player_OnBossMiniRoom(dTimeDelta);
 			if (fFindProgress >= 9999999999.f)
 				ReSet_Cam_Free_OnRail();
 			else
@@ -628,6 +619,8 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 			m_bRespawn = bCurCodyRespawn;
 			return NO_EVENT;
 		}
+		else
+			m_bRespawn = false;
 	}
 
 	if (false == m_bStartOnRail)
@@ -727,11 +720,8 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 			m_fRailProgressTime += (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
 		else if (m_pGameInstance->Key_Pressing(DIK_S))
 			m_fRailProgressTime -= (_float)dTimeDelta * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
-	/*	if (m_pGameInstance->Key_Pressing(DIK_D))
-			m_fRailProgressTime += 0.016666666 * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
-		else if (m_pGameInstance->Key_Pressing(DIK_A))
-			m_fRailProgressTime -= 0.016666666 * Get_ZoomVal_OnRail(m_iNodeIdx[0]);
-	*/}
+
+	}
 	else if (m_iNodeIdx[0] < 32)
 	{
 
@@ -1026,7 +1016,8 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		if (false == m_bIsFading && m_dWarpTime > 0.1)
 		{
 			UI_CreateOnlyOnce(Cody, WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut, 8.f);
+			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut, dTimeDelta * 255.f);
+			
 			m_bIsFading = true;
 		}
 
@@ -1038,7 +1029,7 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		if (m_bIsFading)
 		{
 			UI_Generator->Set_FadeOut(Player::Cody, UI::WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, 8.f);
+			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, dTimeDelta * 255.f);
 			m_bIsFading = false;
 		}
 		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -1059,7 +1050,7 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		if (!m_bIsFading)
 		{
 			UI_CreateOnlyOnce(Cody, WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut,10.f);
+			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut, dTimeDelta * 255.f);
 			m_bIsFading = true;
 		}
 	}
@@ -1069,7 +1060,7 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		if (m_bIsFading)
 		{
 			UI_Generator->Set_FadeOut(Player::Cody, UI::WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut,8.f);
+			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, dTimeDelta * 255.f);
 			m_bIsFading = false;
 		}
 		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);

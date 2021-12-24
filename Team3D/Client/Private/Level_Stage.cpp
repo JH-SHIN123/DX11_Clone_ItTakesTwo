@@ -126,24 +126,17 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #endif // __TEST_TAEK
 	
 #ifdef __PLAY_CUTSCENE
-<<<<<<< HEAD
-=======
 #ifndef __FIRST_CUTSCENE_OFF
->>>>>>> main
 	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}
-<<<<<<< HEAD
-#endif
-=======
 #else
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
 	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
 #endif // __FIRST_CUTSCENE_OFF
 #endif // __PLAY_CUTSCENE
->>>>>>> main
 
 	/* For.EndingCredit */
 	if (m_pGameInstance->Key_Down(DIK_END))
