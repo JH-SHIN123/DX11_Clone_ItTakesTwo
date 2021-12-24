@@ -292,11 +292,6 @@ void CCody::Add_LerpInfo_To_Model()
 #pragma region Overrided Function
 _int CCody::Tick(_double dTimeDelta)
 {
-
-	_tchar szFPS[MAX_PATH] = L"";
-	wsprintf(szFPS, TEXT("WarpDone : %d - %d"), (_int)m_IsWarpNextStage, (_int)m_IsWarpDone);
-	SetWindowText(g_hWnd, szFPS);
-
 	CCharacter::Tick(dTimeDelta);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
