@@ -29,6 +29,8 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	{
 		UI_Delete(Cody, CutSceneBar);
 		UI_Delete(May, CutSceneBar);
+		UI_Generator->Set_AllActivation(true);
+
 		switch (m_eCutSceneOption)
 		{
 		case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -55,7 +57,7 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
-		bIsNoError =  Tick_CutScene_Intro(dTimeDelta);
+		bIsNoError = Tick_CutScene_Intro(dTimeDelta);
 		break;
 	case CutSceneOption::CutScene_Active_GravityPath_01:
 		bIsNoError = Tick_CutScene_Active_GravityPath_01(dTimeDelta);
@@ -399,6 +401,8 @@ HRESULT CCutScene::Start_CutScene()
 	UI_CreateOnlyOnce(Cody, CutSceneBar);
 	UI_CreateOnlyOnce(May, CutSceneBar);
 
+	UI_Generator->Set_AllActivation(false);
+
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -607,7 +611,8 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 	CGameInstance::GetInstance()->Set_MainViewFog(true);
 	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
 	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Eject_InUFO");
-	
+	UI_Generator->Set_AllActivation(true);
+
 	return S_OK;
 }
 
@@ -623,6 +628,7 @@ HRESULT CCutScene::End_CutScene_Intro()
 	pMainCam->ReSet_Cam_FreeToAuto();
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto();
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -636,6 +642,7 @@ HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
 	pMainCam->ReSet_Cam_FreeToAuto();
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto();
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -650,7 +657,7 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
-
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -665,6 +672,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -681,6 +689,7 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
