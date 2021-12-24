@@ -46,6 +46,7 @@ private:
 	_float		m_fMoveDist = 0.f;
 	_bool		m_bPull = false;
 	_bool		m_IsCollide = false;
+	_bool		m_IsDelete_UI = false;
 
 private:
 	_bool m_IsNoGrab		= false;

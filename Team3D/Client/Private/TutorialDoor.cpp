@@ -66,7 +66,6 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 _int CTutorialDoor::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
-	//
 
 	if (m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsCollide
 		|| m_pGameInstance->Key_Down(DIK_O) && m_IsCollide)
@@ -81,17 +80,24 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 	{
 		m_bPull = false;
 		m_IsNoGrab = true;
+		m_IsDelete_UI = false;
 	}
 
 	if (true == m_IsCollide)
 	{
 		if (m_bPull == true)
 		{
+			if (false == m_IsDelete_UI)
+			{
+				UI_Generator->Delete_InterActive_UI(Player::May, UI::TutorialDoor);
+				m_IsDelete_UI = true;
+			}
+
 			m_IsPullMax = false;
 
 			m_fMoveDist -= (_float)dTimeDelta;
 			_float fMyPos_Y = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
-			if (1.5f >= fMyPos_Y)
+			if (1.f >= fMyPos_Y)
 			{
 				m_pTransformCom->Go_Up(dTimeDelta);
 				m_pTransformCom_Trigger->Go_Up(dTimeDelta);
@@ -139,11 +145,12 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 
 	m_pEffectFireDoor->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	//UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor, m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f, m_IsCollide);
+	if(false == m_IsCollide)
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor,
+		m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION), 6.f, m_IsCollide);
 
 	return NO_EVENT;
 }
-
 
 _int CTutorialDoor::Late_Tick(_double dTimeDelta)
 {
