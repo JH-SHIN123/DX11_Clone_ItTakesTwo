@@ -275,7 +275,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	if(m_dTime > 1.5f && m_dTime < 1.5f + dTimeDelta)
-		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 50, false);
+		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	if (m_iCutSceneTake == 0)
 	{
 		if (m_dTime < 25.02)
@@ -398,6 +398,7 @@ HRESULT CCutScene::Start_CutScene()
 	m_iCutSceneTake = 0;
 	UI_CreateOnlyOnce(Cody, CutSceneBar);
 	UI_CreateOnlyOnce(May, CutSceneBar);
+
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -430,13 +431,18 @@ HRESULT CCutScene::Start_CutScene()
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
-	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 100, false);
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
+<<<<<<< HEAD
 
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	
+=======
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+>>>>>>> main
 	_double dTime = 0.0;
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -509,7 +515,8 @@ HRESULT CCutScene::Start_CutScene_Intro()
 
 HRESULT CCutScene::Start_CutScene_Active_GravityPath_01()
 {
-	
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	m_bIsStartFilm = false;
 	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
 	if (nullptr == pCamHelper)
@@ -523,6 +530,8 @@ HRESULT CCutScene::Start_CutScene_Active_GravityPath_01()
 
 HRESULT CCutScene::Start_CutScene_Clear_Umbrella()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	m_bIsStartFilm = false;
 	CCam_Helper* pCamHelper = static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Get_CamHelper();
 	if (nullptr == pCamHelper)
@@ -535,6 +544,8 @@ HRESULT CCutScene::Start_CutScene_Clear_Umbrella()
 
 HRESULT CCutScene::Start_CutScene_Clear_Rail()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	m_bIsStartFilm = false;
 	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
 	if (nullptr == pCamHelper)
@@ -548,7 +559,8 @@ HRESULT CCutScene::Start_CutScene_Clear_Rail()
 HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
-
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -607,7 +619,7 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 HRESULT CCutScene::End_CutScene_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 1.f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -638,6 +650,7 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -652,6 +665,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -663,10 +677,11 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 HRESULT CCutScene::End_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Boss.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 1.f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
 
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());

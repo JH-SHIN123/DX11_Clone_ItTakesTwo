@@ -19,6 +19,7 @@ private:
 	virtual ~CMoonBaboonCore_Glass() = default;
 
 public:
+	void Reset();
 	void Set_Broken();
 	void Set_WorldMatrix();
 

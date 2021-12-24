@@ -1915,7 +1915,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_IsPinBall = true;
 		}
-		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// ¸ÞÀÌ Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -2466,7 +2466,7 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* ¿À¸¥ÂÊ */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
@@ -2482,7 +2482,7 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* ¿ÞÂÊ */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 			{
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)

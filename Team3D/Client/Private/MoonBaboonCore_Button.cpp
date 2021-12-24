@@ -60,7 +60,7 @@ _int CMoonBaboonCore_Button::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
-	if (0 != m_pParent->Get_ActiveCore())
+	if (0 != m_pParent->Get_ActiveCore() || m_pParent->Get_IsGoUp())
 	{
 		Set_WorldMatrix();
 		m_pStaticActorCom->Update_StaticActor();
@@ -89,7 +89,7 @@ HRESULT CMoonBaboonCore_Button::Render(RENDER_GROUP::Enum eGroup)
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(1);
+	m_pModelCom->Render_Model(m_iRenderPass); // Active : 36, Non - Active 37
 
 	return S_OK;
 }

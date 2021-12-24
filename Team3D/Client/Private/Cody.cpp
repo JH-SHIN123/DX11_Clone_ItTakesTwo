@@ -2366,7 +2366,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_bGoToHooker = true;
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 		}
-		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// ÄÚµð Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
 			m_pActorCom->Set_ZeroGravity(true, false, true);

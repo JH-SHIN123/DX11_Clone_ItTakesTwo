@@ -84,7 +84,7 @@ PS_OUT PS_DIRECTIONAL(PS_IN In)
 	float	fAODesc		= g_SSAOTexture.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 	float	fAODesc_Blur= g_SSAOTexture_Blur.Sample(Clamp_MinMagMipLinear_Sampler, In.vTexUV);
 
-	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
+	vector	vWorldPos	= vector(vDepthDesc.z, vDepthDesc.w, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
 
@@ -134,7 +134,7 @@ PS_OUT PS_POINT(PS_IN In)
 	vector	vNormal		= normalize(vector(vNormalDesc.xyz * 2.f - 1.f, 0.f));
 	vector	vDepthDesc	= g_DepthTexture.Sample(Point_Sampler, In.vTexUV);
 	
-	vector	vWorldPos	= vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
+	vector	vWorldPos	= vector(vDepthDesc.z, vDepthDesc.w, vDepthDesc.y, 1.f);
 	float	fViewZ		= 0.f;
 	vector	vLook		= (vector)0.f;
 
@@ -184,7 +184,7 @@ PS_OUT PS_SPOT(PS_IN In)
 	vector	vNormalDesc = g_NormalTexture.Sample(Wrap_Sampler, In.vTexUV);
 	vector	vNormal = normalize(vector(vNormalDesc.xyz * 2.f - 1.f, 0.f));
 	vector	vDepthDesc = g_DepthTexture.Sample(Wrap_Sampler, In.vTexUV);
-	vector	vWorldPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
+	vector	vWorldPos = vector(vDepthDesc.z, vDepthDesc.w, vDepthDesc.y, 1.f);
 	float	fViewZ = 0.f;
 	vector	vLook = (vector)0.f;
 

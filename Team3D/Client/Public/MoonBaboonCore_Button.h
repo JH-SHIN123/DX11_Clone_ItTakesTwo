@@ -13,6 +13,8 @@ END
 BEGIN(Client)
 class CMoonBaboonCore_Button final : public CGameObject
 {
+public:
+	enum STATE {STATE_ACT = 36, STATE_NONEACT = 37};
 private:
 	explicit CMoonBaboonCore_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CMoonBaboonCore_Button(const CMoonBaboonCore_Button& rhs);
@@ -20,6 +22,7 @@ private:
 
 public:
 	void Set_WorldMatrix();
+	void Set_RenderPass(STATE eBtnState) { m_iRenderPass = (_uint)eBtnState; };
 
 public:
 	virtual HRESULT	NativeConstruct(void* pArg) override;
@@ -43,6 +46,9 @@ private:
 
 	_float3 m_vOffsetPosition = { 0.f, -0.2f, 0.f };
 	_float3 m_vLocalPosition = { 0.f,0.f,0.f };
+
+private:
+	_uint m_iRenderPass = STATE_NONEACT;
 
 private:
 	class CMoonBaboonCore*	m_pParent = nullptr;
