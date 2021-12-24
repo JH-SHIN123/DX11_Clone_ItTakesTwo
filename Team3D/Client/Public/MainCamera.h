@@ -13,7 +13,8 @@ class CMainCamera final : public CCamera
 
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Ending, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,
-		Cam_LaserTennis,Cam_End};
+						//보스 3페
+		Cam_LaserTennis,Cam_Boss_HitRocket,Cam_End};
 
 	//O CamFreeMove P FollowPlayer																 
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_OnBossMiniRoom_Cody,
@@ -38,6 +39,7 @@ public:
 	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
+	HRESULT Start_CamEffect(const _tchar* pEffectTag);
 	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false,_float fLerpSpeed = 6.f);		//카메라가 초기상태로 돌아옴
 private:
 	_int	Check_Player(_double dTimeDelta);
@@ -54,6 +56,7 @@ private:
 	_int	Tick_Cam_PinBall_Cody(_double dTimeDelta);
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
 	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
+	_int	Tick_Cam_Boss_HitRocket(_double dTimeDelta);		//보스 3페
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
@@ -72,6 +75,7 @@ private:
 	_float Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash = false);
 	_float	DotProgress(_float fOffSetDist);	//직선구간
 	_float  DotProgress_Bezier(_float fOffSetDist);
+	_float	Find_Player_OnBossMiniRoom(_double dTimeDelta);	//Return Progress
 private:
 	_int	ReSet_Cam_Free_OnRail();
 	_bool	OffSetPhsX(_fvector vEye,_fvector vAt,_double dTimeDelta,_vector * pOut);
@@ -139,6 +143,7 @@ private:
 	_float	m_fRailProgressTime = 0.f;
 	_float	m_fMaxRailLength = 0.f;
 	_bool	m_bCodyDash = false;
+	_bool	m_bRespawn = false;
 	//For.OpenThirdFloor
 	_bool m_bOpenThirdFloor = false;
 	_float m_fOpenThirdFloorTime = 0.f;

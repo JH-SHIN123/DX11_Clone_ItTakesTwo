@@ -54,6 +54,7 @@ public:
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
 	UFO_PHASE Get_BossPhase() const { return m_ePhase; }
 	_bool	  Get_IsCutScene() { return m_IsCutScene; }
+	UFO_PATTERN Get_BossPatern() const { return m_ePattern; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;

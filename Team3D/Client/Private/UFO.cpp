@@ -956,11 +956,12 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 
 	if (89.f <= m_pModelCom->Get_CurrentTime(CutScene_EnterUFO_FlyingSaucer) && false == m_IsCodySetPos)
 	{
-		((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.6958f, 599.131f, 1002.82f, 1.f));
-		((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
-		m_IsCodySetPos = true;
-		// 우주선 들어가는거
-		m_pGameInstance->Set_MainViewFog(true);
+		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
+		{
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
+			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
+		}
+		
 	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))

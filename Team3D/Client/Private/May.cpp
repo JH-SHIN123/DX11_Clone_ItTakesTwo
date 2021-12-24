@@ -218,7 +218,7 @@ _int CMay::Tick(_double dTimeDelta)
 	CCharacter::Tick(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
+
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -226,7 +226,7 @@ _int CMay::Tick(_double dTimeDelta)
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	/* Script */
-	Script_Trigger(dTimeDelta);
+	//Script_Trigger(dTimeDelta);
 
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
@@ -820,8 +820,8 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_0))/* 벽점프 전 */
-		m_pActorCom->Set_Position(XMVectorSet(-830.374512f, 793.359192f, 192.788605f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저테니스 */
+		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_X))/* 우산 */
@@ -1915,7 +1915,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_IsPinBall = true;
 		}
-		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// 메이 전용 포탈로 이동(웜홀)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -2611,7 +2611,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Key_Down(DIK_I) || m_pGameInstance->Pad_Key_Down(DIP_B))
 	{
 		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
@@ -2620,7 +2620,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
+	if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
 		UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);

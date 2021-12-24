@@ -280,8 +280,8 @@ HRESULT CMoonUFO::Ready_Component(void * pArg)
 	_matrix PivotMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	m_pModelCom->Change_PivotMatrix(PivotMatrix);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(800.f, 1000.f, 2000.f, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f + 11.f, 357.5f - 255.f, 195.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(800.f, 1000.f, 2000.f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(64.f + 11.f, 357.5f - 255.f, 195.f, 1.f));
 	
 	//m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -135.f);
 

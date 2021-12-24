@@ -55,7 +55,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 
 	m_vStartEye =	{0.f,7.f, -7.f, 1.f};
-	m_vStartAt =	{0.f,3.0f, 0.f, 1.f };
+	m_vStartAt =	{0.f,1.5f, 0.f, 1.f };
 
 
 
@@ -187,6 +187,12 @@ void CSubCamera::Set_Zoom(_float4 vEye, _float4 vAt, _float fZoomVal, _double dT
 HRESULT CSubCamera::Start_Film(const _tchar * pFilmTag)
 {
 	m_pCamHelper->Start_Film(pFilmTag, CFilm::RScreen);
+	return S_OK;
+}
+
+HRESULT CSubCamera::Start_CamEffect(const _tchar * pEffectTag)
+{
+	m_pCamHelper->Start_CamEffect(pEffectTag, CFilm::RScreen);
 	return S_OK;
 }
 
