@@ -152,7 +152,11 @@ HRESULT CHookahTube::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
 	/* Trigger */
-	PxGeometry* geom = new PxSphereGeometry(2.5f);
+	PxGeometry* geom = nullptr;
+	if(0 == m_tDynamic_Env_Desc.iOption)
+		geom = new PxSphereGeometry(2.5f);
+	else
+		geom = new PxSphereGeometry(5.5f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = geom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
