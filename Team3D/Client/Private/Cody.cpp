@@ -3647,7 +3647,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			Loop_RadiarBlur(false);
 
-			//m_iAirDashCount = 0;
+			m_iAirDashCount = 0;
 			m_iJumpCount = 0;
 			m_bShortJump = true;
 
