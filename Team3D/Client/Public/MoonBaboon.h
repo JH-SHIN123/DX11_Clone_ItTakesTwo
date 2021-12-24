@@ -28,6 +28,9 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	CModel* Get_Model() const { return m_pModelCom; }
+
+public:
 	void Set_Animation(_uint iCurAnimIndex, _uint iNextAnimIndex);
 
 public:

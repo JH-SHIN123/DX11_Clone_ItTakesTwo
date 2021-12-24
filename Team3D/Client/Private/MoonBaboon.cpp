@@ -50,7 +50,6 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pUFOTransform, E_FAIL);
 	Safe_AddRef(m_pUFOTransform);
 
-	
 	m_pModelCom->Set_Animation(Moon_Ufo_MH);
 	m_pModelCom->Set_NextAnimIndex(Moon_Ufo_MH);
 
@@ -65,15 +64,14 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		m_pModelCom->Update_Animation(dTimeDelta);
-
+		//m_pModelCom->Update_Animation(dTimeDelta);
 		return S_OK;
 	}
 
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
 	//m_pActorCom->Update(dTimeDelta);
-	m_pModelCom->Update_Animation(dTimeDelta);
+	//m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }

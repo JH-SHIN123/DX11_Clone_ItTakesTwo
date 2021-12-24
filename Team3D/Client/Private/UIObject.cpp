@@ -43,6 +43,9 @@ _int CUIObject::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
+	if (false == m_IsActive)
+		return 2;
+
 	return NO_EVENT;
 }
 
@@ -100,6 +103,11 @@ void CUIObject::Set_Ready()
 		m_UIDesc.iTextureRenderIndex = 2;
 	else
 		m_UIDesc.iTextureRenderIndex = 3;
+}
+
+void CUIObject::Set_UIAllActivation(_bool IsCheck)
+{
+	m_IsActive = IsCheck;
 }
 
 void CUIObject::Set_ScaleEffect()

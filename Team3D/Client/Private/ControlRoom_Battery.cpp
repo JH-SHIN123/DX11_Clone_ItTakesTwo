@@ -49,11 +49,8 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &ArgDesc), E_FAIL);
 
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float4 vConvertPos;
-	XMStoreFloat4(&vConvertPos, vPos);
-	vConvertPos.y += 1.f;
-	m_pTriggerTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vConvertPos));
+	_vector vTriggerPos = { 45.659f, 222.0218f, 224.4699f, 1.f };
+	m_pTriggerTransform->Set_State(CTransform::STATE_POSITION, vTriggerPos);
 
 	CTriggerActor::ARG_DESC TriggerArgDesc;
 
@@ -75,8 +72,6 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 _int CControlRoom_Battery::Tick(_double dTimeDelta)
 {
  	CGameObject::Tick(dTimeDelta);
-	
-	m_pTriggerCom->Update_TriggerActor();
 
 	InterActive_Battery(dTimeDelta);
 
@@ -132,6 +127,7 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 
 	if (true == m_IsPlayerInterActive)
 	{
+		m_pTriggerCom->Update_TriggerActor();
 		m_fAngle -= (_float)TimeDelta * 15.f;
 		m_fRotate += (_float)TimeDelta * 15.f;
 
