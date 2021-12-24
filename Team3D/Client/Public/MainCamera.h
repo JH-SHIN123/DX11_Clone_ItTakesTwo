@@ -56,7 +56,7 @@ private:
 	_int	Tick_Cam_PinBall_Cody(_double dTimeDelta);
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
 	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
-	_int	Tick_Cam_Boss_HitRocket(_double dTimeDelta);		//보스 3페
+	_int	Tick_Cam_Boss_HitRocket(_double dTimeDelta);		//달나라 갈때
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함

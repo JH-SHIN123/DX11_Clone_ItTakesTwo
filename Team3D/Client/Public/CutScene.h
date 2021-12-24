@@ -8,7 +8,9 @@ class CCutScene : public CBase
 {
 public:
 	enum class CutSceneOption {
-		CutScene_Intro,CutScene_Active_GravityPath_01,CutScene_Clear_Umbrella,CutScene_Clear_Rail,CutScene_Boss_Intro,CutScene_Eject_InUFO,CutScene_End
+		CutScene_Intro,CutScene_Active_GravityPath_01,CutScene_Clear_Umbrella,CutScene_Clear_Rail,
+		CutScene_Boss_Intro,
+		CutScene_Eject_InUFO,CutScene_Outro,CutScene_End
 	};
 public:
 	CCutScene();
