@@ -14,6 +14,8 @@
 #include"Sound_Manager.h"
 #include"UI_Generator.h"
 #include"Script.h"
+#include"ControlRoom_Monitor.h"
+#include"GameInstance.h"
 CCutScene::CCutScene()
 {
 }
@@ -41,6 +43,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		case Client::CCutScene::CutSceneOption::CutScene_Clear_Rail:
 			End_CutScene_Clear_Rail();
 			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
+			End_CutScene_Eject_InUFO();
+			break;
 
 		}
 		return false;
@@ -64,6 +69,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	case CutSceneOption::CutScene_Boss_Intro:
 		bIsNoError = Tick_CutScene_Boss_Intro(dTimeDelta);
 		break;
+	case CutSceneOption::CutScene_Eject_InUFO:
+		bIsNoError = Tick_CutScene_Eject_InUFO(dTimeDelta);
+		break;
 	}
 	if (bIsNoError == false)
 	{
@@ -85,12 +93,13 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 
 			_float3 vMayPos = _float3(62.8f, 0.15f, 0.3f);
 			_float3 vCodyPos = _float3(63.9f, 0.2f, 0.9f);
+
 			pCody->Set_Position(vCodyPos);
 			pMay->Set_Position(vMayPos);
+			
 			m_iCutSceneTake++;
 		}
 	}
-
 	else if (m_iCutSceneTake == 1) //토이박스쪽으로 가서
 	{
 		if (m_dTime >= 97.1f)
@@ -107,7 +116,6 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 				pBelt->Set_Position(_float3(0, 0, 0));
 				m_bIsChangeToCody = true;
 			}
-
 		}
 		if (m_dTime >= 99.92)//~코디 사이즈키우기 M~L 5
 		{
@@ -154,7 +162,6 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	}
 	else if (m_iCutSceneTake == 6)
 	{
-		//118.8 
 		//벨트 리모컨달기 ~코디로 진행
 		if (m_dTime >= 118.8f)
 		{
@@ -162,12 +169,10 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			pSizeBeltRemoteCutScene->Set_Position(_float3(0, 0, 0));
 			m_iCutSceneTake++;
 		}
-	
 	}
 	else if (m_iCutSceneTake == 7)
 	{
 		//124.7 메이 부츠달기 ~메이로진행
-		
 		if (m_dTime >= 124.7)
 		{
 			CPerformer* pMayCutScene = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_May_CutScene1"));
@@ -270,7 +275,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	if(m_dTime > 1.5f && m_dTime < 1.5f + dTimeDelta)
-		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 50, false);
+		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	if (m_iCutSceneTake == 0)
 	{
 		if (m_dTime < 25.02)
@@ -355,6 +360,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 			CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button3")));
 			pButton->ButtonDown();
 			m_bButtonPress[3] = true;
+			static_cast<CControlRoom_Monitor*>(DATABASE->Get_ControlRoomMonitor())->Change_Screen();
 		}
 	}
 	if (m_bButtonPress[3] == false)
@@ -364,6 +370,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 			CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button4")));
 			pButton->ButtonDown();
 			m_bButtonPress[3] = true;
+			static_cast<CControlRoom_Monitor*>(DATABASE->Get_ControlRoomMonitor())->Change_Screen();
 		}
 	}
 	if (m_bButtonPress[0] == false)	
@@ -378,6 +385,12 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	return true;
 }
 
+_bool CCutScene::Tick_CutScene_Eject_InUFO(_double dTimeDelta)
+{
+	Script_Eject_InUFO(dTimeDelta);
+	return true;
+}
+
 HRESULT CCutScene::Start_CutScene()
 {
 
@@ -385,6 +398,7 @@ HRESULT CCutScene::Start_CutScene()
 	m_iCutSceneTake = 0;
 	UI_CreateOnlyOnce(Cody, CutSceneBar);
 	UI_CreateOnlyOnce(May, CutSceneBar);
+
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -407,18 +421,21 @@ HRESULT CCutScene::Start_CutScene()
 		if (FAILED(Start_CutScene_Boss_Intro()))
 			return E_FAIL;
 		break;
+	case CutSceneOption::CutScene_Eject_InUFO:
+		if (FAILED(Start_CutScene_Eject_UFO()))
+			return E_FAIL;
+		break;
 	}
 	return S_OK;
 }
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
-	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 100, false);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f));
-
-
-	
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 1.f, false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	_double dTime = 0.0;
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -491,7 +508,8 @@ HRESULT CCutScene::Start_CutScene_Intro()
 
 HRESULT CCutScene::Start_CutScene_Active_GravityPath_01()
 {
-	
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	m_bIsStartFilm = false;
 	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
 	if (nullptr == pCamHelper)
@@ -505,6 +523,8 @@ HRESULT CCutScene::Start_CutScene_Active_GravityPath_01()
 
 HRESULT CCutScene::Start_CutScene_Clear_Umbrella()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	m_bIsStartFilm = false;
 	CCam_Helper* pCamHelper = static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Get_CamHelper();
 	if (nullptr == pCamHelper)
@@ -517,6 +537,8 @@ HRESULT CCutScene::Start_CutScene_Clear_Umbrella()
 
 HRESULT CCutScene::Start_CutScene_Clear_Rail()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	m_bIsStartFilm = false;
 	CCam_Helper* pCamHelper = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper();
 	if (nullptr == pCamHelper)
@@ -530,7 +552,8 @@ HRESULT CCutScene::Start_CutScene_Clear_Rail()
 HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
-
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -570,10 +593,22 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	return S_OK;
 }
 
+HRESULT CCutScene::Start_CutScene_Eject_UFO()
+{
+	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.3511f, 599.567f, 1002.51f, 1.f));
+	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
+	// 우주선 들어가는거
+	CGameInstance::GetInstance()->Set_MainViewFog(true);
+	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
+	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Eject_InUFO");
+	
+	return S_OK;
+}
+
 HRESULT CCutScene::End_CutScene_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 1.f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -604,6 +639,7 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -618,6 +654,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -629,15 +666,21 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 HRESULT CCutScene::End_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Boss.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 1.f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
 
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
 
+	return S_OK;
+}
+
+HRESULT CCutScene::End_CutScene_Eject_InUFO()
+{
 	return S_OK;
 }
 
@@ -673,6 +716,12 @@ HRESULT CCutScene::Ready_CutScene_Boss_Intro()
 	return S_OK;
 }
 
+HRESULT CCutScene::Ready_CutScene_Eject_InUFO()
+{
+	m_dDuration = 7.0;
+	return S_OK;
+}
+
 HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 {
 	switch (m_eCutSceneOption = eOption)
@@ -695,6 +744,10 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 		break;
 	case Client::CCutScene::CutSceneOption::CutScene_Boss_Intro:
 		if (FAILED(Ready_CutScene_Boss_Intro()))
+			return E_FAIL;
+		break;
+	case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
+		if (FAILED(Ready_CutScene_Eject_InUFO()))
 			return E_FAIL;
 		break;
 	}
@@ -761,22 +814,16 @@ void CCutScene::Script_Intro(_double dTimeDelta)
 		SCRIPT->Render_Script(127, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 11.0 && dSoundTime < 11.0 + dTimeDelta)
 		SCRIPT->Render_Script(128, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 14.0 && dSoundTime < 14.0 + dTimeDelta)
 		SCRIPT->Render_Script(129, CScript::SCREEN::FULL, 0.9f);
 	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + dTimeDelta)
 		SCRIPT->Render_Script(130, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + dTimeDelta)
 		SCRIPT->Render_Script(131, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + dTimeDelta)
 		SCRIPT->Render_Script(132, CScript::SCREEN::FULL, 1.9f);
-
-
 	else if (dSoundTime >= 22.5 && dSoundTime < 22.5 + dTimeDelta)
 		SCRIPT->Render_Script(133, CScript::SCREEN::FULL, 2.4f);
-
 	else if (dSoundTime >= 26.0 && dSoundTime < 26.0 + dTimeDelta)
 		SCRIPT->Render_Script(134, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 28.0 && dSoundTime < 28.0 + dTimeDelta)
@@ -857,16 +904,12 @@ void CCutScene::Script_Intro(_double dTimeDelta)
 		SCRIPT->Render_Script(172, CScript::SCREEN::FULL, 0.9f);
 	else if (dSoundTime >= 114.0 && dSoundTime < 114.0 + dTimeDelta)
 		SCRIPT->Render_Script(173, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 116.0 && dSoundTime < 116.0 + dTimeDelta)
 		SCRIPT->Render_Script(174, CScript::SCREEN::FULL, 0.9f);
-
 	else if (dSoundTime >= 122.5 && dSoundTime < 122.5 + dTimeDelta)
 		SCRIPT->Render_Script(175, CScript::SCREEN::FULL, 0.9f);
-
 	else if (dSoundTime >= 125.0 && dSoundTime < 125.0 + dTimeDelta)
 		SCRIPT->Render_Script(176, CScript::SCREEN::FULL, 1.9f);
-
 	else if (dSoundTime >= 132.0 && dSoundTime < 132.0 + dTimeDelta)
 		SCRIPT->Render_Script(177, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 134.0 && dSoundTime < 134.0 + dTimeDelta)
@@ -942,8 +985,18 @@ void CCutScene::Script_Boss_Intro(_double dTimeDelta)
 		SCRIPT->Render_Script(210, CScript::SCREEN::FULL, 1.9f);
 	else if (dSoundTime >= 77.0 && dSoundTime < 77.0 + dTimeDelta)
 		SCRIPT->Render_Script(211, CScript::SCREEN::FULL, 1.f);
+}
 
-		
+void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
+{
+	_double dSoundTime = m_dTime;
+	if (dSoundTime >= 1.0 && dSoundTime < 1.0 + dTimeDelta)
+		SCRIPT->Render_Script(91, CScript::HALF, 1.0f);
+	else if (dSoundTime >= 2.0 && dSoundTime < 2.0 + dTimeDelta)
+		SCRIPT->Render_Script(92, CScript::HALF, 2.9f);
+	else if (dSoundTime >= 5.0 && dSoundTime < 5.0 + dTimeDelta)
+		SCRIPT->Render_Script(93, CScript::HALF, 2.0f);
+
 }
 
 

@@ -295,7 +295,6 @@ _int CCody::Tick(_double dTimeDelta)
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -1135,6 +1134,18 @@ void CCody::Move(const _double dTimeDelta)
 
 			m_pActorCom->Move(vDirection / m_fJogAcceleration, dTimeDelta);
 
+			//Å×½ºÆ®
+			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd)
+			{
+				m_fFootStepDelay += dTimeDelta;
+				if (m_fFootStepDelay > 0.5f)
+				{
+					m_pCamera->Start_CamEffect(TEXT("Cam_Shake_BigCodyWalk"));
+					m_fFootStepDelay = 0.f;
+				}
+			}
+			//¤·¤·
+
 			if (m_bRoll == false && m_IsJumping == false && m_IsFalling == false)
 			{
 				if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CODYB_WALK) == false)
@@ -1682,6 +1693,8 @@ void CCody::Jump(const _double dTimeDelta)
 		{
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Landing.wav"), CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
+			//Å« ÄÚµð ÂøÁö.
+			m_pCamera->Start_CamEffect(TEXT("Cam_Shake_BigCodyWalk"));
 		}
 		m_iAirDashCount = 0;
 		m_bSprint = false;
@@ -1722,7 +1735,7 @@ void CCody::Jump(const _double dTimeDelta)
 				{
 					m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
 					m_pGameInstance->Play_Sound(TEXT("CodyB_Jump_Landing.wav"), CHANNEL_CODYB_JUMP_LANDING, m_fCodyBJump_Landing_Volume);
-
+					m_pCamera->Start_CamEffect(TEXT("Cam_Shake_BigCodyWalk"));
 					m_pModelCom->Set_Animation(ANI_C_ChangeSize_Jump_Large_Land);
 					m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 				}
@@ -2034,6 +2047,7 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 	{
 		if (m_pActorCom->Get_IsJump() == true && (m_pModelCom->Get_CurAnimIndex() == (ANI_C_Bhv_ChangeSize_GroundPound_Falling) && m_bPlayGroundPoundOnce == false))
 		{
+			m_pCamera->Start_CamEffect(TEXT("Cam_Shake_BigCodyWalk"));
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, m_fCodyB_GroundPound_Landing_Voice_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyB_GroundPound_Landing_Voice.wav"), CHANNEL_CODYB_GROUNDPOUND_LANDING_VOICE, m_fCodyB_GroundPound_Landing_Voice_Volume);
 
@@ -2352,7 +2366,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_bGoToHooker = true;
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 		}
-		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// ÄÚµð Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
 			m_pActorCom->Set_ZeroGravity(true, false, true);

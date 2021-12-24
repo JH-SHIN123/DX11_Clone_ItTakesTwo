@@ -7,6 +7,8 @@
 #include "Effect_Boss_Core.h"
 #include "Effect_Generator.h"
 #include "UFO.h"
+#include"MainCamera.h"
+#include"SubCamera.h"
 
 CMoonBaboonCore::CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -220,11 +222,18 @@ void CMoonBaboonCore::Set_Broken()
 	if (m_bBroken) return;
 
 	m_bBroken = true;
-	if (m_pEffectBossCore) 
+
+	if (m_pEffectBossCore)
 	{
 		m_pEffectBossCore->HitOn();
 		Safe_Release(m_pEffectBossCore);
 		m_pEffectBossCore = nullptr;
+	}
+
+	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어
+	{
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
+		static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
 	}
 }
 
