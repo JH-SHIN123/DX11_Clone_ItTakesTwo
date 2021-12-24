@@ -60,6 +60,7 @@ _int CMinigame_Score::Late_Tick(_double TimeDelta)
 
 	if (2 == iActive)
 		return NO_EVENT;
+
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
