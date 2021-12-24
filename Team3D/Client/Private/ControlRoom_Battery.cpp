@@ -73,15 +73,6 @@ _int CControlRoom_Battery::Tick(_double dTimeDelta)
 {
  	CGameObject::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_F9))
-	{
-		_vector vPos = m_pTriggerTransform->Get_State(CTransform::STATE_POSITION);
-		//vPos.m128_f32[1] -= 0.01f;
-		vPos.m128_f32[2] += 0.01f;
-		m_pTriggerTransform->Set_State(CTransform::STATE_POSITION, vPos);
-		m_pTriggerCom->Update_TriggerActor();
-	}
-
 	InterActive_Battery(dTimeDelta);
 
 	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::ControlRoom_Battery, 
