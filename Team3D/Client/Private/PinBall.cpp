@@ -193,6 +193,15 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 {
 	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
 
+	/* Cody */
+	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eCODY && true == m_bTriggerCheck)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		((CPinBall_BallDoor*)(DATABASE->Get_Pinball_BallDoor()))->Set_DoorState(true);
+		m_bTriggerCheck = false;
+		m_bReady = true;
+	}
+
 	/* Blocked */
 	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eBLOCKED)
 	{
@@ -296,14 +305,14 @@ HRESULT CPinBall::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
-	CTriggerActor::ARG_DESC tTriggerArgDesc;
-	tTriggerArgDesc.pGeometry = TriggerGeom;
-	tTriggerArgDesc.pTransform = m_pTransformCom;
-	tTriggerArgDesc.pUserData = &m_UserData;
+	//PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
+	//CTriggerActor::ARG_DESC tTriggerArgDesc;
+	//tTriggerArgDesc.pGeometry = TriggerGeom;
+	//tTriggerArgDesc.pTransform = m_pTransformCom;
+	//tTriggerArgDesc.pUserData = &m_UserData;
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
-	Safe_Delete(TriggerGeom);
+	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArgDesc), E_FAIL);
+	//Safe_Delete(TriggerGeom);
 
 	/* Model */
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Space_Pinball_AttachBall"), TEXT("Com_Model_AttachBall"), (CComponent**)&m_pAttachBall), E_FAIL);
@@ -338,8 +347,9 @@ CGameObject * CPinBall::Clone_GameObject(void * pArg)
 void CPinBall::Free()
 {
 	Safe_Release(m_pDynamicActorCom);
-	Safe_Release(m_pTriggerActorCom);
+	//Safe_Release(m_pTriggerActorCom);
 	Safe_Release(m_pAttachBall);
+
 
 	CDynamic_Env::Free();
 }

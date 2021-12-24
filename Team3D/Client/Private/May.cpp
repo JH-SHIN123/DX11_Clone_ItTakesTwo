@@ -815,6 +815,11 @@ void CMay::KeyInput(_double dTimeDelta)
 		DATABASE->Set_May_Stage(ST_PINBALL);
 		DATABASE->Set_Cody_Stage(ST_PINBALL);
 	}
+	if (m_pGameInstance->Key_Down(DIK_6))/* 3스테이지 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
 		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_8))/* Moon */
@@ -3079,6 +3084,7 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			Loop_RadiarBlur(false);
 
+			m_iAirDashCount = 0;
 			m_iJumpCount = 0;
 			m_bShortJump = true;
 

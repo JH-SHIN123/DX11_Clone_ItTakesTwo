@@ -11,6 +11,18 @@ CVolumeObject::CVolumeObject(const CVolumeObject& rhs)
 {
 }
 
+void CVolumeObject::Set_WorldMatrix(_fmatrix WorldMatrix)
+{
+	NULL_CHECK(m_pTransformCom);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+}
+
+void CVolumeObject::Set_Color(_float3& vInner, _float3& vOuter)
+{
+	m_tVolumeDesc.vInnerColor = vInner;
+	m_tVolumeDesc.vOuterColor = vOuter;
+}
+
 HRESULT CVolumeObject::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
