@@ -48,6 +48,7 @@ private:
 	_fmatrix Get_Matrix(_float4 vPos);
 	void	Render_PointInstance();
 	void	Check_Activate(_double TimeDelta);
+	void	Check_Sound();
 
 private:
 	_bool	m_IsActivate	= true;

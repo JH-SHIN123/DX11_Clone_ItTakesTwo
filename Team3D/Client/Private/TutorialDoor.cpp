@@ -27,7 +27,7 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(0.3f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(1.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_DoorWay"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform_Trigger"), (CComponent**)&m_pTransformCom_Trigger, &CTransform::TRANSFORM_DESC(0.15f, XMConvertToRadians(90.f))), E_FAIL);
@@ -73,14 +73,17 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 		m_bPull = true;
 		m_IsNoGrab = false;
 		UI_Delete(May, InputButton_InterActive);
+		m_pGameInstance->Stop_Sound(CHANNEL_FIRE_DOOR);
+		m_pGameInstance->Play_Sound(TEXT("FireDoor_Open.wav"), CHANNEL_FIRE_DOOR);
 	}
-
 
 	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
 	{
 		m_bPull = false;
 		m_IsNoGrab = true;
 		m_IsDelete_UI = false;
+		m_pGameInstance->Stop_Sound(CHANNEL_FIRE_DOOR);
+		m_pGameInstance->Play_Sound(TEXT("FireDoor_Close.wav"), CHANNEL_FIRE_DOOR);
 	}
 
 	if (true == m_IsCollide)
@@ -148,6 +151,12 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 	if(false == m_IsCollide)
 	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor,
 		m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION), 6.f, m_IsCollide);
+
+	if (true == m_IsPullMax_Once)
+	{
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_FIRE_DOOR_LOOP))
+			m_pGameInstance->Play_Sound(TEXT("FireDoor.wav"), CHANNEL_FIRE_DOOR_LOOP, 1.f);
+	}
 
 	return NO_EVENT;
 }

@@ -228,10 +228,6 @@ _int CMay::Tick(_double dTimeDelta)
 	/* Script */
 	Script_Trigger(dTimeDelta);
 
-	_tchar szFPS[MAX_PATH] = L"";
-	wsprintf(szFPS, TEXT("WarpDone : %d - %d"), (_int)m_IsWarpNextStage, (_int)m_IsWarpDone);
-	SetWindowText(g_hWnd, szFPS);
-
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
@@ -336,7 +332,8 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	/* ¸ÞÀÌ UFOÅÀÀ» ¶§ */
 	InUFO(dTimeDelta);
 
-	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
+	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer))
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f)) 
@@ -2659,11 +2656,11 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 		}
 
 		// ½´·ç·è
-		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.5f >= m_fWarpTimer)
 		{
 			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			vDir = XMVector3Normalize(vDir);
-			m_pActorCom->Move(vDir * 0.5f, dTimeDelta);
+			m_pActorCom->Move(vDir * 0.25f, dTimeDelta);
 		}
 		else
 		{

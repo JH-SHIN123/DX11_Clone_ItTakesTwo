@@ -507,9 +507,10 @@ private:
 	_bool m_IsWarpNextStage = false;
 	_float m_fWarpTimer = 0.f;
 	_bool m_IsWarpDone = false;
+	_bool m_IsWarpRotate = false;
 	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
-	const _float m_fWarpTimer_Max = 5.f;
-	const _float m_fWarpTimer_InWormhole = 2.f;
+	const _float m_fWarpTimer_Max = 3.9f;
+	const _float m_fWarpTimer_InWormhole = 0.25f;
 
 	// fire Door Dead
 	_bool m_IsTouchFireDoor = false;

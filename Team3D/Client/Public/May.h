@@ -458,8 +458,8 @@ private:
 	_bool m_IsWarpDone = false;
 	_bool m_IsWarpRotate = false;
 	const _float4 m_vWormholePos = { 0.f, -100.f, -1500.f, 1.f };
-	const _float m_fWarpTimer_Max = 5.f;
-	const _float m_fWarpTimer_InWormhole = 2.f;
+	const _float m_fWarpTimer_Max = 3.9f;
+	const _float m_fWarpTimer_InWormhole = 0.25f;
 
 	// 상호작용 테스트용
 	_bool m_IsActivate_End = false;
