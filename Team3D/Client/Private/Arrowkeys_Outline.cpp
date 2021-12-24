@@ -2,6 +2,7 @@
 #include "..\Public\Arrowkeys_Outline.h"
 
 #include "GameInstance.h"
+#include "UI_Generator.h"
 
 CArrowkeys_Outline::CArrowkeys_Outline(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -30,11 +31,18 @@ HRESULT CArrowkeys_Outline::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
-	if (FAILED(Ready_Component()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
+
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+
+	if (0 == m_iOption)
+		m_iShaderPassNum = 0;
+	else
+		m_iShaderPassNum = 31;
 
 	return S_OK;
 }
@@ -55,6 +63,11 @@ _int CArrowkeys_Outline::Late_Tick(_double TimeDelta)
 
 	if (2 == iActive)
 		return NO_EVENT;
+
+	m_fDeadTime += (_float)TimeDelta;
+
+	if (4.f <= m_fDeadTime)
+		UI_Delete(Cody, Arrowkeys_All);
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -66,7 +79,7 @@ HRESULT CArrowkeys_Outline::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
-	m_pVIBuffer_RectCom->Render(0);
+	m_pVIBuffer_RectCom->Render(m_iShaderPassNum);
 
 	return S_OK;
 }

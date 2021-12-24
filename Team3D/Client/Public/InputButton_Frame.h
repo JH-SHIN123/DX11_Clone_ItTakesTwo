@@ -37,6 +37,8 @@ private:
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
+	CFontDraw*						m_pFont = nullptr;
+	CFontDraw*						m_pEngFont = nullptr;
 
 private:
 	void Render_Font();
