@@ -15,6 +15,7 @@
 #include "MoonUFO.h"
 #include "HpBar.h"
 #include "MoonBaboonCore.h"
+#include "BossDoor.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -147,6 +148,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
 	}
 
+	/* 나중에 컷 신 완전히 완성되면 바꿈 */
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
 
@@ -296,6 +298,9 @@ void CUFO::MoveStartingPoint(_double dTimeDelta)
 {
 	_vector vTargetPos = XMLoadFloat4(&m_vStartUFOPos);
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if(true == ((CBossDoor*)DATABASE->Get_BossDoor01())->Get_Close())
+		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_Active(true);
 
 	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
 	if (vTargetPos.m128_f32[1] >= vUFOPos.m128_f32[1])
