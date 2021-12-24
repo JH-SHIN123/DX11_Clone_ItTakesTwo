@@ -396,7 +396,7 @@ private:
 	_bool	 m_IsDeadLine = false;
 	_bool	 m_IsSavePoint = false;
 	_float3  m_vSavePoint = {};
-	_float	 m_fDeadTime = 0.f;
+	_double	 m_dDeadTime = 0.0;
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall */
 	_bool	 m_IsPinBall = false;

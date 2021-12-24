@@ -432,7 +432,6 @@ private:
 	_bool	 m_IsTube = false;
 	/* Hye::For.SpaceShip */
 	_bool	 m_bRespawn = false;
-	_bool    m_bFirstCheck = false;
 	_double	 m_dRespawnTime = 0.0;
 	/* Hye::For.LaserTennis */
 	_bool	 m_bLaserTennis = false;

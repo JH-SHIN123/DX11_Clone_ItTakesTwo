@@ -48,7 +48,7 @@ _int CElectricBox::Tick(_double dTimeDelta)
 	}
 
 	/* Charge ¿Ã∆Â∆Æ */
-	if ((m_iRandomTime - 1) <= m_dCoolTime && false == m_bCharge)
+	if ((m_iRandomTime - 1.5f) <= m_dCoolTime && false == m_bCharge)
 	{
 		_matrix World = m_pTransformCom->Get_WorldMatrix();//XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y - 1.f, m_vOriginPos.z);
 		World.r[3] += World.r[1] *= 0.98f;
@@ -70,7 +70,7 @@ _int CElectricBox::Tick(_double dTimeDelta)
 		World.r[3] -= World.r[1] *= 0.98f;
 
 		m_bElectric = true;
-		m_iRandomTime = rand() % 3 + 3;
+		m_iRandomTime = rand() % 3 + 4;
 		m_dCoolTime = 0.0;
 		m_bCharge = false;
 	}
@@ -118,7 +118,6 @@ HRESULT CElectricBox::Render_ShadowDepth()
 
 void CElectricBox::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	return;
 	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
 	/* Cody */
