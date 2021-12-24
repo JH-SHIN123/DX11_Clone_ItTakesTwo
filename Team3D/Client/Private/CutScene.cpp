@@ -349,6 +349,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f,	244.4f,	220.4f, 1.f));
 			m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
 			m_iCutSceneTake++;
+
 		}
 	}
 	//ButtonPress 
@@ -583,8 +584,8 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
 	pUfo->Get_Model()->Set_Animation(CutScene_UFO_Boss_Intro);
 	
-	//CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
-	//pMoonBaboon->Set_Animation(CutScene_BossIntro_MoonBaboon, Moon_Ufo_MH);
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	pMoonBaboon->Set_Animation(CutScene_BossIntro_MoonBaboon, Moon_Ufo_MH);
 
 	CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button1")));
 	pButton->Set_Position(_float3(62.457f, 219.084f, 238.85f));
@@ -690,6 +691,8 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
 	UI_Generator->Set_AllActivation(true);
+
+	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
 
 	return S_OK;
 }

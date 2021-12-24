@@ -64,14 +64,15 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		//m_pModelCom->Update_Animation(dTimeDelta);
+		SetUp_IntroOffset(dTimeDelta);
+		m_pModelCom->Update_Animation(dTimeDelta);
 		return S_OK;
 	}
 
 	Fix_MoonBaboon_Chair(dTimeDelta);
 
 	//m_pActorCom->Update(dTimeDelta);
-	//m_pModelCom->Update_Animation(dTimeDelta);
+	m_pModelCom->Update_Animation(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -147,6 +148,38 @@ void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 		XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
 		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
 		m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+	}
+}
+
+void CMoonBaboon::SetUp_IntroOffset(_double dTimeDelta)
+{
+	if (CutScene_BossIntro_MoonBaboon == m_pModelCom->Get_CurAnimIndex())
+	{
+		if (2279.4f <= m_pModelCom->Get_CurrentTime(CutScene_BossIntro_MoonBaboon) &&
+			2330.3f >= m_pModelCom->Get_CurrentTime(CutScene_BossIntro_MoonBaboon))
+		{
+			_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+			_uint iBoneIndex = m_pUFOModel->Get_BoneIndex("Chair");
+			_matrix UFOAnim = m_pUFOModel->Get_AnimTransformation(iBoneIndex);
+
+			_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
+			XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f) * UFOAnim * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+			matWorld._42 -= 12.f;
+			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+			m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+		}
+		else
+		{
+			_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+			_uint iBoneIndex = m_pUFOModel->Get_BoneIndex("Chair");
+			_matrix UFOAnim = m_pUFOModel->Get_AnimTransformation(iBoneIndex);
+
+			_float4x4 matWorld, matScale; // 우주선 안에있을때 유리밖으로 꼬리 튀어나와서 100->95정도로 줄임.
+			XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f) * UFOAnim * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+			matWorld._42 += 1.5f;
+			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+			m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+		}
 	}
 }
 

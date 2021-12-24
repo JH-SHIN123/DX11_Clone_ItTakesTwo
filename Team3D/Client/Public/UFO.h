@@ -39,7 +39,8 @@ public:
 	void Set_IsGuidedMissileDeadCheck(_bool IsCheck);
 	void Set_UFOAnimation(_uint iAnimIndex, _uint iNextAnimIndex);
 	void Set_CodyEnterUFO();
-	void Set_CutScene();
+	void Set_CutScene(_bool IsCheck);
+	void Set_EndIntroCutScene();
 	void Set_MoonBaboonPtr(class CMoonBaboon* pMoonBaboon);
 	void Set_Who_Collide_Last(GameID::Enum WhoCollide) { m_WhoCollide = WhoCollide; }
 	/* For. BossFloorUp */
