@@ -164,7 +164,6 @@ HRESULT CUmbrellaBeam_Joystick::Ready_Layer_UmbrellaBeam(const _tchar * pLayerTa
 	return S_OK;
 }
 
-
 CUmbrellaBeam_Joystick * CUmbrellaBeam_Joystick::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CUmbrellaBeam_Joystick* pInstance = new CUmbrellaBeam_Joystick(pDevice, pDeviceContext);

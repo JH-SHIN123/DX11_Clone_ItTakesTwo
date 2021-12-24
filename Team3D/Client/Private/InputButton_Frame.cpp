@@ -202,8 +202,8 @@ void CInputButton_Frame::Render_Font()
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Cancle")))
 	{
-		m_pEngFont->Render_Font(TEXT("Q"), _float2(278.f, 650.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.43f);
-		m_pFont->Render_Font(TEXT("취소"), _float2(330.f, 650.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.33f);
+		m_pEngFont->Render_Font(TEXT("Q"), _float2(278.f, 656.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.43f);
+		m_pFont->Render_Font(TEXT("취소"), _float2(330.f, 660.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.33f);
 	}
 }
 
