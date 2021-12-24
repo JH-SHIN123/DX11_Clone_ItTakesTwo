@@ -300,6 +300,11 @@ _int CCody::Tick(_double dTimeDelta)
 		return NO_EVENT;
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_F9))
+		UI_Generator->Set_AllActivation(false);
+	else if (m_pGameInstance->Key_Down(DIK_F8))
+		UI_Generator->Set_AllActivation(true);
+
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::May, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 

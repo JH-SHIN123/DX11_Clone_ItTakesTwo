@@ -1478,6 +1478,34 @@ void CUI_Generator::Set_MinigameReadyCheck(Player::ID ePlayer, _bool IsCheck)
 		m_IsMayReady = IsCheck;
 }
 
+void CUI_Generator::Set_AllActivation(_bool IsActivation)
+{
+	for (_uint i = 0; i < Player::PLAYER_END; ++i)
+	{
+		for (_uint j = 0; j < UI::TRIGGER_END; ++j)
+		{
+			if (0 != m_vecUIOBjects[i][j].size())
+			{
+				for (auto UIObject : m_vecUIOBjects[i][j])
+					UIObject->Set_UIAllActivation(IsActivation);
+
+			}
+		}
+	}
+
+	for (_uint i = 0; i < Player::PLAYER_END; ++i)
+	{
+		for (_uint j = 0; j < UI::INTERACTIVE_ID_END; ++j)
+		{
+			if (0 != m_vecInterActiveUI[i][j].size())
+			{
+				for (auto UIObject : m_vecInterActiveUI[i][j])
+					UIObject->Set_UIAllActivation(IsActivation);
+			}
+		}
+	}
+}
+
 _bool CUI_Generator::Get_MinigameAllReady()
 {
 	if (true == m_IsCodyReady && true == m_IsMayReady)

@@ -48,11 +48,11 @@ public:
 	void Set_Dead();
 	void Set_PlayerID(Player::ID ePlayerID);
 	void Set_PosX(_float fPosX);
-	void Set_Disable(_bool IsCheck);
 	void Set_FadeInSpeed(_float fSpeed);
 	void Set_FadeOutSpeed(_float fSpeed);
 	void Set_FadeOut();
 	void Set_Ready();
+	void Set_UIAllActivation(_bool IsCheck);
 
 public:
 	virtual void Set_TargetPos(_vector vPos);
@@ -71,6 +71,7 @@ protected:
 	_float						m_fFadeInSpeed = 5.f;
 	_float						m_fFadeOutSpeed = 5.f;
 	_bool						m_IsFadeOut = false;
+	_bool						m_IsActive = true;
 
 protected:
 	/* For.Component */

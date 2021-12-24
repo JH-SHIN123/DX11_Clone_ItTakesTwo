@@ -51,7 +51,10 @@ _int CArrowkeys_Outline::Tick(_double TimeDelta)
 
 _int CArrowkeys_Outline::Late_Tick(_double TimeDelta)
 {
-	CUIObject::Late_Tick(TimeDelta);
+	_int iActive = CUIObject::Late_Tick(TimeDelta);
+
+	if (2 == iActive)
+		return NO_EVENT;
 	
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
