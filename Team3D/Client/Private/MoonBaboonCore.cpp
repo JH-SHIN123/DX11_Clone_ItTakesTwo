@@ -10,6 +10,8 @@
 #include"MainCamera.h"
 #include"SubCamera.h"
 
+_uint CMoonBaboonCore::m_iBrokenCheck = 0;
+
 CMoonBaboonCore::CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -47,8 +49,14 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	DATABASE->Set_MoonBaboonCore(this);
 
+	// 깨지는 순서 0 - 2 - 1
 	if (m_tDesc.iIndex == 1) // 중력 발판 앞 코어
 		m_fMoveTime *= 2.5f;
+
+	if (m_tDesc.iIndex == 0)
+		m_bPatternOn = true;
+
+	m_iBrokenCheck = 0;
 
     return S_OK;
 }
@@ -59,6 +67,9 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 	NULL_CHECK_RETURN(m_pCoreButton, E_FAIL);
 	NULL_CHECK_RETURN(m_pCoreShield, E_FAIL);
 	NULL_CHECK_RETURN(m_pCoreGlass, E_FAIL);
+
+	// 버튼 패턴 체크
+	OnPatternCheck();
 
 	if (m_bBroken)
 	{
@@ -98,16 +109,17 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 		Active_Pillar(TimeDelta);
 	}
 
-	m_pCorePillar->Tick(TimeDelta);
-	m_pCoreButton->Tick(TimeDelta);
-	m_pCoreShield->Tick(TimeDelta);
-	m_pCoreGlass->Tick(TimeDelta);
-
 	if (m_pEffectBossCore) 
 		m_pEffectBossCore->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	// 2 Phase시 위로 올라가는거
 	GoUp(TimeDelta);
+
+	/* Tick Childs*/
+	m_pCorePillar->Tick(TimeDelta);
+	m_pCoreButton->Tick(TimeDelta);
+	m_pCoreShield->Tick(TimeDelta);
+	m_pCoreGlass->Tick(TimeDelta);
 
     return _int();
 }
@@ -170,22 +182,21 @@ void CMoonBaboonCore::GoUp(_double dTimeDelta)
 
 	m_pTransformCom->Go_Up(dTimeDelta);
 	m_bMove = true;
-
+	m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
 }
 
 void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 {
-	if (true == m_IsGoUp)
-		return;
+	if (true == m_IsGoUp) return;
+	if (false == m_bPatternOn) return;
 
 	CUFO* pUFO = (CUFO*)DATABASE->Get_BossUFO();
 	if (nullptr != pUFO)
 	{
-		if (false == m_b2Floor && m_tDesc.iIndex == 1)
+		if (CUFO::LASER != pUFO->Get_BossPatern()) {
+			m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
 			return;
-
-		if (CUFO::LASER != pUFO->Get_BossPatern())
-			return;
+		}
 	}
 
 	if (m_iActiveCore == 1)
@@ -217,11 +228,40 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 	}
 }
 
+void CMoonBaboonCore::OnPatternCheck()
+{
+	if (2 == m_tDesc.iIndex && 1 == m_iBrokenCheck)
+	{
+		m_bPatternOn = true;
+	}
+	else if (1 == m_tDesc.iIndex && 2 == m_iBrokenCheck)
+	{
+		m_bPatternOn = true;
+	}
+
+	if (m_bPatternOn)
+	{
+		m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_ACT);
+	}
+	else
+		m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
+
+	CUFO* pUFO = (CUFO*)DATABASE->Get_BossUFO();
+	if (nullptr != pUFO)
+	{
+		if (CUFO::LASER != pUFO->Get_BossPatern()) {
+			m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
+		}
+	}
+}
+
 void CMoonBaboonCore::Set_Broken()
 {
 	if (m_bBroken) return;
 
 	m_bBroken = true;
+	m_bPatternOn = false;
+	m_iBrokenCheck += 1;
 
 	if (m_pEffectBossCore)
 	{

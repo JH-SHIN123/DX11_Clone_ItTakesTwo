@@ -42,12 +42,17 @@ private:
 	//void Reset(); // Dont Use
 	void GoUp(_double dTimeDelta);
 	void Active_Pillar(_double TimeDelta);
+	void OnPatternCheck();
 
 private:
 	MOONBABOONCORE_DESC m_tDesc;
 
 private:
 	CTransform*		m_pTransformCom = nullptr;
+
+private:
+	static	_uint	m_iBrokenCheck;
+	_bool			m_bPatternOn = false;
 
 private:
 	_bool	m_b2Floor = false;
