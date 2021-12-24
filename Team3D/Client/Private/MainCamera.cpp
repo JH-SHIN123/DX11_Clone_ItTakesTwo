@@ -1060,7 +1060,7 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		if (m_bIsFading)
 		{
 			UI_Generator->Set_FadeOut(Player::Cody, UI::WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, dTimeDelta * 255.f);
+			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, dTimeDelta*2.f * 255.f);
 			m_bIsFading = false;
 		}
 		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
