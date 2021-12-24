@@ -42,7 +42,6 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	// Effect
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"),nullptr, (CGameObject**)&m_pEffectBossCore), E_FAIL);
-	Safe_Release(m_pEffectBossCore);
 
 	DATABASE->Set_MoonBaboonCore(this);
 
@@ -102,7 +101,8 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 	m_pCoreShield->Tick(TimeDelta);
 	m_pCoreGlass->Tick(TimeDelta);
 
-	if (m_pEffectBossCore) m_pEffectBossCore->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	if (m_pEffectBossCore) 
+		m_pEffectBossCore->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	// 2 Phase시 위로 올라가는거
 	GoUp(TimeDelta);
@@ -120,25 +120,25 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
     return _int();
 }
 
-void CMoonBaboonCore::Reset()
-{
-	if (m_bResetOnce) return;
-	if (nullptr != m_pEffectBossCore) return;
-
-	if (nullptr == m_pEffectBossCore)
-	{
-		FAILED_CHECK(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"), nullptr, (CGameObject**)&m_pEffectBossCore));
-	}
-
-	m_bBroken = false;
-	m_bBrokenStart = false;
-	m_dBrokenWaitingDeltaT = 0.f;
-	m_iActiveCore = 0;
-
-	m_pCoreGlass->Reset();
-
-	m_bResetOnce = true;
-}
+//void CMoonBaboonCore::Reset()
+//{
+//	if (m_bResetOnce) return;
+//	if (nullptr != m_pEffectBossCore) return;
+//
+//	if (nullptr == m_pEffectBossCore)
+//	{
+//		FAILED_CHECK(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"), nullptr, (CGameObject**)&m_pEffectBossCore));
+//	}
+//
+//	m_bBroken = false;
+//	m_bBrokenStart = false;
+//	m_dBrokenWaitingDeltaT = 0.f;
+//	m_iActiveCore = 0;
+//
+//	m_pCoreGlass->Reset();
+//
+//	m_bResetOnce = true;
+//}
 
 void CMoonBaboonCore::GoUp(_double dTimeDelta)
 {
@@ -223,6 +223,7 @@ void CMoonBaboonCore::Set_Broken()
 	if (m_pEffectBossCore) 
 	{
 		m_pEffectBossCore->HitOn();
+		Safe_Release(m_pEffectBossCore);
 		m_pEffectBossCore = nullptr;
 	}
 }
@@ -271,7 +272,7 @@ void CMoonBaboonCore::Free()
 	if (m_pEffectBossCore)
 	{
 		m_pEffectBossCore->Set_Dead();
-		m_pEffectBossCore = nullptr;
+		Safe_Release(m_pEffectBossCore);
 	}
 	Safe_Release(m_pCorePillar);
 	Safe_Release(m_pCoreButton);
