@@ -45,7 +45,7 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 	m_pCoreGlass = CMoonBaboonCore_Glass::Create(m_pDevice, m_pDeviceContext, this);
 
 	// Effect
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"),nullptr, (CGameObject**)&m_pEffectBossCore), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"),nullptr, (CGameObject**)&m_pEffectBossCore), E_FAIL);
 
 	DATABASE->Set_MoonBaboonCore(this);
 
