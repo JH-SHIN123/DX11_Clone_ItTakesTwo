@@ -44,6 +44,7 @@
 #include "HpBar.h"
 #include "MinigameHpBar.h"
 #include "PinBall_Handle.h"
+#include "PinBall_BallDoor.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -339,6 +340,7 @@ _int CCody::Tick(_double dTimeDelta)
 			Touch_FireDoor(dTimeDelta);
 			Falling_Dead(dTimeDelta); 
 			WallLaserTrap(dTimeDelta);
+			Ready_PinBall(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
 			Holding_BossUFO(dTimeDelta);
@@ -425,7 +427,8 @@ _int CCody::Late_Tick(_double dTimeDelta)
 	ShowRailTargetTriggerUI();
 	Clear_TagerRailNodes();
 
-	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
+	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer))
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
@@ -2371,8 +2374,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			// ÄÚµð Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_fWarpTimer = 0.f;
-			m_IsWarpNextStage	= true;
-			m_IsWarpDone		= true;
+			m_IsWarpNextStage = true;
+			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
 
@@ -2498,11 +2501,13 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
 
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
+
+			m_IsReadyPinball = true;
 		}
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
 		{
 			/* Æ©ºê*/
-			if(2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
+			if (2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
 				m_pActorCom->Jump_Start(6.f);
 			else
 				m_pActorCom->Jump_Start(4.f);
@@ -2569,14 +2574,14 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			}
 		}
 		else if (m_eTargetGameID == GameID::eELECTRICWALL && false == m_bRespawn && m_pActorCom->Get_IsWallCollide() == true && m_bElectricWallAttach == false
- 			&& m_IsJumping == true && m_IsFalling == false)
+			&& m_IsJumping == true && m_IsFalling == false)
 		{
 			if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric())
 			{
 				m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 				m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 
- 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
 				m_bRespawnCheck = false;
@@ -2605,7 +2610,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			LASERTENNIS->Increase_PowerCoord();
 
-			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
+			/* UI */
+			UI_Delete(Cody, InputButton_InterActive);
+			LASERTENNIS->Set_PowerCoordUI_Cody(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
@@ -2654,7 +2661,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Control || m_IsDeadLine
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO
-		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding)
+		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding || m_IsReadyPinball)
 		return true;
 
 	return false;
@@ -3380,7 +3387,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 
 	if (true == m_IsWarpNextStage)
 	{
-		if (m_fWarpTimer_InWormhole/*2.f*/ <= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole <= m_fWarpTimer)
 		{
 			_float4 vWormhole = m_vWormholePos;
 			vWormhole.z -= 1.f;
@@ -3397,7 +3404,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsWarpNextStage = false;
-			
+
 			_vector vNextStage_Pos = XMLoadFloat4x4(&m_TriggerTargetWorld).r[3];
 			vNextStage_Pos.m128_f32[3] = 1.f;
 
@@ -3406,7 +3413,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 20.f;
+			vTriggerPos += vLook * 10000.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
@@ -3414,24 +3421,31 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 	}
 	else
 	{
-		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
-		_vector vTriggerPos = PortalMatrix.r[3];
-		_vector vLook = PortalMatrix.r[2];
-		vTriggerPos += vLook * 30.f;
-		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
-		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+		m_IsWarpNextStage = false;
+		if (false == m_IsWarpRotate)
+		{
+			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			_vector vTriggerPos = PortalMatrix.r[3];
+			_vector vLook = PortalMatrix.r[2];
+			vTriggerPos += vLook * 30.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+			m_IsWarpRotate = true;
+		}
 
 		// ½´·ç·è
-		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.5f >= m_fWarpTimer)
 		{
 			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			vDir = XMVector3Normalize(vDir);
-			m_pActorCom->Move(vDir * 0.5f, dTimeDelta);
+			m_pActorCom->Move(vDir * 0.25f, dTimeDelta);
 		}
 		else
 		{
+			m_IsWarpRotate = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWarpDone = false;
+			m_IsCollide = false;
 		}
 	}
 }
@@ -4064,6 +4078,15 @@ void CCody::PinBall(const _double dTimeDelta)
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
 }
 
+void CCody::Ready_PinBall(const _double dTimeDelta)
+{
+	if (false == m_IsReadyPinball)
+		return;
+
+	if (true == ((CPinBall_BallDoor*)(DATABASE->Get_Pinball_BallDoor()))->Get_Finish())
+		m_IsReadyPinball = false;
+}
+
 void CCody::PinBall_Script(const _double dTimeDelta)
 {
 	if (false == m_bPinBallScript)
@@ -4175,10 +4198,7 @@ void CCody::LaserTennis(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_E))
-	{
-		UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_CODY);
-	}
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)

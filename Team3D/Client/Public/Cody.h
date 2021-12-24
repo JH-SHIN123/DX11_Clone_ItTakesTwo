@@ -239,6 +239,7 @@ public:
 
 	_bool			 Get_IsRespawn() { return m_bRespawn; }
 	_bool			 Get_IsDeadLine() { return m_IsDeadLine; }
+	_bool			 Get_RespawnCheck() { return m_bRespawnCheck; }
 	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
 
 	_bool			 Get_IsEnding() { return m_IsEnding; }
@@ -423,6 +424,7 @@ private:
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall*/
 	_bool	 m_IsPinBall = false;
+	_bool	 m_IsReadyPinball = false;
 	_bool	 m_bPinBallScript = false;
 	_double  m_dScriptTime = 0.0;
 	_uint	 m_iScriptCount = 0;
@@ -515,9 +517,10 @@ private:
 	_bool m_IsWarpNextStage = false;
 	_float m_fWarpTimer = 0.f;
 	_bool m_IsWarpDone = false;
+	_bool m_IsWarpRotate = false;
 	const _float4 m_vWormholePos = { 0.f, -100.f, -1000.f, 1.f };
-	const _float m_fWarpTimer_Max = 5.f;
-	const _float m_fWarpTimer_InWormhole = 2.f;
+	const _float m_fWarpTimer_Max = 3.9f;
+	const _float m_fWarpTimer_InWormhole = 0.25f;
 
 	// fire Door Dead
 	_bool m_IsTouchFireDoor = false;
@@ -565,6 +568,7 @@ private:
 	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+	void Ready_PinBall(const _double dTimeDelta);
 	void PinBall_Script(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
 

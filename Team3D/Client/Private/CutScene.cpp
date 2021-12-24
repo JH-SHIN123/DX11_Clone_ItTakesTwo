@@ -434,8 +434,10 @@ HRESULT CCutScene::Start_CutScene_Intro()
 	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
+
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+
 	_double dTime = 0.0;
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -560,6 +562,10 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+
 
 	//_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	pCody->Get_Transform()->Set_WorldMatrix(XMMatrixIdentity()/*matRot*/);

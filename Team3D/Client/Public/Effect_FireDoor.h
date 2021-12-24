@@ -40,7 +40,7 @@ private:
 	CTextures*		m_pTexturesCom_ColorRamp	= nullptr;
 	CTriggerActor*	m_pTriggerCom				= nullptr;
 
-	const _float3 m_vOffSet_Pos = { 0.f, 5.05f, 0.f};
+	const _float3 m_vOffSet_Pos = { 0.f, 5.145f, 0.f};
 public:
 	static CEffect_FireDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

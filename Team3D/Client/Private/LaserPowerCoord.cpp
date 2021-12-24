@@ -48,9 +48,9 @@ _int CLaserPowerCoord::Tick(_double dTimeDelta)
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if (0 == m_tDynamic_Env_Desc.iOption)
-		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::PowerCoord, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 5.f, m_bCollision, false);
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::PowerCoord0, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 5.f, m_bCollision_Cody, m_bUICheck_Cody);
 	else
-		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PowerCoord, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 5.f, m_bCollision, false);
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PowerCoord1, XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - 3.f), 5.f, m_bCollision_May, m_bUICheck_May);
 
 	return NO_EVENT;
 }
@@ -97,23 +97,23 @@ void CLaserPowerCoord::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CG
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && m_tDynamic_Env_Desc.iOption == 0)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_bCollision = true;
+		m_bCollision_Cody = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_bCollision = false;
+		m_bCollision_Cody = false;
 	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && m_tDynamic_Env_Desc.iOption == 1)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_bCollision = true;
+		m_bCollision_May = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_bCollision = false;
+		m_bCollision_May = false;
 	}
 }
 
