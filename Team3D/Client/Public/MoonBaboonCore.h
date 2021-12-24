@@ -19,6 +19,9 @@ private:
 	virtual ~CMoonBaboonCore() = default;
 
 public:
+	_bool Get_IsGoUp() { return m_IsGoUp; }
+
+public:
 	void Set_Broken();
 	void Set_ActiveCore(_int iActive) { m_iActiveCore = iActive; }
 	void Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed);
@@ -36,6 +39,7 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 
 private:
+	//void Reset(); // Dont Use
 	void GoUp(_double dTimeDelta);
 	void Active_Pillar(_double TimeDelta);
 
@@ -46,6 +50,8 @@ private:
 	CTransform*		m_pTransformCom = nullptr;
 
 private:
+	_bool	m_b2Floor = false;
+	_bool	m_bResetOnce = false;
 	_bool	m_bMove = false;
 	_bool	m_bBroken = false;
 	_bool	m_bArrived = false;
