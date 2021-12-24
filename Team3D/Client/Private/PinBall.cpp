@@ -30,7 +30,8 @@ void CPinBall::StartGame()
 	vPosition = XMVectorSet(XMVectorGetX(vPosition), 756.9f, 189.f, 1.f);
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
-	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 1.5f);
+	/* 사이즈 조정 */
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 2.f);
 }
 
 void CPinBall::PlayerMove()
@@ -72,7 +73,8 @@ void CPinBall::Respawn()
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 	m_pDynamicActorCom->Update_DynamicActor();
 
-	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 0.7f);
+	/* 사이즈 조정 */
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 0.5f);
 	((CPinBall_BallDoor*)CDataStorage::GetInstance()->Get_Pinball_BallDoor())->Set_Render(true);
 
 	m_bFailed = false;
@@ -268,7 +270,7 @@ void CPinBall::MoveMent(_double dTimeDelta)
 HRESULT CPinBall::Ready_Component(void * pArg)
 {
 	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
+	PxGeometry* DynamicGeom = new PxSphereGeometry(0.4f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
