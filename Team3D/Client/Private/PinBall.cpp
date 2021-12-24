@@ -5,6 +5,8 @@
 #include "PinBall_Handle.h"
 #include "Effect_Generator.h"
 #include "PhysX.h"
+#include "Script.h"
+#include "UI_Generator.h"
 
 CPinBall::CPinBall(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -29,7 +31,8 @@ void CPinBall::StartGame()
 	vPosition = XMVectorSet(XMVectorGetX(vPosition), 756.9f, 189.f, 1.f);
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
-	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 1.7f);
+	/* 사이즈 조정 */
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 2.f);
 }
 
 void CPinBall::PlayerMove()
@@ -71,7 +74,8 @@ void CPinBall::Respawn()
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 	m_pDynamicActorCom->Update_DynamicActor();
 
-	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 0.6f);
+	/* 사이즈 조정 */
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 0.5f);
 	((CPinBall_BallDoor*)CDataStorage::GetInstance()->Get_Pinball_BallDoor())->Set_Render(true);
 
 	m_bFailed = false;
@@ -195,10 +199,15 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
 
+		/* UI */
+		UI_Delete(May, InputButton_PS_InterActive);
+		((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
+
 		m_pDynamicActorCom->Get_Actor()->putToSleep();
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+		m_bDeadType = false;
 
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
@@ -218,10 +227,15 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALL, true, ((CCody*)pGameObject)->Get_Transform()->Get_State(CTransform::STATE_POSITION));
 		((CPinBall_Handle*)CDataStorage::GetInstance()->Get_Pinball_Handle())->Set_RespawnAngle(true);
 
+		/* UI */
+		UI_Delete(May, InputButton_PS_InterActive);
+		((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
+
 		m_pDynamicActorCom->Get_Actor()->putToSleep();
 		m_pDynamicActorCom->Update_DynamicActor();
 		m_bFailed = true;
 		m_bStartGame = false;
+		m_bDeadType = true;
 
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
@@ -265,7 +279,7 @@ void CPinBall::MoveMent(_double dTimeDelta)
 HRESULT CPinBall::Ready_Component(void * pArg)
 {
 	/* Dynamic */
-	PxGeometry* DynamicGeom = new PxSphereGeometry(0.5f);
+	PxGeometry* DynamicGeom = new PxSphereGeometry(0.35f);
 	CDynamicActor::ARG_DESC tDynamicActorArg;
 	tDynamicActorArg.pTransform = m_pTransformCom;
 	tDynamicActorArg.fDensity = 1.f;
@@ -282,7 +296,7 @@ HRESULT CPinBall::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->putToSleep();
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(0.77f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(0.5f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

@@ -11,6 +11,8 @@ private:
 
 public:/* Setter */
 	void Change_State() { m_bMovement = true; }
+	void Set_UICehck_Cody(_bool bCheck) { m_bUICheck_Cody = bCheck; }
+	void Set_UICehck_May(_bool bCheck) { m_bUICheck_May = bCheck; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -30,7 +32,10 @@ private:
 	_bool			m_bReady;
 	_bool			m_bMovement = false;
 	_bool			m_bActive = false;
-	_bool			m_bCollision = false;
+	_bool			m_bCollision_Cody = false;
+	_bool			m_bCollision_May = false;
+	_bool			m_bUICheck_Cody = false;
+	_bool			m_bUICheck_May = false;
 
 	_float			m_fDistance = 2.5f;
 	_float			m_fResetPosZ = 0.f;

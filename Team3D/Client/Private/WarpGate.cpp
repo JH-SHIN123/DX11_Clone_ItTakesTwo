@@ -131,7 +131,6 @@ HRESULT CWarpGate::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_WarpGate_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-
 	Check_Stage_Value();
 
 	m_UserData = USERDATA(GameID::eWARPGATE, this);
@@ -376,26 +375,28 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	case CWarpGate::MAIN_UMBRELLA:
 		vPos = XMVectorSet(-617.f, 755.f, 196.f, 1.f);
 		fDegree = -90.f;
-		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
-		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_May_Stage(ST_PINBALL);
+		DATABASE->Set_Cody_Stage(ST_PINBALL);
+
 		break;
 	case CWarpGate::STAGE_UMBRELLA:
 		vPos = XMVectorSet(31.f, 125.25f, 195.8f, 1.f);
 		fDegree = 90.f;
-		DATABASE->Set_May_Stage(ST_PINBALL);
-		DATABASE->Set_Cody_Stage(ST_PINBALL);
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case CWarpGate::MAIN_PLANET:
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
-		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
-		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_May_Stage(ST_RAIL);
+		DATABASE->Set_Cody_Stage(ST_RAIL);
 		break;
 	case CWarpGate::STAGE_PLANET:
 		vPos = XMVectorSet(97.8f, 125.25f, 195.8f, 1.f);
 		fDegree = -90.f;
-		DATABASE->Set_May_Stage(ST_RAIL);
-		DATABASE->Set_Cody_Stage(ST_RAIL);
+
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case CWarpGate::MAIN_TENNIS:
 		vPos = XMVectorSet(64.f, 730.2f, 956.3f, 1.f);

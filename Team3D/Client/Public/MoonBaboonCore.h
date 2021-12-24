@@ -19,6 +19,9 @@ private:
 	virtual ~CMoonBaboonCore() = default;
 
 public:
+	_bool Get_IsGoUp() { return m_IsGoUp; }
+
+public:
 	void Set_Broken();
 	void Set_ActiveCore(_int iActive) { m_iActiveCore = iActive; }
 	void Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed);
@@ -27,6 +30,7 @@ public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
 	_int		Get_ActiveCore() const { return m_iActiveCore; }
 	_bool		Get_bArrived() const { return m_bArrived; }
+	_bool		Get_Broken() const { return m_bBroken; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -35,8 +39,10 @@ public:
 	virtual _int	Late_Tick(_double TimeDelta) override;
 
 private:
+	//void Reset(); // Dont Use
 	void GoUp(_double dTimeDelta);
 	void Active_Pillar(_double TimeDelta);
+	void OnPatternCheck();
 
 private:
 	MOONBABOONCORE_DESC m_tDesc;
@@ -45,6 +51,12 @@ private:
 	CTransform*		m_pTransformCom = nullptr;
 
 private:
+	static	_uint	m_iBrokenCheck;
+	_bool			m_bPatternOn = false;
+
+private:
+	_bool	m_b2Floor = false;
+	_bool	m_bResetOnce = false;
 	_bool	m_bMove = false;
 	_bool	m_bBroken = false;
 	_bool	m_bArrived = false;

@@ -10,7 +10,7 @@
 #include "ControlRoom_Door.h"
 #include "BatteryBox.h"
 #include "Effect_Generator.h"
-
+#include"CutScenePlayer.h"
 CPressureBigPlate::CPressureBigPlate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -190,7 +190,6 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_MH
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Falling
-		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Start
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_Exit
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land_MH)
 	{
@@ -281,6 +280,13 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 
 	if (true == m_IsBatteryCheck && true == m_pBatteryBox->Get_BatteryHolding() && true == m_IsEffect_Done)
 	{
+#ifdef __PLAY_CUTSCENE
+		if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Boss_Intro))
+		{
+			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Boss_Intro"));
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Boss_Intro,true);
+		}
+#endif	
 		m_IsPowerSupplyActive = true;
 		m_IsPowerSupplyAvailable = false;
 		m_IsDoorOpen = true;

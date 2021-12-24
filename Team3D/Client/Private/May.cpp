@@ -218,7 +218,7 @@ _int CMay::Tick(_double dTimeDelta)
 	CCharacter::Tick(dTimeDelta);
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
+
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -226,7 +226,7 @@ _int CMay::Tick(_double dTimeDelta)
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	/* Script */
-	Script_Trigger(dTimeDelta);
+	//Script_Trigger(dTimeDelta);
 
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
@@ -456,6 +456,12 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
+	if (m_pGameInstance->Key_Down(DIK_BACKSPACE))/* 우산 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
+	}
 
 #pragma endregion
 
@@ -815,12 +821,14 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(60.f, 760.f, 194.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_9))/* 우주선 내부 */
 		m_pActorCom->Set_Position(XMVectorSet(63.f, 600.f, 1005.f, 1.f));
-	if (m_pGameInstance->Key_Down(DIK_0))/* 벽점프 전 */
-		m_pActorCom->Set_Position(XMVectorSet(-830.374512f, 793.359192f, 192.788605f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_0))/* 레이저테니스 */
+		m_pActorCom->Set_Position(XMVectorSet(64.f, 730.f, 1000.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_Y))/* 3층 */
 		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
 	if (m_pGameInstance->Key_Down(DIK_X))/* 우산 */
 		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+	if (m_pGameInstance->Key_Down(DIK_U))/* 메이 우주선 태우기 */
+		Set_UFO(true);
 	if (m_pGameInstance->Get_CurrentLevelStep() == 2)
 		m_IsEnding = true;
 #pragma endregion
@@ -1860,10 +1868,21 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
+			/* Script */
+			if (false == m_bPinBallScript_Once[0])
+			{
+				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+				m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
+				SCRIPT->Render_Script(37, CScript::HALF, 1.f);
+				m_bPinBallScript_Once[0] = true;
+			}
+
+			/* UI */
+			UI_Delete(May, InputButton_PS_InterActive);
+			((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
-
-			UI_Generator->Delete_InterActive_UI(Player::May, UI::PinBall_Handle);
 
 			/* 플레이어->핸들방향으로 플레이어 회전 */
 			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -1909,6 +1928,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
+
+			if (5 == static_cast<CWarpGate*>(m_pTargetPtr)->Get_StageValue())
+			{
+				/* 레이저테니스 UI 지우셈 */
+				UI_Delete(Default, Minigame_Score);
+				UI_Delete(Default, Minigame_Title);
+			}
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
@@ -2061,7 +2087,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 342.838f, 199.3799f, 1.f));
+				m_pActorCom->Set_Position(XMVectorSet(60.9975f, 345.838f, 199.3799f, 1.f));
 				((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_LaserRippedOff, UFO_Left);
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
@@ -2074,14 +2100,15 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			}
 		}
-		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && m_pGameInstance->Key_Down(DIK_O) && false == m_bLaserTennis)
+		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
 
 			LASERTENNIS->Increase_PowerCoord();
 
-			UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
+			UI_Delete(May, InputButton_PS_InterActive);
+			LASERTENNIS->Set_PowerCoordUI_May(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
@@ -2099,8 +2126,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_bHit = true;
 
 			/* HP 감소 */
-			LASERTENNIS->Set_CodyCount();
+			/* 순서 바꾸면 안됨 ㅇㅇ */
 			Set_MinigameHpBarReduction(30);
+			LASERTENNIS->Set_CodyCount();
 
 			m_IsCollide = false;
 		}
@@ -2182,12 +2210,14 @@ void CMay::Activate_RobotLever(const _double dTimeDelta)
 {
 	if (m_IsActivateRobotLever == true)
 	{
-		//m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Lever_Left))
+		m_fLeverCutSceneTime += (_float)dTimeDelta;
+		if (m_fLeverCutSceneTime > 1.f)
 		{
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			m_IsActivateRobotLever = false;
 			m_IsCollide = false;
+			m_fLeverCutSceneTime = 0.f;
 		}
 	}
 }
@@ -2198,7 +2228,7 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 		return;
 
 	_bool IsTriggerEnd = false;
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) || m_pGameInstance->Key_Down(DIK_I))
 		IsTriggerEnd = true;
 
 	if (m_IsPullVerticalDoor == true)
@@ -2422,6 +2452,14 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* 공 발사 */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
+				if (false == m_bPinBallScript_Once[1])
+				{
+					m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+					m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
+					SCRIPT->Render_Script(38, CScript::HALF, 1.f);
+					m_bPinBallScript_Once[1] = true;
+				}
+
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
 				m_pGameInstance->Play_Sound(TEXT("Pinball_Shooter_Shot.wav"), CHANNEL_PINBALL_HANDLE);
@@ -2433,7 +2471,11 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
+#ifdef __CONTROL_MAY_KEYBOARD
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+#else
+			if (m_pGameInstance->Get_Pad_LStickX() > 40000)
+#endif // __CONTROL_MAY_KEYBOARD
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
@@ -2449,7 +2491,11 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+#ifdef __CONTROL_MAY_KEYBOARD
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+#else
+			else if (m_pGameInstance->Get_Pad_LStickX() < 20000)
+#endif // __CONTROL_MAY_KEYBOARD
 			{
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)
@@ -2546,6 +2592,13 @@ void CMay::Set_ActiveMinigameHpBar(_bool IsCheck)
 	m_pMinigameHpBar->Set_Active(IsCheck);
 }
 
+void CMay::Set_MinigameHpBarReset()
+{
+	m_pMinigameHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_ResetHp();
+	m_pMinigameSubHpBar->Set_Active(false);
+}
+
 void CMay::Set_MinigameHpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pMinigameHpBar || nullptr == m_pMinigameSubHpBar)
@@ -2571,7 +2624,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Key_Down(DIK_I) || m_pGameInstance->Pad_Key_Down(DIP_B))
 	{
 		m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 		m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
@@ -2580,11 +2633,8 @@ void CMay::LaserTennis(const _double dTimeDelta)
 		m_bLaserTennis = false;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
+	if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);
-	}
 }
 
 void CMay::Set_UFO(_bool bCheck)

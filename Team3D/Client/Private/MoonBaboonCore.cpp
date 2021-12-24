@@ -6,6 +6,11 @@
 #include "MoonBaboonCore_Glass.h"
 #include "Effect_Boss_Core.h"
 #include "Effect_Generator.h"
+#include "UFO.h"
+#include"MainCamera.h"
+#include"SubCamera.h"
+
+_uint CMoonBaboonCore::m_iBrokenCheck = 0;
 
 CMoonBaboonCore::CMoonBaboonCore(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -44,8 +49,14 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	DATABASE->Set_MoonBaboonCore(this);
 
+	// 깨지는 순서 0 - 2 - 1
 	if (m_tDesc.iIndex == 1) // 중력 발판 앞 코어
 		m_fMoveTime *= 2.5f;
+
+	if (m_tDesc.iIndex == 0)
+		m_bPatternOn = true;
+
+	m_iBrokenCheck = 0;
 
     return S_OK;
 }
@@ -56,7 +67,9 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 	NULL_CHECK_RETURN(m_pCoreButton, E_FAIL);
 	NULL_CHECK_RETURN(m_pCoreShield, E_FAIL);
 	NULL_CHECK_RETURN(m_pCoreGlass, E_FAIL);
-	NULL_CHECK_RETURN(m_pEffectBossCore, E_FAIL);
+
+	// 버튼 패턴 체크
+	OnPatternCheck();
 
 	if (m_bBroken)
 	{
@@ -96,14 +109,17 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 		Active_Pillar(TimeDelta);
 	}
 
+	if (m_pEffectBossCore) 
+		m_pEffectBossCore->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	// 2 Phase시 위로 올라가는거
+	GoUp(TimeDelta);
+
+	/* Tick Childs*/
 	m_pCorePillar->Tick(TimeDelta);
 	m_pCoreButton->Tick(TimeDelta);
 	m_pCoreShield->Tick(TimeDelta);
 	m_pCoreGlass->Tick(TimeDelta);
-	m_pEffectBossCore->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-	// 2 Phase시 위로 올라가는거
-	GoUp(TimeDelta);
 
     return _int();
 }
@@ -117,6 +133,26 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
 
     return _int();
 }
+
+//void CMoonBaboonCore::Reset()
+//{
+//	if (m_bResetOnce) return;
+//	if (nullptr != m_pEffectBossCore) return;
+//
+//	if (nullptr == m_pEffectBossCore)
+//	{
+//		FAILED_CHECK(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"), nullptr, (CGameObject**)&m_pEffectBossCore));
+//	}
+//
+//	m_bBroken = false;
+//	m_bBrokenStart = false;
+//	m_dBrokenWaitingDeltaT = 0.f;
+//	m_iActiveCore = 0;
+//
+//	m_pCoreGlass->Reset();
+//
+//	m_bResetOnce = true;
+//}
 
 void CMoonBaboonCore::GoUp(_double dTimeDelta)
 {
@@ -133,23 +169,35 @@ void CMoonBaboonCore::GoUp(_double dTimeDelta)
 
 	if (m_fMaxY <= m_fDistance)
 	{
+		//Reset();
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vMaxPos), 1.f));
 		m_fMaxY = 0.f;
 		m_IsGoUp = false;
 		m_fDistance = 0.f;
 		m_iActiveCore = 0;
 		m_bMove = false;
+		m_b2Floor = true;
 		return;
 	}
 
 	m_pTransformCom->Go_Up(dTimeDelta);
 	m_bMove = true;
+	m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
 }
 
 void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 {
-	if (true == m_IsGoUp)
-		return;
+	if (true == m_IsGoUp) return;
+	if (false == m_bPatternOn) return;
+
+	CUFO* pUFO = (CUFO*)DATABASE->Get_BossUFO();
+	if (nullptr != pUFO)
+	{
+		if (CUFO::LASER != pUFO->Get_BossPatern()) {
+			m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
+			return;
+		}
+	}
 
 	if (m_iActiveCore == 1)
 	{
@@ -180,12 +228,53 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 	}
 }
 
+void CMoonBaboonCore::OnPatternCheck()
+{
+	if (2 == m_tDesc.iIndex && 1 == m_iBrokenCheck)
+	{
+		m_bPatternOn = true;
+	}
+	else if (1 == m_tDesc.iIndex && 2 == m_iBrokenCheck)
+	{
+		m_bPatternOn = true;
+	}
+
+	if (m_bPatternOn)
+	{
+		m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_ACT);
+	}
+	else
+		m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
+
+	CUFO* pUFO = (CUFO*)DATABASE->Get_BossUFO();
+	if (nullptr != pUFO)
+	{
+		if (CUFO::LASER != pUFO->Get_BossPatern()) {
+			m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
+		}
+	}
+}
+
 void CMoonBaboonCore::Set_Broken()
 {
 	if (m_bBroken) return;
 
 	m_bBroken = true;
-	m_pEffectBossCore->HitOn();
+	m_bPatternOn = false;
+	m_iBrokenCheck += 1;
+
+	if (m_pEffectBossCore)
+	{
+		m_pEffectBossCore->HitOn();
+		Safe_Release(m_pEffectBossCore);
+		m_pEffectBossCore = nullptr;
+	}
+
+	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어
+	{
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
+		static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
+	}
 }
 
 void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)
@@ -231,7 +320,7 @@ void CMoonBaboonCore::Free()
 {
 	if (m_pEffectBossCore)
 	{
-		m_pEffectBossCore->HitOn();
+		m_pEffectBossCore->Set_Dead();
 		Safe_Release(m_pEffectBossCore);
 	}
 	Safe_Release(m_pCorePillar);

@@ -49,6 +49,8 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 	if (true == m_IsHit)
 		return Explosion();
 
+	if (m_isDead) return EVENT_DEAD;
+
 	// UV회전 하면서 일정 범위만 Distortion
 	m_fDistortion_Time += (_float)TimeDelta * 0.5f;
 	if (1.f < m_fDistortion_Time)
@@ -144,6 +146,7 @@ void CEffect_Boss_Core::Instance_UV(_float TimeDelta, _int iIndex)
 
 _int CEffect_Boss_Core::Explosion()
 {
+	m_isDead = true;
 	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
 	return EVENT_DEAD;
 }

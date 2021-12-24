@@ -13,6 +13,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "HpBar.h"
+#include "Script.h"
 
 IMPLEMENT_SINGLETON(CLaserTennis_Manager)
 
@@ -148,9 +149,12 @@ void CLaserTennis_Manager::Decrease_PowerCoord()
 
 void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 {
-	/* 두번 째 준비 */
+	/* 두번째 준비 */
 	if (false == m_bReady)
 		return;
+
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Play_Sound(TEXT("AreYouReadyWindow_Button.wav"), CHANNEL_LASERTENNISUI);
 
 	m_bKeyCheck[eTarget] = true;
 
@@ -177,6 +181,20 @@ void CLaserTennis_Manager::Set_MayCount()
 {
 	++m_iMayCount;
 
+	if (1 == m_iMayCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("14.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(21, CScript::FULL, 1.f);
+	}
+
+	if (3 == m_iMayCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("15.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(22, CScript::FULL, 1.f);
+	}
+
 	if (4 <= m_iMayCount)
 	{
 		m_eWinner = CLaserTennis_Manager::TARGET_MAY;
@@ -188,11 +206,35 @@ void CLaserTennis_Manager::Set_CodyCount()
 {
 	++m_iCodyCount;
 
+	if (1 == m_iCodyCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("12.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(19, CScript::FULL, 1.f);
+	}
+
+	if (3 == m_iCodyCount)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+		m_pGameInstance->Play_Sound(TEXT("13.wav"), CHANNEL_LASERTENNISVOICE);
+		SCRIPT->Render_Script(20, CScript::FULL, 1.f);
+	}
+
 	if (4 <= m_iCodyCount)
 	{
 		m_eWinner = CLaserTennis_Manager::TARGET_CODY;
 		Reset_Game();
 	}
+}
+
+void CLaserTennis_Manager::Set_PowerCoordUI_Cody(_bool bCheck)
+{
+	m_pLaserPowerCoord[0]->Set_UICehck_Cody(bCheck);
+}
+
+void CLaserTennis_Manager::Set_PowerCoordUI_May(_bool bCheck)
+{
+	m_pLaserPowerCoord[1]->Set_UICehck_May(bCheck);
 }
 
 void CLaserTennis_Manager::Active_LaserButton()
@@ -295,6 +337,10 @@ void CLaserTennis_Manager::Push_Coord()
 
 	/* 충돌 벽 생성 */
 	Active_CollisionWall();
+
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
+	m_pGameInstance->Play_Sound(TEXT("11.wav"), CHANNEL_LASERTENNISVOICE);
+	SCRIPT->Render_Script(18, CScript::FULL, 1.f);
 }
 
 void CLaserTennis_Manager::Start_Game()
@@ -347,9 +393,12 @@ void CLaserTennis_Manager::Reset_Game()
 	/* 파워코드 초기화 */
 	for (_uint i = 0; i < 2; ++i)
 		m_pLaserPowerCoord[i]->Change_State();
+	Set_PowerCoordUI_Cody(false);
+	Set_PowerCoordUI_May(false);
 
 	/* 타이머 종료 */
 	m_pTimer_LaserTennis->OnOff_Timer(false);
+	m_pTimer_LaserTennis->Set_Script();
 
 	/* 변수 초기화 */
 	ZeroMemory(m_bKeyCheck, sizeof(m_bKeyCheck));
@@ -446,6 +495,9 @@ HRESULT CLaserTennis_Manager::Add_Wall(CWall_LaserTennis * pWall)
 HRESULT CLaserTennis_Manager::Create_StartUI()
 {
 	/* UI 다 띄우면 Ready = true */
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Play_Sound(TEXT("AreYouReadyWindow_Create.wav"), CHANNEL_LASERTENNISUI);
+
 	UI_CreateOnlyOnce(Cody, Minigame_Ready_Cody);
 	UI_CreateOnlyOnce(May, Minigame_Ready_May);
 
@@ -453,11 +505,17 @@ HRESULT CLaserTennis_Manager::Create_StartUI()
 
 	m_bReady = true;
 
+	((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReset();
+	((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReset();
+
 	return S_OK;
 }
 
 HRESULT CLaserTennis_Manager::Create_ResultUI()
 {
+	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_End.wav"), CHANNEL_LASERTENNISUI);
+
 	((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(false);
 	((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(false);
 
@@ -471,6 +529,9 @@ HRESULT CLaserTennis_Manager::Create_ResultUI()
 		UI_CreateOnlyOnce(Default, Minigame_Win_May);
 		DATABASE->Set_MayMinigameWinCount(1);
 	}
+
+	((CCody*)DATABASE->GetCody())->Set_MinigameHpBarReset();
+	((CMay*)DATABASE->GetMay())->Set_MinigameHpBarReset();
 
 	return S_OK;
 }

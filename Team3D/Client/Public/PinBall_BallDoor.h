@@ -10,6 +10,9 @@ private:
 	virtual ~CPinBall_BallDoor() = default;
 
 public:
+	_bool Get_Finish() { return m_bFinish; }
+
+public:
 	/* false:Open true:Close */
 	void Set_DoorState(_bool bDoorState);
 	void Set_Render(_bool bRender) { m_bRender = bRender; }
@@ -30,6 +33,7 @@ private:
 	_bool			m_bReady = false;
 	_bool			m_bDoorState = false;
 	_bool			m_bRender = true;
+	_bool			m_bFinish = false;
 	_float			m_fAngle = 0.f;
 
 private:

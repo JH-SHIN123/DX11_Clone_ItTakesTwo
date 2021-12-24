@@ -77,7 +77,7 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 		m_pGameInstance->Play_Sound(TEXT("FireDoor_Open.wav"), CHANNEL_FIRE_DOOR);
 	}
 
-	if (m_pGameInstance->Pad_Key_Down(DIP_LB) || m_pGameInstance->Key_Down(DIK_I))
+	if (m_pGameInstance->Pad_Key_Down(DIP_A) || m_pGameInstance->Key_Down(DIK_I))
 	{
 		m_bPull = false;
 		m_IsNoGrab = true;

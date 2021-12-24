@@ -8,6 +8,7 @@
 #include "Cody.h"
 #include "PinBall_Door.h"
 #include "SlideDoor.h"
+#include "Script.h"
 
 CPinBall_Handle::CPinBall_Handle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -55,9 +56,14 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 			m_bRespawnAngle = true;
 			((CPinBall*)(DATABASE->Get_Pinball()))->Set_Failed();
 			((CCody*)(DATABASE->GetCody()))->PinBall_Respawn(dTimeDelta);
+			((CPinBall_Door*)(DATABASE->Get_Pinball_Door()))->Set_Goal();
 		}
 		Respawn_Angle(dTimeDelta);
 		Respawn_Pos(dTimeDelta);
+
+		/* UI */
+		UI_Delete(May, InputButton_PS_InterActive);
+		((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
 	}
 	else
 	{
@@ -67,11 +73,11 @@ _int CPinBall_Handle::Tick(_double dTimeDelta)
 		Respawn_Pos(dTimeDelta);
 	}
 
+	/* UI */
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
-
-	vPosition -= vRight;
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PinBall_Handle, vPosition, 5.f, m_IsCollision);
+	_vector vOffset = XMVectorSet(-1.f, 0.3f, 0.f, 1.f);
+	vPosition += vOffset;
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::PinBall_Handle, vPosition, 5.f, m_IsCollision, m_bUICheck);
 
 	return NO_EVENT;
 }
@@ -117,7 +123,7 @@ void CPinBall_Handle::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGa
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = true;
 	}
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
+	else
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::ePINBALLHANDLE, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = false;
@@ -151,6 +157,7 @@ void CPinBall_Handle::MoveMent(_double dTimeDelta)
 			m_bHandleReady = false;
 			m_bReady = false;
 			m_bFinish = true;
+			m_bUICheck = false;
 		}
 		m_pTransformCom->RotatePitch_Angle(dTimeDelta, 90.f);
 	}

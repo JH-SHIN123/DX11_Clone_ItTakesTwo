@@ -137,6 +137,9 @@ HRESULT CHangingPlanet::Ready_Component(void * pArg)
 	PxJointLimitCone LimitCone = PxJointLimitCone(PxPi / 6, PxPi / 6, 0.05f);
 	m_pJoint = CPhysX::GetInstance()->Create_Joint(m_pDynamicActorCom->Get_Actor(), PxTransform(PxVec3(tArg.vOffset.x, tArg.vOffset.y, tArg.vOffset.z)), nullptr, PxTransform(PxVec3(tArg.vJointPosition.x, tArg.vJointPosition.y, tArg.vJointPosition.z)), LimitCone);
 
+	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(PxVec3(tArg.vJointPosition.x, tArg.vJointPosition.y - tArg.vOffset.y, tArg.vJointPosition.z)));
+	m_pDynamicActorCom->Get_Actor()->putToSleep();
+
 	return S_OK;
 }
 

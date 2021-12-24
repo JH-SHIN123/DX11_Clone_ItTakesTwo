@@ -32,6 +32,7 @@ public:
 	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
+	HRESULT Start_CamEffect(const _tchar* pEffectTag);
 	_int	ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook = false, _bool bIsCalculateCamLook = false);		//변수 초기화용
 private:
 	_int	Check_Player(_double dTimeDelta);

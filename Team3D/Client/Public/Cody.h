@@ -239,6 +239,7 @@ public:
 
 	_bool			 Get_IsRespawn() { return m_bRespawn; }
 	_bool			 Get_IsDeadLine() { return m_IsDeadLine; }
+	_bool			 Get_RespawnCheck() { return m_bRespawnCheck; }
 	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
 
 	_bool			 Get_IsEnding() { return m_IsEnding; }
@@ -252,9 +253,11 @@ public:
 	void			 Set_HpBarReduction(_float fDamage);
 	void			 Set_ActiveMinigameHpBar(_bool IsCheck);
 	void			 Set_MinigameHpBarReduction(_float fDamage);
+	void			 Set_MinigameHpBarReset();
 	void 			 Set_RocketOffSetPos(_fvector vRocketOffSetPos) { m_vRocketOffSetPos = vRocketOffSetPos; }
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
+	void			 Set_Change_Size_After_UmbrellaCutScene();
 
 	/* For. Ending */
 	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -409,7 +412,10 @@ private:
 	_bool m_IsHitStarBuddy = false;
 	_bool m_IsHitRocket = false;
 	_bool m_IsActivateRobotLever = false;
+
+	/* For.PushBattery*/
 	_bool m_IsPushingBattery = false;
+	_float m_fPushDist = 0.f;
 
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
@@ -418,6 +424,10 @@ private:
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall*/
 	_bool	 m_IsPinBall = false;
+	_bool	 m_IsReadyPinball = false;
+	_bool	 m_bPinBallScript = false;
+	_double  m_dScriptTime = 0.0;
+	_uint	 m_iScriptCount = 0;
 	/* Hye::For.Tube*/
 	_bool	 m_IsTube = false;
 	/* Hye::For.SpaceShip */
@@ -558,6 +568,8 @@ private:
 	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+	void Ready_PinBall(const _double dTimeDelta);
+	void PinBall_Script(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
 
 	/* ÁøÇõ */
@@ -723,6 +735,8 @@ private: /* For. Ending */
 	_float m_fCody_GravityPipe_Voice_Volume = 1.f;
 	_bool  m_bGravityPipe_FirstIn = false;
 
+	// CamEffect
+	_float m_fFootStepDelay = 0.f;
 #pragma endregion
 
 };

@@ -23,6 +23,7 @@ public:
 public:
 	void Set_Ratio(_float fRatio);
 	void Set_Active(_bool IsCheck);
+	void Set_HpBarReduction(_float fDamage);
 
  private:
 	_float							m_fRatio = 1.f;
@@ -31,6 +32,8 @@ public:
 	_bool							m_IsActive = false;
 	_float							m_fScaleX = 0.f;
 	_bool							m_IsFontRender = false;
+	_float							m_fMaxHp = 0.f;
+	_float							m_fHp = 0.f;
 
  private:
 	 class CBossHpBarFrame*			m_pBossHpBarFrame = nullptr;

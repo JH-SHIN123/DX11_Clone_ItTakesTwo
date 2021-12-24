@@ -101,6 +101,13 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 		m_pParticle->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	}
 
+	if (true == DATABASE->Get_BossFloorUp())
+	{
+		_float fDist = (_float)TimeDelta * 10.f;
+		vPos.m128_f32[1] += fDist;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	}
+
 	Explosion_Check();
 	Scale_Check(TimeDelta);
 

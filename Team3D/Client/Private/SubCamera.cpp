@@ -55,7 +55,7 @@ HRESULT CSubCamera::NativeConstruct(void * pArg)
 	m_PreWorld.vTrans = _float4(0.f, 0.f, 0.f, 1.f);
 
 	m_vStartEye =	{0.f,7.f, -7.f, 1.f};
-	m_vStartAt =	{0.f,3.0f, 0.f, 1.f };
+	m_vStartAt =	{0.f,1.5f, 0.f, 1.f };
 
 
 
@@ -187,6 +187,12 @@ void CSubCamera::Set_Zoom(_float4 vEye, _float4 vAt, _float fZoomVal, _double dT
 HRESULT CSubCamera::Start_Film(const _tchar * pFilmTag)
 {
 	m_pCamHelper->Start_Film(pFilmTag, CFilm::RScreen);
+	return S_OK;
+}
+
+HRESULT CSubCamera::Start_CamEffect(const _tchar * pEffectTag)
+{
+	m_pCamHelper->Start_CamEffect(pEffectTag, CFilm::RScreen);
 	return S_OK;
 }
 
@@ -779,8 +785,8 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 2000;
-		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta* m_fMouseRevSpeed[Rev_Holizontal];
+			MouseMove = MouseMove / 1000;
+		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta * m_fMouseRevSpeed[Rev_Holizontal];
 
 	}
 	if (MouseMove = (/*65535 - */m_pGameInstance->Get_Pad_RStickY()) - 32767)
@@ -788,7 +794,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 2000;
+			MouseMove = MouseMove / 1000;
 
 
 		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);

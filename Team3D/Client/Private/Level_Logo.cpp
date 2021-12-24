@@ -19,7 +19,7 @@ HRESULT CLevel_Logo::NativeConstruct()
 
 	Ready_Layer_SplashScreen();
 
-	m_pGameInstance->Play_Sound(TEXT("MainMenu_Waiting.ogg"), CHANNEL_BGM);
+	m_pGameInstance->Play_Sound(TEXT("MainMenu_Waiting.ogg"), CHANNEL_BGM, 2.f);
 
 	return S_OK;
 }
@@ -42,6 +42,7 @@ _int CLevel_Logo::Tick(_double dTimedelta)
 			}
 
 			pGameInstance->Clear_LevelResources(Level::LEVEL_LOGO);
+			pGameInstance->Stop_Sound(CHANNEL_BGM2);
 			UI_Delete(Default, AlphaScreen);
 		}
 	}
