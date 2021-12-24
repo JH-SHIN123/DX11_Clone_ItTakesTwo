@@ -424,6 +424,7 @@ private:
 	_float3	 m_DeadLinePos = {};
 	/* Hye::For.PinBall*/
 	_bool	 m_IsPinBall = false;
+	_bool	 m_IsReadyPinball = false;
 	_bool	 m_bPinBallScript = false;
 	_double  m_dScriptTime = 0.0;
 	_uint	 m_iScriptCount = 0;
@@ -566,6 +567,7 @@ private:
 	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
+	void Ready_PinBall(const _double dTimeDelta);
 	void PinBall_Script(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
 

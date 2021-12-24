@@ -33,6 +33,8 @@ private:
 	_bool			m_bTrigger = false;
 	_bool			m_bDoorState = false;
 	_bool			m_IsCollision = false;
+	_bool			m_bUICheck = false;
+
 	_float			m_fDistance = 0.f;
 	_float3			m_ResetPos = {};
 

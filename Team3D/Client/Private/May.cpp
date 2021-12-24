@@ -1867,6 +1867,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
+			/* Script */
 			if (false == m_bPinBallScript_Once[0])
 			{
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
@@ -1875,10 +1876,12 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				m_bPinBallScript_Once[0] = true;
 			}
 
+			/* UI */
+			UI_Delete(May, InputButton_PS_InterActive);
+			((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
-
-			UI_Generator->Delete_InterActive_UI(Player::May, UI::PinBall_Handle);
 
 			/* 플레이어->핸들방향으로 플레이어 회전 */
 			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -2103,7 +2106,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			LASERTENNIS->Increase_PowerCoord();
 
-			UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
+			UI_Delete(May, InputButton_PS_InterActive);
+			LASERTENNIS->Set_PowerCoordUI_May(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
@@ -2466,7 +2470,11 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 40000*/)
+#ifdef __CONTROL_MAY_KEYBOARD
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+#else
+			if (m_pGameInstance->Get_Pad_LStickX() > 40000)
+#endif // __CONTROL_MAY_KEYBOARD
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
@@ -2482,7 +2490,11 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+#ifdef __CONTROL_MAY_KEYBOARD
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+#else
+			else if (m_pGameInstance->Get_Pad_LStickX() < 20000)
+#endif // __CONTROL_MAY_KEYBOARD
 			{
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)
@@ -2621,10 +2633,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
-	{
-		UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);
-	}
 }
 
 void CMay::Set_UFO(_bool bCheck)

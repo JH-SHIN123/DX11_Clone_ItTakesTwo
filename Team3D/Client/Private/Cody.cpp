@@ -44,6 +44,7 @@
 #include "HpBar.h"
 #include "MinigameHpBar.h"
 #include "PinBall_Handle.h"
+#include "PinBall_BallDoor.h"
 
 #pragma region Ready
 CCody::CCody(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -339,6 +340,7 @@ _int CCody::Tick(_double dTimeDelta)
 			Touch_FireDoor(dTimeDelta);
 			Falling_Dead(dTimeDelta); 
 			WallLaserTrap(dTimeDelta);
+			Ready_PinBall(dTimeDelta);
 			PinBall(dTimeDelta);
 			SpaceShip_Respawn(dTimeDelta);
 			Holding_BossUFO(dTimeDelta);
@@ -2371,8 +2373,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			// ÄÚµð Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_fWarpTimer = 0.f;
-			m_IsWarpNextStage	= true;
-			m_IsWarpDone		= true;
+			m_IsWarpNextStage = true;
+			m_IsWarpDone = true;
 			XMStoreFloat4x4(&m_TriggerTargetWorld, static_cast<CWarpGate*>(m_pTargetPtr)->Get_NextPortal_Matrix());
 			m_pCamera->Set_StartPortalMatrix(static_cast<CWarpGate*>(m_pTargetPtr)->Get_Transform()->Get_WorldMatrix());
 
@@ -2498,11 +2500,13 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
 
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
+
+			m_IsReadyPinball = true;
 		}
 		else if (m_eTargetGameID == GameID::eHOOKAHTUBE)
 		{
 			/* Æ©ºê*/
-			if(2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
+			if (2 == ((CHookahTube*)m_pTargetPtr)->Get_Option())
 				m_pActorCom->Jump_Start(6.f);
 			else
 				m_pActorCom->Jump_Start(4.f);
@@ -2569,14 +2573,14 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			}
 		}
 		else if (m_eTargetGameID == GameID::eELECTRICWALL && false == m_bRespawn && m_pActorCom->Get_IsWallCollide() == true && m_bElectricWallAttach == false
- 			&& m_IsJumping == true && m_IsFalling == false)
+			&& m_IsJumping == true && m_IsFalling == false)
 		{
 			if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric())
 			{
 				m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 				m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 
- 				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
 				m_bRespawnCheck = false;
@@ -2605,7 +2609,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			LASERTENNIS->Increase_PowerCoord();
 
-			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
+			/* UI */
+			UI_Delete(Cody, InputButton_InterActive);
+			LASERTENNIS->Set_PowerCoordUI_Cody(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
@@ -2654,7 +2660,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Control || m_IsDeadLine
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO
-		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding)
+		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding || m_IsReadyPinball)
 		return true;
 
 	return false;
@@ -4064,6 +4070,15 @@ void CCody::PinBall(const _double dTimeDelta)
 		m_pActorCom->Set_Position(((CDynamic_Env*)(CDataStorage::GetInstance()->Get_Pinball()))->Get_Position());
 }
 
+void CCody::Ready_PinBall(const _double dTimeDelta)
+{
+	if (false == m_IsReadyPinball)
+		return;
+
+	if (true == ((CPinBall_BallDoor*)(DATABASE->Get_Pinball_BallDoor()))->Get_Finish())
+		m_IsReadyPinball = false;
+}
+
 void CCody::PinBall_Script(const _double dTimeDelta)
 {
 	if (false == m_bPinBallScript)
@@ -4175,10 +4190,7 @@ void CCody::LaserTennis(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_E))
-	{
-		UI_Generator->Delete_InterActive_UI(Player::Cody, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_CODY);
-	}
 }
 
 void CCody::PinBall_Respawn(const _double dTimeDelta)
