@@ -422,21 +422,28 @@ HRESULT CLevel_Stage::Ready_Lights()
 	Ready_DirectionalLight(TEXT("Sun"), _float3(1.f, -1.f, 1.f), _float4(0.45f, 0.45f, 0.45f, 1.f), _float4(0.35f,0.35f,0.35f,1.f), _float4(0.45f, 0.45f, 0.45f,1.f));
 
 #ifndef __MAPLOADING_OFF
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Start.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ToyBoxButton_Back.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_InShip.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Umbrella.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_SpaceControl.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_2Floor.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_BossRoom.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Start.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Floor2.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Rail.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
-	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Bg.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_BossRoom_Floor1.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_BossRoom_Floor2.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Bridge.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ComputeRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ControlRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_InShip.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Pinball.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Planet_Robot.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Start.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_ToyBoxButton_Back.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_BASICLIGHT, TEXT("../Bin/Resources/Data/LightData/BasicLight_Umbrella.dat"));
+
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Rail_Bg.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Rail_Bg2.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_EFFECTLIGHT, TEXT("../Bin/Resources/Data/LightData/EffectLight_Start.dat"));
+
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
+	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
+
+	Ready_VolumeLight_Rail();
 #endif
 
 	return S_OK;
@@ -446,6 +453,91 @@ HRESULT CLevel_Stage::Ready_DirectionalLight(const _tchar* pLightTag, _float3 vD
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	return pGameInstance->Add_Light(LightStatus::eDIRECTIONAL, CLight::Create(pLightTag, &LIGHT_DESC(LIGHT_DESC::TYPE_DIRECTIONAL, vDirection, vDiffuse, vAmbient, vSpecular)));
+}
+
+HRESULT CLevel_Stage::Ready_VolumeLight_Rail()
+{
+	CVolumeLight* pLight = nullptr;
+
+	LIGHT_DESC lightDesc;
+	CVolumeLight::VOLUMELIGHT_DESC volumeLightDesc;
+
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 843.28f, 663.f ,108.225f };
+	lightDesc.fRange = 60.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CUBE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f};
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 0.f,0.5f,1.f };
+	_matrix WorldMatrix = XMMatrixScaling(60.f, 60.f, 60.f);
+	WorldMatrix *= XMMatrixTranslation(843.28f, 663.f, 108.225f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+	
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 678.f, 729.5f, 120.86f };
+	lightDesc.fRange = 60.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CUBE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f };
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 1.f,0.5f,0.5f };
+	WorldMatrix = XMMatrixScaling(42.f, 42.f, 42.f);
+	WorldMatrix *= XMMatrixTranslation(678.f, 729.5f, 120.86f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 750.4f, 723.4f,  267.f };
+	lightDesc.fRange = 60.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CUBE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f };
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 1.f,0.5f,0.f };
+	WorldMatrix = XMMatrixScaling(49.f, 49.f, 49.f);
+	WorldMatrix *= XMMatrixTranslation(775.4f, 712.11f, 263.57f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 915.29f,  735.66f,  315.78f };
+	lightDesc.fRange = 20.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CONE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f };
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 1.f,1.f,1.f };
+	WorldMatrix = XMMatrixScaling(4.2f, 25.f, 4.2f);
+	WorldMatrix *= XMMatrixTranslation(915.29f, 735.66f, 315.78f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	return S_OK;
 }
 
 HRESULT CLevel_Stage::Ready_Layer_Sky(const _tchar * pLayerTag)
