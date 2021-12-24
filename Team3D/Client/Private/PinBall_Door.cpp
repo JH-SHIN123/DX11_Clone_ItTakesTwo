@@ -54,13 +54,11 @@ _int CPinBall_Door::Tick(_double dTimeDelta)
 
 	Movement(dTimeDelta);
 
+	/* UI */
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
-	_vector vUp = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
-	_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-	vPosition -= vRight;
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::PinBall_Door, vPosition, 3.f, m_IsCollision);
+	_vector vOffset = XMVectorSet(0.f, 0.25f, -0.12f, 1.f);
+	vPosition += vOffset;
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::PinBall_Door, vPosition, 1.f, m_IsCollision, m_bUICheck);
 
 	return NO_EVENT;
 }
@@ -127,6 +125,10 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 	/* Open */
 	if (false == m_bDoorState)
 	{
+		/* UI */
+		m_bUICheck = true;
+		UI_Delete(Cody, InputButton_InterActive);
+
 		_float	fDis = (_float)dTimeDelta;
 		m_fDistance += fDis;
 
@@ -147,6 +149,11 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_bTrigger = false;
 		m_bDoorState = false;
+
+		if (true == m_bGoal)
+			m_bUICheck = true;
+		else
+			m_bUICheck = false;
 	}
 }
 

@@ -45,6 +45,7 @@ public:
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
 	HRESULT Set_MeshRenderGroup();
+	void Set_MissilePtrReset(_bool IsTargetCheck);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }

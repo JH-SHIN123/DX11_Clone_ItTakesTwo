@@ -227,6 +227,16 @@ void CLaserTennis_Manager::Set_CodyCount()
 	}
 }
 
+void CLaserTennis_Manager::Set_PowerCoordUI_Cody(_bool bCheck)
+{
+	m_pLaserPowerCoord[0]->Set_UICehck_Cody(bCheck);
+}
+
+void CLaserTennis_Manager::Set_PowerCoordUI_May(_bool bCheck)
+{
+	m_pLaserPowerCoord[1]->Set_UICehck_May(bCheck);
+}
+
 void CLaserTennis_Manager::Active_LaserButton()
 {
 	/* 랜덤 인덱스 Swap */
@@ -383,6 +393,8 @@ void CLaserTennis_Manager::Reset_Game()
 	/* 파워코드 초기화 */
 	for (_uint i = 0; i < 2; ++i)
 		m_pLaserPowerCoord[i]->Change_State();
+	Set_PowerCoordUI_Cody(false);
+	Set_PowerCoordUI_May(false);
 
 	/* 타이머 종료 */
 	m_pTimer_LaserTennis->OnOff_Timer(false);

@@ -41,9 +41,7 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Umbrella_Effect", Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), nullptr, (CGameObject**)&m_pUmbrellaBeam_Effect), E_FAIL);
 	m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
-
 	m_UserData = USERDATA(GameID::eUMBRELLABEAM, this);
-
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -63,7 +61,6 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 
 	m_fHorizontalAngle = 45.f;
 	m_fVerticalAngle = 0.f;
-
 
 	DATABASE->Set_UmbrellaBeam(this);
 	return S_OK;

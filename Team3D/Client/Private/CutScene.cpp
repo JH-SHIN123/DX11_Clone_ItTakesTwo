@@ -434,8 +434,10 @@ HRESULT CCutScene::Start_CutScene_Intro()
 	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
+
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+
 	_double dTime = 0.0;
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -561,6 +563,10 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+
+
 	//_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	pCody->Get_Transform()->Set_WorldMatrix(XMMatrixIdentity()/*matRot*/);
 	pCody->Get_Actor()->Set_Position(XMVectorSet(73.5f, 244.5f, 168.5f, 1.f));
@@ -573,8 +579,8 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
 	pUfo->Get_Model()->Set_Animation(CutScene_UFO_Boss_Intro);
 	
-	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
-	pMoonBaboon->Set_Animation(CutScene_BossIntro_MoonBaboon, Moon_Ufo_MH);
+	//CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	//pMoonBaboon->Set_Animation(CutScene_BossIntro_MoonBaboon, Moon_Ufo_MH);
 
 	CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button1")));
 	pButton->Set_Position(_float3(62.457f, 219.084f, 238.85f));

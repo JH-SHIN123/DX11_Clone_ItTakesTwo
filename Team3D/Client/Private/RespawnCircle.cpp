@@ -70,7 +70,10 @@ _int CRespawnCircle::Tick(_double TimeDelta)
 
 _int CRespawnCircle::Late_Tick(_double TimeDelta)
 {
-	CUIObject::Late_Tick(TimeDelta);
+	_int iActive = CUIObject::Late_Tick(TimeDelta);
+
+	if (2 == iActive)
+		return NO_EVENT;
 
 	m_fSubTime += (_float)TimeDelta * 3.f;
 	m_fHeartTime += (_float)TimeDelta * 5.f;

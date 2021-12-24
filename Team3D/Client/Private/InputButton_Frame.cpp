@@ -29,9 +29,11 @@ HRESULT CInputButton_Frame::NativeConstruct_Prototype(void* pArg)
 HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
+	
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 
-	if (FAILED(Ready_Component()))
-		return E_FAIL;
+	if (pArg != nullptr)
+		memcpy(&m_iFontOption, pArg, sizeof(_uint));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 
@@ -65,10 +67,10 @@ _int CInputButton_Frame::Tick(_double TimeDelta)
 
 _int CInputButton_Frame::Late_Tick(_double TimeDelta)
 {
-	CUIObject::Late_Tick(TimeDelta);
+	_int iActive = CUIObject::Late_Tick(TimeDelta);
 
-	//if (false == m_bActive)
-	//	return 0;
+	if (2 == iActive)
+		return NO_EVENT;
 
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_UI, this);
 }
@@ -177,7 +179,14 @@ void CInputButton_Frame::Render_Font()
 {
 	CUI_Generator::FONTDESC		tFontDesc;
 
-	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")))
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) && 0 == m_iFontOption)
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { m_vFontScale.x, m_vFontScale.y };
+
+		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) && 1 == m_iFontOption)
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
 		tFontDesc.vScale = { m_vFontScale.x, m_vFontScale.y };
@@ -187,25 +196,22 @@ void CInputButton_Frame::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-		tFontDesc.vScale = { m_UIDesc.vScale.x / 2.f, m_UIDesc.vScale.y / 1.2f };
+		tFontDesc.vScale = { m_vFontScale.x, m_vFontScale.y };
 
 		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Cancle")))
 	{
-		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-		tFontDesc.vScale = { 30.f, 40.f };
-
-		UI_Generator->Render_Font(TEXT("Q"), tFontDesc, m_ePlayerID);
-		tFontDesc.vScale = { 20.f, 30.f };
-		tFontDesc.vPosition = { m_UIDesc.vPos.x + 45.f, m_UIDesc.vPos.y };
-		UI_Generator->Render_Font(TEXT("취소"), tFontDesc, m_ePlayerID);
+		m_pEngFont->Render_Font(TEXT("Q"), _float2(278.f, 650.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.43f);
+		m_pFont->Render_Font(TEXT("취소"), _float2(330.f, 650.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.33f);
 	}
 }
 
 HRESULT CInputButton_Frame::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_Font"), (CComponent**)&m_pFont), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_FontDraw"), TEXT("Com_EngFont"), (CComponent**)&m_pEngFont), E_FAIL);
 
 	return S_OK;
 }
@@ -238,6 +244,8 @@ CGameObject * CInputButton_Frame::Clone_GameObject(void * pArg)
 
 void CInputButton_Frame::Free()
 {
+	Safe_Release(m_pEngFont);
+	Safe_Release(m_pFont);
 	Safe_Release(m_pVIBuffer_RectCom);
 
 	CUIObject::Free();

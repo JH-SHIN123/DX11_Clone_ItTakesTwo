@@ -25,6 +25,11 @@ public:
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
+	_uint							m_iOption = 0;
+	_uint							m_iShaderPassNum = 0;
+	_float							m_fDeadTime = 0.f;
+
+private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
 
 private:

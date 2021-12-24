@@ -23,6 +23,7 @@ public:/* Setter */
 	void Set_RespawnPos(_bool _bRespawnPos)		{ m_bRespawnPos = _bRespawnPos; }
 	void Set_Ready(_bool _bReady)				{ m_bReady = _bReady; }
 	void Set_Goal()								{ m_bGoal = true; }
+	void Set_UICheck(_bool bCheck)				{ m_bUICheck = bCheck; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -49,8 +50,9 @@ private:
 	_bool			m_bGoal = false;
 	_bool			m_bGoalTimeCheck = false;
 	_bool			m_bCody_ScriptCheck = false;
-
 	_bool			m_IsCollision = false;
+	_bool			m_bUICheck = true;
+
 	_float			m_fGoalTime = 0.f;
 	_float			m_fReady = 0.f;
 	_float			m_fHandleAngle = 0.f;

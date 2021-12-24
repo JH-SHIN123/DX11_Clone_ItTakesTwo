@@ -33,9 +33,12 @@ private:
 	_uint							m_iShaderPassNum = 0;
 	_bool							m_IsScaleBigger = false;
 	_bool							m_IsScaleSmaller = false;
+	_uint							m_iFontOption = 0;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
+	CFontDraw*						m_pFont = nullptr;
+	CFontDraw*						m_pEngFont = nullptr;
 
 private:
 	void Render_Font();

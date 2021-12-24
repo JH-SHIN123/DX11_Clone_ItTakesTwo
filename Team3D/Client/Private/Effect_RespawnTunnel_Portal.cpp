@@ -2,6 +2,7 @@
 #include "..\Public\Effect_RespawnTunnel_Portal.h"
 #include "Effect_Env_Particle.h"
 #include "Effect_Env_Particle_Follow.h"
+#include "DataStorage.h"
 
 CEffect_RespawnTunnel_Portal::CEffect_RespawnTunnel_Portal(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -72,8 +73,6 @@ _int CEffect_RespawnTunnel_Portal::Tick(_double TimeDelta)
 	m_dAlphaTime += TimeDelta * 0.5;
 	if (1.0 < m_dAlphaTime)
 		m_dAlphaTime = 1.0;
-
-	//m_pParticle->Set_ControlTime(m_dAlphaTime);
 
 	return _int();
 }
@@ -283,6 +282,41 @@ void CEffect_RespawnTunnel_Portal::Set_Shader_SmokeData()
 	m_pPointInstanceCom_Smoke->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 
 	return;
+}
+
+void CEffect_RespawnTunnel_Portal::Check_Sound()
+{
+	_vector vPos	  = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vPos_Cody = DATABASE->GetCody()->Get_Position();
+	_vector vPos_May  = DATABASE->GetMay()->Get_Position();
+
+	_float	fLength_Cody = XMVector3Length(vPos - vPos_Cody).m128_f32[0];
+	_float	fLength_May	 = XMVector3Length(vPos - vPos_May).m128_f32[0];
+	_float	fLength_Size = 5.f;
+
+	_bool	IsSoundOff[2] = {false, false};
+
+	if (fLength_Size < fLength_Cody)
+		IsSoundOff[0] = true;
+
+	if (fLength_Size < fLength_May)
+		IsSoundOff[1] = true;
+
+	if (true == IsSoundOff[0] && true == IsSoundOff[1])
+		return;
+
+	// ´õ °¡±î¿î³ð
+	_float fLength_Less = fLength_Cody;
+	if (fLength_Cody > fLength_May)
+		fLength_Less = fLength_May;
+
+	_float fNormalize = fabs(fLength_Size - fLength_Less) / fLength_Size;
+
+	fNormalize *= 1.25f;
+
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_GATE))
+		m_pGameInstance->Play_Sound(TEXT("Gate.wav"), CHANNEL_GATE, fNormalize);
+
 }
 
 CEffect_RespawnTunnel_Portal * CEffect_RespawnTunnel_Portal::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
