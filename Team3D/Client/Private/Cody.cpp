@@ -427,7 +427,8 @@ _int CCody::Late_Tick(_double dTimeDelta)
 	ShowRailTargetTriggerUI();
 	Clear_TagerRailNodes();
 
-	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
+	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer))
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
@@ -3386,7 +3387,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 
 	if (true == m_IsWarpNextStage)
 	{
-		if (m_fWarpTimer_InWormhole/*2.f*/ <= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole <= m_fWarpTimer)
 		{
 			_float4 vWormhole = m_vWormholePos;
 			vWormhole.z -= 1.f;
@@ -3403,7 +3404,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsWarpNextStage = false;
-			
+
 			_vector vNextStage_Pos = XMLoadFloat4x4(&m_TriggerTargetWorld).r[3];
 			vNextStage_Pos.m128_f32[3] = 1.f;
 
@@ -3412,7 +3413,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 20.f;
+			vTriggerPos += vLook * 10000.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
@@ -3420,24 +3421,31 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 	}
 	else
 	{
-		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
-		_vector vTriggerPos = PortalMatrix.r[3];
-		_vector vLook = PortalMatrix.r[2];
-		vTriggerPos += vLook * 30.f;
-		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
-		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+		m_IsWarpNextStage = false;
+		if (false == m_IsWarpRotate)
+		{
+			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			_vector vTriggerPos = PortalMatrix.r[3];
+			_vector vLook = PortalMatrix.r[2];
+			vTriggerPos += vLook * 30.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+			m_IsWarpRotate = true;
+		}
 
 		// ½´·ç·è
-		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.5f >= m_fWarpTimer)
 		{
 			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			vDir = XMVector3Normalize(vDir);
-			m_pActorCom->Move(vDir * 0.5f, dTimeDelta);
+			m_pActorCom->Move(vDir * 0.25f, dTimeDelta);
 		}
 		else
 		{
+			m_IsWarpRotate = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWarpDone = false;
+			m_IsCollide = false;
 		}
 	}
 }

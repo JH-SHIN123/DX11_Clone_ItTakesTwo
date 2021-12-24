@@ -28,12 +28,15 @@ HRESULT CWallLaserTrap::NativeConstruct(void * pArg)
 	Ready_Component(pArg);
 	Ready_PointInstance();
 
+	m_pGameInstance->Play_Sound(TEXT("LaserTrap.wav"), CHANNEL_LASER_TRAP, 0.f);
+
 	return S_OK;
 }
 
 _int CWallLaserTrap::Tick(_double TimeDelta)
 {
 	Check_Activate(TimeDelta);
+	Check_Sound();
 
 	return _int();
 }
@@ -83,6 +86,12 @@ void CWallLaserTrap::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGam
 
 void CWallLaserTrap::Set_TriggerActivate(_bool IsActivate)
 {
+	if (false == IsActivate && true == m_IsActivate)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_LASER_TRAP);
+		m_pGameInstance->Play_Sound(TEXT("LaserTrap_Stop.wav"), CHANNEL_LASER_TRAP);
+	}
+
 	m_IsActivate = IsActivate;
 }
 
@@ -258,6 +267,42 @@ void CWallLaserTrap::Check_Activate(_double TimeDelta)
 		if (0.f >= m_fActivateTime)
 			m_fActivateTime = 0.f;
 	}
+}
+
+void CWallLaserTrap::Check_Sound()
+{
+	if (false == m_IsActivate)
+		return;
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vPos_Cody = DATABASE->GetCody()->Get_Position();
+	_vector vPos_May = DATABASE->GetMay()->Get_Position();
+
+	_float	fLength_Cody = XMVector3Length(vPos - vPos_Cody).m128_f32[0];
+	_float	fLength_May = XMVector3Length(vPos - vPos_May).m128_f32[0];
+	_float	fLength_Size = 7.f;
+
+	_bool	IsSoundOff[2] = { false, false };
+
+	if (fLength_Size < fLength_Cody)
+		IsSoundOff[0] = true;
+
+	if (fLength_Size < fLength_May)
+		IsSoundOff[1] = true;
+
+	if (true == IsSoundOff[0] && true == IsSoundOff[1])
+		return;
+
+	_float fLength_Less = fLength_Cody;
+	if (fLength_Cody > fLength_May)
+		fLength_Less = fLength_May;
+
+	_float fNormalize = fabs(fLength_Size - fLength_Less) / fLength_Size;
+
+	fNormalize *= 2.f;
+	m_pGameInstance->Set_SoundVolume(CHANNEL_LASER_TRAP, fNormalize);
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_LASER_TRAP))
+		m_pGameInstance->Play_Sound(TEXT("LaserTrap.wav"), CHANNEL_LASER_TRAP, fNormalize);
 }
 
 CWallLaserTrap * CWallLaserTrap::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
