@@ -24,6 +24,7 @@ public:
 	_bool Tick_CutScene_Clear_Rail(_double dTimeDelta);
 	_bool Tick_CutScene_Boss_Intro(_double dTimeDelta);
 	_bool Tick_CutScene_Eject_InUFO(_double dTimeDelta);
+	_bool Tick_CutScene_Outro(_double dTimeDelta);
 public:
 	HRESULT Start_CutScene();
 	//For.Ready_CutScene.Set Performers;
@@ -33,6 +34,7 @@ public:
 	HRESULT Start_CutScene_Clear_Rail();
 	HRESULT Start_CutScene_Boss_Intro();
 	HRESULT Start_CutScene_Eject_UFO();
+	HRESULT Start_CutScene_Outro();
 	//For.End
 	HRESULT End_CutScene_Intro();
 	HRESULT End_CutScene_Active_GravityPath_01();
@@ -40,6 +42,7 @@ public:
 	HRESULT End_CutScene_Clear_Rail();
 	HRESULT End_CutScene_Boss_Intro();
 	HRESULT End_CutScene_Eject_InUFO();
+	HRESULT End_CutScene_Outro();
 private:
 	HRESULT Ready_CutScene_Intro();
 	HRESULT Ready_CutScene_Active_GravityPath_01();
@@ -47,6 +50,7 @@ private:
 	HRESULT Ready_CutScene_Clear_Rail();
 	HRESULT Ready_CutScene_Boss_Intro();
 	HRESULT Ready_CutScene_Eject_InUFO();
+	HRESULT Ready_CutScene_Outro();
 private:
 	HRESULT NativeConstruct(CutSceneOption eOption);
 	_fmatrix MakeRollPitchYawMatrix(_float3 vPos, _float3 vScale, _float3 vRot);

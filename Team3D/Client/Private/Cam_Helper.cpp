@@ -198,6 +198,9 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 		return E_FAIL;
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Eject_InUFO.dat"))))
 		return E_FAIL;
+	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Outro.dat"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -305,6 +308,14 @@ void CCam_Helper::Start_Film(const _tchar * pFilmName, CFilm::ScreenType eScreen
 		return;
 	}
 
+}
+
+void CCam_Helper::Set_Film_Up(const _tchar * pFilmName , _fvector vUp)
+{
+	CFilm* pFilm = Find_Film(pFilmName);
+	if (nullptr == pFilm)
+		return;
+	pFilm->Set_Up(vUp);
 }
 
 

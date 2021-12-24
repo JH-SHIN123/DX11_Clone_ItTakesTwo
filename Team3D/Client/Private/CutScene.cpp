@@ -46,6 +46,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
 			End_CutScene_Eject_InUFO();
 			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Outro:
+			End_CutScene_Outro();
+			break;
 
 		}
 		return false;
@@ -71,6 +74,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		break;
 	case CutSceneOption::CutScene_Eject_InUFO:
 		bIsNoError = Tick_CutScene_Eject_InUFO(dTimeDelta);
+		break;
+	case CutSceneOption::CutScene_Outro:
+		bIsNoError = Tick_CutScene_Outro(dTimeDelta);
 		break;
 	}
 	if (bIsNoError == false)
@@ -391,6 +397,24 @@ _bool CCutScene::Tick_CutScene_Eject_InUFO(_double dTimeDelta)
 	return true;
 }
 
+_bool CCutScene::Tick_CutScene_Outro(_double dTimeDelta)
+{
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	if (m_dTime >= 11.5 && m_dTime < 11.5 + dTimeDelta)
+	{
+		CFilm* pFilm = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper()->Get_Film(L"Film_Outro");
+		pFilm->Set_Up(XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), -0.3f).r[1]);
+		_matrix matWorld = MakeRollPitchYawMatrix(_float3(80.f, 758.f, 205.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 30.f));
+		pCody->Get_Transform()->Set_WorldMatrix(matWorld);
+		pCody->Get_Actor()->Set_Position(XMVectorSet(80.f, 758.f, 205.f, 1.f));
+		pMay->Get_Transform()->Set_WorldMatrix(matWorld);
+		pMay->Get_Actor()->Set_Position(XMVectorSet(80.f, 758.f, 205.f, 1.f));
+	}
+
+	return true;
+}
+
 HRESULT CCutScene::Start_CutScene()
 {
 
@@ -423,6 +447,10 @@ HRESULT CCutScene::Start_CutScene()
 		break;
 	case CutSceneOption::CutScene_Eject_InUFO:
 		if (FAILED(Start_CutScene_Eject_UFO()))
+			return E_FAIL;
+		break;
+	case CutSceneOption::CutScene_Outro:
+		if (FAILED(Start_CutScene_Outro()))
 			return E_FAIL;
 		break;
 	}
@@ -554,8 +582,6 @@ HRESULT CCutScene::Start_CutScene_Clear_Rail()
 HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
@@ -563,8 +589,10 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
+	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
+	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
+	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
 
 
 	//_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
@@ -608,6 +636,39 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
 	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Eject_InUFO");
 	
+	return S_OK;
+}
+
+HRESULT CCutScene::Start_CutScene_Outro()
+{
+	m_bIsStartFilm = false;
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
+
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Outro");
+	CFilm* pFilm = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper()->Get_Film(L"Film_Outro");
+	pFilm->Set_Up(XMVectorSet(0.f,1.f,0.f,0.f));
+	_matrix matRot = XMMatrixRotationRollPitchYaw( XMConvertToRadians(4.f), 0.f, XMConvertToRadians(9.f));
+	pCody->Get_Transform()->Set_WorldMatrix(matRot);
+	pCody->Get_Actor()->Set_Position(XMVectorSet(30.f, 758.f, 203.f, 1.f));
+	pCody->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_Outro);
+
+	pMay->Get_Transform()->Set_WorldMatrix(matRot);
+	pMay->Get_Actor()->Set_Position(XMVectorSet(30.f,758.f,203.f, 1.f));
+	pMay->Get_Model()->Set_Animation(ANI_M_SpaceStation_BossFight_Outro);
+
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	pMoonBaboon->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(80.f,758.f,205.f),_float3(1.f,1.f,1.f),_float3(-90.f, 270.f, -30.f)));
+	pMoonBaboon->Set_Animation(CutScene_Outro_MoonBaboon, Moon_Ufo_MH);
+
+
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(30.f, 758.f, 203.f), _float3(1.f, 1.f, 1.f), _float3(0.f, 9.f, 4.f)));
+	pUfo->Get_Model()->Set_Animation(CutScene_UFO_Outro);
+
 	return S_OK;
 }
 
@@ -674,9 +735,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Boss.wav"), CHANNEL_BGM, 0.f, true);
 	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
 
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -687,6 +748,19 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 
 HRESULT CCutScene::End_CutScene_Eject_InUFO()
 {
+	return S_OK;
+}
+
+HRESULT CCutScene::End_CutScene_Outro()
+{
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
+	pMainCam->ReSet_Cam_FreeToAuto(true);
+	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
+	pSubCam->ReSet_Cam_FreeToAuto(true);
 	return S_OK;
 }
 
@@ -728,6 +802,12 @@ HRESULT CCutScene::Ready_CutScene_Eject_InUFO()
 	return S_OK;
 }
 
+HRESULT CCutScene::Ready_CutScene_Outro()
+{
+	m_dDuration = 62.89;
+	return S_OK;
+}
+
 HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 {
 	switch (m_eCutSceneOption = eOption)
@@ -755,6 +835,9 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 	case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
 		if (FAILED(Ready_CutScene_Eject_InUFO()))
 			return E_FAIL;
+	case Client::CCutScene::CutSceneOption::CutScene_Outro:
+		if (FAILED(Ready_CutScene_Outro()))
+			return E_FAIL;
 		break;
 	}
 	m_pCutScenePlayer = CCutScenePlayer::GetInstance();
@@ -763,6 +846,7 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 
 _fmatrix CCutScene::MakeRollPitchYawMatrix(_float3 vPos, _float3 vScale, _float3 vRot)
 {
+	
 	return	XMMatrixScaling(vScale.x,vScale.y, vScale.z) *
 			XMMatrixRotationRollPitchYaw(XMConvertToRadians(vRot.z), XMConvertToRadians(vRot.x), XMConvertToRadians(vRot.y))*
 			XMMatrixTranslation(vPos.x, vPos.y, vPos.z);
