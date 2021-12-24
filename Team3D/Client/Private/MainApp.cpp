@@ -38,7 +38,7 @@ HRESULT CMainApp::NativeConstruct()
 #ifdef __START_LEVEL_LOGO
 	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_LOGO), E_FAIL);
 #else
-	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_STAGE), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_DefaultLevel(Level::LEVEL_LOGO), E_FAIL);
 #endif
 
 #ifdef __MAPLOADING_OFF

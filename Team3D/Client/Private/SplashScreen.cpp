@@ -203,7 +203,7 @@ HRESULT CSplashScreen::Set_UIVariables_Perspective()
 
 void CSplashScreen::Logo_DisAppearing(_double TimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	if (m_pGameInstance->Key_Down(DIK_RETURN) && false == m_IsBackScreenAlpha)
 		m_IsDisappear = true;
 
 	if (true == m_IsDisappear)

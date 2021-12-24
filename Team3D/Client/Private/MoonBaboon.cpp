@@ -50,7 +50,6 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	NULL_CHECK_RETURN(m_pUFOTransform, E_FAIL);
 	Safe_AddRef(m_pUFOTransform);
 
-	
 	m_pModelCom->Set_Animation(Moon_Ufo_MH);
 	m_pModelCom->Set_NextAnimIndex(Moon_Ufo_MH);
 
@@ -119,7 +118,7 @@ void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 			m_pModelCom->Set_Animation(Moon_Eject);
 			m_pModelCom->Set_NextAnimIndex(Moon_Eject);
 
-			m_fEjectDelay += dTimeDelta;
+			m_fEjectDelay += (_float)dTimeDelta;
 			// 아직 사출되기전 대기시간
 			if (m_fEjectDelay <= 1.f)
 			{
