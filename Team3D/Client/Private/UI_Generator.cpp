@@ -1410,12 +1410,10 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 		vComparePos = vTargetPosition - vMayPos;
 	}
 
-	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
-	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
-	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
+	_float fDistance = XMVectorGetX(XMVector3Length(vComparePos));
 
-	/* 범위 안에 있다*/
-	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+	/* 범위 안에 있다 */
+	if(fRange >= fDistance)
 	{
 		/* 충돌해서 트리거가 켜졌다면 InterActive UI 만들어주자 */
 		if (ePlayer == Player::Cody)

@@ -188,6 +188,7 @@ _int CUFO::Tick(_double dTimeDelta)
 
 	GoUp(dTimeDelta);
 
+	m_pMoonBaboon->Get_Model()->Update_Animation(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 
 	/* Light */
