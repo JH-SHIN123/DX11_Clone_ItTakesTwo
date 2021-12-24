@@ -239,6 +239,7 @@ public:
 
 	_bool			 Get_IsRespawn() { return m_bRespawn; }
 	_bool			 Get_IsDeadLine() { return m_IsDeadLine; }
+	_bool			 Get_RespawnCheck() { return m_bRespawnCheck; }
 	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
 
 	_bool			 Get_IsEnding() { return m_IsEnding; }
