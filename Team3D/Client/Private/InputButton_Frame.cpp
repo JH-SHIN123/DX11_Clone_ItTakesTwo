@@ -29,9 +29,11 @@ HRESULT CInputButton_Frame::NativeConstruct_Prototype(void* pArg)
 HRESULT CInputButton_Frame::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
+	
+	FAILED_CHECK_RETURN(Ready_Component(), E_FAIL);
 
-	if (FAILED(Ready_Component()))
-		return E_FAIL;
+	if (pArg != nullptr)
+		memcpy(&m_iFontOption, pArg, sizeof(_uint));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
 
@@ -177,7 +179,14 @@ void CInputButton_Frame::Render_Font()
 {
 	CUI_Generator::FONTDESC		tFontDesc;
 
-	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")))
+	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) && 0 == m_iFontOption)
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { m_vFontScale.x, m_vFontScale.y };
+
+		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) && 1 == m_iFontOption)
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
 		tFontDesc.vScale = { m_vFontScale.x, m_vFontScale.y };
@@ -187,7 +196,7 @@ void CInputButton_Frame::Render_Font()
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_E")))
 	{
 		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
-		tFontDesc.vScale = { m_UIDesc.vScale.x / 2.f, m_UIDesc.vScale.y / 1.2f };
+		tFontDesc.vScale = { m_vFontScale.x, m_vFontScale.y };
 
 		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
 	}
