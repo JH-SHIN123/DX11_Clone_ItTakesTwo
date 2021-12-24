@@ -30,7 +30,7 @@ void CPinBall::StartGame()
 	vPosition = XMVectorSet(XMVectorGetX(vPosition), 756.9f, 189.f, 1.f);
 	m_pDynamicActorCom->Get_Actor()->setGlobalPose(MH_PxTransform(vRotQuat, vPosition));
 
-	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 1.4f);
+	m_pGameInstance->Resize_Actor(m_pDynamicActorCom->Get_Actor(), 1.5f);
 }
 
 void CPinBall::PlayerMove()
