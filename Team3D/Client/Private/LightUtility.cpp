@@ -13,7 +13,6 @@ HRESULT CLightUtility::Load_StaticLightData(LOAD_LIGHTTYPE eLoadType, const _tch
 	}
 
 	DWORD dwByte = 0;
-	vector<CLight*> tempLights;
 	CLight* pLight = nullptr;
 
 	LIGHT_DESC lightDesc;

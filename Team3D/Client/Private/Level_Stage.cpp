@@ -440,6 +440,8 @@ HRESULT CLevel_Stage::Ready_Lights()
 
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
+
+	Ready_VolumeLight_Rail();
 #endif
 
 	return S_OK;
@@ -449,6 +451,91 @@ HRESULT CLevel_Stage::Ready_DirectionalLight(const _tchar* pLightTag, _float3 vD
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	return pGameInstance->Add_Light(LightStatus::eDIRECTIONAL, CLight::Create(pLightTag, &LIGHT_DESC(LIGHT_DESC::TYPE_DIRECTIONAL, vDirection, vDiffuse, vAmbient, vSpecular)));
+}
+
+HRESULT CLevel_Stage::Ready_VolumeLight_Rail()
+{
+	CVolumeLight* pLight = nullptr;
+
+	LIGHT_DESC lightDesc;
+	CVolumeLight::VOLUMELIGHT_DESC volumeLightDesc;
+
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 843.28f, 663.f ,108.225f };
+	lightDesc.fRange = 60.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CUBE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f};
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 0.f,0.5f,1.f };
+	_matrix WorldMatrix = XMMatrixScaling(60.f, 60.f, 60.f);
+	WorldMatrix *= XMMatrixTranslation(843.28f, 663.f, 108.225f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+	
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 678.f, 729.5f, 120.86f };
+	lightDesc.fRange = 60.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CUBE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f };
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 1.f,0.5f,0.5f };
+	WorldMatrix = XMMatrixScaling(42.f, 42.f, 42.f);
+	WorldMatrix *= XMMatrixTranslation(678.f, 729.5f, 120.86f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 750.4f, 723.4f,  267.f };
+	lightDesc.fRange = 60.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CUBE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f };
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 1.f,0.5f,0.f };
+	WorldMatrix = XMMatrixScaling(49.f, 49.f, 49.f);
+	WorldMatrix *= XMMatrixTranslation(775.4f, 712.11f, 263.57f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	lightDesc.vPosition = { 915.29f,  735.66f,  315.78f };
+	lightDesc.fRange = 20.f;
+	lightDesc.vDiffuse = { 1.f,1.f,1.f,1.f };
+	lightDesc.vSpecular = { 1.f,1.f,1.f,1.f };
+
+	volumeLightDesc.tLightDesc = lightDesc;
+	volumeLightDesc.tVolumeDesc.eVolumeType = CVolumeObject::TYPE_CONE;
+	volumeLightDesc.tVolumeDesc.fCullRadius = 1000;
+	volumeLightDesc.tVolumeDesc.vInnerColor = { 1.f,1.f,1.f };
+	volumeLightDesc.tVolumeDesc.vOuterColor = { 1.f,1.f,1.f };
+	WorldMatrix = XMMatrixScaling(4.2f, 25.f, 4.2f);
+	WorldMatrix *= XMMatrixTranslation(915.29f, 735.66f, 315.78f);
+	XMStoreFloat4x4(&volumeLightDesc.tVolumeDesc.WorldMatrix, WorldMatrix);
+
+	pLight = CVolumeLight::Create(TEXT("Static_Volume"), &volumeLightDesc);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Light(LightStatus::eSTATIC, pLight), E_FAIL);
+
+	return S_OK;
 }
 
 HRESULT CLevel_Stage::Ready_Layer_Sky(const _tchar * pLayerTag)
