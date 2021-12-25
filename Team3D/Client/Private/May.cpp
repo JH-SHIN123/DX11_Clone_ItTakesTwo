@@ -985,6 +985,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 			m_bAction = false;
 			m_bRoll = true;
+
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -1000,6 +1002,8 @@ void CMay::KeyInput(_double dTimeDelta)
 				m_pActorCom->Jump_Start(1.2f);
 				m_pModelCom->Set_Animation(ANI_M_AirDash_Start);
 				m_IsAirDash = true;
+
+				Start_RadiarBlur(0.3f);
 			}
 		}
 	}
@@ -3368,6 +3372,8 @@ HRESULT CMay::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 #pragma region RadiarBlur
 void CMay::Start_RadiarBlur(_double dBlurTime)
 {
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame()) return;
+
 	//if (m_bRadiarBlur) return;
 
 	m_bRadiarBlur_Trigger = true;
