@@ -559,6 +559,7 @@ private:
 #pragma endregion
 
 private: /* For. Ending */
+	_bool	m_bMiniGame = false;
 	_bool	m_IsEnding = false;
 	_bool   m_bSetEndingOffSetOnce = false;
 	_vector m_vEndingRocketOffSetPos = {};

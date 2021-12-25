@@ -4024,6 +4024,8 @@ void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
 
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
+	if (m_bMiniGame) return;
+
 	//if (m_bRadiarBlur) return;
 	m_bRadiarBlur_FullScreen = false;
 
