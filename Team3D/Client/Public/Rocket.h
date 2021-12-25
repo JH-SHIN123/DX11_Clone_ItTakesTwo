@@ -46,6 +46,9 @@ private:
 	_float m_fRocket_Volume = 1.f;
 	_bool  m_bSoundOnce = false;
 
+	_bool		m_IsCodyCollide = false;
+	_bool		m_IsMayCollide = false;
+
 
 private:
 	/* For.Component */

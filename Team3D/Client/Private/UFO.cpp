@@ -59,7 +59,6 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_ePattern = UFO_PATTERN::LASER;
 	m_IsCutScene = true;
 
-
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos.m128_f32[1] += 6.f;
@@ -92,13 +91,10 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
-		_vector dd = { 61.7f, 348.8f, 197.2f, 1.f };
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, dd);
+		// 빈거
 	}
-
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
@@ -149,7 +145,6 @@ _int CUFO::Tick(_double dTimeDelta)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
 	}
 
-	/* 나중에 컷 신 완전히 완성되면 바꿈 */
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
 
@@ -317,7 +312,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 8;
+	_uint iGravitationalBombMaxCount = 2;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
@@ -399,7 +394,7 @@ void CUFO::Core_Destroyed()
 
 			if (false == m_IsHit)
 			{
-				m_pBossHpBar->Set_HpBarReduction(110);
+				Set_BossHpBarReduction(110);
 				m_IsHit = true;
 			}
 
@@ -420,8 +415,6 @@ void CUFO::Core_Destroyed()
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
 	{
 		m_ePattern = UFO_PATTERN::INTERACTION;
-
-		//m_pBossHpBar->Set_Ratio(0.11f);
 
 		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
 		if (3 != m_iPhaseChangeCount)
@@ -532,10 +525,17 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 	/* 공전 드가자 */
 	OrbitalMovementCenter(dTimeDelta);
 
-	if (nullptr != m_pCodyMissile && true == m_pCodyMissile->Get_BossExplosion())
-		m_pCodyMissile->Set_MissileDead();
-	else if (nullptr != m_pMayMissile && true == m_pMayMissile->Get_BossExplosion())
-		m_pMayMissile->Set_MissileDead();
+	//if (nullptr != m_pCodyMissile && true == m_pCodyMissile->Get_BossExplosion())
+	//	m_pCodyMissile->Set_MissileDead();
+	//else if (nullptr != m_pMayMissile && true == m_pMayMissile->Get_BossExplosion())
+	//	m_pMayMissile->Set_MissileDead();
+
+	if (4 == m_iGuidedMissileHitCount)
+	{
+		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
+		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
+		m_IsCutScene = true;
+	}
 
 	switch (m_ePattern)
 	{
@@ -1325,8 +1325,21 @@ void CUFO::Set_MissilePtrReset(_bool IsTargetCheck)
 	else
 	{
 		m_pMayMissile = nullptr;
-		Safe_Release(m_pCodyMissile);
+		Safe_Release(m_pMayMissile);
 	}
+}
+
+void CUFO::Set_BossHpBarReduction(_float fDamage)
+{
+	m_pBossHpBar->Set_HpBarReduction(fDamage);
+}
+
+void CUFO::Set_GuidedMissileIncreaseHitCount()
+{
+	++m_iGuidedMissileHitCount;
+
+	if (4 < m_iGuidedMissileHitCount)
+		m_iGuidedMissileHitCount = 4;
 }
 
 HRESULT CUFO::Add_GameObject_ToRenderGroup()
