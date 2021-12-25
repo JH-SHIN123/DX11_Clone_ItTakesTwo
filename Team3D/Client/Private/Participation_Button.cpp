@@ -63,7 +63,8 @@ _int CParticipation_Button::Tick(_double dTimeDelta)
 		m_iFrame = 1;
 	}
 
-	if (1 == m_iOption && (m_pGameInstance->Key_Down(DIK_SPACE) || m_pGameInstance->Pad_Key_Down(DIP_A)))
+#ifdef __CONTROL_MAY_KEYBOARD
+	if (1 == m_iOption && m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
@@ -72,6 +73,17 @@ _int CParticipation_Button::Tick(_double dTimeDelta)
 		m_bReadyMay = true;
 		m_iFrame = 3;
 	}
+#else
+	if (1 == m_iOption && m_pGameInstance->Pad_Key_Down(DIP_A))
+	{
+		/* Sound */
+		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+
+		m_bReadyMay = true;
+		m_iFrame = 3;
+	}
+#endif
 
 	return NO_EVENT;
 }

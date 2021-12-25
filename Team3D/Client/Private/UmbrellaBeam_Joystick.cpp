@@ -112,6 +112,7 @@ void CUmbrellaBeam_Joystick::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eUMBRELLABEAMJOYSTICK, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = false;
 		m_pUmbrellaBeam->Set_BeamActivate(false);
 	}
@@ -162,7 +163,6 @@ HRESULT CUmbrellaBeam_Joystick::Ready_Layer_UmbrellaBeam(const _tchar * pLayerTa
 
 	return S_OK;
 }
-
 
 CUmbrellaBeam_Joystick * CUmbrellaBeam_Joystick::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

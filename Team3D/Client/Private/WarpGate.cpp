@@ -45,16 +45,16 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 	SmokeWorldMatrix.r[3] -= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * 2.f;
 	EFFECT->Add_Effect(Effect_Value::Gate_Smoke, SmokeWorldMatrix);
 
+	m_pGameInstance->Play_Sound(TEXT("Gate.wav"), CHANNEL_GATE, 0.f);
+
 	return S_OK;
 }
 
 _int CWarpGate::Tick(_double TimeDelta)
 {
-	if (m_WarpGate_Desc.eStageValue == CWarpGate::STAGE_UMBRELLA)
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-617.f, 755.f, 196.f, 1.f));//???
-
 	Check_StageClear();
 	Check_ClearEffect(TimeDelta);
+	Check_Sound();
 
 	return _int();
 }
@@ -80,15 +80,38 @@ HRESULT CWarpGate::Render(RENDER_GROUP::Enum eGroup)
 
 void CWarpGate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
+	
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+	{
+		if (false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpDone() &&
+			false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpNextStage())
+		{
+			m_pGameInstance->Play_Sound(TEXT("Gate_Pass.wav"), CHANNEL_GATE_PASS);
+			((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+		}
+	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-		((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	{
+		if (false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpDone() &&
+			false == static_cast<CMay*>(DATABASE->GetMay())->Get_IsWarpNextStage())
+			((CMay*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+	{
+		if (false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpDone() &&
+			false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpNextStage())
+		{
+			m_pGameInstance->Play_Sound(TEXT("Gate_Pass.wav"), CHANNEL_GATE_PASS);
+			((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, true, this);
+		}
+	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	{
+		if (false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpDone() &&
+			false == static_cast<CCody*>(DATABASE->GetCody())->Get_IsWarpNextStage())
+			((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eWARPGATE, false, this);
+	}
 }
 
 HRESULT CWarpGate::Render_ShadowDepth()
@@ -108,14 +131,13 @@ HRESULT CWarpGate::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_WarpGate_01"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-
 	Check_Stage_Value();
 
 	m_UserData = USERDATA(GameID::eWARPGATE, this);
 	CTriggerActor::ARG_DESC ArgDesc;
 	ArgDesc.pUserData = &m_UserData;
 	ArgDesc.pTransform = m_pTransformCom;
-	ArgDesc.pGeometry = new PxBoxGeometry(5.f, 10.f, 0.1f);
+	ArgDesc.pGeometry = new PxBoxGeometry(5.f, 8.f, 0.1f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &ArgDesc), E_FAIL);
 	Safe_Delete(ArgDesc.pGeometry);
@@ -307,6 +329,39 @@ void CWarpGate::Check_Tennis_Found()
 	return;
 }
 
+void CWarpGate::Check_Sound()
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vPos_Cody = DATABASE->GetCody()->Get_Position();
+	_vector vPos_May = DATABASE->GetMay()->Get_Position();
+
+	_float	fLength_Cody = XMVector3Length(vPos - vPos_Cody).m128_f32[0];
+	_float	fLength_May = XMVector3Length(vPos - vPos_May).m128_f32[0];
+	_float	fLength_Size = 7.f;
+
+	_bool	IsSoundOff[2] = { false, false };
+
+	if (fLength_Size < fLength_Cody)
+		IsSoundOff[0] = true;
+
+	if (fLength_Size < fLength_May)
+		IsSoundOff[1] = true;
+
+	if (true == IsSoundOff[0] && true == IsSoundOff[1])
+		return;
+
+	_float fLength_Less = fLength_Cody;
+	if (fLength_Cody > fLength_May)
+		fLength_Less = fLength_May;
+
+	_float fNormalize = fabs(fLength_Size - fLength_Less) / fLength_Size;
+
+	fNormalize *= 2.f;
+	m_pGameInstance->Set_SoundVolume(CHANNEL_GATE, fNormalize);
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_GATE))
+		m_pGameInstance->Play_Sound(TEXT("Gate.wav"), CHANNEL_GATE, fNormalize);
+}
+
 _fmatrix CWarpGate::Get_NextPortal_Matrix()
 {
 	_matrix NextPortalMatrix = XMMatrixIdentity();
@@ -320,32 +375,34 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	case CWarpGate::MAIN_UMBRELLA:
 		vPos = XMVectorSet(-617.f, 755.f, 196.f, 1.f);
 		fDegree = -90.f;
-		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
-		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_May_Stage(ST_PINBALL);
+		DATABASE->Set_Cody_Stage(ST_PINBALL);
+
 		break;
 	case CWarpGate::STAGE_UMBRELLA:
 		vPos = XMVectorSet(31.f, 125.25f, 195.8f, 1.f);
 		fDegree = 90.f;
-		DATABASE->Set_May_Stage(ST_PINBALL);
-		DATABASE->Set_Cody_Stage(ST_PINBALL);
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case CWarpGate::MAIN_PLANET:
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
-		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
-		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_May_Stage(ST_RAIL);
+		DATABASE->Set_Cody_Stage(ST_RAIL);
 		break;
 	case CWarpGate::STAGE_PLANET:
 		vPos = XMVectorSet(97.8f, 125.25f, 195.8f, 1.f);
 		fDegree = -90.f;
-		DATABASE->Set_May_Stage(ST_RAIL);
-		DATABASE->Set_Cody_Stage(ST_RAIL);
+
+		DATABASE->Set_May_Stage(ST_GRAVITYPATH);
+		DATABASE->Set_Cody_Stage(ST_GRAVITYPATH);
 		break;
 	case CWarpGate::MAIN_TENNIS:
 		vPos = XMVectorSet(64.f, 730.2f, 956.3f, 1.f);
 		break;
 	case CWarpGate::STAGE_TENNIS:
-		vPos = XMVectorSet(63.8f, 104.5f, 162.f, 1.f);
+		vPos = XMVectorSet(63.8f, 104.5f, 163.f, 1.f);
 		break;
 	default:
 		break;

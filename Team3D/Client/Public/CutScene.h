@@ -8,7 +8,9 @@ class CCutScene : public CBase
 {
 public:
 	enum class CutSceneOption {
-		CutScene_Intro,CutScene_Active_GravityPath_01,CutScene_Clear_Umbrella,CutScene_Clear_Rail,CutScene_Boss_Intro,CutScene_Eject_InUFO,CutScene_End
+		CutScene_Intro,CutScene_Active_GravityPath_01,CutScene_Clear_Umbrella,CutScene_Clear_Rail,
+		CutScene_Boss_Intro,
+		CutScene_Eject_InUFO,CutScene_Outro,CutScene_End
 	};
 public:
 	CCutScene();
@@ -22,6 +24,7 @@ public:
 	_bool Tick_CutScene_Clear_Rail(_double dTimeDelta);
 	_bool Tick_CutScene_Boss_Intro(_double dTimeDelta);
 	_bool Tick_CutScene_Eject_InUFO(_double dTimeDelta);
+	_bool Tick_CutScene_Outro(_double dTimeDelta);
 public:
 	HRESULT Start_CutScene();
 	//For.Ready_CutScene.Set Performers;
@@ -31,6 +34,7 @@ public:
 	HRESULT Start_CutScene_Clear_Rail();
 	HRESULT Start_CutScene_Boss_Intro();
 	HRESULT Start_CutScene_Eject_UFO();
+	HRESULT Start_CutScene_Outro();
 	//For.End
 	HRESULT End_CutScene_Intro();
 	HRESULT End_CutScene_Active_GravityPath_01();
@@ -38,6 +42,7 @@ public:
 	HRESULT End_CutScene_Clear_Rail();
 	HRESULT End_CutScene_Boss_Intro();
 	HRESULT End_CutScene_Eject_InUFO();
+	HRESULT End_CutScene_Outro();
 private:
 	HRESULT Ready_CutScene_Intro();
 	HRESULT Ready_CutScene_Active_GravityPath_01();
@@ -45,6 +50,7 @@ private:
 	HRESULT Ready_CutScene_Clear_Rail();
 	HRESULT Ready_CutScene_Boss_Intro();
 	HRESULT Ready_CutScene_Eject_InUFO();
+	HRESULT Ready_CutScene_Outro();
 private:
 	HRESULT NativeConstruct(CutSceneOption eOption);
 	_fmatrix MakeRollPitchYawMatrix(_float3 vPos, _float3 vScale, _float3 vRot);
@@ -52,10 +58,13 @@ private:
 	//For.Intro
 	void StartCodyLerp(_float3 vStartPos, _float3 vStartScale,_float3 vTargetPos , _float3 vTargetScale, _uint iLerpCount);
 	void CodyLerp();
+	//For.Outro
+	void CodyMove_EjectUfo(_double dTimeDelta);
 private:
 	void Script_Intro(_double dTimeDelta);
 	void Script_Boss_Intro(_double dTimeDelta);
 	void Script_Eject_InUFO(_double dTimeDelta);
+	void Script_Outro(_double dTimeDelta);
 private:
 	class CCutScenePlayer* m_pCutScenePlayer = nullptr;
 
@@ -87,6 +96,9 @@ private:
 	_bool m_bIsStartFilm = false;
 	//For.BossIntro	
 	_bool	m_bButtonPress[5] = { false,false,false,false,false };
+	//For.Outro
+	_float m_fCodyMove_EjectUfoTime = 0.f;
+	_bool  m_bCodyEjectUFO = false;
 public:
 	static CCutScene* Create(CutSceneOption eOption);
 	virtual void Free() override;

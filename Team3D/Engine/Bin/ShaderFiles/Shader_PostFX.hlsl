@@ -274,7 +274,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	// 먼 평면에 없는 픽셀에 대해서만 거리 DOF 계산
 	vector	vDepthDesc = g_DepthTex.Sample(Point_Sampler, In.vTexUV);
-	vector	vViewPos = vector(In.vProjPosition.x, In.vProjPosition.y, vDepthDesc.y, 1.f);
+	vector	vViewPos = vector(vDepthDesc.z, vDepthDesc.w, vDepthDesc.y, 1.f);
 	float	vViewZ = 0.f;
 	
 	vector	vWorldPos = 0.f;

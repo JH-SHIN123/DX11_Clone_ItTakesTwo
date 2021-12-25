@@ -78,8 +78,6 @@ HRESULT CEffect_May_Boots_Walking_Particle::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom->Render(5, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
-
-
 	return S_OK;
 }
 

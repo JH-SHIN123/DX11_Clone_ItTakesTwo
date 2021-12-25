@@ -30,6 +30,10 @@ private:
 	virtual ~CVolumeObject() = default;
 
 public:
+	void Set_WorldMatrix(_fmatrix WorldMatrix);
+	void Set_Color(_float3& vInner, _float3& vOuter);
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;

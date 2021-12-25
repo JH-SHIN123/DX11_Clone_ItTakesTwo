@@ -39,12 +39,14 @@ public:
 	void Set_IsGuidedMissileDeadCheck(_bool IsCheck);
 	void Set_UFOAnimation(_uint iAnimIndex, _uint iNextAnimIndex);
 	void Set_CodyEnterUFO();
-	void Set_CutScene();
+	void Set_CutScene(_bool IsCheck);
+	void Set_EndIntroCutScene();
 	void Set_MoonBaboonPtr(class CMoonBaboon* pMoonBaboon);
 	void Set_Who_Collide_Last(GameID::Enum WhoCollide) { m_WhoCollide = WhoCollide; }
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
 	HRESULT Set_MeshRenderGroup();
+	void Set_MissilePtrReset(_bool IsTargetCheck);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
@@ -53,6 +55,7 @@ public:
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
 	UFO_PHASE Get_BossPhase() const { return m_ePhase; }
 	_bool	  Get_IsCutScene() { return m_IsCutScene; }
+	UFO_PATTERN Get_BossPatern() const { return m_ePattern; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;

@@ -201,7 +201,7 @@ _fmatrix CFilm::MakeCurCamMatrix(_double dTimeDelta, CamNode * pCurNode, ScreenT
 	break;
 	}
 
-	return  MakeViewMatrix(vNextNodeEye, vNextNodeAt);
+	return  MakeViewMatrix(vNextNodeEye, vNextNodeAt,XMLoadFloat3(&m_vUp));
 
 }
 
@@ -246,20 +246,20 @@ void CFilm::Free()
 	m_CamNodes.clear();
 }
 
-_fmatrix CFilm::MakeViewMatrix(_float3 Eye, _float3 At)
+_fmatrix CFilm::MakeViewMatrix(_float3 Eye, _float3 At, _fvector vUp)
 {
 
 	_vector	vEye = XMVectorSetW(XMLoadFloat3(&Eye), 1.f);
 	_vector	vAt = XMVectorSetW(XMLoadFloat3(&At), 1.f);
-	_vector	vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector	vAxisY = XMVector3Normalize(vUp);
 	_vector	vLook = XMVector3Normalize(vAt - vEye);
 	_vector	vRight = XMVector3Normalize(XMVector3Cross(vAxisY, vLook));
-	_vector	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	_vector	vCurUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
 
 
 	_matrix matWorld = XMMatrixIdentity();
 	matWorld.r[0] = vRight;
-	matWorld.r[1] = vUp;
+	matWorld.r[1] = vCurUp;
 	matWorld.r[2] = vLook;
 	matWorld.r[3] = vEye;
 

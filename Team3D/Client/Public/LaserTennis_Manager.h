@@ -34,6 +34,8 @@ public:/* Setter */
 	void KeyCheck(TARGET eTarget);
 	void Set_MayCount();
 	void Set_CodyCount();
+	void Set_PowerCoordUI_Cody(_bool bCheck);
+	void Set_PowerCoordUI_May(_bool bCheck);
 
 public:
 	/* InGame */

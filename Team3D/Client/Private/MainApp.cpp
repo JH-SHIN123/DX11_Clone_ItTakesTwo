@@ -226,7 +226,7 @@ void CMainApp::Free()
 	CEndingCredit_Manager::DestroyInstance();
 	CCutScenePlayer::DestroyInstance();
 
-	CGameInstance::Release_Engine();
+	CGameInstance::GetInstance()->Release_Engine();
 }
 
 //#ifdef _DEBUG

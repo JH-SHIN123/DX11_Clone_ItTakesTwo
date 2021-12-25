@@ -76,7 +76,7 @@ _int CRobotLever::Tick(_double dTimeDelta)
 
 		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_O)	|| m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
-			UI_Delete(May, InputButton_InterActive);
+			UI_Delete(May, InputButton_PS_InterActive);
 			m_IsCollide = false;
 			m_bRotate = true;
 			m_bCountHitDelay = true;
@@ -129,18 +129,17 @@ void CRobotLever::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 		}
 
 		// May
-
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 		{
 			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(May, InputButton_InterActive);
+			UI_Create(May, InputButton_PS_InterActive);
 			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_IsCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 		{
 			m_IsCollide = false;
-			UI_Delete(May, InputButton_InterActive);
+			UI_Delete(May, InputButton_PS_InterActive);
 		}
 	}
 }

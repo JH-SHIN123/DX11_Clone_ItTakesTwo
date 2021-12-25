@@ -15,6 +15,10 @@ CSlideDoor::CSlideDoor(const CSlideDoor & rhs)
 
 void CSlideDoor::Open_Door()
 {
+	/* Sound */
+	m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
+	m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
+
 	m_bOpen = true;
 }
 
@@ -85,9 +89,6 @@ void CSlideDoor::Movement(_double dTimeDelta)
 {
 	if (false == m_bOpen)
 		return;
-
-	m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
-	m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
 
 	if (1 == m_tDynamic_Env_Desc.iOption)
 	{

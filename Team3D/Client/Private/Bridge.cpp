@@ -52,7 +52,7 @@ _int CBridge::Tick(_double dTimeDelta)
 	{
 		if (true == m_bTrigger)
 		{
-			_float	fAngle = 45.f * (_float)dTimeDelta;
+			_float	fAngle = 15.f * (_float)dTimeDelta;
 
 			if (m_fAngle >= 70.f)
 			{

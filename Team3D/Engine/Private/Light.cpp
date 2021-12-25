@@ -21,7 +21,7 @@ _int CLight::Tick_Light(_double dTimeDelta)
 
 HRESULT CLight::Render_Light(CVIBuffer_RectRHW * pVIBuffer)
 {
-	NULL_CHECK_RETURN(pVIBuffer, E_FAIL);;
+	NULL_CHECK_RETURN(pVIBuffer, E_FAIL);
 
 	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightDiffuse", &m_LightDesc.vDiffuse, sizeof(_float4)), E_FAIL);
 	FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightAmbient", &m_LightDesc.vAmbient, sizeof(_float4)), E_FAIL);
@@ -36,12 +36,16 @@ HRESULT CLight::Render_Light(CVIBuffer_RectRHW * pVIBuffer)
 	}
 	else if (LIGHT_DESC::TYPE_POINT == m_LightDesc.eType)
 	{
+		if (0.f == m_LightDesc.fRange) return S_OK;
+
 		iPassIndex = 1;
 		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_vLightPos", &m_LightDesc.vPosition, sizeof(XMFLOAT3)), E_FAIL);
 		FAILED_CHECK_RETURN(pVIBuffer->Set_Variable("g_fRange", &m_LightDesc.fRange, sizeof(_float)), E_FAIL);
 	}
 	else if (LIGHT_DESC::TYPE_SPOT == m_LightDesc.eType)
 	{
+		if (0.f == m_LightDesc.fRange) return S_OK;
+
 		iPassIndex = 2;
 
 		_float fCosInnerAngle = cosf(m_LightDesc.fInnerAngle);

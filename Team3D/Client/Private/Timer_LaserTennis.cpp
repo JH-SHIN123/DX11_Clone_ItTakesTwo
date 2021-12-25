@@ -63,6 +63,9 @@ _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
 			m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_Ready.wav"), CHANNEL_LASERTENNISUI);
+
+			m_pGameInstance->Play_Sound(TEXT("Bgm_MiniGame.wav"), CHANNEL_BGM2, 0.f, true);
+			m_pGameInstance->Sound_Lerp(CHANNEL_BGM2, CHANNEL_BGM, 1.f, 0.f, 2.f);
 			UI_CreateOnlyOnce(Default, Minigame_Countdown);
 			m_bSoundCheck = true;
 		}

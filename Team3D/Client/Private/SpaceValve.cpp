@@ -94,17 +94,17 @@ _int CSpaceValve::Tick(_double dTimeDelta)
 			UI_Delete(Cody, InputButton_InterActive);
 			m_bEnterValve = true;
 			// 키보드 화살표 UI 생성.
-			UI_Create(Cody, Arrowkeys_Side);
+			UI_CreateOnlyOnce(Cody, Arrowkeys_Side);
 		}
 	}
 	if (m_iTargetPlayer == GameID::eMAY)
 	{
 		if (m_IsMayCollide && m_pGameInstance->Pad_Key_Down(DIP_Y) || m_IsMayCollide && m_pGameInstance->Key_Down(DIK_O))
 		{
-			UI_Delete(May, InputButton_InterActive);
+			UI_Delete(May, InputButton_PS_InterActive);
 			m_bEnterValve = true;
 			// 키보드 화살표 UI 생성.
-			UI_Create(May, StickIcon);
+			UI_CreateOnlyOnce(May, StickIcon);
 		}
 	}
 

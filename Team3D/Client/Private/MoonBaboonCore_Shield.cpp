@@ -51,7 +51,7 @@ _int CMoonBaboonCore_Shield::Tick(_double TimeDelta)
 {
 	CGameObject::Tick(TimeDelta);
 
-	if (0 != m_pParent->Get_ActiveCore())
+	if (0 != m_pParent->Get_ActiveCore() || m_pParent->Get_IsGoUp())
 	{
 		OnTrigger(TimeDelta);
 

@@ -335,7 +335,8 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	/* 메이 UFO탔을 때 */
 	InUFO(dTimeDelta);
 
-	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine)
+	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer))
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f)) 
@@ -816,6 +817,11 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-650.f, 760.f, 195.f, 1.f));
 		DATABASE->Set_May_Stage(ST_PINBALL);
 		DATABASE->Set_Cody_Stage(ST_PINBALL);
+	}
+	if (m_pGameInstance->Key_Down(DIK_6))/* 3스테이지 */
+	{
+		m_pActorCom->Set_Position(XMVectorSet(70.f, 220.f, 207.f, 1.f));
+		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
 	if (m_pGameInstance->Key_Down(DIK_7))/* Boss */
 		m_pActorCom->Set_Position(XMVectorSet(62.f, 250.f, 187.f, 1.f));
@@ -1911,6 +1917,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
+			/* Script */
 			if (false == m_bPinBallScript_Once[0])
 			{
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
@@ -1919,10 +1926,12 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				m_bPinBallScript_Once[0] = true;
 			}
 
+			/* UI */
+			UI_Delete(May, InputButton_PS_InterActive);
+			((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
+
 			m_pModelCom->Set_Animation(ANI_M_PinBall_Enter);
 			m_pModelCom->Set_Animation(ANI_M_PinBall_MH);
-
-			UI_Generator->Delete_InterActive_UI(Player::May, UI::PinBall_Handle);
 
 			/* 플레이어->핸들방향으로 플레이어 회전 */
 			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -1959,7 +1968,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_IsPinBall = true;
 		}
-		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage)
+		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// 메이 전용 포탈로 이동(웜홀)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
@@ -2147,7 +2156,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			LASERTENNIS->Increase_PowerCoord();
 
-			UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
+			UI_Delete(May, InputButton_PS_InterActive);
+			LASERTENNIS->Set_PowerCoordUI_May(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
@@ -2511,7 +2521,11 @@ void CMay::PinBall(const _double dTimeDelta)
 				((CPinBall_Handle*)(CDataStorage::GetInstance()->Get_Pinball_Handle()))->Set_PlayerMove(false);
 			}
 			/* 오른쪽 */
-			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 40000)
+#ifdef __CONTROL_MAY_KEYBOARD
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+#else
+			if (m_pGameInstance->Get_Pad_LStickX() > 40000)
+#endif // __CONTROL_MAY_KEYBOARD
 			{
 				if (false == m_IsPinBallSoundCheck)
 				{
@@ -2527,7 +2541,11 @@ void CMay::PinBall(const _double dTimeDelta)
 					m_pActorCom->Move(vLeft * 0.05f, dTimeDelta);
 			}
 			/* 왼쪽 */
-			else if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
+#ifdef __CONTROL_MAY_KEYBOARD
+			else if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+#else
+			else if (m_pGameInstance->Get_Pad_LStickX() < 20000)
+#endif // __CONTROL_MAY_KEYBOARD
 			{
 				/* Sound */
 				if (false == m_IsPinBallSoundCheck)
@@ -2666,10 +2684,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
-	{
-		UI_Generator->Delete_InterActive_UI(Player::May, UI::PowerCoord);
 		LASERTENNIS->KeyCheck(CLaserTennis_Manager::TARGET_MAY);
-	}
 }
 
 void CMay::Set_UFO(_bool bCheck)
@@ -2720,7 +2735,7 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 20.f;
+			vTriggerPos += vLook * 10000.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
@@ -2728,24 +2743,31 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 	}
 	else
 	{
-		_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
-		_vector vTriggerPos = PortalMatrix.r[3];
-		_vector vLook = PortalMatrix.r[2];
-		vTriggerPos += vLook * 30.f;
-		m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
-		m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+		m_IsWarpNextStage = false;
+		if (false == m_IsWarpRotate)
+		{
+			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			_vector vTriggerPos = PortalMatrix.r[3];
+			_vector vLook = PortalMatrix.r[2];
+			vTriggerPos += vLook * 30.f;
+			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+			m_IsWarpRotate = true;
+		}
 
 		// 슈루룩
-		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.25f >= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max + 0.5f >= m_fWarpTimer)
 		{
 			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			vDir = XMVector3Normalize(vDir);
-			m_pActorCom->Move(vDir * 0.5f, dTimeDelta);
+			m_pActorCom->Move(vDir * 0.25f, dTimeDelta);
 		}
 		else
 		{
+			m_IsWarpRotate = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWarpDone = false;
+			m_IsCollide = false;
 		}
 	}
 }
@@ -2917,29 +2939,30 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 		m_fDeadTime += (_float)dTimeDelta;
 		if (m_fDeadTime >= 1.f)
 		{
-
+			/* Sound */
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 			m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 
-			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
-			m_pActorCom->Set_Position(vSavePosition);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pActorCom->Set_Gravity_Normally();
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+			m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+			Enforce_IdleState();
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_fDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
-			m_pActorCom->Set_ZeroGravity(false, false, false);
-			Enforce_IdleState();
+
+			/* Effect */
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		}
 		else
 		{
-			_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
-			vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
-			m_pActorCom->Set_Position(vTriggerTargetPos);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
+			m_pActorCom->Get_Actor()->putToSleep();
+			m_pActorCom->Update(dTimeDelta);
 		}
 	}
 }
@@ -3106,6 +3129,7 @@ void CMay::KeyInput_Rail(_double dTimeDelta)
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			Loop_RadiarBlur(false);
 
+			m_iAirDashCount = 0;
 			m_iJumpCount = 0;
 			m_bShortJump = true;
 
