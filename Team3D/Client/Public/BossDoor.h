@@ -23,6 +23,9 @@ public:
 	virtual _int	Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
+public:
+	_bool Get_Close() const { return m_bClose; }
+
 private:
 	virtual HRESULT Render_ShadowDepth() override;
 

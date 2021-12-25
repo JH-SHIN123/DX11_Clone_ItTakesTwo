@@ -35,6 +35,7 @@ public:
 public:
 	void Set_LaserOperation(_bool IsActive);
 	void Set_MainLaserUp(_float fMaxDistance, _float fSpeed);
+	void Set_Active(_bool IsCheck);
 
 public:
 	_bool Get_ArrivalLastFloor() const { return m_IsArrivalLastFloor; }
@@ -52,6 +53,7 @@ private:
 	_bool	m_IsLaserOperation = false;
 	_bool	m_IsLaserUp = false;
 	_bool	m_IsLaserCreate = true;
+	_bool	m_IsActive = false;
 	_float3	m_vMaxPos;
 	_float m_fMaxY = 0.f;
 	_bool m_IsGoUp = false;

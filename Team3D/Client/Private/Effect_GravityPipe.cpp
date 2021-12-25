@@ -6,6 +6,8 @@
 #include "Effect_Env_Particle.h"
 #include"MainCamera.h"
 #include"SubCamera.h"
+#include "UI_Generator.h"
+
 CEffect_GravityPipe::CEffect_GravityPipe(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
@@ -135,6 +137,10 @@ _int CEffect_GravityPipe::Tick(_double TimeDelta)
 		}
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Set_OpenThridFloor(true);
 		static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Set_OpenThridFloor(true);
+
+		UI_Delete(Cody, Arrowkeys_Side);
+		UI_Delete(May, StickIcon);
+
 	}
 
 

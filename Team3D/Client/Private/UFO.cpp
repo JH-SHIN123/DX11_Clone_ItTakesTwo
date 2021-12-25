@@ -15,6 +15,7 @@
 #include "MoonUFO.h"
 #include "HpBar.h"
 #include "MoonBaboonCore.h"
+#include "BossDoor.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -90,6 +91,7 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
 		_vector dd = { 61.7f, 348.8f, 197.2f, 1.f };
@@ -134,13 +136,6 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_ePhase = UFO_PHASE::PHASE_3;
 		m_IsCutScene = true;
 	}
-
-	//else if (m_pGameInstance->Key_Down(DIK_NUMPAD5))
-	//{
-	//	m_pBossHpBar->Set_Active(true);
-	//}
-	//else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
-	//	m_pBossHpBar->Set_Active(false);
 	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pBossHpBar->Set_Active(false);
 
@@ -152,6 +147,10 @@ _int CUFO::Tick(_double dTimeDelta)
 		MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
 	}
+
+	/* 나중에 컷 신 완전히 완성되면 바꿈 */
+	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
+		Set_EndIntroCutScene();
 
 	/* 컷 신 재생중이 아니라면 보스 패턴 진행하자 나중에 컷 신 생기면 바꿈 */
 	if (false == m_IsCutScene)
@@ -187,8 +186,6 @@ _int CUFO::Tick(_double dTimeDelta)
 	}
 
 	GoUp(dTimeDelta);
-
-	m_pMoonBaboon->Get_Model()->Update_Animation(dTimeDelta);
 	m_pModelCom->Update_Animation(dTimeDelta);
 
 	/* Light */
@@ -301,6 +298,9 @@ void CUFO::MoveStartingPoint(_double dTimeDelta)
 {
 	_vector vTargetPos = XMLoadFloat4(&m_vStartUFOPos);
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if(true == ((CBossDoor*)DATABASE->Get_BossDoor01())->Get_Close())
+		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_Active(true);
 
 	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
 	if (vTargetPos.m128_f32[1] >= vUFOPos.m128_f32[1])
@@ -1222,9 +1222,19 @@ void CUFO::Set_CodyEnterUFO()
 	m_IsCodyEnter = true;
 }
 
-void CUFO::Set_CutScene()
+void CUFO::Set_CutScene(_bool IsCheck)
 {
-	m_IsCutScene = true;
+	m_IsCutScene = IsCheck;
+}
+
+void CUFO::Set_EndIntroCutScene()
+{
+	m_IsCutScene = false;
+	DATABASE->Close_BossDoor();
+	m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
+	((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
+	((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
+	m_pBossHpBar->Set_Active(true);
 }
 
 void CUFO::Set_MoonBaboonPtr(CMoonBaboon * pMoonBaboon)
