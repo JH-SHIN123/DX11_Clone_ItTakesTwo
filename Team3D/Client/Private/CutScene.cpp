@@ -48,16 +48,12 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
 			End_CutScene_Eject_InUFO();
 			break;
-<<<<<<< HEAD
 		case Client::CCutScene::CutSceneOption::CutScene_Boss_Intro:
 			End_CutScene_Boss_Intro();
 			break;
-=======
 		case Client::CCutScene::CutSceneOption::CutScene_Outro:
 			End_CutScene_Outro();
 			break;
-
->>>>>>> main
 		}
 		return false;
 	}
