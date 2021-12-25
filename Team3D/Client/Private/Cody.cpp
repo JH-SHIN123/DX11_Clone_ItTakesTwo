@@ -2500,6 +2500,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
 			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
 
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 
 			m_IsReadyPinball = true;
