@@ -40,7 +40,6 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	// ·Îº¿ OffSet XMVectorSet(15.f, 0.f, 20.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-70.f));
 
-
 	m_UserData = USERDATA(GameID::eROBOTLEVER, this);
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -87,6 +86,7 @@ _int CRobotLever::Tick(_double dTimeDelta)
 			Activate_Lever(dTimeDelta);
 		}
 	}
+
 	return NO_EVENT;
 }
 

@@ -41,8 +41,13 @@ private:
 	_float		m_fLifeTime = 0.f;
 	_bool		m_IsCodyCollide = false;
 	_bool		m_IsMayCollide = false;
+	_bool		m_bSaveOnce = false;
+
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
 	UI::INTERACTIVE_ID  m_eInterActiveID = UI::INTERACTIVE_ID_END;
+
+	_vector		m_vSavedPlayerPos = {};
+	_vector		m_vMoveDirection = {};
 
 	/* Sound */
 	_float m_fStarBuddy_Volume = 1.f;
