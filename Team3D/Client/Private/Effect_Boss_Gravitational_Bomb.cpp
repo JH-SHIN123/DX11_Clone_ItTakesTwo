@@ -45,13 +45,13 @@ HRESULT CEffect_Boss_Gravitational_Bomb::NativeConstruct(void * pArg)
 	// Light
 	LIGHT_DESC lightDesc;
 	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	lightDesc.fRange = 8.f;
+	lightDesc.fRange = 15.f;
 	lightDesc.vDiffuse = { 1.f,0.f,0.f,1.f };
 	lightDesc.vSpecular = { 1.f,0.f,0.f,1.f };
 	XMStoreFloat3(&lightDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pLight = CLight::Create(TEXT("Bomb_Light"), &lightDesc);
 	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pLight);
-	Safe_AddRef(m_pLight);
+	//Safe_AddRef(m_pLight);
 
 	return S_OK;
 }
@@ -60,6 +60,15 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 {
 	if (0.0 >= m_dLifeTime)
 		return EVENT_DEAD;
+
+	if (1.0 >= m_dLifeTime)
+	{
+		if (m_pLight)
+		{
+			m_pLight->Set_Dead(true);
+			m_pLight = nullptr;
+		}
+	}
 
 	m_dLifeTime -= TimeDelta;
 	if(4 > m_dLifeTime)
@@ -129,6 +138,7 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 		if (nullptr != pLightDesc)
 		{
 			XMStoreFloat3(&pLightDesc->vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			pLightDesc->vPosition.y += 2.f;
 		}
 	}
 
@@ -216,7 +226,6 @@ void CEffect_Boss_Gravitational_Bomb::Free()
 	if (m_pLight)
 	{
 		m_pLight->Set_Dead(true);
-		Safe_Release(m_pLight);
 		m_pLight = nullptr;
 	}
 
