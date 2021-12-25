@@ -263,8 +263,8 @@ _int CSubCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		vTargetAt.y += 6.5f;
 		if (false == m_bIsFading && m_dWarpTime > 0.1)
 		{
-			UI_CreateOnlyOnce(Cody, WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut, (_float)dTimeDelta * 255.f);
+			UI_CreateOnlyOnce(May, WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeInSpeed(Player::May, UI::WhiteScreenFadeInOut, (_float)dTimeDelta * 255.f);
 
 			m_bIsFading = true;
 		}
@@ -276,8 +276,8 @@ _int CSubCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 	{
 		if (m_bIsFading)
 		{
-			UI_Generator->Set_FadeOut(Player::Cody, UI::WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, (_float)dTimeDelta * 255.f);
+			UI_Generator->Set_FadeOut(Player::May, UI::WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeOutSpeed(Player::May, UI::WhiteScreenFadeInOut, (_float)dTimeDelta * 255.f);
 			m_bIsFading = false;
 		}
 		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -288,17 +288,17 @@ _int CSubCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		XMStoreFloat4(&vEye, vCamPos);
 		XMStoreFloat4(&vAt, vPlayerPos + vPlayerUp* 1.5f);
 		_matrix matResult = MakeViewMatrixByUp(vEye, vAt);
-		m_pCamHelper->Start_CamEffect(TEXT("Cam_Shake_Loc_Right_Warp_Potal"), CFilm::LScreen);
-		m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult);
-		m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen));
+		m_pCamHelper->Start_CamEffect(TEXT("Cam_Shake_Loc_Right_Warp_Potal"), CFilm::RScreen);
+		m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, matResult);
+		m_pTransformCom->Set_WorldMatrix(m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen));
 	}
 	else if (m_pMay->Get_IsWarpDone())
 	{
 		//페이드인
 		if (!m_bIsFading)
 		{
-			UI_CreateOnlyOnce(Cody, WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeInSpeed(Player::Cody, UI::WhiteScreenFadeInOut, (_float)dTimeDelta * 255.f);
+			UI_CreateOnlyOnce(May, WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeInSpeed(Player::May, UI::WhiteScreenFadeInOut, (_float)dTimeDelta * 255.f);
 			m_bIsFading = true;
 		}
 	}
@@ -307,8 +307,8 @@ _int CSubCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		//페이드아웃
 		if (m_bIsFading)
 		{
-			UI_Generator->Set_FadeOut(Player::Cody, UI::WhiteScreenFadeInOut);
-			UI_Generator->Set_FadeOutSpeed(Player::Cody, UI::WhiteScreenFadeInOut, (_float)dTimeDelta*2.f * 255.f);
+			UI_Generator->Set_FadeOut(Player::May, UI::WhiteScreenFadeInOut);
+			UI_Generator->Set_FadeOutSpeed(Player::May, UI::WhiteScreenFadeInOut, (_float)dTimeDelta*2.f * 255.f);
 			m_bIsFading = false;
 		}
 		_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
