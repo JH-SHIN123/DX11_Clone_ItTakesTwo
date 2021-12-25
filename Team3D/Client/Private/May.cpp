@@ -642,7 +642,7 @@ void CMay::KeyInput(_double dTimeDelta)
 			m_bAction = false;
 			m_bRoll = true;
 
-			if(false == m_bMiniGame) Start_RadiarBlur(0.3f);
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -3372,7 +3372,7 @@ HRESULT CMay::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 #pragma region RadiarBlur
 void CMay::Start_RadiarBlur(_double dBlurTime)
 {
-	if (m_bMiniGame) return;
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame()) return;
 
 	//if (m_bRadiarBlur) return;
 
