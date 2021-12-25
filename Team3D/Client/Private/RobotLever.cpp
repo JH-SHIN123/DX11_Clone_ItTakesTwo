@@ -66,18 +66,18 @@ _int CRobotLever::Tick(_double dTimeDelta)
 
 	if (m_bUpdate == true)
 	{
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
+		if (m_IsCodyCollide && m_pGameInstance->Key_Down(DIK_E))
 		{
 			UI_Delete(Cody, InputButton_InterActive);
-			m_IsCollide = false;
+			m_IsCodyCollide = false;
 			m_bRotate = true;
 			m_bCountHitDelay = true;
 		}
 
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_O)	|| m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+		if (m_IsMayCollide && m_pGameInstance->Key_Down(DIK_O)	|| m_IsMayCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 		{
 			UI_Delete(May, InputButton_PS_InterActive);
-			m_IsCollide = false;
+			m_IsMayCollide = false;
 			m_bRotate = true;
 			m_bCountHitDelay = true;
 		}
@@ -122,11 +122,13 @@ void CRobotLever::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 			UI_Create(Cody, InputButton_InterActive);
 			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_IsCollide = true;
+			m_IsCodyCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 		{
 			m_IsCollide = false;
 			UI_Delete(Cody, InputButton_InterActive);
+			m_IsCodyCollide = false;
 		}
 
 		// May
@@ -135,11 +137,13 @@ void CRobotLever::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			UI_Create(May, InputButton_PS_InterActive);
 			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsMayCollide = true;
 			m_IsCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 		{
 			m_IsCollide = false;
+			m_IsMayCollide = false;
 			UI_Delete(May, InputButton_PS_InterActive);
 		}
 	}
