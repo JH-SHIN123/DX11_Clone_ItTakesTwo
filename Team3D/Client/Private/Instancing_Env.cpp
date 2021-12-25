@@ -92,7 +92,15 @@ HRESULT CInstancing_Env::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth();
-	m_pModelCom->Render_Model(1, 0, true);;
+
+	if (!lstrcmp(TEXT("Component_Model_GlassWall_Beveled"), m_Ins_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_GlassWall01"), m_Ins_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_GlassWall01_Half"), m_Ins_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Render_Model(1, 0, true, RENDER_GROUP::RENDER_NONALPHA);
+	}
+	else
+		m_pModelCom->Render_Model(1, 0, true);
 
 	return S_OK;
 }

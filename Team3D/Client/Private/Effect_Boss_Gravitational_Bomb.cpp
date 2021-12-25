@@ -42,6 +42,11 @@ HRESULT CEffect_Boss_Gravitational_Bomb::NativeConstruct(void * pArg)
 
 	m_fScale_Pow = 6;
 
+	//// Create Light
+	//LIGHT_DESC tLightDesc;
+	//m_pLight = CLight::Create(TEXT("Bomb_Light"), &tLightDesc);
+	//m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pLight);
+
 	return S_OK;
 }
 
