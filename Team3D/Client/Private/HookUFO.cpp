@@ -185,7 +185,7 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 
 	vComparePos = vPos - vTargetPos;
 
-	_float fRange = 50.f;
+	_float fRange = 40.f;
 
 	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
 	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
