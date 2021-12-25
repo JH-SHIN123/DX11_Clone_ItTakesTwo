@@ -35,6 +35,7 @@ public:
 	void Set_PerformerDesc(PERFORMERDESC tDesc) { m_tDesc = tDesc; }
 	void Set_Position(_float3 vPos) { m_tDesc.vPosition = vPos; }
 	void Set_Scale(_float3 vScale) { m_tDesc.vScale = vScale; }
+	void Set_Rotation(_float3 vRot) { m_tDesc.vRot = vRot; }
 
 	void Start_Perform(_uint iAnimIdx = 0 , _double dAnimTime = 0.f);
 	void Finish_Perform();

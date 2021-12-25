@@ -64,8 +64,6 @@ _int CRobotLever::Tick(_double dTimeDelta)
 {
 	CRobotParts::Tick(dTimeDelta);
 
-
-
 	if (m_bUpdate == true)
 	{
 		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E)

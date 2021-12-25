@@ -64,6 +64,9 @@ _int CMoonBaboon_MainLaser::Late_Tick(_double TimeDelta)
 {
 	CGameObject::Late_Tick(TimeDelta);
 
+	if (false == m_IsActive)
+		return NO_EVENT;
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f)) {
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 	}
@@ -215,6 +218,11 @@ void CMoonBaboon_MainLaser::Set_MainLaserUp(_float fMaxDistance, _float fSpeed)
 		m_vecLaser_TypeB[i]->Set_LaserTypeBUp(fMaxDistance, fSpeed);
 
 	m_pTransformCom->Set_Speed(m_fUpSpeed, 0.f);
+}
+
+void CMoonBaboon_MainLaser::Set_Active(_bool IsCheck)
+{
+	m_IsActive = IsCheck;
 }
 
 void CMoonBaboon_MainLaser::GoUp(_double dTimeDelta)

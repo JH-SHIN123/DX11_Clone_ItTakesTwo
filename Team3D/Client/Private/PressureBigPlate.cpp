@@ -70,7 +70,6 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 	TriggerArgDesc.pTransform = m_pTransformCom;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.f);
 
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
@@ -78,7 +77,6 @@ HRESULT CPressureBigPlate::NativeConstruct(void * pArg)
 		DATABASE->Set_PipeCurvePtr(m_vecPressurePlate);
 	else if (1 == m_iOption)
 		m_vecPressurePlate = DATABASE->Get_PressurePlate();
-
 
 	SetUp_DefaultPositionSetting();
 
@@ -210,7 +208,7 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 
 void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 {
-	if (true == m_IsDoorOpen || false == m_IsPowerSupplyAvailable && true == m_IsPowerSupplyActive)
+	if (false == m_IsDoorOpen && false == m_IsPowerSupplyAvailable && false == m_IsPowerSupplyActive)
 		return;
 
 	m_pTriggerCom->Update_TriggerActor();

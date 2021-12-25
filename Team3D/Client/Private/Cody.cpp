@@ -1140,7 +1140,7 @@ void CCody::Move(const _double dTimeDelta)
 			//테스트
 			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd)
 			{
-				m_fFootStepDelay += dTimeDelta;
+				m_fFootStepDelay += (_float)dTimeDelta;
 				if (m_fFootStepDelay > 0.5f)
 				{
 					m_pCamera->Start_CamEffect(TEXT("Cam_Shake_BigCodyWalk"));
@@ -2499,6 +2499,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			/* 핀볼 문열기 */
 			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
 			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
+
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 

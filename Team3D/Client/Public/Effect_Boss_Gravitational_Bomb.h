@@ -47,6 +47,7 @@ private:
 	
 private:
 	class CEffect_Boss_Gravitational_Bomb_Particle* m_pParticle = nullptr;
+	class CLight* m_pLight = nullptr;
 
 public:
 	static CEffect_Boss_Gravitational_Bomb* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

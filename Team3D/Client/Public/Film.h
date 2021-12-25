@@ -69,11 +69,12 @@ public:
 	_fmatrix MakeCurCamMatrix(_double dTimeDelta, CamNode* pCurNode, ScreenType eScreenType);
 	void	ReSetFilm(ScreenType eScreenType);
 	void	MakeUpNodesTimeByFar();	//속도는 1이라 가정하고 구함
+	void	Set_Up(_fvector vUp) { XMStoreFloat3(&m_vUp,vUp); }
 public:
 	static CFilm* Create(const _tchar* pFilmName);
 	virtual void Free()override;
 private:	//For.Camera
-	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At);
+	_fmatrix MakeViewMatrix(_float3 Eye, _float3 At,_fvector vUp = XMVectorSet(0.f,1.f,0.f,0.f));
 	_fmatrix MakeMatrixLerp(_fmatrix matDst, _fmatrix matSour, _float fLerpTime);
 	_float3  VectorLerp(_float3& vDst, _float3& vSour, _float t);
 	HRESULT  Check_CamNodeProgress(ScreenType eScreenType, CamMoveOption eOption, CamNodeVectorType eType, _uint iCurrentNode, _uint iLastNode);
@@ -82,7 +83,7 @@ private:	//For.Camera
 	_float3	 MakeBezier4(_float3& v1, _float3& v2, _float3& v3, _float3& v4, _double dTime);
 	void	Set_ViewPort(CamNode* pNode);
 private:
-	
+	_float3 m_vUp = {0.f,1.f,0.f};
 	TCHAR m_szFilmName[MAX_PATH] = L"";
 	vector<CamNode*> m_CamNodes;
 	_uint m_iCurrentNode[Screen_End];
