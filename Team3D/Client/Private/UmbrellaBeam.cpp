@@ -227,6 +227,7 @@ void CUmbrellaBeam::PutGravitationalField()
 	_float fDistance = XMVectorGetX(XMVector3Length(vComparePos));
 	_float fRange = 3.f;
 
+	/* 범위 안에 있다 */
 	if (fRange >= fDistance)
 		m_IsPutGravitationalField = true;
 
