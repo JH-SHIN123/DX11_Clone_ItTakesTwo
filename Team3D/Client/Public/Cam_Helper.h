@@ -34,7 +34,7 @@ public:
 	_fmatrix	Tick_Film(_double dTimeDelta, CFilm::ScreenType eScreenTypeIdx, _float* fOutFovY);
 	//콜하면 필름찾고 연출 들어감.
 	void		Start_Film(const _tchar* pFilmName, CFilm::ScreenType eScreenTypeIdx);
-
+	void		Set_Film_Up(const _tchar* pFilmName, _fvector vUp);
 	//For.CamNode
 	//얘 부르면 카메라에서 매트릭스 다얻기전까지 return Helper_SeeCamNode
 	void		SeeCamNode(CFilm::CamNode* pCamNode, CFilm::ScreenType eScreenTypeIdx);
