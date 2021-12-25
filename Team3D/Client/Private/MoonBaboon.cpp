@@ -55,6 +55,8 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_MoonBaboonPtr(this);
 
+	//
+
 	return S_OK;
 }
 
