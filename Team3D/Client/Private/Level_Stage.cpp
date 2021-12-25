@@ -131,12 +131,14 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #endif // __TEST_TAEK
 	
 #ifdef __PLAY_CUTSCENE
+
 #ifndef __FIRST_CUTSCENE_OFF
 	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}
+
 #endif // __FIRST_CUTSCENE_OFF
 #endif // __PLAY_CUTSCENE
 

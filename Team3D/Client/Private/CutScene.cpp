@@ -48,10 +48,12 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
 			End_CutScene_Eject_InUFO();
 			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Boss_Intro:
+			End_CutScene_Boss_Intro();
+			break;
 		case Client::CCutScene::CutSceneOption::CutScene_Outro:
 			End_CutScene_Outro();
 			break;
-
 		}
 		return false;
 	}
@@ -758,6 +760,11 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	/* 상태 초기화 */
+	static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
+	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
+	static_cast<CMay*>(DATABASE->GetMay())->Enforce_IdleState();
+	/* 상태 초기화 */
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -765,6 +772,7 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	UI_Generator->Set_AllActivation(true);
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
+
 
 	return S_OK;
 }
