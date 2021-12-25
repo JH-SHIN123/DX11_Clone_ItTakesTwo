@@ -35,7 +35,6 @@ private:
 	_float3			m_vOriginPos = {};
 
 	_double			m_dElectricReady_Time = 0.0; // Effect
-	_double			m_dElectricTime = 0.0;
 	_double			m_dCoolTime = 0.0;
 
 private:

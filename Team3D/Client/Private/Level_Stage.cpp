@@ -113,6 +113,11 @@ HRESULT CLevel_Stage::NativeConstruct()
 	/* Script */
 	FAILED_CHECK_RETURN(Ready_Layer_Script(TEXT("Layer_Script")), E_FAIL);
 
+#ifdef __FIRST_CUTSCENE_OFF
+	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.15f, 3.f);
+#endif // __FIRST_CUTSCENE_OFF
+
 	return S_OK;
 }
 
@@ -132,9 +137,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
 		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}
-#else
-	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
 #endif // __FIRST_CUTSCENE_OFF
 #endif // __PLAY_CUTSCENE
 
