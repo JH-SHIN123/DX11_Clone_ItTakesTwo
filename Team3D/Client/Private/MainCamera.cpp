@@ -162,8 +162,11 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 	
 	LerpToCurSize(m_eCurPlayerSize, dTimeDelta);
 
-	if (m_bOpenThirdFloor&&m_fOpenThirdFloorTime ==0.f)
+	if (m_bOpenThirdFloor&&m_fOpenThirdFloorTime == 0.f)
+	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
+		UI_Generator->Set_AllActivation(false);
+	}
 
 	if (m_pCody->Get_IsWarpNextStage() == true)
 	{
@@ -344,6 +347,7 @@ _int CMainCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 		ReSet_Cam_FreeToAuto(true ,false,1.f);
+		UI_Generator->Set_AllActivation(true);
 	}
 	else if (m_fOpenThirdFloorTime > fDelay *8.f)
 		SCRIPT->Render_Script(53, CScript::SCREEN::HALF, fDelay);
