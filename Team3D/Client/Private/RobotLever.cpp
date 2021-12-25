@@ -56,6 +56,7 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
+
 	return S_OK;
 }
 
@@ -133,7 +134,7 @@ void CRobotLever::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 		{
 			((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTLEVER, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			UI_Create(May, InputButton_PS_InterActive);
-			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_IsCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)

@@ -29,7 +29,8 @@ namespace UI
 	};
 
 	enum INTERACTIVE_ID {
-		ControlRoom_Battery, StarBuddy0, StarBuddy1, HangingPlanet, PinBall_Door, PinBall_Handle, TutorialDoor, Umbrella_Joystick, SpaceValve, SpaceRail, HookUFO, PowerCoord0, PowerCoord1, INTERACTIVE_ID_END, RobotLever0, RobotLever1, RobotLever2, RobotLever3
+		ControlRoom_Battery, StarBuddy0, StarBuddy1, HangingPlanet, PinBall_Door, PinBall_Handle, TutorialDoor, Umbrella_Joystick, SpaceValve, SpaceRail, HookUFO, PowerCoord0, PowerCoord1, 
+		RobotLever0, RobotLever1, RobotLever2, RobotLever3, RobotBattery0, RobotBattery1, Rocket0, INTERACTIVE_ID_END
 	};
 
 }
