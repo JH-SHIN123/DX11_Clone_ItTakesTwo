@@ -442,7 +442,7 @@ _matrix CEnvironment_Generator::Set_Model_PivotMatrix(_tchar* pPrototypeTag)
 
 void CEnvironment_Generator::Set_Info_Model(CStatic_Env::ARG_DESC & tInfo)
 {
-	tInfo.fCullRadius = 10.f;
+	tInfo.fCullRadius = 30.f;
 
 	if (0 == lstrcmp(tInfo.szModelTag, L"Component_Model_GrindRail01"))
 		tInfo.fCullRadius = 500.f;
