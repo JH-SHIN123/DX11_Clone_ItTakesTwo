@@ -58,10 +58,13 @@ private:
 	//For.Intro
 	void StartCodyLerp(_float3 vStartPos, _float3 vStartScale,_float3 vTargetPos , _float3 vTargetScale, _uint iLerpCount);
 	void CodyLerp();
+	//For.Outro
+	void CodyMove_EjectUfo(_double dTimeDelta);
 private:
 	void Script_Intro(_double dTimeDelta);
 	void Script_Boss_Intro(_double dTimeDelta);
 	void Script_Eject_InUFO(_double dTimeDelta);
+	void Script_Outro(_double dTimeDelta);
 private:
 	class CCutScenePlayer* m_pCutScenePlayer = nullptr;
 
@@ -93,6 +96,9 @@ private:
 	_bool m_bIsStartFilm = false;
 	//For.BossIntro	
 	_bool	m_bButtonPress[5] = { false,false,false,false,false };
+	//For.Outro
+	_float m_fCodyMove_EjectUfoTime = 0.f;
+	_bool  m_bCodyEjectUFO = false;
 public:
 	static CCutScene* Create(CutSceneOption eOption);
 	virtual void Free() override;

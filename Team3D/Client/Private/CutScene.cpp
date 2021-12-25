@@ -399,9 +399,12 @@ _bool CCutScene::Tick_CutScene_Eject_InUFO(_double dTimeDelta)
 
 _bool CCutScene::Tick_CutScene_Outro(_double dTimeDelta)
 {
+	Script_Outro(dTimeDelta);
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
-	if (m_dTime >= 11.5 && m_dTime < 11.5 + dTimeDelta)
+	if (m_dTime >= 7.5 && m_dTime < 11.5f)
+		CodyMove_EjectUfo(dTimeDelta);
+	if (m_dTime >= 11.38 && m_dTime < 11.38+ dTimeDelta)
 	{
 		CFilm* pFilm = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper()->Get_Film(L"Film_Outro");
 		pFilm->Set_Up(XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), -0.3f).r[1]);
@@ -594,8 +597,6 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
 	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
 
-
-	//_matrix matRot = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	pCody->Get_Transform()->Set_WorldMatrix(XMMatrixIdentity()/*matRot*/);
 	pCody->Get_Actor()->Set_Position(XMVectorSet(73.5f, 244.5f, 168.5f, 1.f));
 	pCody->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_Intro);
@@ -641,18 +642,25 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 
 HRESULT CCutScene::Start_CutScene_Outro()
 {
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene04.wav"), CHANNEL_CUTSCENE, 1.f, false);
+	m_bCodyEjectUFO = false;
 	m_bIsStartFilm = false;
+	m_fCodyMove_EjectUfoTime = 0.f;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
 
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(true, true, true);
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(true, true, true);
+	
+	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
+	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
+	
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Outro");
+	
 	CFilm* pFilm = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Get_CamHelper()->Get_Film(L"Film_Outro");
 	pFilm->Set_Up(XMVectorSet(0.f,1.f,0.f,0.f));
+	
 	_matrix matRot = XMMatrixRotationRollPitchYaw( XMConvertToRadians(4.f), 0.f, XMConvertToRadians(9.f));
-	pCody->Get_Transform()->Set_WorldMatrix(matRot);
+	pCody->Get_Transform()->Set_WorldMatrix(XMMatrixScaling(0.1f, 0.1f, 0.1f) *matRot);
 	pCody->Get_Actor()->Set_Position(XMVectorSet(30.f, 758.f, 203.f, 1.f));
 	pCody->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_Outro);
 
@@ -664,6 +672,12 @@ HRESULT CCutScene::Start_CutScene_Outro()
 	pMoonBaboon->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(80.f,758.f,205.f),_float3(1.f,1.f,1.f),_float3(-90.f, 270.f, -30.f)));
 	pMoonBaboon->Set_Animation(CutScene_Outro_MoonBaboon, Moon_Ufo_MH);
 
+	CPerformer* pRemoteController = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_RemoteContollerCutScene1")));
+	
+
+	pRemoteController->Set_Position({ 80.f,758.f,205.f });
+	pRemoteController->Set_Rotation({ -90.f,270.f,-30.f });
+	pRemoteController->Start_Perform(1);
 
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
 	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(30.f, 758.f, 203.f), _float3(1.f, 1.f, 1.f), _float3(0.f, 9.f, 4.f)));
@@ -891,6 +905,29 @@ void CCutScene::CodyLerp()
 	}
 }
 
+void CCutScene::CodyMove_EjectUfo(_double dTimeDelta)
+{
+	if (m_bCodyEjectUFO)
+		return;
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	if (m_dTime < 10.32)
+	{
+		_float fStartTime = 7.5f;
+		_float fEndTime = 10.32f;
+		m_fCodyMove_EjectUfoTime += dTimeDelta/(fEndTime - fStartTime) ;
+		_fvector vStartPos = XMVectorSet(66.f, 754.05f, 219.f, 1.f);
+		_fvector vMoveToPos = XMVectorSet(63.f, 754.05f, 219.f, 1.f);
+
+		pCody->Get_Actor()->Set_Position(XMVectorLerp(vStartPos,vMoveToPos,m_fCodyMove_EjectUfoTime));
+	}
+	else
+	{
+		m_bCodyEjectUFO = true;
+		pCody->Get_Transform()->Set_WorldMatrix(XMMatrixRotationRollPitchYaw(XMConvertToRadians(4.f), 0.f, XMConvertToRadians(9.f)));
+		pCody->Get_Actor()->Set_Position(XMVectorSet(29.f,757.4f,203.f,1.f));
+	}
+}
+
 void CCutScene::Script_Intro(_double dTimeDelta)
 {
 	_double dSoundTime = m_dTime;
@@ -1086,6 +1123,59 @@ void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
 		SCRIPT->Render_Script(92, CScript::HALF, 2.9f);
 	else if (dSoundTime >= 5.0 && dSoundTime < 5.0 + dTimeDelta)
 		SCRIPT->Render_Script(93, CScript::HALF, 2.0f);
+
+}
+
+void CCutScene::Script_Outro(_double dTimeDelta)
+{
+	_double dSoundTime = m_dTime;
+	if(dSoundTime >= 12.0 && dSoundTime < 12.0 +dTimeDelta)
+		SCRIPT->Render_Script(220, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + dTimeDelta)
+		SCRIPT->Render_Script(221, CScript::FULL, 2.9f);
+	else if (dSoundTime >= 16.0 && dSoundTime < 16.0 + dTimeDelta)
+		SCRIPT->Render_Script(222, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 18.0 && dSoundTime < 18.0 + dTimeDelta)
+		SCRIPT->Render_Script(223, CScript::FULL, 1.4f);
+	else if (dSoundTime >= 19.5 && dSoundTime < 19.5+ dTimeDelta)
+		SCRIPT->Render_Script(224, CScript::FULL, 2.4f);
+	else if (dSoundTime >= 22.0 && dSoundTime < 22.0 + dTimeDelta)
+		SCRIPT->Render_Script(225, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 23.0 && dSoundTime < 23.0 + dTimeDelta)
+		SCRIPT->Render_Script(226, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 25.0 && dSoundTime < 25.0 + dTimeDelta)
+		SCRIPT->Render_Script(227, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 27.0 && dSoundTime < 27.0 + dTimeDelta)
+		SCRIPT->Render_Script_DoubleLine(228,229, 1.9f);
+	else if (dSoundTime >= 29.0 && dSoundTime < 29.0 + dTimeDelta)
+		SCRIPT->Render_Script(230, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 30.0 && dSoundTime < 30.0 + dTimeDelta)
+		SCRIPT->Render_Script(231, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 31.0 && dSoundTime < 31.0 + dTimeDelta)
+		SCRIPT->Render_Script(232, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 32.0 && dSoundTime < 32.0 + dTimeDelta)
+		SCRIPT->Render_Script(233, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 34.0 && dSoundTime < 34.0 + dTimeDelta)
+		SCRIPT->Render_Script(234, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 40.5 && dSoundTime < 40.5 + dTimeDelta)
+		SCRIPT->Render_Script(236, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 45.0 && dSoundTime < 45.0 + dTimeDelta)
+		SCRIPT->Render_Script(237, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 47.0 && dSoundTime < 47.0 + dTimeDelta)
+		SCRIPT->Render_Script(238, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 49.0 && dSoundTime < 49.0 + dTimeDelta)
+		SCRIPT->Render_Script(239, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 51.0 && dSoundTime < 51.0 + dTimeDelta)
+		SCRIPT->Render_Script(240, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 52.0 && dSoundTime < 52.0 + dTimeDelta)
+		SCRIPT->Render_Script(241, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 54.0 && dSoundTime < 54.0 + dTimeDelta)
+		SCRIPT->Render_Script(242, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 56.0 && dSoundTime < 56.0 + dTimeDelta)
+		SCRIPT->Render_Script(243, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 59.0 && dSoundTime < 59.0 + dTimeDelta)
+		SCRIPT->Render_Script(243, CScript::FULL, 1.9f);
+
 
 }
 
