@@ -148,7 +148,7 @@ void CMenuScreen::Input_SelectButton()
 	{
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
-		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_Touch.wav"), CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_Touch.wav"), CHANNEL_BUTTON, 4.f);
 
 		--m_iHeaderIndex;
 		m_IsHeaderBoxChange = true;
@@ -160,7 +160,7 @@ void CMenuScreen::Input_SelectButton()
 	{
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
-		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_Touch.wav"), CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_Touch.wav"), CHANNEL_BUTTON, 4.f);
 
 		++m_iHeaderIndex;
 		m_IsHeaderBoxChange = true;
@@ -199,7 +199,7 @@ void CMenuScreen::Input_ChapterScreenCreate()
 			{
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
-				m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+				m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON, 2.f);
 
 				m_IsChapterScreenCreate = true;
 				break;

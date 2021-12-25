@@ -47,6 +47,8 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 
 _int CBoss_Missile::Tick(_double dTimeDelta)
 {
+	if (true == m_isDead)
+		return EVENT_DEAD;
 
 	if (m_bPlayerExplosion == true)
 	{
@@ -55,21 +57,21 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		return EVENT_DEAD;
 	}
-	else if (m_bBossExplosion == true)
-	{
-		if (m_bCodyControl == true && m_bMayControl == false)
-		{
-			((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
-		}
-		else if (m_bMayControl == true && m_bCodyControl == false)
-		{
-			((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
-		}
+	//else if (m_bBossExplosion == true)
+	//{
+	//	if (m_bCodyControl == true && m_bMayControl == false)
+	//	{
+	//		((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
+	//	}
+	//	else if (m_bMayControl == true && m_bCodyControl == false)
+	//	{
+	//		((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
+	//	}
 
-		Explosion_Effect();
+	//	Explosion_Effect();
 
-		return EVENT_DEAD;
-	}
+	//	return EVENT_DEAD;
+	//}
 
 
 	if (m_IsCrashed == false)
@@ -175,6 +177,22 @@ HRESULT CBoss_Missile::Render_ShadowDepth()
 	// Skinned: 2 / Normal: 3
 	m_pModelCom->Render_Model(3, 0, true);
 	return S_OK;
+}
+
+void CBoss_Missile::Set_MissileDead()
+{
+	if (m_bCodyControl == true && m_bMayControl == false)
+	{
+		((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
+	}
+	else if (m_bMayControl == true && m_bCodyControl == false)
+	{
+		((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
+	}
+
+	Explosion_Effect();
+
+	m_isDead = true;
 }
 
 void CBoss_Missile::Combat_Move(_double dTimeDelta)

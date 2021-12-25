@@ -32,9 +32,9 @@ void C2DMesh::RealStart()
 	vMyPos.x = 0.f;
 	vMyPos.z = 0.f;
 
-	vMyPos.x += (_float)(rand() % 61 - 30);
-	vMyPos.y -= (_float)(rand() % 50 + 50);
-	vMyPos.z += (_float)(rand() % 61 - 30);
+	vMyPos.x += (_float)(rand() % 51 - 25);
+	vMyPos.y += (_float)(((rand() % 11) * -1) - 50);
+	vMyPos.z += (_float)(rand() % 51 - 25);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
 
@@ -111,11 +111,11 @@ _int C2DMesh::Late_Tick(_double dTimeDelta)
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 1:
-		if (0 < m_pModelCom_Robot->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+		if (0 < m_pModelCom_Umbrella->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 2:
-		if (0 < m_pModelCom_Star->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+		if (0 < m_pModelCom_Robot->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 3:
@@ -123,7 +123,7 @@ _int C2DMesh::Late_Tick(_double dTimeDelta)
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	case 4:
-		if (0 < m_pModelCom_Umbrella->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+		if (0 < m_pModelCom_Star->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		break;
 	}
@@ -138,9 +138,9 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 	_float4 vColor;
 	switch (m_iColorIndex)
 	{
-	case 0: vColor = _float4(1.f, 1.f, 1.f, 1.f);
+	case 0: vColor = _float4(0.3f, 0.3f, 0.3f, 1.000000000f);
 		break;
-	case 1: vColor = _float4(0.125490203f, 0.698039234f, 0.666666687f, 1.000000000f);
+	case 1: vColor = _float4(0.1f, 0.3f, 1.f, 1.000000000f);
 		break;
 	}
 
@@ -153,16 +153,16 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 		m_pModelCom_Ailen->Sepd_Render_Model(0, 29, false);
 		break;
 	case 1:
+		m_pModelCom_Umbrella->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Umbrella->Sepd_Bind_Buffer();
+		m_pModelCom_Umbrella->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+		m_pModelCom_Umbrella->Sepd_Render_Model(0, 29, false);
+		break;
+	case 2:
 		m_pModelCom_Robot->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 		m_pModelCom_Robot->Sepd_Bind_Buffer();
 		m_pModelCom_Robot->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 		m_pModelCom_Robot->Sepd_Render_Model(0, 29, false);
-		break;
-	case 2:
-		m_pModelCom_Star->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Star->Sepd_Bind_Buffer();
-		m_pModelCom_Star->Set_Variable("g_vColor", &vColor, sizeof(_float4));
-		m_pModelCom_Star->Sepd_Render_Model(0, 29, false);
 		break;
 	case 3:
 		m_pModelCom_UFO->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -171,10 +171,10 @@ HRESULT C2DMesh::Render(RENDER_GROUP::Enum eGroup)
 		m_pModelCom_UFO->Sepd_Render_Model(0, 29, false);
 		break;
 	case 4:
-		m_pModelCom_Umbrella->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-		m_pModelCom_Umbrella->Sepd_Bind_Buffer();
-		m_pModelCom_Umbrella->Set_Variable("g_vColor", &vColor, sizeof(_float4));
-		m_pModelCom_Umbrella->Sepd_Render_Model(0, 29, false);
+		m_pModelCom_Star->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom_Star->Sepd_Bind_Buffer();
+		m_pModelCom_Star->Set_Variable("g_vColor", &vColor, sizeof(_float4));
+		m_pModelCom_Star->Sepd_Render_Model(0, 29, false);
 		break;
 	}
 	return S_OK;
@@ -205,12 +205,12 @@ void C2DMesh::Movement(_double dTimeDelta)
 
 	/* 충돌시 회전값 상승 */
 	if (false == m_bCollision)
-		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle, m_fRandomAngle, m_fRandomAngle));
+		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle * 500.f, m_fRandomAngle * 500.f, m_fRandomAngle * 500.f));
 	else
 		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f));
 
 	/* 스케일 조정 */
-	m_fScale += (_float)dTimeDelta / 2.f;
+	m_fScale += (_float)dTimeDelta;
 
 	if (m_fMaxScale <= m_fScale)
 		m_fScale = m_fMaxScale;
@@ -237,9 +237,9 @@ void C2DMesh::Movement(_double dTimeDelta)
 		vMyPos.x = 0.f;
 		vMyPos.z = 0.f;
 
-		vMyPos.x += (_float)(rand() % 61 - 30);
-		vMyPos.y -= 50.f;
-		vMyPos.z += (_float)(rand() % 61 - 30);
+		vMyPos.x += (_float)(rand() % 51 - 25);
+		vMyPos.y += (_float)(((rand() % 11) * -1) - 50);
+		vMyPos.z += (_float)(rand() % 51 - 25);
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
 
@@ -266,7 +266,7 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
-	m_fMaxScale = (rand() % 11 + 10) * 0.1f;
+	m_fMaxScale = (rand() % 11 + 15) * 0.1f;
 
 	/* 랜덤 회전값 */
 	m_fRandomAngle = (rand() % 41 - 20.f) * 0.1f;
@@ -287,7 +287,7 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setAngularDamping(0.1f);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(2.5f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(20.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

@@ -170,7 +170,7 @@ HRESULT CRock::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(1.7f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(10.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

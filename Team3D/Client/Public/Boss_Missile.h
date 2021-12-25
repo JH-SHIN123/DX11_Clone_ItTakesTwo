@@ -40,6 +40,10 @@ public:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+	_bool Get_BossExplosion() const { return m_bBossExplosion; }
+
+public:
+	void Set_MissileDead();
 
 private:
 	void Combat_Move(_double dTimeDelta);
@@ -83,6 +87,7 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerActorCom = nullptr;
+
 	PxRaycastBuffer		m_RaycastBuffer;
 
 private:

@@ -296,6 +296,7 @@ _int CCody::Tick(_double dTimeDelta)
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -354,19 +355,22 @@ _int CCody::Tick(_double dTimeDelta)
 			m_IsFalling = m_pActorCom->Get_IsFalling();
 			m_pActorCom->Set_GroundPound(m_bGroundPound);
 
-			if (m_bRoll == false || m_bSprint == true)
-				KeyInput(dTimeDelta);
-			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_CodyCutSceneIntro)
 			{
-				Sprint(dTimeDelta);
-				if(m_IsSizeChanging == false)
-				Move(dTimeDelta);
-				if(m_eCurPlayerSize != SIZE_LARGE)
-				Roll(dTimeDelta);
-				Jump(dTimeDelta);
-				Change_Size(dTimeDelta);
+				if (m_bRoll == false || m_bSprint == true)
+					KeyInput(dTimeDelta);
+				if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
+				{
+					Sprint(dTimeDelta);
+					if (m_IsSizeChanging == false)
+						Move(dTimeDelta);
+					if (m_eCurPlayerSize != SIZE_LARGE)
+						Roll(dTimeDelta);
+					Jump(dTimeDelta);
+					Change_Size(dTimeDelta);
+				}
+				Ground_Pound(dTimeDelta);
 			}
-			Ground_Pound(dTimeDelta);
 		}
 	}
 	/////////////////////////////////////////////
@@ -1816,7 +1820,7 @@ void CCody::Jump(const _double dTimeDelta)
 		m_iAirDashCount = 0;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_IsFalling == true)
+	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_IsFalling == true && m_IsJumping == false)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
 		{
@@ -1832,7 +1836,7 @@ void CCody::Jump(const _double dTimeDelta)
 		}
 		m_bShortJump = true;
 		m_IsJumping = true;
-		m_iJumpCount = 1;
+		m_iJumpCount = 2;
 		return;
 	}
 }
@@ -2748,7 +2752,6 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = false;	
 			m_IsCollide = false;
-
 		}
 
 	}
@@ -2793,6 +2796,14 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_IsStGravityCleared = true;
 		}
 
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsCollide = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+
 	}
 
 	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_RAIL)
@@ -2808,6 +2819,14 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsStRailCleared = true;
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsCollide = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 	}
 
@@ -2828,6 +2847,14 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_vScale = { 1.f, 1.f, 1.f };
 			m_eCurPlayerSize = SIZE_MEDIUM;
 			m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsCollide = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 	}
 
@@ -2899,9 +2926,10 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, true, true);
 			if (m_pGameInstance->Key_Pressing(DIK_SPACE))
 			{
+				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false)
+				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE_MAY_1) == false)
 				{
 					SCRIPT->Render_Script(0, CScript::HALF, 2.f);
 					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
@@ -3084,7 +3112,7 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_WallJump.wav"), CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
-
+			//
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
@@ -3550,6 +3578,7 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 
 void CCody::Set_Change_Size_After_UmbrellaCutScene()
 {
+	m_IsPipeBattery = false;
 	m_IsPushingBattery = false;
 	m_IsCollide = false;
 	m_pModelCom->Set_Animation(ANI_C_MH);
@@ -3559,6 +3588,7 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_vScale = { 1.f, 1.f, 1.f };
 	m_eCurPlayerSize = SIZE_MEDIUM;
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+	m_pActorCom->Set_IsPlayerSizeSmall(false);
 }
 void CCody::Set_HpBarReduction(_float fDamage)
 {

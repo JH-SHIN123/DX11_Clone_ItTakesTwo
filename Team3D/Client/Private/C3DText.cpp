@@ -125,7 +125,7 @@ HRESULT C3DText::Create_Particle()
 	for (_uint i = 0; i < 100; ++i)
 	{
 		_vector vPositoin = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector vRandomPos = XMVectorSet((rand() % 7 - 3.f), -10.f, (rand() % 3 - 1.f), 0.f);
+		_vector vRandomPos = XMVectorSet((rand() % 7 - 3.f), -20.f, (rand() % 3 - 1.f), 0.f);
 		XMStoreFloat3(&tArg.vPosition, vPositoin + vRandomPos);
 
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_MeshParticle"), &tArg), E_FAIL);

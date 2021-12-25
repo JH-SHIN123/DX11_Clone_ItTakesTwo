@@ -49,7 +49,7 @@ _int CReturn_Button::Tick(_double dTimeDelta)
 		{
 			/* Sound */
 			m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
-			m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+			m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON, 2.f);
 
 			m_bChangeScene = true;
 		}
