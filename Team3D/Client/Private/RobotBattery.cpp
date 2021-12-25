@@ -83,6 +83,18 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 			Push_Battery(dTimeDelta);
 		}
 	}
+	else
+	{
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_bBackRotate = true;
+		}
+
+		if (m_bBackRotate)
+		{
+			Rewind_Battery(dTimeDelta);
+		}
+	}
 	return NO_EVENT;
 }
 
@@ -183,10 +195,44 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 			break;
 		}
 
-		m_IsCollide = false;
+		//m_IsCollide = false;
 		m_fRotateDelay = 0.f;
 		m_bRotate = false;
 		m_bUpdate = false;
+		m_bCharged = true;
+	}
+}
+
+void CRobotBattery::Rewind_Battery(_double dTimeDelta)
+{
+	// 나중에 스테이지에 뜨ㅏㅣ웠을때 회전하는 축 바꿔야함.
+	m_fRotateDelay += (_float)dTimeDelta;
+
+	if (m_fRotateDelay > 0.2f && m_fRotateDelay < 2.1f)
+	{
+		_vector vDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		m_pTransformCom->RotateYawDirectionOnLand(-vDir, dTimeDelta * 0.005f);
+		m_pStaticActorCom->Update_StaticActor();
+	}
+	else if (m_fRotateDelay >= 2.1f)
+	{
+		switch (m_tRobotPartsDesc.iStageNum)
+		{
+		case ST_GRAVITYPATH:
+			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Battery_Charged(false);
+			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_Robot_Lever()->Set_BatteryCharged(false);
+			break;
+		case ST_RAIL:
+			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Battery_Charged(false);
+			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_Robot_Lever()->Set_BatteryCharged(false);
+			break;
+		}
+
+		m_IsCollide = false;
+		m_fRotateDelay = 0.f;
+		m_bRotate = false;
+		m_bUpdate = true;
+		m_bBackRotate = false;
 	}
 }
 

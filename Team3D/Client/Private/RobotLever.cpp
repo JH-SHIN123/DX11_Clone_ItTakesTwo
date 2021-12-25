@@ -64,18 +64,22 @@ _int CRobotLever::Tick(_double dTimeDelta)
 {
 	CRobotParts::Tick(dTimeDelta);
 
-
-
 	if (m_bUpdate == true)
 	{
-		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E)
-			|| m_IsCollide && m_pGameInstance->Key_Down(DIK_O)
-			|| m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
 		{
 			UI_Delete(Cody, InputButton_InterActive);
+			m_IsCollide = false;
+			m_bRotate = true;
+			m_bCountHitDelay = true;
+		}
+
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_O)	|| m_IsCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
+		{
 			UI_Delete(May, InputButton_InterActive);
 			m_IsCollide = false;
 			m_bRotate = true;
+			m_bCountHitDelay = true;
 		}
 
 		if (m_bRotate == true)

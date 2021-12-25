@@ -263,14 +263,17 @@ _int CMay::Tick(_double dTimeDelta)
 			m_IsFalling = m_pActorCom->Get_IsFalling();
 			m_pActorCom->Set_GroundPound(m_bGroundPound);
 
-			if (m_bRoll == false || m_bSprint == true)
-				KeyInput(dTimeDelta);
-			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_M_CutScene_BeamUp_Intro_May)
 			{
-				Sprint(dTimeDelta);
-				Move(dTimeDelta);
-				Roll(dTimeDelta);
-				Jump(dTimeDelta);
+				if (m_bRoll == false || m_bSprint == true)
+					KeyInput(dTimeDelta);
+				if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
+				{
+					Sprint(dTimeDelta);
+					Move(dTimeDelta);
+					Roll(dTimeDelta);
+					Jump(dTimeDelta);
+				}
 			}
 			Ground_Pound(dTimeDelta);
 		}
@@ -664,7 +667,7 @@ void CMay::KeyInput(_double dTimeDelta)
 
 #pragma region PAD X
 
-	if (m_pGameInstance->Key_Down(DIK_K) && m_iJumpCount == 0)
+	if (m_pGameInstance->Key_Down(DIK_K) && m_iJumpCount == 0 && m_IsFalling == false)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
@@ -673,7 +676,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
 	}
 
-	else if (m_pGameInstance->Key_Down(DIK_K) && m_iJumpCount == 1)
+	else if (m_pGameInstance->Key_Down(DIK_K) && m_iJumpCount == 1 && m_IsFalling == false)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
@@ -997,7 +1000,7 @@ void CMay::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region PAD X
-	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 0 /*&& m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling */&& m_bCanMove == true)
+	if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 0 /*&& m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling */&& m_bCanMove == true && m_IsFalling == false)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
@@ -1006,7 +1009,7 @@ void CMay::KeyInput(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Falling);
 	}
 
-	else if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 1/* && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling */&& m_bCanMove == true)
+	else if (m_pGameInstance->Pad_Key_Down(DIP_B) && m_iJumpCount == 1/* && m_pModelCom->Get_CurAnimIndex() != ANI_M_Jump_Falling */&& m_bCanMove == true && m_IsFalling == false)
 	{
 		m_bShortJump = true;
 		m_iJumpCount += 1;
@@ -1613,6 +1616,19 @@ void CMay::Jump(const _double dTimeDelta)
 		m_bSprint = false;
 		m_iAirDashCount = 0;
 
+#ifdef __CONTROL_MAY_KEYBOARD
+		if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Key_Pressing(DIK_DOWN))
+		{
+			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+			}
+
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+		}
+#else
 		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
 		{
 			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
@@ -1624,6 +1640,7 @@ void CMay::Jump(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
 		}
+#endif
 		else
 		{
 			m_pModelCom->Set_Animation(ANI_M_Jump_Land);
@@ -1653,6 +1670,32 @@ void CMay::Jump(const _double dTimeDelta)
 			m_bFallAniOnce = true;
 		}
 	}
+#ifdef __CONTROL_MAY_KEYBOARD
+	else if (m_IsJumping == false && m_IsFalling == false && m_bFallAniOnce == true && m_bRoll == false && m_bGroundPound == false)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_W) || m_pGameInstance->Key_Pressing(DIK_A) || m_pGameInstance->Key_Pressing(DIK_S) || m_pGameInstance->Key_Pressing(DIK_D))
+		{
+			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MAY_WALK) == false)
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+				m_pGameInstance->Play_Sound(TEXT("May_Walk.wav"), CHANNEL_MAY_WALK, m_fMay_Walk_Volume);
+			}
+
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land_Jog);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_Jog);
+		}
+		else
+		{
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+		}
+
+		m_bFallAniOnce = false;
+		m_IsJumping = false;
+		m_iJumpCount = 0;
+		m_iAirDashCount = 0;
+	}
+#else
 	else if (m_IsJumping == false && m_IsFalling == false && m_bFallAniOnce == true && m_bRoll == false && m_bGroundPound == false)
 	{
 		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
@@ -1668,8 +1711,8 @@ void CMay::Jump(const _double dTimeDelta)
 		}
 		else
 		{
-			//m_pModelCom->Set_Animation(ANI_M_Jump_Land);
-			//m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_Jump_Land);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		}
 
 		m_bFallAniOnce = false;
@@ -1677,10 +1720,11 @@ void CMay::Jump(const _double dTimeDelta)
 		m_iJumpCount = 0;
 		m_iAirDashCount = 0;
 	}
-	if ((m_pGameInstance->Pad_Key_Down(DIP_B) && m_IsFalling == true) || (m_pGameInstance->Key_Down(DIK_K) && m_IsFalling == true))
+#endif
+	if ((m_pGameInstance->Pad_Key_Down(DIP_B) && m_IsFalling == true && m_IsJumping == false) || (m_pGameInstance->Key_Down(DIK_K) && m_IsFalling == true && m_IsJumping == false))
 	{
-		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
-		m_pGameInstance->Play_Sound(TEXT("May_Jump_Double.wav"), CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
+		//m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
+		//m_pGameInstance->Play_Sound(TEXT("May_Jump_Double.wav"), CHANNEL_MAY_JUMP_DOUBLE, m_fMay_Jump_Double_Volume);
 
 		m_bShortJump = true;
 		m_IsJumping = true;
@@ -2315,9 +2359,10 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, true, true);
 			if (m_pGameInstance->Pad_Key_Pressing(DIP_B) || m_pGameInstance->Key_Pressing(DIK_K))
 			{
+				m_fGrvityPipe_Sound_Delay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false)
+				if (m_bGravityPipe_FirstIn == false && m_fGrvityPipe_Sound_Delay > 1.f)
 				{
 					SCRIPT->Render_Script(1, CScript::HALF, 2.f);
 					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_1, m_fMay_GravityPipe_Voice_Volume);

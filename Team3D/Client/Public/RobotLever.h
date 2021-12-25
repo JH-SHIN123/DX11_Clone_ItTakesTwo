@@ -45,6 +45,9 @@ private:
 	_bool		m_bUpdate = true;
 	_float		m_fStopDelay = 0.f;
 	_bool		m_bNoBatteryHit = false;
+
+	_bool		m_bCountHitDelay = false;
+	_float		m_fCanHitDelay = 0.f;
 	ROBOTDESC	m_tRobotPartsDesc;
 
 	/* Sound */
