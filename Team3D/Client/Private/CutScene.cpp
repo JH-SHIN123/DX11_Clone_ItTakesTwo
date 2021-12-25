@@ -509,7 +509,7 @@ HRESULT CCutScene::Start_CutScene_Intro()
 		return E_FAIL;
 	static_cast<CMoonBaboon*>(pPerformer)->Get_Transform()->Set_WorldMatrix(
 		MakeRollPitchYawMatrix(_float3(62.8f, 0.5f, -6.2f), _float3(1.f, 1.f, 1.f), _float3(90.f, -90.f, 0.f)));
-	static_cast<CMoonBaboon*>(pPerformer)->Get_Model()->Set_Animation(7);
+	static_cast<CMoonBaboon*>(pPerformer)->Get_Model()->Set_Animation(Moon_BeamUp_Intro);
 
 	pPerformer = m_pCutScenePlayer->Find_Performer(L"Component_Model_RemoteContollerCutScene1");
 	if (nullptr == pPerformer)
