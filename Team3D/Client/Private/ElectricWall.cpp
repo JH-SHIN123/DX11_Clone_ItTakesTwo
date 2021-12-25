@@ -36,18 +36,7 @@ _int CElectricWall::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
-	if (true == m_bElectric)
-	{
-		m_dElectricTime += dTimeDelta;
-
-		if (0.5f <= m_dElectricTime)
-		{
-			m_dElectricTime = 0.0;
-			m_bElectric = false;
-		}
-	}
-
-		/*ÁØºñ ÀÌÆåÆ®*/
+	/*ÁØºñ ÀÌÆåÆ®*/
 	if (3.75 <= m_dCoolTime && true == m_bElectric_Ready)
 	{
 		m_bElectric_Ready = false;
@@ -62,6 +51,8 @@ _int CElectricWall::Tick(_double dTimeDelta)
 	/* Electric ÀÌÆåÆ® */
 	if (5.0 <= m_dCoolTime)
 	{
+		m_bElectric = true;
+
 		if (2 > m_iEffectCount)
 		{
 			++m_iEffectCount;
@@ -84,7 +75,7 @@ _int CElectricWall::Tick(_double dTimeDelta)
 
 		if (5.75 <= m_dCoolTime)
 		{
-			m_bElectric = true;
+			m_bElectric = false;
 			m_bElectric_Ready = true;
 			m_dCoolTime = 0.0;
 
@@ -159,7 +150,7 @@ HRESULT CElectricWall::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
 	/* Trigger */
-	PxGeometry* Geom = new PxBoxGeometry(0.18f, 0.7f, 0.02f);
+	PxGeometry* Geom = new PxBoxGeometry(0.18f, 0.7f, 0.05f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = Geom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
