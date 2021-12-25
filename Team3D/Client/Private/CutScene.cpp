@@ -728,6 +728,8 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -743,6 +745,8 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -764,6 +768,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
 	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 	static_cast<CMay*>(DATABASE->GetMay())->Enforce_IdleState();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	/* 상태 초기화 */
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
