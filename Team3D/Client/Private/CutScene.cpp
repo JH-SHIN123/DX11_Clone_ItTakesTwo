@@ -923,7 +923,7 @@ void CCutScene::CodyMove_EjectUfo(_double dTimeDelta)
 	{
 		_float fStartTime = 7.5f;
 		_float fEndTime = 10.32f;
-		m_fCodyMove_EjectUfoTime += dTimeDelta/(fEndTime - fStartTime) ;
+		m_fCodyMove_EjectUfoTime += (_float)dTimeDelta/(fEndTime - fStartTime) ;
 		_fvector vStartPos = XMVectorSet(66.f, 754.05f, 219.f, 1.f);
 		_fvector vMoveToPos = XMVectorSet(63.f, 754.05f, 219.f, 1.f);
 

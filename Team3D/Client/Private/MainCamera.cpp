@@ -1038,7 +1038,6 @@ _int CMainCamera::Tick_Cam_Warp_WormHole(_double dTimeDelta)
 		ReSet_Cam_FreeToAuto(true);
 		m_fChangeCamModeLerpSpeed = 4.f;
 	}
-
 	return NO_EVENT;
 }
 _int CMainCamera::Tick_Cam_PressButton_Bridge(_double dTimeDelta)

@@ -1140,7 +1140,7 @@ void CCody::Move(const _double dTimeDelta)
 			//Å×½ºÆ®
 			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd)
 			{
-				m_fFootStepDelay += dTimeDelta;
+				m_fFootStepDelay += (_float)dTimeDelta;
 				if (m_fFootStepDelay > 0.5f)
 				{
 					m_pCamera->Start_CamEffect(TEXT("Cam_Shake_BigCodyWalk"));
