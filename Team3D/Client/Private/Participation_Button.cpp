@@ -57,7 +57,7 @@ _int CParticipation_Button::Tick(_double dTimeDelta)
 	{
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
-		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON, 2.f);
 
 		m_bReadyCody = true;
 		m_iFrame = 1;
@@ -68,7 +68,7 @@ _int CParticipation_Button::Tick(_double dTimeDelta)
 	{
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
-		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON, 2.f);
 
 		m_bReadyMay = true;
 		m_iFrame = 3;
@@ -78,7 +78,7 @@ _int CParticipation_Button::Tick(_double dTimeDelta)
 	{
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_BUTTON);
-		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON);
+		m_pGameInstance->Play_Sound(TEXT("MainMenu_Button_In.wav"), CHANNEL_BUTTON, 2.f);
 
 		m_bReadyMay = true;
 		m_iFrame = 3;
