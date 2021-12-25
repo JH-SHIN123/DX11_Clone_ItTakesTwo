@@ -37,6 +37,17 @@ HRESULT CEffect_Boss_Gravitational_Bomb_Particle::NativeConstruct(void * pArg)
 
 	Ready_InstanceBuffer();
 
+	//// Light
+	//LIGHT_DESC lightDesc;
+	//lightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//lightDesc.fRange = 12.f;
+	//lightDesc.vDiffuse = { 1.f,0.f,0.f,1.f };
+	//lightDesc.vSpecular = { 1.f,0.f,0.f,1.f };
+	//XMStoreFloat3(&lightDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//m_pLight = CLight::Create(TEXT("Bomb_Effect_Light"), &lightDesc);
+	//m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pLight);
+	//Safe_AddRef(m_pLight);
+
 	return S_OK;
 }
 
@@ -53,6 +64,16 @@ _int CEffect_Boss_Gravitational_Bomb_Particle::Tick(_double TimeDelta)
 		m_dControlTime -= TimeDelta;
 
 	Check_Instance(TimeDelta);
+
+	///* Light */
+	//if (m_pLight)
+	//{
+	//	LIGHT_DESC* pLightDesc = m_pLight->Get_LightDescPtr();
+	//	if (nullptr != pLightDesc)
+	//	{
+	//		XMStoreFloat3(&pLightDesc->vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//	}
+	//}
 
 	return NO_EVENT;
 }
@@ -228,6 +249,13 @@ CGameObject * CEffect_Boss_Gravitational_Bomb_Particle::Clone_GameObject(void * 
 
 void CEffect_Boss_Gravitational_Bomb_Particle::Free()
 {
+	//if (m_pLight)
+	//{
+	//	m_pLight->Set_Dead(true);
+	//	Safe_Release(m_pLight);
+	//	m_pLight = nullptr;
+	//}
+
 	Safe_Delete_Array(m_pInstance_Parabola_Time);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
 	Safe_Delete_Array(m_pInstanceBiffer_Dir);

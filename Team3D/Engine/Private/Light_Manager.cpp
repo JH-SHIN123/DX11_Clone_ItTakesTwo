@@ -76,16 +76,21 @@ _int CLight_Manager::Tick_LightManager(_double dTimeDelta)
 {
 	/* Tick Dynamic Light */
 	_int iProgress = 0;
+	CLight* pDeleteLight = nullptr;
 	for (auto iter = m_DynamicLights.begin(); iter != m_DynamicLights.end();)
 	{
-		if (nullptr == (*iter)) continue;
+		if (nullptr == (*iter)) {
+			//++iter;
+			continue;
+		}
 
 		iProgress = (*iter)->Tick_Light(dTimeDelta);
 
 		if (EVENT_DEAD == iProgress)
 		{
-			Safe_Release(*iter);
-			m_DynamicLights.erase(iter);
+			pDeleteLight = (*iter);
+			iter = m_DynamicLights.erase(iter);
+			Safe_Release(pDeleteLight);
 		}
 		else ++iter;
 	}
