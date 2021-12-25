@@ -224,23 +224,12 @@ void CUmbrellaBeam::PutGravitationalField()
 	}
 
 	_vector vComparePos = vTargetPos - vOffSetPos;
-
 	_float fDistance = XMVectorGetX(XMVector3Length(vComparePos));
-
 	_float fRange = 3.f;
 
 	if (fRange >= fDistance)
 		m_IsPutGravitationalField = true;
 
-	//_float fRange = 3.f;
-	//_float fRangeX = 2.5f;
-
-	//_float vComparePosX = abs(XMVectorGetX(vComparePos));
-	//_float vComparePosY = abs(XMVectorGetY(vComparePos));
-	//_float vComparePosZ = abs(XMVectorGetZ(vComparePos));
-
-	//if (fRangeX >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
-	//	m_IsPutGravitationalField = true;
 }
 
 HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)
