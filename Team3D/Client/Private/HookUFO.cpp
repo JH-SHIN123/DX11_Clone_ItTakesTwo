@@ -62,7 +62,7 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 
 	DATABASE->Set_HookUFO(this);
 	Set_MeshRenderGroup();
-
+	//
 	return S_OK;
 }
 
