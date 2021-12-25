@@ -443,7 +443,7 @@ HRESULT CLevel_Stage::Ready_Lights()
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_ComputeRoom.dat"));
 	CLightUtility::Load_StaticLightData(CLightUtility::LOAD_VOLUMELIGHT, TEXT("../Bin/Resources/Data/LightData/VolumeLight_Pinball.dat"));
 
-	Ready_VolumeLight_Rail();;
+	Ready_VolumeLight_Rail();
 #endif
 
 	return S_OK;

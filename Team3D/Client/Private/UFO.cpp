@@ -78,6 +78,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	lightDesc.fRange = 15.f;
 	lightDesc.vDiffuse = { 0.f,0.f,1.f,1.f };
+	lightDesc.vSpecular = { 0.f,0.f,1.f,1.f };
 	XMStoreFloat3(&lightDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pBossLight = CLight::Create(TEXT("Boss_UFO_Light"),&lightDesc);
 	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pBossLight);
@@ -198,6 +199,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		if (nullptr != pLightDesc)
 		{
 			XMStoreFloat3(&pLightDesc->vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			pLightDesc->vPosition.y -= 3.f; // offset
 		}
 	}
 
