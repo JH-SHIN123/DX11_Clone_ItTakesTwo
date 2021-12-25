@@ -770,9 +770,11 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
 	UI_Generator->Set_AllActivation(true);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
-
 
 	return S_OK;
 }

@@ -55,8 +55,6 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_MoonBaboonPtr(this);
 
-	//
-
 	return S_OK;
 }
 
@@ -154,15 +152,18 @@ void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 
 void CMoonBaboon::SetUp_IntroOffset(_double dTimeDelta)
 {
-	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
-	_uint iBoneIndex = m_pUFOModel->Get_BoneIndex("Chair");
-	_matrix UFOAnim = m_pUFOModel->Get_AnimTransformation(iBoneIndex);
+	if (CutScene_UFO_Boss_Intro == m_pUFOModel->Get_CurAnimIndex())
+	{
+		_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+		_uint iBoneIndex = m_pUFOModel->Get_BoneIndex("Chair");
+		_matrix UFOAnim = m_pUFOModel->Get_AnimTransformation(iBoneIndex);
 
-	/* 애니메이션 행렬 들고와서 곱해줌 */
-	_float4x4 matWorld, matScale;
-	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f) * UFOAnim * BoneChair * m_pUFOTransform->Get_WorldMatrix());
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
-	m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+		/* 애니메이션 행렬 들고와서 곱해줌 */
+		_float4x4 matWorld, matScale;
+		XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f) * UFOAnim * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+		m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+	}
 }
 
 HRESULT CMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
