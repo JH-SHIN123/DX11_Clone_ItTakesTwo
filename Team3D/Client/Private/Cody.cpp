@@ -3112,7 +3112,7 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_WallJump.wav"), CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
-
+			//
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
