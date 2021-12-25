@@ -11,6 +11,7 @@ private:
 
 public:
 	void Start();
+	void RealStart();
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype();
@@ -37,14 +38,17 @@ private:
 	CTransform*			m_pCodyTransformCom = nullptr;
 
 	/* 초기 생성스케일, 최대 스케일 */
-	_float				m_fScale = 0.5f;
+	_float				m_fScale = 0.1f;
 	_float				m_fMaxScale = 1.f;
 
 	_float				m_fRandomAngle = 0.f;
 	_double				m_dCoolTime = 0.0;
 	_uint				m_iColorIndex = 0;
 	_bool				m_bCollision = false;
+
 	_bool				m_bStart = false;
+	_double				m_dStartTime = 0.0;
+	_bool				m_bRealStart = false;
 
 	_uint				m_iRandomModel = 0;
 

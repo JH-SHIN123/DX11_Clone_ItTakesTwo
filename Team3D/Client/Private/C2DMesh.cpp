@@ -21,6 +21,11 @@ void C2DMesh::Start()
 	if (false == ENDINGCREDIT->Get_2DMeshStart())
 		return;
 
+	m_bStart = true;
+}
+
+void C2DMesh::RealStart()
+{
 	_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float3 vMyPos = {};
 	XMStoreFloat3(&vMyPos, vCodyPos);
@@ -40,7 +45,7 @@ void C2DMesh::Start()
 	m_iColorIndex = 0;
 	m_bCollision = false;
 
-	m_bStart = true;
+	m_bRealStart = true;
 }
 
 HRESULT C2DMesh::NativeConstruct_Prototype()
@@ -78,6 +83,15 @@ _int C2DMesh::Tick(_double dTimeDelta)
 	Movement(dTimeDelta);
 
 	m_dCoolTime += dTimeDelta;
+
+
+	if (true == m_bStart && false == m_bRealStart)
+	{
+		m_dStartTime += dTimeDelta;
+		if (1.5 <= m_dStartTime)
+			RealStart();
+	}
+
 	return NO_EVENT;
 }
 
@@ -183,7 +197,7 @@ void C2DMesh::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 void C2DMesh::Movement(_double dTimeDelta)
 {
-	if (false == m_bStart)
+	if (false == m_bRealStart)
 		return;
 
 	/* 천천히 올라오게 Force조절 */
@@ -196,7 +210,7 @@ void C2DMesh::Movement(_double dTimeDelta)
 		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f));
 
 	/* 스케일 조정 */
-	m_fScale += (_float)dTimeDelta;
+	m_fScale += (_float)dTimeDelta / 2.f;
 
 	if (m_fMaxScale <= m_fScale)
 		m_fScale = m_fMaxScale;
@@ -252,16 +266,7 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
-	m_fMaxScale = (rand() % 16 + 10) * 0.1f;
-
-	/* 랜덤 생성 범위 */
-	//_float3 vMyPos = { 0.f, -500.f, 0.f };
-
-	//vMyPos.x += (_float)(rand() % 61 - 30);
-	//vMyPos.y -= (_float)(rand() % 50 + 50);
-	//vMyPos.z += (_float)(rand() % 61 - 30);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
+	m_fMaxScale = (rand() % 11 + 10) * 0.1f;
 
 	/* 랜덤 회전값 */
 	m_fRandomAngle = (rand() % 41 - 20.f) * 0.1f;
