@@ -227,6 +227,16 @@ void CLaserTennis_Manager::Set_CodyCount()
 	}
 }
 
+void CLaserTennis_Manager::Set_PowerCoordUI_Cody(_bool bCheck)
+{
+	m_pLaserPowerCoord[0]->Set_UICehck_Cody(bCheck);
+}
+
+void CLaserTennis_Manager::Set_PowerCoordUI_May(_bool bCheck)
+{
+	m_pLaserPowerCoord[1]->Set_UICehck_May(bCheck);
+}
+
 void CLaserTennis_Manager::Active_LaserButton()
 {
 	/* 랜덤 인덱스 Swap */
@@ -383,6 +393,8 @@ void CLaserTennis_Manager::Reset_Game()
 	/* 파워코드 초기화 */
 	for (_uint i = 0; i < 2; ++i)
 		m_pLaserPowerCoord[i]->Change_State();
+	Set_PowerCoordUI_Cody(false);
+	Set_PowerCoordUI_May(false);
 
 	/* 타이머 종료 */
 	m_pTimer_LaserTennis->OnOff_Timer(false);
@@ -503,6 +515,7 @@ HRESULT CLaserTennis_Manager::Create_ResultUI()
 {
 	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
 	m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_End.wav"), CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Sound_Lerp(CHANNEL_BGM, CHANNEL_BGM2, 0.15f, 0.f, 4.f);
 
 	((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(false);
 	((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(false);

@@ -55,6 +55,8 @@ private:
 	const _double m_dInstance_Pos_Update_Time = 1.5;
 	const _float2 m_vDefaultSize = { 1.f, 1.2f };
 
+private:
+	class CLight* m_pLight = nullptr;
 
 public:
 	static CEffect_Boss_Gravitational_Bomb_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

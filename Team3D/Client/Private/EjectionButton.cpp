@@ -53,7 +53,7 @@ _int CEjectionButton::Tick(_double dTimeDelta)
 			m_fDistance = 0.f;
 			m_bPressed = true;
 			m_bCollision = false;
-			((CUFO*)DATABASE->Get_BossUFO())->Set_CutScene();
+			((CUFO*)DATABASE->Get_BossUFO())->Set_CutScene(true);
 		}
 	}
 

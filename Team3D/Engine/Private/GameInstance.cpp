@@ -1,6 +1,30 @@
 #include "..\public\GameInstance.h"
 
-IMPLEMENT_SINGLETON(CGameInstance)
+//IMPLEMENT_SINGLETON(CGameInstance)
+
+CGameInstance*	CGameInstance::m_pInstance = nullptr;
+
+CGameInstance*	CGameInstance::GetInstance(void)
+{
+	if (nullptr == m_pInstance)
+		m_pInstance = new CGameInstance;
+	return m_pInstance;
+}
+
+unsigned long CGameInstance::DestroyInstance(void)
+{
+	unsigned long dwRefCnt = 0;
+
+	if (nullptr != m_pInstance)
+	{
+		dwRefCnt = Safe_Release(m_pInstance);
+
+		if (0 == dwRefCnt)
+			m_pInstance = nullptr;
+	}
+
+	return dwRefCnt;
+}
 
 CGameInstance::CGameInstance()
 	: m_pGraphic_Device		(CGraphic_Device::GetInstance())

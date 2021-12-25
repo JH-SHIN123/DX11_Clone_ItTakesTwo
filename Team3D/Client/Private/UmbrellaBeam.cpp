@@ -41,9 +41,7 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Umbrella_Effect", Level::LEVEL_STAGE, TEXT("GameObject_3D_Umbrella_Pipe"), nullptr, (CGameObject**)&m_pUmbrellaBeam_Effect), E_FAIL);
 	m_pUmbrellaBeam_Effect->Set_ParentWorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
-
 	m_UserData = USERDATA(GameID::eUMBRELLABEAM, this);
-
 
 	CStaticActor::ARG_DESC ArgDesc;
 	ArgDesc.pModel = m_pModelCom;
@@ -63,7 +61,6 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 
 	m_fHorizontalAngle = 45.f;
 	m_fVerticalAngle = 0.f;
-
 
 	DATABASE->Set_UmbrellaBeam(this);
 	return S_OK;
@@ -88,7 +85,10 @@ _int CUmbrellaBeam::Late_Tick(_double dTimeDelta)
 	if (true == m_IsBeamActivate)
 		m_pUmbrellaBeam_Effect->Set_Activate(true);
 	else
+	{
 		m_pUmbrellaBeam_Effect->Set_Activate(false);
+		m_IsPutGravitationalField = false;
+	}
 
 	PutGravitationalField();
 
@@ -186,15 +186,13 @@ void CUmbrellaBeam::PutGravitationalField()
 	XMStoreFloat4(&vConvertPos, vPos);
 	vConvertPos.z += 40.f;
 
-	_matrix matWorld, matTrans, matParent, matTarget;
+	_matrix matWorld, matTrans, matParent;
 	matParent = m_pTransformCom->Get_WorldMatrix();
 	matTrans = XMMatrixTranslation(0.f, 0.f, 40.f);
 	matWorld = matTrans * matParent;
 
-	matTarget = pMay->Get_Transform()->Get_WorldMatrix();
-
 	_vector vOffSetPos = XMLoadFloat4((_float4*)&matWorld.r[3].m128_f32[0]);
-	_vector vTargetPos = XMLoadFloat4((_float4*)&matTarget.r[3].m128_f32[0]);
+	_vector vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 
 	if (m_pGameInstance->Key_Down(DIK_Q))
 	{
@@ -226,16 +224,13 @@ void CUmbrellaBeam::PutGravitationalField()
 	}
 
 	_vector vComparePos = vTargetPos - vOffSetPos;
-
+	_float fDistance = XMVectorGetX(XMVector3Length(vComparePos));
 	_float fRange = 3.f;
-	_float fRangeX = 2.5f;
 
-	_float vComparePosX = abs(XMVectorGetX(vComparePos));
-	_float vComparePosY = abs(XMVectorGetY(vComparePos));
-	_float vComparePosZ = abs(XMVectorGetZ(vComparePos));
-
-	if (fRangeX >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+	/* 범위 안에 있다 */
+	if (fRange >= fDistance)
 		m_IsPutGravitationalField = true;
+
 }
 
 HRESULT CUmbrellaBeam::Ready_Layer_UmbrellaBeam_Stand(const _tchar * pLayerTag)

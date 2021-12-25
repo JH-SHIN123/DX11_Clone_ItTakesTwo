@@ -60,6 +60,7 @@ private:
 	void	Check_ClearEffect(_double TimeDelta);
 	void	Check_StageClear();
 	void	Check_Tennis_Found();
+	void	Check_Sound();
 
 private:
 	WARPGATE_DESC m_WarpGate_Desc;

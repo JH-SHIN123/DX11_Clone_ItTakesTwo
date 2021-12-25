@@ -29,6 +29,8 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	{
 		UI_Delete(Cody, CutSceneBar);
 		UI_Delete(May, CutSceneBar);
+		UI_Generator->Set_AllActivation(true);
+
 		switch (m_eCutSceneOption)
 		{
 		case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -58,7 +60,7 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
-		bIsNoError =  Tick_CutScene_Intro(dTimeDelta);
+		bIsNoError = Tick_CutScene_Intro(dTimeDelta);
 		break;
 	case CutSceneOption::CutScene_Active_GravityPath_01:
 		bIsNoError = Tick_CutScene_Active_GravityPath_01(dTimeDelta);
@@ -353,6 +355,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f,	244.4f,	220.4f, 1.f));
 			m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
 			m_iCutSceneTake++;
+
 		}
 	}
 	//ButtonPress 
@@ -425,6 +428,8 @@ HRESULT CCutScene::Start_CutScene()
 	m_iCutSceneTake = 0;
 	UI_CreateOnlyOnce(Cody, CutSceneBar);
 	UI_CreateOnlyOnce(May, CutSceneBar);
+
+	UI_Generator->Set_AllActivation(false);
 
 	switch (m_eCutSceneOption)
 	{
@@ -608,9 +613,6 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
 	pUfo->Get_Model()->Set_Animation(CutScene_UFO_Boss_Intro);
 	
-	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
-	pMoonBaboon->Set_Animation(CutScene_BossIntro_MoonBaboon, Moon_Ufo_MH);
-
 	CPerformer* pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Keyboard_01_Button1")));
 	pButton->Set_Position(_float3(62.457f, 219.084f, 238.85f));
 
@@ -636,7 +638,8 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 	CGameInstance::GetInstance()->Set_MainViewFog(true);
 	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
 	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Eject_InUFO");
-	
+	UI_Generator->Set_AllActivation(true);
+
 	return S_OK;
 }
 
@@ -689,7 +692,7 @@ HRESULT CCutScene::Start_CutScene_Outro()
 HRESULT CCutScene::End_CutScene_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.15f, 3.f);
 
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -698,6 +701,7 @@ HRESULT CCutScene::End_CutScene_Intro()
 	pMainCam->ReSet_Cam_FreeToAuto();
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto();
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -711,6 +715,7 @@ HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
 	pMainCam->ReSet_Cam_FreeToAuto();
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto();
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -725,7 +730,7 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
-
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -740,6 +745,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
+	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
 }
@@ -747,7 +753,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 HRESULT CCutScene::End_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Boss.wav"), CHANNEL_BGM, 0.f, true);
-	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.6f, 3.f);
+	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.15f, 3.f);
 
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -756,6 +762,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
+	UI_Generator->Set_AllActivation(true);
+
+	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
 
 	return S_OK;
 }
