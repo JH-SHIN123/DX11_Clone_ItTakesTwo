@@ -248,8 +248,8 @@ void CSound_Manager::SoundInfo_Update(_double dTimeDelta)
 				m_SoundInfo[iIndex].iFadeOption = 0;
 				m_SoundInfo[iIndex].fCurrentVolume = m_SoundInfo[iIndex].fTargetVolume;
 
-				if (m_SoundInfo[iIndex].fCurrentVolume <= 0.f)
-					Stop_Sound((CHANNEL_TYPE)iIndex);
+				//if (m_SoundInfo[iIndex].fCurrentVolume <= 0.f)
+				//	Stop_Sound((CHANNEL_TYPE)iIndex);
 			}
 
 			Set_SoundVolume((CHANNEL_TYPE)iIndex, m_SoundInfo[iIndex].fCurrentVolume);

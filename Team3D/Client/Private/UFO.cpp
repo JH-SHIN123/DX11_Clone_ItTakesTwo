@@ -1086,9 +1086,6 @@ HRESULT CUFO::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
 	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 20, false, eGroup);
 
-
-	return S_OK;
-
 	return S_OK;
 }
 
@@ -1201,7 +1198,7 @@ HRESULT CUFO::Render_ShadowDepth()
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(2, 0, true);
+	m_pModelCom->Render_Model(2, 0, true, RENDER_GROUP::RENDER_NONALPHA);
 
 	return S_OK;
 }
@@ -1364,6 +1361,7 @@ void CUFO::Free()
 	{
 		m_pBossLight->Set_Dead(true);
 		Safe_Release(m_pBossLight);
+		m_pBossLight = nullptr;
 	}
 
 	if (nullptr != m_pStaticActorCom)

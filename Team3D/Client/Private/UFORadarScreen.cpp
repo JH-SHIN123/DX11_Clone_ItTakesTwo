@@ -86,7 +86,7 @@ HRESULT CUFORadarScreen::Render_ShadowDepth()
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, 0, true);
+	m_pModelCom->Render_Model(3, 0, true, RENDER_GROUP::RENDER_NONALPHA);
 
 	return S_OK;
 }

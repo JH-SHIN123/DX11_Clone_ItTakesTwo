@@ -288,8 +288,23 @@ HRESULT CStatic_Env::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
+	
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, m_Static_Env_Desc.iMaterialIndex, true);
+	if (!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_01"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_MoonBaboon_GlassWall_02"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_GlassWall_End"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_Space_Pinball_Frame"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_Space_Pinball_BaseStar"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_Saturn"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_PlanetFloor"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Grate_01"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_Saucer_MainFloor_Top_01"), m_Static_Env_Desc.szModelTag) ||
+		!lstrcmp(TEXT("Component_Model_LaserStation_01"), m_Static_Env_Desc.szModelTag))
+	{
+		m_pModelCom->Render_Model(3, m_Static_Env_Desc.iMaterialIndex, true, RENDER_GROUP::RENDER_NONALPHA);
+	}
+	else
+		m_pModelCom->Render_Model(3, m_Static_Env_Desc.iMaterialIndex, true);
 
 	return S_OK;
 }
