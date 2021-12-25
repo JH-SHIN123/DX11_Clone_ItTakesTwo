@@ -2894,29 +2894,30 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 		m_fDeadTime += (_float)dTimeDelta;
 		if (m_fDeadTime >= 1.f)
 		{
-
+			/* Sound */
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 			m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 
-			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
-			m_pActorCom->Set_Position(vSavePosition);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pActorCom->Set_Gravity_Normally();
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+			m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+			Enforce_IdleState();
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_fDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
-			m_pActorCom->Set_ZeroGravity(false, false, false);
-			Enforce_IdleState();
+
+			/* Effect */
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		}
 		else
 		{
-			_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
-			vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
-			m_pActorCom->Set_Position(vTriggerTargetPos);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
+			m_pActorCom->Get_Actor()->putToSleep();
+			m_pActorCom->Update(dTimeDelta);
 		}
 	}
 }

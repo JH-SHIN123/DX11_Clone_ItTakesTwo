@@ -2554,7 +2554,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
 		{
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+			/* Savpoint 이동 */
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+			m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+			/* Actor 정지 */
+			m_pActorCom->Get_Actor()->putToSleep();
 			m_pActorCom->Update(dTimeDelta);
+
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bRespawnCheck = false;
 			m_bRespawn = true;
@@ -3609,30 +3617,30 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 		m_dDeadTime += dTimeDelta;
 		if (m_dDeadTime >= 1.f)
 		{
+			/* Sound */
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 
-			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
-
-			m_pActorCom->Set_Position(vSavePosition);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+			m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+			Enforce_IdleState();
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_dDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
 			m_bRespawnCheck = true;
-			m_pActorCom->Set_ZeroGravity(false, false, false);
-			Enforce_IdleState();
+
+			/* Effect */
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		}
 		else
 		{
-			_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
-			vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
-			m_pActorCom->Set_Position(vTriggerTargetPos);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
+			m_pActorCom->Get_Actor()->putToSleep();
+			m_pActorCom->Update(dTimeDelta);
 		}
 	}
 }
@@ -4238,21 +4246,24 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 	m_dRespawnTime += dTimeDelta;
 	if (2.f <= m_dRespawnTime)
 	{
+		/* Sound */
 		m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 		m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
-
-		m_pActorCom->Set_ZeroGravity(false, false, false);
-		m_pActorCom->Set_Position(XMLoadFloat3(&m_vSavePoint));
-		m_pActorCom->Update(dTimeDelta);
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
-		m_bRespawnCheck = true;
-		m_bFirstCheck = false;
-		m_bRespawn = false;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+		m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+		Enforce_IdleState();
+		m_pActorCom->Set_ZeroGravity(false, false, false);
 		m_IsCollide = false;
+		m_bRespawnCheck = true;
+		m_bRespawn = false;
 		m_dRespawnTime = 0.0;
+
+		/* Effect */
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 	}
 }
