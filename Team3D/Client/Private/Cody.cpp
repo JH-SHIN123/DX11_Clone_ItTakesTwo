@@ -292,11 +292,6 @@ void CCody::Add_LerpInfo_To_Model()
 #pragma region Overrided Function
 _int CCody::Tick(_double dTimeDelta)
 {
-
-	_tchar szFPS[MAX_PATH] = L"";
-	wsprintf(szFPS, TEXT("WarpDone : %d - %d"), (_int)m_IsWarpNextStage, (_int)m_IsWarpDone);
-	SetWindowText(g_hWnd, szFPS);
-
 	CCharacter::Tick(dTimeDelta);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
@@ -2174,6 +2169,12 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma endregion
 
 #pragma region Trigger
+_bool CCody::Get_WarpEnd_CountDown()
+{
+	_float fTime = m_fWarpTimer_InWormhole + m_fWarpTimer_Max - 1.f;
+	return m_fWarpTimer > fTime;
+}
+
 void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;

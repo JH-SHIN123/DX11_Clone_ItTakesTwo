@@ -381,6 +381,7 @@ private:
 public:
 	CAMERA_WORK_STATE Get_CameraWorkState() { return m_eCameraWorkState; }
 	_matrix Get_CameraTrigger_Matrix() { return XMLoadFloat4x4(&m_TriggerCameraWorld); }
+	_bool Get_WarpEnd_CountDown(); // 포탈 종료 1초전 return
 
 	/* Setter */
 public:

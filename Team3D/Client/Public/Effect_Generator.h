@@ -111,6 +111,17 @@ enum class EPoint_Color	// Color_Ramp_%d
 	Color_End = 0
 };
 
+enum class Effect_Value_CutScene
+{
+	Cody_Size_ML,
+	Cody_Size_LS,
+	Cody_Size_SL,
+	Cody_Size_SM,
+	MoonBaboon_Land,
+
+	Effect_Value_End
+};
+
 class CEffect_Generator final : public CBase
 {
 	DECLARE_SINGLETON(CEffect_Generator)
@@ -128,9 +139,21 @@ class CEffect_Generator final : public CBase
 			:vPosition(vPos), ColorRampNumber(ColorNumber), fPointRadius(fRadius), fPointSaturation_Power(Saturation_Power), fPointContrast_Power(fContrast_Power){}
 	}Effect_PointLight_Desc;
 
+	typedef struct tagCutSceneTimer_Desc
+	{
+		_float fTime = 0.f;
+		Effect_Value_CutScene eEffect_Value_CS = Effect_Value_CutScene::Effect_Value_End;
+
+		tagCutSceneTimer_Desc(){}
+		tagCutSceneTimer_Desc(_float fTime, Effect_Value_CutScene eEffect_Value_CS)
+			:fTime(fTime), eEffect_Value_CS(eEffect_Value_CS){}
+	}CutSceneTimer_Desc;
+
 public:
 	HRESULT Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix = XMMatrixIdentity(), void* pArg = nullptr);
 	HRESULT Add_PointLight(Effect_PointLight_Desc* pLightArg = nullptr, CGameObject** ppOut = nullptr);
+	HRESULT Add_Effect_CutScene(Effect_Value_CutScene eEffect, _fmatrix WorldMatrix = XMMatrixIdentity());
+	HRESULT Add_Effect_CutScene_Timer(_float fTime, Effect_Value_CutScene eEffect);
 
 public:
 	enum EPlayer_Type { Type_May, Type_Cody, Type_End };
@@ -141,10 +164,10 @@ public:
 public:
 	HRESULT Load_EffectData(const _tchar* pFilePath, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	HRESULT Create_Prototype_Resource_Stage1(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	HRESULT Create_CutScene_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 
 public:
-	void LoopSpawner(_double TimeDelta);
-	_double m_dSpawnTerm = 5.0;
+	void CutScene_Effect_Timer(_double dDeltaTime);
 
 public:
 	CEffect_Generator();
@@ -152,6 +175,7 @@ public:
 
 private:
 	EFFECT_DESC_CLONE::PLAYER_VALUE Check_Cody_Size(_fmatrix WorldMatrix);
+	list<tagCutSceneTimer_Desc> m_listEffectTimer;
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;

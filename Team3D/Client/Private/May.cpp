@@ -1749,6 +1749,12 @@ void CMay::Add_OffSet_Pos(_fvector vAddOffSet)
 
 
 #pragma region Trigger
+_bool CMay::Get_WarpEnd_CountDown()
+{
+	_float fTime = m_fWarpTimer_InWormhole + m_fWarpTimer_Max - 1.f;
+	return m_fWarpTimer > fTime;
+}
+
 void CMay::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;

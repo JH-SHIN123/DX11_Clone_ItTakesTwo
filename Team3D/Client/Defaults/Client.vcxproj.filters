@@ -1149,6 +1149,18 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene">
+      <UniqueIdentifier>{da5ea654-35bb-4a07-80b3-313026c4789e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\Intro">
+      <UniqueIdentifier>{75c35e83-8caa-4a07-9428-c3222d5e95d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\Intro\CodySize">
+      <UniqueIdentifier>{d7d91530-704e-4a37-a024-9af535124e2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land">
+      <UniqueIdentifier>{4954cac0-e0e5-4ecc-862c-f768ba3e6741}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -1885,7 +1897,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_UFO_Inside_ElectricWall_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
-    </ClInclude>    
+    </ClInclude>
     <ClInclude Include="..\Public\InGameEffect_Rect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
     </ClInclude>
@@ -2134,6 +2146,12 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_CodySize.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\CodySize</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_Land.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -3093,6 +3111,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_CodySize.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\CodySize</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_Land.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

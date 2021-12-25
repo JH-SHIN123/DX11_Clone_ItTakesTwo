@@ -16,6 +16,7 @@
 #include"Script.h"
 #include"ControlRoom_Monitor.h"
 #include"GameInstance.h"
+#include "Effect_Generator.h"
 CCutScene::CCutScene()
 {
 }
@@ -78,6 +79,8 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		MSG_BOX("CutScene Error");
 	}
 
+	EFFECT->CutScene_Effect_Timer(dTimeDelta);
+
 	return true;
 }
 
@@ -119,6 +122,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 		}
 		if (m_dTime >= 99.92)//~코디 사이즈키우기 M~L 5
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_ML);
 			StartCodyLerp(_float3(63.9f, 0.2f, 0.9f), _float3(1.f,1.f,1.f),
 				_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f), 7);
 			m_iCutSceneTake++;
@@ -128,6 +132,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 103.4)//코디 사이즈키우기 L~S 0.1
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_LS);
 			StartCodyLerp(_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f), 
 				_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f), 3);
 			m_iCutSceneTake++;
@@ -137,6 +142,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 108.9f)//코디 사이즈키우기 S~L
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SL);
 			StartCodyLerp(_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f), 
 				_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f),  7);
 			m_iCutSceneTake++;
@@ -146,6 +152,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 111.32f)//코디 사이즈키우기 L~S
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_LS);
 			StartCodyLerp(_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f), 
 				_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f), 3);
 			m_iCutSceneTake++;
@@ -155,6 +162,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 116.49f)//코디 사이즈키우기 S~M 1
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
 			StartCodyLerp(_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f),
 				_float3(63.9f, 0.2f, 0.9f), _float3(1.f, 1.f, 1.f), 7);
 			m_iCutSceneTake++;
@@ -426,6 +434,7 @@ HRESULT CCutScene::Start_CutScene()
 			return E_FAIL;
 		break;
 	}
+
 	return S_OK;
 }
 
@@ -504,6 +513,9 @@ HRESULT CCutScene::Start_CutScene_Intro()
 		return E_FAIL;
 	static_cast<CPerformer*>(pPerformer)->Set_PerformerDesc(tDesc);
 	static_cast<CPerformer*>(pPerformer)->Start_Perform(0, dTime);
+
+	EFFECT->Add_Effect_CutScene_Timer(5.26f, Effect_Value_CutScene::MoonBaboon_Land);
+
 
 	return S_OK;
 }
