@@ -47,7 +47,6 @@ HRESULT CEffect_Boss_Gravitational_Bomb::NativeConstruct(void * pArg)
 	lightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	lightDesc.fRange = 15.f;
 	lightDesc.vDiffuse = { 1.f,0.f,0.f,1.f };
-	lightDesc.vSpecular = { 1.f,0.f,0.f,1.f };
 	XMStoreFloat3(&lightDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pLight = CLight::Create(TEXT("Bomb_Light"), &lightDesc);
 	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pLight);

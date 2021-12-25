@@ -83,7 +83,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	XMStoreFloat3(&lightDesc.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pBossLight = CLight::Create(TEXT("Boss_UFO_Light"),&lightDesc);
 	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pBossLight);
-	Safe_AddRef(m_pBossLight);
+	//Safe_AddRef(m_pBossLight);
 
 	return S_OK;
 }
@@ -1362,7 +1362,7 @@ void CUFO::Free()
 	if (m_pBossLight)
 	{
 		m_pBossLight->Set_Dead(true);
-		Safe_Release(m_pBossLight);
+		//Safe_Release(m_pBossLight);
 		m_pBossLight = nullptr;
 	}
 
