@@ -10,6 +10,9 @@ private:
 	virtual ~C2DMesh() = default;
 
 public:
+	void Start();
+
+public:
 	virtual HRESULT	NativeConstruct_Prototype();
 	virtual HRESULT	NativeConstruct(void* pArg);
 	virtual _int	Tick(_double dTimeDelta);
@@ -34,13 +37,14 @@ private:
 	CTransform*			m_pCodyTransformCom = nullptr;
 
 	/* 초기 생성스케일, 최대 스케일 */
-	_float				m_fScale = 0.2f;
-	_float				m_fMaxScale = 1.3f;
+	_float				m_fScale = 0.5f;
+	_float				m_fMaxScale = 1.f;
 
 	_float				m_fRandomAngle = 0.f;
 	_double				m_dCoolTime = 0.0;
 	_uint				m_iColorIndex = 0;
 	_bool				m_bCollision = false;
+	_bool				m_bStart = false;
 
 	_uint				m_iRandomModel = 0;
 

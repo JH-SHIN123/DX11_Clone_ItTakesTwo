@@ -13,6 +13,36 @@ C2DMesh::C2DMesh(const C2DMesh & rhs)
 {
 }
 
+void C2DMesh::Start()
+{
+	if (true == m_bStart)
+		return;
+
+	if (false == ENDINGCREDIT->Get_2DMeshStart())
+		return;
+
+	_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float3 vMyPos = {};
+	XMStoreFloat3(&vMyPos, vCodyPos);
+	vMyPos.x = 0.f;
+	vMyPos.z = 0.f;
+
+	vMyPos.x += (_float)(rand() % 61 - 30);
+	vMyPos.y -= (_float)(rand() % 50 + 50);
+	vMyPos.z += (_float)(rand() % 61 - 30);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
+
+	m_fScale = 0.1f;
+	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
+	m_pDynamicActorCom->Get_Actor()->setGlobalPose(PxTransform(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION))));
+
+	m_iColorIndex = 0;
+	m_bCollision = false;
+
+	m_bStart = true;
+}
+
 HRESULT C2DMesh::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
@@ -44,6 +74,7 @@ _int C2DMesh::Tick(_double dTimeDelta)
 
 	m_iRandomModel = ENDINGCREDIT->Get_RandomModel();
 
+	Start();
 	Movement(dTimeDelta);
 
 	m_dCoolTime += dTimeDelta;
@@ -152,8 +183,11 @@ void C2DMesh::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 
 void C2DMesh::Movement(_double dTimeDelta)
 {
+	if (false == m_bStart)
+		return;
+
 	/* 천천히 올라오게 Force조절 */
-	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(0.f, -0.01f, 0.f));
+	m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(0.f, -0.1f, 0.f));
 
 	/* 충돌시 회전값 상승 */
 	if (false == m_bCollision)
@@ -162,7 +196,7 @@ void C2DMesh::Movement(_double dTimeDelta)
 		m_pDynamicActorCom->Get_Actor()->setAngularVelocity(PxVec3(m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f, m_fRandomAngle * 5000.f));
 
 	/* 스케일 조정 */
-	m_fScale += (_float)dTimeDelta / 3.f;
+	m_fScale += (_float)dTimeDelta;
 
 	if (m_fMaxScale <= m_fScale)
 		m_fScale = m_fMaxScale;
@@ -218,14 +252,16 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
+	m_fMaxScale = (rand() % 16 + 10) * 0.1f;
+
 	/* 랜덤 생성 범위 */
-	_float3 vMyPos = { 0.f, XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f };
+	//_float3 vMyPos = { 0.f, -500.f, 0.f };
 
-	vMyPos.x += (_float)(rand() % 61 - 30);
-	vMyPos.y -= (_float)(rand() % 50 + 50);
-	vMyPos.z += (_float)(rand() % 61 - 30);
+	//vMyPos.x += (_float)(rand() % 61 - 30);
+	//vMyPos.y -= (_float)(rand() % 50 + 50);
+	//vMyPos.z += (_float)(rand() % 61 - 30);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vMyPos.x, vMyPos.y, vMyPos.z, 1.f));
 
 	/* 랜덤 회전값 */
 	m_fRandomAngle = (rand() % 41 - 20.f) * 0.1f;

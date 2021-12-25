@@ -11,6 +11,13 @@ CEndingCredit_Manager::CEndingCredit_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+void CEndingCredit_Manager::Set_RandomModel()
+{
+	++m_iRandomModel;
+	if (4 < m_iRandomModel)
+		m_iRandomModel = 0;
+}
+
 HRESULT CEndingCredit_Manager::NativeConstruct_EndingCredit()
 {
 	return S_OK;
@@ -40,6 +47,11 @@ HRESULT CEndingCredit_Manager::Create_HugeRock(_float fPosY)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_HugeRock"), &fY), E_FAIL);
 
 	return S_OK;
+}
+
+HRESULT CEndingCredit_Manager::Start_Move2DMesh()
+{
+	return E_NOTIMPL;
 }
 
 HRESULT CEndingCredit_Manager::Create_Environment()

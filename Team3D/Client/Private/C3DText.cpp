@@ -45,8 +45,12 @@ _int C3DText::Tick(_double dTimeDelta)
 	{
 		((CCody*)(DATABASE->GetCody()))->Start_RadiarBlur_FullScreen(2.f);
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
+		ENDINGCREDIT->Set_RandomModel();
 		Create_Particle();
 		Set_Dead();
+
+		if (0 == m_iIndex)
+			ENDINGCREDIT->Set_2DMeshStart();
 
 		return EVENT_DEAD;
 	}
