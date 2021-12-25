@@ -60,7 +60,14 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
-
+	if (m_tRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
+	{
+		m_eInterActiveID = UI::RobotBattery0;
+	}
+	else if (m_tRobotPartsDesc.iStageNum == ST_RAIL)
+	{
+		m_eInterActiveID = UI::RobotBattery1;
+	}
 	return S_OK;
 }
 
@@ -81,8 +88,25 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 		if (m_bRotate == true)
 		{
 			Push_Battery(dTimeDelta);
+			UI_Delete(Cody, InputButton_InterActive);
 		}
 	}
+	else
+	{
+		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_bBackRotate = true;
+		}
+
+		if (m_bBackRotate)
+		{
+			Rewind_Battery(dTimeDelta);
+		}
+	}
+
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollide, !m_bUpdate);
+
 	return NO_EVENT;
 }
 
@@ -114,14 +138,14 @@ void CRobotBattery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTBATTERY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			//UI_Create(Cody, InputButton_InterActive);
+			//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_IsCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 		{
 			m_IsCollide = false;
-			UI_Delete(Cody, InputButton_InterActive);
+			//UI_Delete(Cody, InputButton_InterActive);
 		}
 
 		//// May
@@ -183,10 +207,44 @@ void CRobotBattery::Push_Battery(_double dTimeDelta)
 			break;
 		}
 
-		m_IsCollide = false;
+		//m_IsCollide = false;
 		m_fRotateDelay = 0.f;
 		m_bRotate = false;
 		m_bUpdate = false;
+		m_bCharged = true;
+	}
+}
+
+void CRobotBattery::Rewind_Battery(_double dTimeDelta)
+{
+	// 나중에 스테이지에 뜨ㅏㅣ웠을때 회전하는 축 바꿔야함.
+	m_fRotateDelay += (_float)dTimeDelta;
+
+	if (m_fRotateDelay > 0.2f && m_fRotateDelay < 2.1f)
+	{
+		_vector vDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		m_pTransformCom->RotateYawDirectionOnLand(-vDir, dTimeDelta * 0.005f);
+		m_pStaticActorCom->Update_StaticActor();
+	}
+	else if (m_fRotateDelay >= 2.1f)
+	{
+		switch (m_tRobotPartsDesc.iStageNum)
+		{
+		case ST_GRAVITYPATH:
+			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_RobotHead()->Set_Battery_Charged(false);
+			((CRobotParts*)DATABASE->Get_STGravityRobot())->Get_Robot_Lever()->Set_BatteryCharged(false);
+			break;
+		case ST_RAIL:
+			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_RobotHead()->Set_Battery_Charged(false);
+			((CRobotParts*)DATABASE->Get_STPlanetRobot())->Get_Robot_Lever()->Set_BatteryCharged(false);
+			break;
+		}
+
+		m_IsCollide = false;
+		m_fRotateDelay = 0.f;
+		m_bRotate = false;
+		m_bUpdate = true;
+		m_bBackRotate = false;
 	}
 }
 

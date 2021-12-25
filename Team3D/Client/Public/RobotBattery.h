@@ -34,13 +34,21 @@ public: /* Getter */
 
 private:
 	void Push_Battery(_double dTimeDelta);
+	void Rewind_Battery(_double dTimeDelta);
 
 private:
 	_bool		m_bRotate = false;
 	_bool		m_IsCollide = false;
 	_bool		m_bUpdate = true;
+	_bool		m_bCharged = false;
+	_bool		m_bBackRotate = false;
 	_float		m_fRotateDelay = 0.f;
 	ROBOTDESC	m_tRobotPartsDesc;
+
+	UI::INTERACTIVE_ID  m_eInterActiveID = UI::INTERACTIVE_ID_END;
+	_bool		m_IsMayCollide = false;
+	_bool		m_IsCodyCollide = false;
+
 
 	/* Sound */
 	_float m_fBattery_Volume = 1.f;

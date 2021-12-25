@@ -45,7 +45,14 @@ private:
 	_bool		m_bUpdate = true;
 	_float		m_fStopDelay = 0.f;
 	_bool		m_bNoBatteryHit = false;
+
+
+	_bool		m_bCountHitDelay = false;
+	_float		m_fCanHitDelay = 0.f;
 	ROBOTDESC	m_tRobotPartsDesc;
+	UI::INTERACTIVE_ID  m_eInterActiveID = UI::INTERACTIVE_ID_END;
+	_bool		m_IsMayCollide = false;
+	_bool		m_IsCodyCollide = false;
 
 	/* Sound */
 	_float		m_fLeverVolume = 1.f;
@@ -56,6 +63,9 @@ private:
 
 	_float		m_fRobotActiveVolume = 1.f;
 	_bool		m_bSoundRobotOnce = false;
+
+
+
 
 private:
 	CRenderer*			m_pRendererCom = nullptr;

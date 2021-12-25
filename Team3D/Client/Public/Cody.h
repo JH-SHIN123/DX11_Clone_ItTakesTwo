@@ -417,6 +417,7 @@ private:
 	/* For.PushBattery*/
 	_bool m_IsPushingBattery = false;
 	_float m_fPushDist = 0.f;
+	_float m_fPushBatteryDelay = 0.f;
 
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
@@ -735,6 +736,7 @@ private: /* For. Ending */
 	// GravityPipe
 	_float m_fCody_GravityPipe_Voice_Volume = 1.f;
 	_bool  m_bGravityPipe_FirstIn = false;
+	_float m_fGravityPipe_SoundDelay = 0.f;
 
 	// CamEffect
 	_float m_fFootStepDelay = 0.f;

@@ -60,7 +60,7 @@ _int CRotatedRobotBody::Tick(_double dTimeDelta)
 _int CRotatedRobotBody::Late_Tick(_double dTimeDelta)
 {
 	CRotatedRobotParts::Tick(dTimeDelta);
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 25.f))
 		Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
@@ -131,7 +131,7 @@ HRESULT CRotatedRobotBody::Render_ShadowDepth()
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, 0, true);
+	m_pModelCom->Render_Model(3, 0, true, RENDER_GROUP::RENDER_NONALPHA);
 
 	return S_OK;
 }

@@ -296,6 +296,7 @@ _int CCody::Tick(_double dTimeDelta)
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
+		m_pActorCom->Set_ZeroGravity(true, true, true);
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -354,19 +355,22 @@ _int CCody::Tick(_double dTimeDelta)
 			m_IsFalling = m_pActorCom->Get_IsFalling();
 			m_pActorCom->Set_GroundPound(m_bGroundPound);
 
-			if (m_bRoll == false || m_bSprint == true)
-				KeyInput(dTimeDelta);
-			if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
+			if (m_pModelCom->Get_CurAnimIndex() != ANI_C_CodyCutSceneIntro)
 			{
-				Sprint(dTimeDelta);
-				if(m_IsSizeChanging == false)
-				Move(dTimeDelta);
-				if(m_eCurPlayerSize != SIZE_LARGE)
-				Roll(dTimeDelta);
-				Jump(dTimeDelta);
-				Change_Size(dTimeDelta);
+				if (m_bRoll == false || m_bSprint == true)
+					KeyInput(dTimeDelta);
+				if (m_bGroundPound == false && m_bPlayGroundPoundOnce == false && m_bLandHigh == false)
+				{
+					Sprint(dTimeDelta);
+					if (m_IsSizeChanging == false)
+						Move(dTimeDelta);
+					if (m_eCurPlayerSize != SIZE_LARGE)
+						Roll(dTimeDelta);
+					Jump(dTimeDelta);
+					Change_Size(dTimeDelta);
+				}
+				Ground_Pound(dTimeDelta);
 			}
-			Ground_Pound(dTimeDelta);
 		}
 	}
 	/////////////////////////////////////////////
@@ -616,9 +620,9 @@ void CCody::KeyInput(_double dTimeDelta)
 		DATABASE->Set_May_Stage(ST_PINBALL);
 		DATABASE->Set_Cody_Stage(ST_PINBALL);
 		//우산앞
-		//m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(-795.319824f, 766.982971f, 189.852661f, 1.f));
 		//배터리
-		m_pActorCom->Set_Position(XMVectorSet(-814.433655f, 791.810059f, 228.490845f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(-814.433655f, 791.810059f, 228.490845f, 1.f));
 		//m_pActorCom->Set_Position(XMVectorSet(886.1079f, 728.7372f, 339.7794f, 1.f));
 		m_pActorCom->Set_IsPlayerInUFO(false);
 	}
@@ -1140,7 +1144,7 @@ void CCody::Move(const _double dTimeDelta)
 			//테스트
 			if (m_pModelCom->Get_CurAnimIndex() == ANI_C_ChangeSize_Walk_Large_Fwd)
 			{
-				m_fFootStepDelay += dTimeDelta;
+				m_fFootStepDelay += (_float)dTimeDelta;
 				if (m_fFootStepDelay > 0.5f)
 				{
 					m_pCamera->Start_CamEffect(TEXT("Cam_Shake_BigCodyWalk"));
@@ -1816,7 +1820,7 @@ void CCody::Jump(const _double dTimeDelta)
 		m_iAirDashCount = 0;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_IsFalling == true)
+	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_IsFalling == true && m_IsJumping == false)
 	{
 		if (m_eCurPlayerSize == SIZE_MEDIUM)
 		{
@@ -1832,7 +1836,7 @@ void CCody::Jump(const _double dTimeDelta)
 		}
 		m_bShortJump = true;
 		m_IsJumping = true;
-		m_iJumpCount = 1;
+		m_iJumpCount = 2;
 		return;
 	}
 }
@@ -2506,6 +2510,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_DOOR);
 			m_pGameInstance->Play_Sound(TEXT("Pinball_Door_Open.wav"), CHANNEL_PINBALL_DOOR);
 
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
 			((CPinBall_Door*)(CDataStorage::GetInstance()->Get_Pinball_Door()))->Set_DoorState(false);
 
 			m_IsReadyPinball = true;
@@ -2560,7 +2567,15 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
 		{
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+			/* Savpoint 이동 */
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+			m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+			/* Actor 정지 */
+			m_pActorCom->Get_Actor()->putToSleep();
 			m_pActorCom->Update(dTimeDelta);
+
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bRespawnCheck = false;
 			m_bRespawn = true;
@@ -2743,7 +2758,6 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsActivateRobotLever = false;	
 			m_IsCollide = false;
-
 		}
 
 	}
@@ -2788,6 +2802,14 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_IsStGravityCleared = true;
 		}
 
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsCollide = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+
 	}
 
 	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_RAIL)
@@ -2803,6 +2825,14 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_IsStRailCleared = true;
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsCollide = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 	}
 
@@ -2823,6 +2853,14 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			m_vScale = { 1.f, 1.f, 1.f };
 			m_eCurPlayerSize = SIZE_MEDIUM;
 			m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsCollide = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 	}
 
@@ -2894,9 +2932,10 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, true, true);
 			if (m_pGameInstance->Key_Pressing(DIK_SPACE))
 			{
+				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false)
+				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE_MAY_1) == false)
 				{
 					SCRIPT->Render_Script(0, CScript::HALF, 2.f);
 					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
@@ -3079,7 +3118,7 @@ void CCody::Wall_Jump(const _double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_WallJump.wav"), CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
-
+			//
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWallJumping = true;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Jump);
@@ -3531,6 +3570,7 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 
 void CCody::Set_Change_Size_After_UmbrellaCutScene()
 {
+	m_IsPipeBattery = false;
 	m_IsPushingBattery = false;
 	m_IsCollide = false;
 	m_pModelCom->Set_Animation(ANI_C_MH);
@@ -3540,6 +3580,7 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_vScale = { 1.f, 1.f, 1.f };
 	m_eCurPlayerSize = SIZE_MEDIUM;
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+	m_pActorCom->Set_IsPlayerSizeSmall(false);
 }
 void CCody::Set_HpBarReduction(_float fDamage)
 {
@@ -3615,30 +3656,30 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 		m_dDeadTime += dTimeDelta;
 		if (m_dDeadTime >= 1.f)
 		{
+			/* Sound */
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 
-			_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
-
-			m_pActorCom->Set_Position(vSavePosition);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+			m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+			Enforce_IdleState();
+			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_dDeadTime = 0.f;
 			m_IsCollide = false;
 			m_IsDeadLine = false;
 			m_bRespawnCheck = true;
-			m_pActorCom->Set_ZeroGravity(false, false, false);
-			Enforce_IdleState();
+
+			/* Effect */
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		}
 		else
 		{
-			_vector vTriggerTargetPos = XMLoadFloat3(&m_vTriggerTargetPos);
-			vTriggerTargetPos = XMVectorSetW(vTriggerTargetPos, 1.f);
-			m_pActorCom->Set_Position(vTriggerTargetPos);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vTriggerTargetPos);
+			m_pActorCom->Get_Actor()->putToSleep();
+			m_pActorCom->Update(dTimeDelta);
 		}
 	}
 }
@@ -3667,7 +3708,7 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(0.f));
 			Loop_RadiarBlur(false);
 
-			//m_iAirDashCount = 0;
+			m_iAirDashCount = 0;
 			m_iJumpCount = 0;
 			m_bShortJump = true;
 
@@ -3989,6 +4030,8 @@ void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
 
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame()) return;
+
 	//if (m_bRadiarBlur) return;
 	m_bRadiarBlur_FullScreen = false;
 
@@ -4244,21 +4287,24 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 	m_dRespawnTime += dTimeDelta;
 	if (2.f <= m_dRespawnTime)
 	{
+		/* Sound */
 		m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 		m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
-
-		m_pActorCom->Set_ZeroGravity(false, false, false);
-		m_pActorCom->Set_Position(XMLoadFloat3(&m_vSavePoint));
-		m_pActorCom->Update(dTimeDelta);
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
-		m_bRespawnCheck = true;
-		m_bFirstCheck = false;
-		m_bRespawn = false;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+		m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+		Enforce_IdleState();
+		m_pActorCom->Set_ZeroGravity(false, false, false);
 		m_IsCollide = false;
+		m_bRespawnCheck = true;
+		m_bRespawn = false;
 		m_dRespawnTime = 0.0;
+
+		/* Effect */
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 	}
 }

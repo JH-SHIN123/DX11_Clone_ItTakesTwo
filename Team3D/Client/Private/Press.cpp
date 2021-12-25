@@ -115,7 +115,7 @@ void CPress::Open_Press(_double dTimeDelta)
 		return;
 
 	m_dCoolTime += dTimeDelta;
-	if (2.0 <= m_dCoolTime)
+	if (1.5 <= m_dCoolTime)
 	{
 		m_dDistance = 0.0;
 		m_dCoolTime = 0.0;

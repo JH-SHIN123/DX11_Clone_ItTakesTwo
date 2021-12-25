@@ -144,7 +144,8 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::InputButton_InterActive_Rail:
-		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, pArg);
+		iOption = 1;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, &iOption);
 		break;
 	case UI::InputButton_PS_InterActive:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"), Level::LEVEL_STATIC, pArg);
@@ -201,7 +202,8 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Down"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Left"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrowkeys_Fill_Right"), Level::LEVEL_STATIC, pArg);
-		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrows"), Level::LEVEL_STATIC, pArg);
+		iOption = 1;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("Arrows"), Level::LEVEL_STATIC, &iOption);
 		break;
 	case UI::InputButton_PS_L2:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_L2"), Level::LEVEL_STATIC, pArg);
@@ -1409,12 +1411,10 @@ HRESULT CUI_Generator::CreateInterActiveUI_AccordingRange(Player::ID ePlayer, UI
 		vComparePos = vTargetPosition - vMayPos;
 	}
 
-	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
-	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
-	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
+	_float fDistance = XMVectorGetX(XMVector3Length(vComparePos));
 
-	/* 범위 안에 있다*/
-	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+	/* 범위 안에 있다 */
+	if(fRange >= fDistance)
 	{
 		/* 충돌해서 트리거가 켜졌다면 InterActive UI 만들어주자 */
 		if (ePlayer == Player::Cody)
@@ -1475,6 +1475,34 @@ void CUI_Generator::Set_MinigameReadyCheck(Player::ID ePlayer, _bool IsCheck)
 		m_IsCodyReady = IsCheck;
 	else
 		m_IsMayReady = IsCheck;
+}
+
+void CUI_Generator::Set_AllActivation(_bool IsActivation)
+{
+	for (_uint i = 0; i < Player::PLAYER_END; ++i)
+	{
+		for (_uint j = 0; j < UI::TRIGGER_END; ++j)
+		{
+			if (0 != m_vecUIOBjects[i][j].size())
+			{
+				for (auto UIObject : m_vecUIOBjects[i][j])
+					UIObject->Set_UIAllActivation(IsActivation);
+
+			}
+		}
+	}
+
+	for (_uint i = 0; i < Player::PLAYER_END; ++i)
+	{
+		for (_uint j = 0; j < UI::INTERACTIVE_ID_END; ++j)
+		{
+			if (0 != m_vecInterActiveUI[i][j].size())
+			{
+				for (auto UIObject : m_vecInterActiveUI[i][j])
+					UIObject->Set_UIAllActivation(IsActivation);
+			}
+		}
+	}
 }
 
 _bool CUI_Generator::Get_MinigameAllReady()

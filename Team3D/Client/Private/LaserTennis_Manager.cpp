@@ -515,6 +515,7 @@ HRESULT CLaserTennis_Manager::Create_ResultUI()
 {
 	m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISUI);
 	m_pGameInstance->Play_Sound(TEXT("MiniGame_UI_End.wav"), CHANNEL_LASERTENNISUI);
+	m_pGameInstance->Sound_Lerp(CHANNEL_BGM, CHANNEL_BGM2, 0.15f, 0.f, 4.f);
 
 	((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(false);
 	((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(false);

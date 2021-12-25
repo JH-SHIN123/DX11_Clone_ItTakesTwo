@@ -28,6 +28,9 @@ public:
 	virtual HRESULT Render_ShadowDepth() override;
 
 public:
+	CModel* Get_Model() const { return m_pModelCom; }
+
+public:
 	void Set_Animation(_uint iCurAnimIndex, _uint iNextAnimIndex);
 
 public:
@@ -49,6 +52,7 @@ public:
 	void Change_State(_double dTimeDelta);
 	void During_Animation_Behavior(_double dTimeDelta);
 	void Fix_MoonBaboon_Chair(_double dTimeDelta);
+	void SetUp_IntroOffset(_double dTimeDelta);
 
 private:
 	MOON_STATE m_eCurState = MOON_STATE_END;

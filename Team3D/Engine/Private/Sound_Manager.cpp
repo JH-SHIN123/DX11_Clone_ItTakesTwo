@@ -44,7 +44,7 @@ void CSound_Manager::Stop_SoundAll()
 
 void CSound_Manager::Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume)
 {
-	FMOD_Channel_SetVolume(m_pChannel[eChannel], fVolume);
+	FMOD_Channel_SetVolume(m_pChannel[eChannel], fVolume * 6.f);
 }
 
 HRESULT CSound_Manager::Ready_SoundManager()
@@ -248,8 +248,8 @@ void CSound_Manager::SoundInfo_Update(_double dTimeDelta)
 				m_SoundInfo[iIndex].iFadeOption = 0;
 				m_SoundInfo[iIndex].fCurrentVolume = m_SoundInfo[iIndex].fTargetVolume;
 
-				if (m_SoundInfo[iIndex].fCurrentVolume <= 0.f)
-					Stop_Sound((CHANNEL_TYPE)iIndex);
+				//if (m_SoundInfo[iIndex].fCurrentVolume <= 0.f)
+				//	Stop_Sound((CHANNEL_TYPE)iIndex);
 			}
 
 			Set_SoundVolume((CHANNEL_TYPE)iIndex, m_SoundInfo[iIndex].fCurrentVolume);
