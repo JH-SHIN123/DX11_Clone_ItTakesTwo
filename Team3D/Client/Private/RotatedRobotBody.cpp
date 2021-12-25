@@ -60,7 +60,7 @@ _int CRotatedRobotBody::Tick(_double dTimeDelta)
 _int CRotatedRobotBody::Late_Tick(_double dTimeDelta)
 {
 	CRotatedRobotParts::Tick(dTimeDelta);
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 25.f))
 		Add_GameObject_ToRenderGroup();
 
 	return NO_EVENT;
