@@ -181,17 +181,22 @@ HRESULT CStarBuddy::Render_ShadowDepth()
 void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
 {
 	// 실제로 상호작용 할땐 Player -> StarBuddy Dir 방향으로 이동
-	_vector vPlayerPos = XMVectorZero();
-	if (m_PlayerID == GameID::eCODY)
-		vPlayerPos = XMVectorSetY(((CCody*)DATABASE->GetCody())->Get_Position(), 0.f);
-	else if (m_PlayerID == GameID::eMAY)
-		vPlayerPos = XMVectorSetY(((CMay*)DATABASE->GetMay())->Get_Position(), 0.f);
+	if (m_bSaveOnce == false)
+	{
+		m_vSavedPlayerPos = XMVectorZero();
+		if (m_PlayerID == GameID::eCODY)
+			m_vSavedPlayerPos = XMVectorSetY(((CCody*)DATABASE->GetCody())->Get_Position(), 0.f);
+		else if (m_PlayerID == GameID::eMAY)
+			m_vSavedPlayerPos = XMVectorSetY(((CMay*)DATABASE->GetMay())->Get_Position(), 0.f);
+
+		_vector vStarPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
+		m_vMoveDirection = XMVectorSetY(XMVector3Normalize(vStarPos - m_vSavedPlayerPos), 0.f);
+
+		m_bSaveOnce = true;
+	}
 
 
-	_vector vStarPos = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
-	_vector vDir = XMVector3Normalize(vStarPos - vPlayerPos);
-
-	m_pTransformCom->MoveToDir(vDir, dTimeDelta * 5.f);
+	m_pTransformCom->MoveToDir(m_vMoveDirection, dTimeDelta * 5.f);
 
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);

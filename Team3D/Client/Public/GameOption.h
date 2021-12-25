@@ -2,7 +2,7 @@
 
 /************************************************************************/
 
-#define __FULLSCREEN
+//#define __FULLSCREEN
 //#define __START_LEVEL_LOGO
 #define __PLAY_CUTSCENE
 #define __FIRST_CUTSCENE_OFF
@@ -14,7 +14,7 @@
 * 스레드마다 종료되는 시간 체크하려면 주석 해제.
 */
 //#define __THREADCHECK
-
+ 
 #ifdef __THREADCHECK
 #define __threadbreak __debugbreak();
 #else
