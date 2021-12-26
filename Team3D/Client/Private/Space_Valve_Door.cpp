@@ -24,9 +24,6 @@ HRESULT CSpace_Valve_Door::NativeConstruct(void * pArg)
 
 	Ready_Component(pArg);
 
-	m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
-	m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
-
 	return S_OK;
 }
 
@@ -37,10 +34,10 @@ _int CSpace_Valve_Door::Tick(_double TimeDelta)
 
 _int CSpace_Valve_Door::Late_Tick(_double TimeDelta)
 {
-	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 100.f))
 	{
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
 	}
 
 	return S_OK;
@@ -48,22 +45,13 @@ _int CSpace_Valve_Door::Late_Tick(_double TimeDelta)
 
 HRESULT CSpace_Valve_Door::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (eGroup == RENDER_GROUP::RENDER_NONALPHA) return S_OK;
+
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
-	
-	_uint iMaterialIndex = 0;
-	m_pModelCom->Sepd_Bind_Buffer();
-
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 18, false, eGroup);
-
-	iMaterialIndex = 1;
-	m_pModelCom->Set_ShaderResourceView("g_DiffuseTexture", iMaterialIndex, aiTextureType_DIFFUSE, 0);
-	m_pModelCom->Set_ShaderResourceView("g_NormalTexture", iMaterialIndex, aiTextureType_NORMALS, 0);
-	m_pModelCom->Sepd_Render_Model(iMaterialIndex, 18, false, eGroup);
+	m_pModelCom->Render_Model(18);
 
 	return S_OK;
 }
@@ -75,7 +63,7 @@ HRESULT CSpace_Valve_Door::Render_ShadowDepth()
 	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
 	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(3, 0, true, RENDER_GROUP::RENDER_NONALPHA);
+	m_pModelCom->Render_Model(3, 0, true);
 
 	return S_OK;
 }

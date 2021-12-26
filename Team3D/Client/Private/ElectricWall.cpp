@@ -73,7 +73,7 @@ _int CElectricWall::Tick(_double dTimeDelta)
 			}
 		}
 
-		if (5.75 <= m_dCoolTime)
+		if (6.0 <= m_dCoolTime)
 		{
 			m_bElectric = false;
 			m_bElectric_Ready = true;
@@ -125,18 +125,24 @@ HRESULT CElectricWall::Render_ShadowDepth()
 
 void CElectricWall::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
+	//CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
-	/* Cody */
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, true, this);
-	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, false, this);
+	///* Cody */
+	//if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
+	//	((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, true, this);
+	//else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	//	((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, false, this);
 }
 
 void CElectricWall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	CDynamic_Env::OnContact(eStatus, eID, pGameObject);
+
+	/* Cody */
+	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, true, this);
+	else if (eStatus == ContactStatus::eLOST && eID == GameID::Enum::eCODY)
+		((CCody*)pGameObject)->SetTriggerID_Ptr(GameID::Enum::eELECTRICWALL, false, this);
 }
 
 HRESULT CElectricWall::Ready_Component(void * pArg)
@@ -150,7 +156,7 @@ HRESULT CElectricWall::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_StaticActor"), (CComponent**)&m_pStaticActorCom, &tStaticActorArg), E_FAIL);
 
 	/* Trigger */
-	PxGeometry* Geom = new PxBoxGeometry(0.18f, 0.7f, 0.05f);
+	PxGeometry* Geom = new PxBoxGeometry(0.18f, 0.7f, 0.07f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = Geom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;

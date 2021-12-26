@@ -2141,7 +2141,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				m_IsLaserRippedOff = false;
 			}
 
-			if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
+			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
@@ -2156,7 +2156,6 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
-
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)

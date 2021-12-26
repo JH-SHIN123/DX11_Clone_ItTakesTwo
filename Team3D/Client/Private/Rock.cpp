@@ -148,7 +148,7 @@ HRESULT CRock::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
-	_float3 vMyPos = { 0.f, XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION)), 0.f };
+	_float3 vMyPos = { 0.f, -500.f, 0.f };
 	vMyPos.x += (_float)(rand() % 61 - 30);
 	vMyPos.y -= (_float)(rand() % 50 + 50);
 	vMyPos.z += (_float)(rand() % 61 - 30);
@@ -170,7 +170,7 @@ HRESULT CRock::Ready_Component(void * pArg)
 	m_pDynamicActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	/* Trigger */
-	PxGeometry* TriggerGeom = new PxSphereGeometry(1.7f);
+	PxGeometry* TriggerGeom = new PxSphereGeometry(10.f);
 	CTriggerActor::ARG_DESC tTriggerArgDesc;
 	tTriggerArgDesc.pGeometry = TriggerGeom;
 	tTriggerArgDesc.pTransform = m_pTransformCom;
