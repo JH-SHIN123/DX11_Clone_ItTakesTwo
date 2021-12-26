@@ -130,6 +130,8 @@ HRESULT CUIObject::Set_UIDefaultVariables_Perspective(CVIBuffer * pVIBuffer)
 {
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix;
 
+	m_iColorOption = 0;
+
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();
 	ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
@@ -150,6 +152,8 @@ HRESULT CUIObject::Set_UIVariables_Perspective(CVIBuffer* pVIBuffer)
 
 	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
 	_int iGSOption;
+
+	m_iColorOption = 0;
 
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	ViewMatrix = XMMatrixIdentity();
@@ -193,7 +197,7 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 {
 	D3D11_VIEWPORT Viewport;
 
-	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix;
+	_matrix WorldMatrix, ViewMatrix, ProjMatrix, SubViewMatrix, SubProjMatrix, matMainCombine;
 	_float3 vConvertPos;
 	_int iGsOption;
 
@@ -249,6 +253,7 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 			ProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		iGsOption = 0;
+		m_iColorOption = 1;
 	}
 	else if (m_ePlayerID == Player::May)
 	{
@@ -302,6 +307,7 @@ HRESULT CUIObject::Set_InterActiveVariables_Perspective(CVIBuffer* pVIBuffer)
 			SubProjMatrix = XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f);
 
 		iGsOption = 1;
+		m_iColorOption = 2;
 	}
 
 	pVIBuffer->Set_Variable("g_iGSOption", &iGsOption, sizeof(_int));
