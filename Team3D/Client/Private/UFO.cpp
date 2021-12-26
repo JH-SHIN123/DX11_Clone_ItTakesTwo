@@ -1415,10 +1415,10 @@ void CUFO::Free()
 	if (nullptr != m_pEnterTriggerActorCom)
 		Safe_Release(m_pEnterTriggerActorCom);
 
-	//for (auto pSubLaser : m_vecSubLaser)
-	//	Safe_Release(pSubLaser);
+	for (auto pSubLaser : m_vecSubLaser)
+		Safe_Release(pSubLaser);
 
-	//m_vecSubLaser.clear();
+	m_vecSubLaser.clear();
 
 	if(nullptr != m_pCodyMissile)
 		Safe_Release(m_pCodyMissile);
