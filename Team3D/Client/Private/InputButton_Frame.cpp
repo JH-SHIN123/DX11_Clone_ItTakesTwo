@@ -204,7 +204,7 @@ void CInputButton_Frame::Render_Font()
 	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Cancle")))
 	{
-		m_pEngFont->Render_Font(TEXT("Q"), _float2(278.f, 656.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
+		m_pEngFont->Render_Font(TEXT("Q"), _float2(279.f, 657.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
 		m_pFont->Render_Font(TEXT("√Îº“"), _float2(330.f, 660.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.33f);
 	}
 }
