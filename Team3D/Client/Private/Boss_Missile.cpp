@@ -47,9 +47,6 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 
 _int CBoss_Missile::Tick(_double dTimeDelta)
 {
-	if (true == m_isDead)
-		return EVENT_DEAD;
-
 	if (m_bPlayerExplosion == true)
 	{
 		Explosion_Effect();
@@ -57,22 +54,25 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		return EVENT_DEAD;
 	}
-	//else if (m_bBossExplosion == true)
-	//{
-	//	if (m_bCodyControl == true && m_bMayControl == false)
-	//	{
-	//		((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
-	//	}
-	//	else if (m_bMayControl == true && m_bCodyControl == false)
-	//	{
-	//		((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
-	//	}
+	else if (m_bBossExplosion == true)
+	{
+		if (m_bCodyControl == true && m_bMayControl == false)
+		{
+			((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
+		}
+		else if (m_bMayControl == true && m_bCodyControl == false)
+		{
+			((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
+		}
 
-	//	Explosion_Effect();
+		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
+		((CUFO*)DATABASE->Get_BossUFO())->Set_BossHpBarReduction(82.5f);
+		((CUFO*)DATABASE->Get_BossUFO())->Set_GuidedMissileIncreaseHitCount();
+		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(Moon_Ufo_Laser_HitPod, UFO_Left);
+		Explosion_Effect();
 
-	//	return EVENT_DEAD;
-	//}
-
+		return EVENT_DEAD;
+	}
 
 	if (m_IsCrashed == false)
 		m_fAttackTime += (_float)dTimeDelta;
@@ -85,17 +85,17 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 	if (m_IsCrashed == false)
 		Combat_Move(dTimeDelta);
-	else if (m_IsCrashed == true && m_IsCollide && (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
+	else if (m_IsCrashed == true && m_IsCollide && false == m_IsTargetCody && (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
 	{
 		m_bMayControl = true;
-		UI_Delete(Cody, InputButton_InterActive);
-		UI_Delete(May, InputButton_PS_InterActive);
+		//UI_Delete(Cody, InputButton_InterActive);
+		//UI_Delete(May, InputButton_PS_InterActive);
 	}
-	else if (m_IsCrashed == true && m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
+	else if (m_IsCrashed == true && m_IsCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
 		m_bCodyControl = true;
-		UI_Delete(Cody, InputButton_InterActive);
-		UI_Delete(May, InputButton_PS_InterActive);
+		//UI_Delete(Cody, InputButton_InterActive);
+		//UI_Delete(May, InputButton_PS_InterActive);
 	}
 
 	if (m_bMayControl)
@@ -143,28 +143,28 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//UI_Create(Cody, InputButton_InterActive);
+		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
 		m_IsCollide = false;
-		UI_Delete(Cody, InputButton_InterActive);
+		//UI_Delete(Cody, InputButton_InterActive);
 	}
 
 	//May
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//UI_Create(May, InputButton_InterActive);
+		//UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsCollide = false;
-		UI_Delete(May, InputButton_PS_InterActive);
+		//UI_Delete(May, InputButton_PS_InterActive);
 	}
 }
 
@@ -211,6 +211,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		if (fDist < 3.f)
 		{
 			m_bPlayerExplosion = true;
+			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(40);
 		}
 		else
 		{
@@ -232,6 +233,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		if (fDist < 3.f)
 		{
 			m_bPlayerExplosion = true;
+			((CCody*)DATABASE->GetMay())->Set_HpBarReduction(40);
 		}
 		else
 		{
@@ -253,7 +255,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	_vector vDir = vUFOPos - vMissilePos;
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-	if (fDist < 4.f)
+	if (fDist < 10.f)
 	{
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eMAY);
 		m_bBossExplosion = true;
@@ -266,7 +268,6 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	_matrix matRocket = XMMatrixIdentity();
 	matRocket = m_pTransformCom->Get_WorldMatrix();
 	((CMay*)DATABASE->GetMay())->Set_RocketMatrix(matRocket);
-
 
 	if (m_bMayControl && ((CMay*)DATABASE->GetMay())->Get_CurState() == ANI_M_Rocket_MH)
 	{
@@ -418,7 +419,7 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 
 	_vector vDir = vUFOPos - vMissilePos;
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-	if (fDist < 4.f)
+	if (fDist < 10.f)
 	{
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eCODY);
 		m_bBossExplosion = true;

@@ -50,7 +50,6 @@ private:
 	_float m_fRocket_Volume = 1.f;
 	_bool  m_bSoundOnce = false;
 
-
 private:
 	/* For.Component */
 	CRenderer*			m_pRendererCom = nullptr;

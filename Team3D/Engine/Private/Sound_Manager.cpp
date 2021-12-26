@@ -44,7 +44,7 @@ void CSound_Manager::Stop_SoundAll()
 
 void CSound_Manager::Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume)
 {
-	FMOD_Channel_SetVolume(m_pChannel[eChannel], fVolume * 6.f);
+	FMOD_Channel_SetVolume(m_pChannel[eChannel], fVolume * SOUND_AMPLIFICATION_FACTOR);
 }
 
 HRESULT CSound_Manager::Ready_SoundManager()
@@ -93,6 +93,7 @@ void CSound_Manager::Sound_FadeIn(CHANNEL_TYPE eChannel, _float fTargetVolume, _
 	if (isPlaying != 1) return;
 
 	FMOD_Channel_GetVolume(m_pChannel[eChannel], &m_SoundInfo[eChannel].fCurrentVolume);
+	m_SoundInfo[eChannel].fCurrentVolume /= SOUND_AMPLIFICATION_FACTOR;
 	if (m_SoundInfo[eChannel].fCurrentVolume > fTargetVolume) return;
 
 	m_SoundInfo[eChannel].iFadeOption = FADE_IN;
@@ -109,6 +110,7 @@ void CSound_Manager::Sound_FadeOut(CHANNEL_TYPE eChannel, _float fTargetVolume, 
 	if (isPlaying != 1) return;
 
 	FMOD_Channel_GetVolume(m_pChannel[eChannel], &m_SoundInfo[eChannel].fCurrentVolume);
+	m_SoundInfo[eChannel].fCurrentVolume /= SOUND_AMPLIFICATION_FACTOR;
 	if (m_SoundInfo[eChannel].fCurrentVolume < fTargetVolume) return;
 
 	m_SoundInfo[eChannel].iFadeOption = FADE_OUT;

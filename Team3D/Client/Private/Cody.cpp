@@ -2765,7 +2765,7 @@ void CCody::Push_Battery(const _double dTimeDelta)
 	{
 		if (true == m_IsPipeBattery)
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_IsCollide = false;
 
 			if (m_pGameInstance->Key_Down(DIK_Q))
@@ -2777,7 +2777,7 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			}
 		}
 
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 	}
 	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)

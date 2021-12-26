@@ -28,7 +28,6 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 {
 	CGameObject::NativeConstruct(pArg);
 
-	
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_TriggerTransform"), (CComponent**)&m_pTriggerTransform, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
@@ -57,7 +56,6 @@ HRESULT CControlRoom_Battery::NativeConstruct(void * pArg)
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTriggerTransform;
 	TriggerArgDesc.pGeometry = new PxSphereGeometry(1.f);
-
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
@@ -110,7 +108,10 @@ void CControlRoom_Battery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 		m_IsCollision = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
+	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eCONTROLROOMBATTERY, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCollision = false;
+	}
 }
 
 void CControlRoom_Battery::Set_UIDisable(_bool IsCheck)
