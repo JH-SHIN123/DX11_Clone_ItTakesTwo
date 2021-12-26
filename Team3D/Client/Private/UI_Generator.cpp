@@ -1528,11 +1528,6 @@ HRESULT CUI_Generator::Ready_Default_UI()
 
 void CUI_Generator::Free()
 {
-	for (auto PSData : m_vecPSData)
-		Safe_Delete(PSData);
-
-	m_vecPSData.clear();
-
 	for (_uint i = 0; i < Player::PLAYER_END; ++i)
 	{
 		for (_uint j = 0; j < UI::TRIGGER_END; ++j)

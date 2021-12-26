@@ -860,6 +860,7 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 
 			/* 보스 2페이즈로 바꿔주자 */
 			m_ePhase = CUFO::PHASE_2;
+			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
 		}
 	}
