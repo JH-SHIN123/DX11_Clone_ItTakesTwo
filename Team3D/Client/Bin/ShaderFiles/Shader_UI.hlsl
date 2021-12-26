@@ -238,9 +238,9 @@ PS_OUT PS_PlayerMarker(PS_IN In)
 	float3 SkyBlue = float3(0.31f, 0.73f, 0.87f);
 
 	if (0 == g_iColorOption && Out.vColor.a > 0.8f)
-		Out.vColor.rgb = Green;
-	else if (1 == g_iColorOption && Out.vColor.a > 0.8f)
 		Out.vColor.rgb = SkyBlue;
+	else if (1 == g_iColorOption && Out.vColor.a > 0.8f)
+		Out.vColor.rgb = Green;
 
 	Out.vColor.a = g_fAlpha;
 
