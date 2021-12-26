@@ -938,6 +938,10 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma endregion
 
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		SCRIPT->VoiceFile_No03();
+	}
 }
 
 _uint CCody::Get_CurState() const
