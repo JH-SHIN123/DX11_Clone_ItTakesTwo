@@ -1184,9 +1184,11 @@ void CCutScene::Script_Outro(_double dTimeDelta)
 		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::MoonBaboon_Land);
 	//else if (dSoundTime >= 4.4 && dSoundTime < 4.4 + dTimeDelta)
 	//	EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::UFO_Land);
+	else if (dSoundTime >= 9.9 && dSoundTime < 9.9 + dTimeDelta)
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
 	else if (dSoundTime >= 10.2 && dSoundTime < 10.2 + dTimeDelta)
 		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
-	else if (dSoundTime >= 10.45 && dSoundTime < 10.45 + dTimeDelta)
+	else if (dSoundTime >= 10.5 && dSoundTime < 10.5 + dTimeDelta)
 		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
 	else if (dSoundTime >= 11.0 && dSoundTime < 11.0 + dTimeDelta)
 	{
