@@ -32,6 +32,7 @@
 #include "Camera.h"
 #include"CutScenePlayer.h"
 #include"Performer.h"
+#include "Level_Loading.h"
 
 #pragma endregion
 
@@ -125,6 +126,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
+	CGameInstance* pGameinstance = CGameInstance::GetInstance();
+
 #ifdef __INSTALL_LIGHT
 	CLight_Generator::GetInstance()->KeyInput(dTimedelta);
 
@@ -151,6 +154,17 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		ENDINGCREDIT->Create_Environment();
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
+
+	if (m_pGameInstance->Key_Down(DIK_M))
+	{
+		/* ¾ÀÀüÈ¯ */
+		if (FAILED(pGameinstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO))))
+		{
+			MSG_BOX("Failed to Change_CurrentLevel, Error to CMenuScreen::Late_Tick");
+			return EVENT_ERROR;
+		}
+		pGameinstance->Clear_LevelResources(Level::LEVEL_STAGE);
+	}
 
 	return NO_EVENT;
 }
@@ -293,7 +307,7 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	/* Hye */
 #ifdef __TEST_HYE
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Environment", Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis")), E_FAIL);
+	Ready_Layer_SecurityCamera(TEXT("Layer_Test"));
 #endif // __TEST_HYE
 
 	/* Teak */

@@ -49,9 +49,18 @@ HRESULT CEndingCredit_Manager::Create_HugeRock(_float fPosY)
 	return S_OK;
 }
 
-HRESULT CEndingCredit_Manager::Start_Move2DMesh()
+HRESULT CEndingCredit_Manager::Create_WhiteOut()
 {
-	return E_NOTIMPL;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_WhiteOut")), E_FAIL);
+
+	return S_OK;
+}
+
+void CEndingCredit_Manager::End_EndingCredit()
+{
+	Set_Dead_Environment();
+	Create_WhiteOut();
+	m_pGameInstance->Sound_FadeOut(CHANNEL_ENDINGCREDIT, 0.f, 3.f);
 }
 
 HRESULT CEndingCredit_Manager::Create_Environment()
@@ -60,7 +69,7 @@ HRESULT CEndingCredit_Manager::Create_Environment()
 	FAILED_CHECK_RETURN(Create_Rocks(50), E_FAIL);
 
 	/* 2DMesh »ý¼º */
-	FAILED_CHECK_RETURN(Create_2DMesh(12), E_FAIL);
+	FAILED_CHECK_RETURN(Create_2DMesh(10), E_FAIL);
 
 	return S_OK;
 }

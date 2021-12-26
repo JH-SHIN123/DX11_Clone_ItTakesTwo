@@ -74,23 +74,23 @@ _int C2DMesh::Tick(_double dTimeDelta)
 
 	CGameObject::Tick(dTimeDelta);
 
-	if (true == ENDINGCREDIT->Get_Dead_Environment())
-		Set_Dead();
-
-	m_iRandomModel = ENDINGCREDIT->Get_RandomModel();
-
+	/* Start 체크 */
 	Start();
-	Movement(dTimeDelta);
-
-	m_dCoolTime += dTimeDelta;
-
-
 	if (true == m_bStart && false == m_bRealStart)
 	{
 		m_dStartTime += dTimeDelta;
 		if (1.5 <= m_dStartTime)
 			RealStart();
 	}
+
+	/* 마지막 텍스트가 사라지면 오브젝트 삭제 */
+	if (true == ENDINGCREDIT->Get_Dead_Environment())
+		Set_Dead();
+
+	/* 텍스트가 지나갈때마다 모델 변경 */
+	m_iRandomModel = ENDINGCREDIT->Get_RandomModel();
+
+	Movement(dTimeDelta);
 
 	return NO_EVENT;
 }
@@ -225,11 +225,11 @@ void C2DMesh::Movement(_double dTimeDelta)
 
 	m_pTransformCom->Set_Scale(XMVectorSet(m_fScale, m_fScale, m_fScale, 1.f));
 
-	/* 코디보다 위에 있을 경우 다시 아래에서 리스폰 */
+	/* 리스폰 지점 체크 */
 	_float fCodyY = XMVectorGetY(m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION));
 	_float fMyY = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	if (fCodyY + 10.f < fMyY)
+	if (fCodyY < fMyY)
 	{
 		_vector vCodyPos = m_pCodyTransformCom->Get_State(CTransform::STATE_POSITION);
 		_float3 vMyPos = {};
@@ -255,7 +255,7 @@ void C2DMesh::Movement(_double dTimeDelta)
 HRESULT C2DMesh::Ready_Component(void * pArg)
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
-	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &CTransform::TRANSFORM_DESC(5.f, XMConvertToRadians(90.f))), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Ailen"), TEXT("Com_Model0"), (CComponent**)&m_pModelCom_Ailen), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_2DMesh_Robot"), TEXT("Com_Model1"), (CComponent**)&m_pModelCom_Robot), E_FAIL);
@@ -266,7 +266,8 @@ HRESULT C2DMesh::Ready_Component(void * pArg)
 	m_pCodyTransformCom = ((CCody*)(DATABASE->GetCody()))->Get_Transform();
 	Safe_AddRef(m_pCodyTransformCom);
 
-	m_fMaxScale = (rand() % 11 + 15) * 0.1f;
+	/* 랜덤 스케일 */
+	m_fMaxScale = (rand() % 16 + 15) * 0.1f;
 
 	/* 랜덤 회전값 */
 	m_fRandomAngle = (rand() % 41 - 20.f) * 0.1f;

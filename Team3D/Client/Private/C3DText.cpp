@@ -5,6 +5,7 @@
 #include "Cody.h"
 #include "MeshParticle.h"
 #include "EndingRocket.h"
+#include "UI_Generator.h"
 
 C3DText::C3DText(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -51,6 +52,10 @@ _int C3DText::Tick(_double dTimeDelta)
 
 		if (0 == m_iIndex)
 			ENDINGCREDIT->Set_2DMeshStart();
+
+		/* 엔딩크래딧 끝 */
+		if (23 == m_iIndex)
+			ENDINGCREDIT->End_EndingCredit();
 
 		return EVENT_DEAD;
 	}

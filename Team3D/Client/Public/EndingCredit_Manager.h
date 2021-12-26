@@ -28,7 +28,9 @@ public:
 	HRESULT Create_3DText(_uint iIndex, _float fPosY);
 	HRESULT Create_Environment();
 	HRESULT Create_HugeRock(_float fPosY);
-	HRESULT Start_Move2DMesh();
+	HRESULT Create_WhiteOut();
+
+	void End_EndingCredit();
 
 private:
 	CGameInstance*	m_pGameInstance = nullptr;
