@@ -67,7 +67,8 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
 		((CUFO*)DATABASE->Get_BossUFO())->Set_BossHpBarReduction(82.5f);
-		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(Moon_Ufo_Laser_HitPod, UFO_MH);
+		((CUFO*)DATABASE->Get_BossUFO())->Set_GuidedMissileIncreaseHitCount();
+		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(Moon_Ufo_Laser_HitPod, UFO_Left);
 		Explosion_Effect();
 
 		return EVENT_DEAD;
@@ -210,6 +211,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		if (fDist < 3.f)
 		{
 			m_bPlayerExplosion = true;
+			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(40);
 		}
 		else
 		{
@@ -231,6 +233,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		if (fDist < 3.f)
 		{
 			m_bPlayerExplosion = true;
+			((CCody*)DATABASE->GetMay())->Set_HpBarReduction(40);
 		}
 		else
 		{
@@ -252,7 +255,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	_vector vDir = vUFOPos - vMissilePos;
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-	if (fDist < 4.f)
+	if (fDist < 10.f)
 	{
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eMAY);
 		m_bBossExplosion = true;
@@ -265,7 +268,6 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	_matrix matRocket = XMMatrixIdentity();
 	matRocket = m_pTransformCom->Get_WorldMatrix();
 	((CMay*)DATABASE->GetMay())->Set_RocketMatrix(matRocket);
-
 
 	if (m_bMayControl && ((CMay*)DATABASE->GetMay())->Get_CurState() == ANI_M_Rocket_MH)
 	{
@@ -417,7 +419,7 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 
 	_vector vDir = vUFOPos - vMissilePos;
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-	if (fDist < 4.f)
+	if (fDist < 10.f)
 	{
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eCODY);
 		m_bBossExplosion = true;

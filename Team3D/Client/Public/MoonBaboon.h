@@ -32,6 +32,10 @@ public:
 
 public:
 	void Set_Animation(_uint iCurAnimIndex, _uint iNextAnimIndex);
+	void Set_Active(_bool IsActive);
+
+private:
+	_bool				m_IsActive = true;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }

@@ -48,6 +48,7 @@ public:
 	void Set_BossHpBarReduction(_float fDamage);
 	void Set_MissilePtrReset(_bool IsTargetCheck);
 	void Set_GuidedMissileIncreaseHitCount();
+	void Set_Active(_bool IsActive);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
@@ -57,6 +58,7 @@ public:
 	UFO_PHASE Get_BossPhase() const { return m_ePhase; }
 	_bool	 Get_IsCutScene() { return m_IsCutScene; }
 	UFO_PATTERN Get_BossPatern() const { return m_ePattern; }
+	_bool	Get_Phase2InterActive() const { return m_IsPhase2InterActive; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;
@@ -81,6 +83,7 @@ private:
 	_float					m_fMaxY = 0.f;
 	_float					m_fDistance = 0.f;
 	_bool					m_IsHit = false;
+	_bool					m_IsActive = false;
 
 	/* For.PHASE_1 Pattern */
 	_bool					m_IsCoreExplosion = false;
@@ -101,6 +104,7 @@ private:
 	_bool					m_IsActorCreate = true;
 	_bool					m_IsTriggerActive = false;
 	_bool					m_IsCodySetPos = false;
+	_bool					m_IsPhase2InterActive = false;
 	_uint					m_iGuidedMissileHitCount = 0;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;

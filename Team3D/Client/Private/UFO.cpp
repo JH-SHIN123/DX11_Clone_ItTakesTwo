@@ -93,7 +93,7 @@ _int CUFO::Tick(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
-		// 빈거
+		m_IsActive = true;
 	}
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
@@ -105,7 +105,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
 		m_pBossHpBar->Set_Active(true);
 	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
 		// 마지막에 누가 박았는지에 따라 뷰포트 전환이 다름
 		if (m_WhoCollide == GameID::eCODY)
@@ -201,6 +201,9 @@ _int CUFO::Tick(_double dTimeDelta)
 _int CUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
+
+	if (false == m_IsActive)
+		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3000.f))
 		return Add_GameObject_ToRenderGroup();
@@ -1338,8 +1341,17 @@ void CUFO::Set_GuidedMissileIncreaseHitCount()
 {
 	++m_iGuidedMissileHitCount;
 
-	if (4 < m_iGuidedMissileHitCount)
+	if (4 <= m_iGuidedMissileHitCount)
 		m_iGuidedMissileHitCount = 4;
+	
+	if(3 >= m_iGuidedMissileHitCount)
+		Set_UFOAnimation(UFO_Laser_HitPod, UFO_Left);
+}
+
+void CUFO::Set_Active(_bool IsActive)
+{
+	m_IsActive = IsActive;
+	m_pMoonBaboon->Set_Active(IsActive);
 }
 
 HRESULT CUFO::Add_GameObject_ToRenderGroup()
