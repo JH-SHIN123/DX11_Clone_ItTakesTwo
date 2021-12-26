@@ -83,7 +83,7 @@ _int CHookUFO::Tick(_double dTimeDelta)
 		if (true == m_IsMayCollide)
 		{
 			m_IsMayUIDisalbe = true;
-			UI_Delete(May, InputButton_InterActive);
+			UI_Delete(May, InputButton_PS_InterActive);
 		}
 	}
 

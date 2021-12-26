@@ -844,7 +844,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_LButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false) 
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -874,7 +874,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_RButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
