@@ -195,7 +195,18 @@ PS_OUT PS_Frame(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vColor.b = 0.f;
+	float3 Green = float3(0.74f, 0.99f, 0.1f);
+	float3 SkyBlue = float3(0.31f, 0.73f, 0.87f);
+	float3 Yellow = float3(1.f, 1.f, 0.f);
+
+	if (0 == g_iColorOption)
+		Out.vColor.rgb = Yellow;
+	else if (1 == g_iColorOption)
+		Out.vColor.rgb = Green;
+	else if (2 == g_iColorOption)
+		Out.vColor.rgb = SkyBlue;
+
+	//Out.vColor.b = 0.f;
 
 	return Out;
 
