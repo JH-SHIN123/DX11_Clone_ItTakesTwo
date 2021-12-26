@@ -1540,7 +1540,6 @@ HRESULT CUI_Generator::Ready_Default_UI()
 	return S_OK;
 }
 
-
 void CUI_Generator::Free()
 {
 	for (auto PSData : m_vecPSData)

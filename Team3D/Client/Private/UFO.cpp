@@ -315,7 +315,7 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 		return;
 
 	_vector vDir, vTargetPos;
-	_uint iGravitationalBombMaxCount = 2;
+	_uint iGravitationalBombMaxCount = 8;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
 	switch (m_eTarget)
