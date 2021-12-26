@@ -668,8 +668,8 @@ HRESULT CCutScene::Start_CutScene_GotoMoon()
 	CMay* pMay = ((CMay*)DATABASE->GetMay());
 
 	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
-	pCody->Get_Transform()->Set_Rotaion(XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	pCody->Get_Actor()->Set_Position(XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f));
+	pCody->Get_Transform()->Set_WorldMatrix(XMMatrixScaling(0.1f,0.1f,0.1f));
+	pCody->Get_Actor()->Set_Position(XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f,1011.04f, 1.f));
 	pCody->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_Eject);
 
 	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
