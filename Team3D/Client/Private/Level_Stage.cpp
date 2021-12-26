@@ -157,20 +157,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
-	/* 씬 전환 테스트중 */
-	//CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	//if (true == pGameInstance->Key_Down(DIK_T))
-	//{
-	//	if (FAILED(pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO))))
-	//	{
-	//		MSG_BOX("AAAAAAAAAAAAAAAAAAAA");
-	//		return EVENT_ERROR;
-	//	}
-
-	//	pGameInstance->Clear_LevelResources(Level::LEVEL_STAGE);
-	//}
-
 	return NO_EVENT;
 }
 
