@@ -26,7 +26,7 @@ HRESULT CMoonBaboonCore::NativeConstruct_Prototype()
 {
 	CGameObject::NativeConstruct_Prototype();
 
-	return S_OK;
+	return S_OK;;
 }
 
 HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
