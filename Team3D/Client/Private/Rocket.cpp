@@ -53,6 +53,8 @@ HRESULT CRocket::NativeConstruct(void * pArg)
 	StaticActorDesc.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_StaticActor"), TEXT("Com_Static"), (CComponent**)&m_pStaticActorCom, &StaticActorDesc), E_FAIL);
 
+	m_eInterActiveID = UI::Rocket0;
+
 	return S_OK;
 }
 
@@ -87,10 +89,10 @@ _int CRocket::Tick(_double dTimeDelta)
 			return EVENT_DEAD;
 	}
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Rocket,
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
 		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCodyCollide, m_bLaunch);
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::Rocket,
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, m_eInterActiveID,
 		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsMayCollide, m_bLaunch);
 
 	return NO_EVENT;
@@ -123,15 +125,14 @@ void CRocket::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROCKET, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(Cody, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = true;
 		m_IsCodyCollide = true;
 		m_PlayerID = GameID::eCODY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
+		m_IsCollide = false;
 		m_IsCodyCollide = false;
-		UI_Delete(Cody, InputButton_InterActive);
 		m_PlayerID = GameID::eROCKET;
 	}
 
@@ -139,15 +140,14 @@ void CRocket::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eROCKET, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		UI_Create(May, InputButton_InterActive);
-		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsCollide = true;
 		m_IsMayCollide = true;
 		m_PlayerID = GameID::eMAY;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
+		m_IsCollide = false;
 		m_IsMayCollide = false;
-		UI_Delete(May, InputButton_PS_InterActive);
 		m_PlayerID = GameID::eROCKET;
 	}
 }

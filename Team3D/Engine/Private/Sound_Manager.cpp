@@ -44,7 +44,7 @@ void CSound_Manager::Stop_SoundAll()
 
 void CSound_Manager::Set_SoundVolume(CHANNEL_TYPE eChannel, _float fVolume)
 {
-	FMOD_Channel_SetVolume(m_pChannel[eChannel], fVolume);
+	FMOD_Channel_SetVolume(m_pChannel[eChannel], fVolume * 6.f);
 }
 
 HRESULT CSound_Manager::Ready_SoundManager()

@@ -42,6 +42,10 @@ private:
 	_bool		m_IsCollide = false;
 	GameID::Enum		m_PlayerID = GameID::eROCKET;
 
+	UI::INTERACTIVE_ID  m_eInterActiveID = UI::INTERACTIVE_ID_END;
+	_bool		m_IsCodyCollide = false;
+	_bool		m_IsMayCollide = false;
+
 	/* SOUND */
 	_float m_fRocket_Volume = 1.f;
 	_bool  m_bSoundOnce = false;

@@ -512,7 +512,7 @@ HRESULT CCutScene::Start_CutScene_Intro()
 		return E_FAIL;
 	static_cast<CMoonBaboon*>(pPerformer)->Get_Transform()->Set_WorldMatrix(
 		MakeRollPitchYawMatrix(_float3(62.8f, 0.5f, -6.2f), _float3(1.f, 1.f, 1.f), _float3(90.f, -90.f, 0.f)));
-	static_cast<CMoonBaboon*>(pPerformer)->Get_Model()->Set_Animation(7);
+	static_cast<CMoonBaboon*>(pPerformer)->Get_Model()->Set_Animation(Moon_BeamUp_Intro);
 
 	pPerformer = m_pCutScenePlayer->Find_Performer(L"Component_Model_RemoteContollerCutScene1");
 	if (nullptr == pPerformer)
@@ -730,6 +730,8 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -745,6 +747,8 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -766,6 +770,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
 	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 	static_cast<CMay*>(DATABASE->GetMay())->Enforce_IdleState();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	/* 상태 초기화 */
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);

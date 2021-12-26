@@ -45,6 +45,10 @@ private:
 	_float		m_fRotateDelay = 0.f;
 	ROBOTDESC	m_tRobotPartsDesc;
 
+	UI::INTERACTIVE_ID  m_eInterActiveID = UI::INTERACTIVE_ID_END;
+	_bool		m_IsMayCollide = false;
+	_bool		m_IsCodyCollide = false;
+
 
 	/* Sound */
 	_float m_fBattery_Volume = 1.f;
