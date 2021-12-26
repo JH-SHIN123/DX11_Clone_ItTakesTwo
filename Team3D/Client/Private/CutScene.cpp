@@ -29,7 +29,7 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	{
 		UI_Delete(Cody, CutSceneBar);
 		UI_Delete(May, CutSceneBar);
-		UI_Generator->Set_AllActivation(true);
+		UI_Generator->Set_AllActivation(false);
 
 		switch (m_eCutSceneOption)
 		{
@@ -292,6 +292,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 		{
 			pCody->Get_Actor()->Set_Position(XMVectorSet(73.5f, 244.5f, 168.5f, 1.f));
 			pMay->Get_Actor()->Set_Position(XMVectorSet(72.f, 243.8f, 170.4f, 1.f));
+			((CUFO*)DATABASE->Get_BossUFO())->Set_Active(true);
 			m_iCutSceneTake++;
 		}
 	}
@@ -704,6 +705,7 @@ HRESULT CCutScene::End_CutScene_Intro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto();
 	UI_Generator->Set_AllActivation(true);
+	((CUFO*)DATABASE->Get_BossUFO())->Set_Active(false);
 
 	return S_OK;
 }
@@ -777,9 +779,11 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
 	UI_Generator->Set_AllActivation(true);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
-
 
 	return S_OK;
 }
@@ -799,6 +803,7 @@ HRESULT CCutScene::End_CutScene_Outro()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
+
 	return S_OK;
 }
 

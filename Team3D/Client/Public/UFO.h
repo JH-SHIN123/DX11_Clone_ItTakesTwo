@@ -30,7 +30,6 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
-
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 	HRESULT Add_GameObject_ToRenderGroup();
@@ -46,7 +45,10 @@ public:
 	/* For. BossFloorUp */
 	void Set_BossUFOUp(_float fMaxDistance, _float fSpeed);
 	HRESULT Set_MeshRenderGroup();
+	void Set_BossHpBarReduction(_float fDamage);
 	void Set_MissilePtrReset(_bool IsTargetCheck);
+	void Set_GuidedMissileIncreaseHitCount();
+	void Set_Active(_bool IsActive);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
@@ -54,8 +56,9 @@ public:
 	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
 	UFO_PHASE Get_BossPhase() const { return m_ePhase; }
-	_bool	  Get_IsCutScene() { return m_IsCutScene; }
+	_bool	 Get_IsCutScene() { return m_IsCutScene; }
 	UFO_PATTERN Get_BossPatern() const { return m_ePattern; }
+	_bool	Get_Phase2InterActive() const { return m_IsPhase2InterActive; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;
@@ -80,6 +83,8 @@ private:
 	_float					m_fMaxY = 0.f;
 	_float					m_fDistance = 0.f;
 	_bool					m_IsHit = false;
+	_bool					m_IsActive = false;
+	_bool					m_IsFirstAngleSetting = true;
 
 	/* For.PHASE_1 Pattern */
 	_bool					m_IsCoreExplosion = false;
@@ -100,6 +105,8 @@ private:
 	_bool					m_IsActorCreate = true;
 	_bool					m_IsTriggerActive = false;
 	_bool					m_IsCodySetPos = false;
+	_bool					m_IsPhase2InterActive = false;
+	_uint					m_iGuidedMissileHitCount = 0;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
 	class CBoss_Missile*	m_pMayMissile = nullptr;
@@ -128,7 +135,6 @@ private:
 
 	/* CutScene Offset */
 	_vector     m_vChairOffSetPos = {};
-
 
 private:
 	/* For.Component */
@@ -178,7 +184,6 @@ private:
 	void Phase3_InterAction(_double dTimeDelta);
 	void GroundPound_Pattern(_double dTimeDelta);
 	void DependingTimeSubLaserOperation(_double dTimeDelta);
-
 
 private:
 	/* For.PHASE_1 End */

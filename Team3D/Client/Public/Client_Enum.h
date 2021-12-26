@@ -18,7 +18,7 @@ namespace Player
 namespace UI
 {
 	enum TRIGGER {
-		InputButton_Dot, InputButton_InterActive, InputButton_InterActive_Rail,InputButton_PS_InterActive, InputButton_OK, InputButton_PS_OK,
+		InputButton_Dot, InputButton_InterActive, InputButton_InterActive_Rail, InputButton_PS_InterActive, InputButton_OK, InputButton_PS_OK,
 		PC_Mouse_Reduction, PC_Mouse_Enlargement, InputButton_Cancle, InputButton_PS_Cancle, InputButton_Up, InputButton_Down, InputButton_PS_Up,
 		Minigame_Ready_Cody, Minigame_Ready_May, InputButton_PS_Down, PlayerMarker, InputButton_PS_R1, Arrowkeys_Side, Arrowkeys_UpDown, TESTUI,
 		Arrowkeys_All, InputButton_PS_L2, InputButton_PS_R2, StickIcon, Portrait_Cody, Portrait_May,Minigame_Win_Cody /*Default */, Minigame_Score /* Default */,
