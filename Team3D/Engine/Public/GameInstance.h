@@ -84,6 +84,7 @@ public:
 	HRESULT		Change_CurrentLevel(class CLevel* pCurrentLevel);
 	HRESULT		Render_Level();
 	const _uint Get_CurrentLevelStep();
+	void		Go_NextLevelStep();
 #pragma endregion
 
 #pragma region GameObject_Manager

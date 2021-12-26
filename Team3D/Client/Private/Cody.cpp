@@ -2173,6 +2173,12 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma endregion
 
 #pragma region Trigger
+_bool CCody::Get_WarpEnd_CountDown()
+{
+	_float fTime = m_fWarpTimer_InWormhole + m_fWarpTimer_Max - 1.f;
+	return m_fWarpTimer > fTime;
+}
+
 void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;
