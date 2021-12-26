@@ -581,6 +581,7 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 		m_IsFirstAngleSetting = false;
 	}
 
+	/* 자전 각도 돌리는 속도 */
 	if (m_fRotAngle < fAngle)
 		m_fRotAngle += (_float)dTimeDelta * 50.f;
 	else if (m_fRotAngle >= fAngle)

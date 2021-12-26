@@ -992,7 +992,10 @@ void CModel::Free()
 	{
 		for (auto& pTexture : pMaterial->pMaterialTexture)
 			Safe_Release(pTexture);
-		if (false == m_isClone)
+	}
+	if (false == m_isClone)
+	{
+		for (auto& pMaterial : m_Materials)
 			Safe_Delete(pMaterial);
 	}
 	m_Materials.clear();

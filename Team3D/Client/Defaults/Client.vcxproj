@@ -505,6 +505,7 @@
     <ClInclude Include="..\Public\Wall_LaserTennis.h" />
     <ClInclude Include="..\Public\WarpGate.h" />
     <ClInclude Include="..\Public\WarpGate_Star.h" />
+    <ClInclude Include="..\Public\WhiteOut.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -822,6 +823,7 @@
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />
     <ClCompile Include="..\Private\WarpGate_Star.cpp" />
+    <ClCompile Include="..\Private\WhiteOut.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

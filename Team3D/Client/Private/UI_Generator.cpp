@@ -80,49 +80,51 @@ HRESULT CUI_Generator::Load_Data(const _tchar * pFilePath, Level::ID eLevel, _ui
 
 	DWORD dwByte = 0;
 
+	vector<CUIObject::UI_DESC> vecPSData;
+
 	while (true)
 	{
-		CUIObject::UI_DESC* psDataElement = new CUIObject::UI_DESC;
+		CUIObject::UI_DESC psDataElement;
+		ZeroMemory(&psDataElement, sizeof(CUIObject::UI_DESC));
 
-		ReadFile(hFile, psDataElement, sizeof(CUIObject::UI_DESC), &dwByte, nullptr);
+		ReadFile(hFile, &psDataElement, sizeof(CUIObject::UI_DESC), &dwByte, nullptr);
 
 		if (0 == dwByte)
-		{
-			Safe_Delete(psDataElement);
 			break;
-		}
 
-		m_vecPSData.emplace_back(psDataElement);
+		vecPSData.emplace_back(psDataElement);
 	}
 
-	for (auto PSData : m_vecPSData)
+	for (auto& PSData : vecPSData)
 	{
 		if (eLevel == Level::LEVEL_LOGO)
 		{
 			if (0 == iOption)
 			{
-				FAILED_CHECK_RETURN(Add_Prototype_Menu(PSData), E_FAIL);
+				FAILED_CHECK_RETURN(Add_Prototype_Menu(&PSData), E_FAIL);
 			}
 			else
 			{
-				FAILED_CHECK_RETURN(Add_Prototype_Chapter(PSData), E_FAIL);
+				FAILED_CHECK_RETURN(Add_Prototype_Chapter(&PSData), E_FAIL);
 			}
 		}
 		else if (eLevel == Level::LEVEL_STAGE)
 		{
 			if (0 == iOption)
 			{
-				FAILED_CHECK_RETURN(Add_Prototype_Interactive_UI(PSData), E_FAIL);
-				FAILED_CHECK_RETURN(Add_Prototype_Fixed_UI(PSData), E_FAIL);
+				FAILED_CHECK_RETURN(Add_Prototype_Interactive_UI(&PSData), E_FAIL);
+				FAILED_CHECK_RETURN(Add_Prototype_Fixed_UI(&PSData), E_FAIL);
 			}
 			else
 			{
-				FAILED_CHECK_RETURN(Add_Prototype_Minigame(PSData), E_FAIL);
+				FAILED_CHECK_RETURN(Add_Prototype_Minigame(&PSData), E_FAIL);
 			}
 		}
 	}
 
 	CloseHandle(hFile);
+
+	vecPSData.clear();
 
 	return S_OK;
 }
@@ -1017,25 +1019,9 @@ HRESULT CUI_Generator::Add_Prototype_Chapter(CUIObject::UI_DESC * UIDesc)
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CControllerIcon::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
-	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Right"))
-	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
-	}
 	else if (!lstrcmp(UIDesc->szUITag, L"PC_Enter"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CPC_Enter::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
-	}
-	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Right_TriAngle"))
-	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
-	}
-	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Left_TriAngle"))
-	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
-	}
-	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_Left"))
-	{
-		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 	else if (!lstrcmp(UIDesc->szUITag, L"PC_Enter_Right"))
 	{

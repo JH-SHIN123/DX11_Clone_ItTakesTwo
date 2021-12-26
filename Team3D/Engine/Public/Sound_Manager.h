@@ -77,8 +77,9 @@ enum ENGINE_DLL CHANNEL_TYPE
 	, CHANNEL_END
 };
 
-#define FADE_IN		1
-#define FADE_OUT	2
+#define FADE_IN						1
+#define FADE_OUT					2
+#define SOUND_AMPLIFICATION_FACTOR	6.f
 
 typedef struct ENGINE_DLL tagSoundInfo
 {

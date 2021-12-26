@@ -46,8 +46,8 @@ protected:
 protected:
 	HRESULT	Add_Component(_uint iPrototypeLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 
-private:
-	CComponent*	Find_Component(const _tchar* pComponentTag);
+//private:
+//	CComponent*	Find_Component(const _tchar* pComponentTag);
 
 public:
 	virtual CGameObject* Clone_GameObject(void* pArg) PURE;
