@@ -26,6 +26,7 @@ HRESULT CCutScenePlayer::NativeConstruct(ID3D11Device* pDevice, ID3D11DeviceCont
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Clear_Rail"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Clear_Rail)), E_FAIL);
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Boss_Intro"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Boss_Intro)), E_FAIL);
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Eject_InUFO"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Eject_InUFO)), E_FAIL);
+	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_GotoMoon"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_GotoMoon)), E_FAIL);
 	FAILED_CHECK_RETURN(Add_CutScene(TEXT("CutScene_Outro"), CCutScene::Create(CCutScene::CutSceneOption::CutScene_Outro)), E_FAIL);
 
 	return S_OK;

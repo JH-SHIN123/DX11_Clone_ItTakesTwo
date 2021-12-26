@@ -45,11 +45,14 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		case Client::CCutScene::CutSceneOption::CutScene_Clear_Rail:
 			End_CutScene_Clear_Rail();
 			break;
+		case Client::CCutScene::CutSceneOption::CutScene_Boss_Intro:
+			End_CutScene_Boss_Intro();
+			break;
 		case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
 			End_CutScene_Eject_InUFO();
 			break;
-		case Client::CCutScene::CutSceneOption::CutScene_Boss_Intro:
-			End_CutScene_Boss_Intro();
+		case Client::CCutScene::CutSceneOption::CutScene_GotoMoon:
+			End_CutScene_GotoMoon();
 			break;
 		case Client::CCutScene::CutSceneOption::CutScene_Outro:
 			End_CutScene_Outro();
@@ -78,6 +81,9 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		break;
 	case CutSceneOption::CutScene_Eject_InUFO:
 		bIsNoError = Tick_CutScene_Eject_InUFO(dTimeDelta);
+		break;
+	case CutSceneOption::CutScene_GotoMoon:
+		bIsNoError = Tick_CutScene_GotoMoon(dTimeDelta);
 		break;
 	case CutSceneOption::CutScene_Outro:
 		bIsNoError = Tick_CutScene_Outro(dTimeDelta);
@@ -402,6 +408,11 @@ _bool CCutScene::Tick_CutScene_Eject_InUFO(_double dTimeDelta)
 	return true;
 }
 
+_bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
+{
+	return true;
+}
+
 _bool CCutScene::Tick_CutScene_Outro(_double dTimeDelta)
 {
 	Script_Outro(dTimeDelta);
@@ -457,6 +468,10 @@ HRESULT CCutScene::Start_CutScene()
 		break;
 	case CutSceneOption::CutScene_Eject_InUFO:
 		if (FAILED(Start_CutScene_Eject_UFO()))
+			return E_FAIL;
+		break;
+	case CutSceneOption::CutScene_GotoMoon:
+		if (FAILED(Start_CutScene_GotoMoon()))
 			return E_FAIL;
 		break;
 	case CutSceneOption::CutScene_Outro:
@@ -601,8 +616,7 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 
 	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
 	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
-	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
-	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
+
 
 	pCody->Get_Transform()->Set_WorldMatrix(XMMatrixIdentity()/*matRot*/);
 	pCody->Get_Actor()->Set_Position(XMVectorSet(73.5f, 244.5f, 168.5f, 1.f));
@@ -641,6 +655,34 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
 	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Eject_InUFO");
 	UI_Generator->Set_AllActivation(true);
+
+	return S_OK;
+}
+
+HRESULT CCutScene::Start_CutScene_GotoMoon()
+{
+	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_GotoMoon");
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f),false);
+
+	CCody* pCody = ((CCody*)DATABASE->GetCody());
+	CMay* pMay = ((CMay*)DATABASE->GetMay());
+
+	pCody->Get_Actor()->Set_ZeroGravity(true, true, true);
+	pCody->Get_Transform()->Set_Rotaion(XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	pCody->Get_Actor()->Set_Position(XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f));
+	pCody->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_Eject);
+
+	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
+	pMay->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 64.f,345.f,195.f}, { 1.f,1.f,1.f }, {90.f,0.f,0.f}));
+	pMay->Get_Actor()->Set_Position(XMVectorSet(64.f, 345.f, 195.f, 1.f));
+	pMay->Get_Model()->Set_Animation(ANI_M_CutScene_SpaceStation_BossFight_Eject);
+
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(64.f, 357.5f, 195.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
+	pUfo->Get_Model()->Set_Animation(CutScene_Eject_FlyingSaucer);
+	
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	pMoonBaboon->Set_Animation(CutScene_Eject_MoonBaboon, Moon_Ufo_MH);
 
 	return S_OK;
 }
@@ -782,6 +824,15 @@ HRESULT CCutScene::End_CutScene_Eject_InUFO()
 	return S_OK;
 }
 
+HRESULT CCutScene::End_CutScene_GotoMoon()
+{
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
+	
+	return S_OK;
+}
+
 HRESULT CCutScene::End_CutScene_Outro()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
@@ -833,6 +884,12 @@ HRESULT CCutScene::Ready_CutScene_Eject_InUFO()
 	return S_OK;
 }
 
+HRESULT CCutScene::Ready_CutScene_GotoMoon()
+{
+	m_dDuration = 36.13;
+	return S_OK;
+}
+
 HRESULT CCutScene::Ready_CutScene_Outro()
 {
 	m_dDuration = 62.89;
@@ -865,6 +922,9 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 		break;
 	case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
 		if (FAILED(Ready_CutScene_Eject_InUFO()))
+			return E_FAIL;
+	case Client::CCutScene::CutSceneOption::CutScene_GotoMoon:
+		if (FAILED(Ready_CutScene_GotoMoon()))
 			return E_FAIL;
 	case Client::CCutScene::CutSceneOption::CutScene_Outro:
 		if (FAILED(Ready_CutScene_Outro()))
