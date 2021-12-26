@@ -268,6 +268,7 @@
     <ClInclude Include="..\Public\Effect_Cody_Size.h" />
     <ClInclude Include="..\public\Effect_Cody_Size_ShockWave.h" />
     <ClInclude Include="..\public\Effect_CS_CodySize.h" />
+    <ClInclude Include="..\public\Effect_CS_Levitation_Beam_Particle.h" />
     <ClInclude Include="..\public\Effect_CS_MoonBaboon_Land.h" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
     <ClInclude Include="..\public\Effect_DashMesh.h" />
@@ -508,6 +509,7 @@
     <ClInclude Include="..\Public\WarpGate.h" />
     <ClInclude Include="..\Public\WarpGate_Star.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Effect_CS_Levitation_Beam.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -588,6 +590,7 @@
     <ClCompile Include="..\Private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size_ShockWave.cpp" />
     <ClCompile Include="..\private\Effect_CS_CodySize.cpp" />
+    <ClCompile Include="..\private\Effect_CS_Levitation_Beam_Particle.cpp" />
     <ClCompile Include="..\private\Effect_CS_MoonBaboon_Land.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_DashMesh.cpp" />
@@ -827,6 +830,7 @@
     <ClCompile Include="..\Private\WarpGate.cpp" />
     <ClCompile Include="..\Private\WarpGate_Star.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Effect_CS_Levitation_Beam.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

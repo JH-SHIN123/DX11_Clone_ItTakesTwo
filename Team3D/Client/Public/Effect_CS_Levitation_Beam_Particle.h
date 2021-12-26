@@ -1,14 +1,13 @@
 #pragma once
-
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_UFO_Inside_ElectricWall_Particle final : public CInGameEffect
+class CEffect_CS_Levitation_Beam_Particle final : public CInGameEffect
 {
 private:
-	explicit CEffect_UFO_Inside_ElectricWall_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_UFO_Inside_ElectricWall_Particle(const CEffect_UFO_Inside_ElectricWall_Particle& rhs);
-	virtual ~CEffect_UFO_Inside_ElectricWall_Particle() = default; public:
+	explicit CEffect_CS_Levitation_Beam_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_CS_Levitation_Beam_Particle(const CEffect_CS_Levitation_Beam_Particle& rhs);
+	virtual ~CEffect_CS_Levitation_Beam_Particle() = default; public:
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
@@ -44,21 +43,17 @@ private:
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
 	VTXMATRIX_CUSTOM_STT*				m_pInstanceBuffer_STT = nullptr;
-	_float*								m_pInstanceBuffer_Parabola_PosY = nullptr;
-	_float*								m_pInstanceBuffer_Parabola_Time = nullptr;
-	_float*								m_pInstanceBuffer_Parabola_Power = nullptr;
-	_float3*							m_pInstanceBuffer_Dir = nullptr;
 
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _float  m_fInstance_SpeedPerSec = 2.5f;
-	const _double m_dInstance_Pos_Update_Time = 2.0;
-	const _float2 m_vDefaultSize = { 0.06f, 0.08f };
+	const _double m_dInstance_Pos_Update_Time = 1.0;
+	const _float2 m_vDefaultSize = { 0.3f, 0.45f };
 
 private:
 	_float3 m_vOffSet_Pos = { 0.f, -0.75f, -0.2f };
 
 public:
-	static CEffect_UFO_Inside_ElectricWall_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_CS_Levitation_Beam_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };

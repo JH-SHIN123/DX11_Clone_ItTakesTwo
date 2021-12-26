@@ -119,6 +119,8 @@ enum class Effect_Value_CutScene
 	Cody_Size_SM,
 	MoonBaboon_Land,
 
+	Levitation_Beam,
+
 	Effect_Value_End
 };
 

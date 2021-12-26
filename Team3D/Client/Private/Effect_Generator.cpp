@@ -98,6 +98,8 @@
 #pragma region CutSceneEffect
 #include "Effect_CS_CodySize.h"
 #include "Effect_CS_MoonBaboon_Land.h"
+#include "Effect_CS_Levitation_Beam.h"
+#include "Effect_CS_Levitation_Beam_Particle.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -788,8 +790,9 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Mask_Drop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/drop_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Star"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Star.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Zoom"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/Zoom_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_WarpGates_Cable"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/WarpGates_Cable.png"))), E_FAIL);
 
-	
+	//
 	
 #pragma endregion
 
@@ -800,7 +803,8 @@ HRESULT CEffect_Generator::Create_CutScene_Effect(ID3D11Device * pDevice, ID3D11
 {
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Cody_Size", CEffect_CS_CodySize::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_MoonBaboon_Land", CEffect_CS_MoonBaboon_Land::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
-
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Levitation_Beam", CEffect_CS_Levitation_Beam::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Levitation_Beam_Particle", CEffect_CS_Levitation_Beam_Particle::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
 
 	return S_OK;
 }
@@ -855,6 +859,9 @@ HRESULT CEffect_Generator::Add_Effect_CutScene(Effect_Value_CutScene eEffect, _f
 		break;
 	case Effect_Value_CutScene::MoonBaboon_Land:
 		lstrcpy(szPrototype, L"GameObject_2DCS_MoonBaboon_Land");
+		break;
+	case Effect_Value_CutScene::Levitation_Beam:
+		lstrcpy(szPrototype, L"GameObject_2DCS_Levitation_Beam");
 		break;
 	default:
 		break;

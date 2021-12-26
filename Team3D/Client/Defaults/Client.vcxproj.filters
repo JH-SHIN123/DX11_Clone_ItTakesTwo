@@ -1161,6 +1161,18 @@
     <Filter Include="02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land">
       <UniqueIdentifier>{4954cac0-e0e5-4ecc-862c-f768ba3e6741}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossIntro">
+      <UniqueIdentifier>{177eb253-7d58-4c2b-b60b-d972f4236ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro">
+      <UniqueIdentifier>{c4afdccf-0580-48d0-b203-63610d99ccb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam">
+      <UniqueIdentifier>{26c463ee-2de1-414f-9405-f06ffc7dbecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle">
+      <UniqueIdentifier>{23d57268-9286-4aee-9025-39a92dd2cb2b}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2153,6 +2165,12 @@
     <ClInclude Include="..\public\Effect_CS_MoonBaboon_Land.h">
       <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land</Filter>
     </ClInclude>
+    <ClInclude Include="Effect_CS_Levitation_Beam.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_Levitation_Beam_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3117,6 +3135,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_CS_MoonBaboon_Land.cpp">
       <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect_CS_Levitation_Beam.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_Levitation_Beam_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

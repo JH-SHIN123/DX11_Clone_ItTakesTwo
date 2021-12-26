@@ -641,6 +641,10 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 
 	pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Button_Large_01_Button")));
 	pButton->Set_Position(_float3(60.4f, 218.652f, 238.221f));
+
+	EFFECT->Add_Effect_CutScene_Timer(64.77f, Effect_Value_CutScene::Levitation_Beam);
+	EFFECT->Add_Effect_CutScene_Timer(64.77f, Effect_Value_CutScene::Levitation_Beam);
+
 	return S_OK;
 }
 
