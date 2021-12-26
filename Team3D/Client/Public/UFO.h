@@ -84,6 +84,7 @@ private:
 	_float					m_fDistance = 0.f;
 	_bool					m_IsHit = false;
 	_bool					m_IsActive = false;
+	_bool					m_IsFirstAngleSetting = true;
 
 	/* For.PHASE_1 Pattern */
 	_bool					m_IsCoreExplosion = false;

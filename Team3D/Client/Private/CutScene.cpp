@@ -797,9 +797,6 @@ HRESULT CCutScene::End_CutScene_Outro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
 
-	/* UIÀüÃ¼ ·»´õ ²¯´Ù Å°´Â ±â´É */
-	UI_Generator->Set_AllActivation(true);
-
 	return S_OK;
 }
 

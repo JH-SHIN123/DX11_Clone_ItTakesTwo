@@ -575,14 +575,21 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
-	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
+	if (true == m_IsFirstAngleSetting)
+	{
+		m_fRotAngle = fAngle;
+		m_IsFirstAngleSetting = false;
+	}
 
 	if (m_fRotAngle < fAngle)
 		m_fRotAngle += (_float)dTimeDelta * 50.f;
 	else if (m_fRotAngle >= fAngle)
 		m_fRotAngle -= (_float)dTimeDelta * 50.f;
 
+	/* 공전 속도 */
 	m_fRevAngle += (_float)dTimeDelta * 20.f;
+
+	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
 
 	matRotY = XMMatrixRotationY(XMConvertToRadians(-m_fRotAngle));
 	matTrans = XMMatrixTranslation(m_vTranslationPos.x, m_vTranslationPos.y, m_vTranslationPos.z);
@@ -852,7 +859,6 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 
 			/* 보스 2페이즈로 바꿔주자 */
 			m_ePhase = CUFO::PHASE_2;
-			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
 		}
 	}
@@ -863,7 +869,7 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 HRESULT CUFO::Ready_TriggerActor_Component()
 {
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
-
+	
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vUFOPos.m128_f32[1] -= 8.f;
 
@@ -943,6 +949,7 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		Ready_StaticActor_Component();
 		TriggerActorReplacement();
 		m_IsTriggerActive = true;
+		m_IsPhase2InterActive = true;
 	}
 
 	if (true == m_IsCodyEnter)
@@ -987,7 +994,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		_matrix AnimUFOWorld = BaseBone * UFOWorld;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]));
 	}
-
 
 	return S_OK;
 }
