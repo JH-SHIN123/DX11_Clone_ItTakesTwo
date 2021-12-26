@@ -5,6 +5,7 @@
 #include "Cody.h"
 #include "MeshParticle.h"
 #include "EndingRocket.h"
+#include "UI_Generator.h"
 
 C3DText::C3DText(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -45,8 +46,16 @@ _int C3DText::Tick(_double dTimeDelta)
 	{
 		((CCody*)(DATABASE->GetCody()))->Start_RadiarBlur_FullScreen(2.f);
 		((CEndingRocket*)(DATABASE->Get_EndingRocket()))->Set_Boost();
+		ENDINGCREDIT->Set_RandomModel();
 		Create_Particle();
 		Set_Dead();
+
+		if (0 == m_iIndex)
+			ENDINGCREDIT->Set_2DMeshStart();
+
+		/* 엔딩크래딧 끝 */
+		if (23 == m_iIndex)
+			ENDINGCREDIT->End_EndingCredit();
 
 		return EVENT_DEAD;
 	}
@@ -121,7 +130,7 @@ HRESULT C3DText::Create_Particle()
 	for (_uint i = 0; i < 100; ++i)
 	{
 		_vector vPositoin = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector vRandomPos = XMVectorSet((rand() % 7 - 3.f), -10.f, (rand() % 3 - 1.f), 0.f);
+		_vector vRandomPos = XMVectorSet((rand() % 7 - 3.f), -20.f, (rand() % 3 - 1.f), 0.f);
 		XMStoreFloat3(&tArg.vPosition, vPositoin + vRandomPos);
 
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_MeshParticle"), &tArg), E_FAIL);

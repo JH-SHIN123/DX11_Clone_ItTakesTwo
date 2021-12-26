@@ -11,6 +11,13 @@ CEndingCredit_Manager::CEndingCredit_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+void CEndingCredit_Manager::Set_RandomModel()
+{
+	++m_iRandomModel;
+	if (4 < m_iRandomModel)
+		m_iRandomModel = 0;
+}
+
 HRESULT CEndingCredit_Manager::NativeConstruct_EndingCredit()
 {
 	return S_OK;
@@ -42,13 +49,27 @@ HRESULT CEndingCredit_Manager::Create_HugeRock(_float fPosY)
 	return S_OK;
 }
 
+HRESULT CEndingCredit_Manager::Create_WhiteOut()
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingCredit"), Level::LEVEL_STAGE, TEXT("GameObject_WhiteOut")), E_FAIL);
+
+	return S_OK;
+}
+
+void CEndingCredit_Manager::End_EndingCredit()
+{
+	Set_Dead_Environment();
+	Create_WhiteOut();
+	m_pGameInstance->Sound_FadeOut(CHANNEL_ENDINGCREDIT, 0.f, 3.f);
+}
+
 HRESULT CEndingCredit_Manager::Create_Environment()
 {
 	/* 宜 持失 */
 	FAILED_CHECK_RETURN(Create_Rocks(50), E_FAIL);
 
 	/* 2DMesh 持失 */
-	FAILED_CHECK_RETURN(Create_2DMesh(20), E_FAIL);
+	FAILED_CHECK_RETURN(Create_2DMesh(10), E_FAIL);
 
 	return S_OK;
 }

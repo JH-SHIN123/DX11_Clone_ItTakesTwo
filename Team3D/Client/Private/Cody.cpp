@@ -3252,12 +3252,26 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_pActorCom->Set_WallCollide(false);
 		}
-
 	}
 }
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
+	if (false == m_bElectricWallAttach)
+		return;
+
+	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+		m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pActorCom->Update(dTimeDelta);
+		m_pActorCom->Set_ZeroGravity(true, false, true);
+		m_bRespawnCheck = false;
+		m_bRespawn = true;
+	}
+
 	if (true == m_bElectricWallAttach && false == m_IsElectricWallJumping)
 	{
 		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_WALLJUMP_SLIDE) == false)

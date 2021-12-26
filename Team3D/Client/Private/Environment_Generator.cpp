@@ -53,6 +53,7 @@
 #include "HugeRock.h"
 #include "RockParticle.h"
 #include "ControlRoom_Monitor.h"
+#include "WhiteOut.h"
 
 IMPLEMENT_SINGLETON(CEnvironment_Generator)
 CEnvironment_Generator::CEnvironment_Generator()
@@ -582,6 +583,8 @@ HRESULT CEnvironment_Generator::Load_Default_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_HugeRock"), CHugeRock::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	/* For.RockParticle */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_RockParticle"), CRockParticle::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
+	/* For.WhiteOut */
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, TEXT("GameObject_WhiteOut"), CWhiteOut::Create(m_pDevice, m_pDeviceContext)), E_FAIL);
 	return S_OK;
 }
 

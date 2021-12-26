@@ -294,9 +294,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\3DText">
       <UniqueIdentifier>{3beb1e00-8189-4688-bc2f-75d5101fdba2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock">
-      <UniqueIdentifier>{a0b69245-8c4c-41f4-aec1-511acd4c0358}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle">
       <UniqueIdentifier>{8aaaa757-28eb-4382-8875-13b404f24e22}</UniqueIdentifier>
     </Filter>
@@ -308,6 +305,12 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle">
       <UniqueIdentifier>{82b1a154-6103-4995-92e1-201875b61a16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock">
+      <UniqueIdentifier>{a0b69245-8c4c-41f4-aec1-511acd4c0358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\WhiteOut">
+      <UniqueIdentifier>{2f93e70e-be33-4964-a050-4969724dbe7e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
       <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
@@ -1409,6 +1412,9 @@
     <ClInclude Include="..\Public\RockParticle.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\WhiteOut.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\WhiteOut</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\AlienScreen.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
     </ClInclude>
@@ -1885,7 +1891,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_UFO_Inside_ElectricWall_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
-    </ClInclude>    
+    </ClInclude>
     <ClInclude Include="..\Public\InGameEffect_Rect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
     </ClInclude>
@@ -2391,6 +2397,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RockParticle.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WhiteOut.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\WhiteOut</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlienScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
