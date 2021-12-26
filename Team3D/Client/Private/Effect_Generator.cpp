@@ -100,6 +100,9 @@
 #include "Effect_CS_MoonBaboon_Land.h"
 #include "Effect_CS_Levitation_Beam.h"
 #include "Effect_CS_Levitation_Beam_Particle.h"
+#include "Effect_CS_MoonBaboon_FallDown_Smoke.h"
+#include "Effect_CS_MoonBaboon_FallDown_Smoke_Burn.h"
+#include "Effect_CS_UFO_Land.h"
 #pragma endregion
 
 IMPLEMENT_SINGLETON(CEffect_Generator)
@@ -806,6 +809,10 @@ HRESULT CEffect_Generator::Create_CutScene_Effect(ID3D11Device * pDevice, ID3D11
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Levitation_Beam", CEffect_CS_Levitation_Beam::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Levitation_Beam_Particle", CEffect_CS_Levitation_Beam_Particle::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke", CEffect_CS_MoonBaboon_FallDown_Smoke::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke_Burn", CEffect_CS_MoonBaboon_FallDown_Smoke_Burn::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_UFO_Land", CEffect_CS_UFO_Land::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -861,7 +868,19 @@ HRESULT CEffect_Generator::Add_Effect_CutScene(Effect_Value_CutScene eEffect, _f
 		lstrcpy(szPrototype, L"GameObject_2DCS_MoonBaboon_Land");
 		break;
 	case Effect_Value_CutScene::Levitation_Beam:
+		Clone_Data.iCutSceneTake = 0;
 		lstrcpy(szPrototype, L"GameObject_2DCS_Levitation_Beam");
+		break;
+	case Effect_Value_CutScene::Levitation_Beam_Moon:
+		Clone_Data.iCutSceneTake = 1;
+		lstrcpy(szPrototype, L"GameObject_2DCS_Levitation_Beam");
+		break;
+	case Effect_Value_CutScene::MoonBaboon_FallDown_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke");
+		lstrcpy(szPrototype, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke_Burn");
+		break;
+	case Effect_Value_CutScene::UFO_Land:
+		lstrcpy(szPrototype, L"GameObject_2DCS_UFO_Land");
 		break;
 	default:
 		break;

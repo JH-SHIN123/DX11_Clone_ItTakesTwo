@@ -127,17 +127,39 @@ void CEffect_CS_Levitation_Beam::Check_WorldMatrix()
 	_vector vDir = XMVector3Normalize(vPos_Cody - vPos_May);
 
 	_vector vPos_Center = vPos_May + vDir * vLength;
-	_vector vPos_Cam = DATABASE->Get_SubCam()->Get_Position();
-	_vector vDir_Cam = XMVector3Normalize(vPos_Center - vPos_Cam);
-
-	vPos_Center -= vDir_Cam * 1.5f;
 
 	_matrix WorldMatrix = XMMatrixIdentity();
 
-	WorldMatrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector vRight = XMVector3Cross(WorldMatrix.r[1], vDir_Cam);
-	WorldMatrix.r[0] = vRight;
-	WorldMatrix.r[2] = vDir_Cam;
+
+	if (0 == m_EffectDesc_Clone.iCutSceneTake)
+	{
+		_vector vPos_Cam = DATABASE->Get_SubCam()->Get_Position();
+		_vector vDir_Cam = XMVector3Normalize(vPos_Center - vPos_Cam);
+		vPos_Center -= vDir_Cam * 1.5f;
+		WorldMatrix.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		_vector vRight = XMVector3Cross(WorldMatrix.r[1], vDir_Cam);
+		WorldMatrix.r[0] = vRight;
+		WorldMatrix.r[2] = vDir_Cam;
+	}
+	else if ( 1 == m_EffectDesc_Clone.iCutSceneTake)
+	{
+		vLength = XMVector3Length(vPos_Cody - vPos_May) * 3.2f;
+		vDir = XMVector3Normalize(vPos_Cody - vPos_May);	
+		vPos_Center = vPos_May + vDir * vLength;	
+
+		_vector vPos_Moon = DATABASE->Get_Mooon()->Get_Position();
+		_vector vDir_Moon = XMVector3Normalize(vPos_Center - vPos_Moon);
+		WorldMatrix.r[1] = vDir_Moon;
+
+		_vector vPos_Cam = DATABASE->Get_SubCam()->Get_Position();
+		_vector vDir_Cam = XMVector3Normalize(vPos_Center - vPos_Cam);
+
+		_vector vRight = XMVector3Cross(vDir_Cam, WorldMatrix.r[1]);
+		WorldMatrix.r[0] = vRight;
+
+		_vector vLook = XMVector3Cross(WorldMatrix.r[1], vRight);
+		WorldMatrix.r[2] = vLook;
+	}
 
 	WorldMatrix.r[0] *= m_vSize.x;
 	WorldMatrix.r[2] *= m_vSize.y;

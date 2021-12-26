@@ -1173,6 +1173,15 @@
     <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle">
       <UniqueIdentifier>{23d57268-9286-4aee-9025-39a92dd2cb2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke">
+      <UniqueIdentifier>{5ee0907e-9e8d-41f3-99d0-8273667b1dc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke_Burn">
+      <UniqueIdentifier>{55ee2676-f9f9-4c6b-861c-355069a57f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro\UFO_Land">
+      <UniqueIdentifier>{6a7696b5-816b-463c-8485-5335b63b79ff}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2171,6 +2180,15 @@
     <ClInclude Include="..\public\Effect_CS_Levitation_Beam_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_FallDown_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_FallDown_Smoke_Burn.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke_Burn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_UFO_Land.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\UFO_Land</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3141,6 +3159,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_CS_Levitation_Beam_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_FallDown_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_FallDown_Smoke_Burn.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke_Burn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_UFO_Land.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\UFO_Land</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

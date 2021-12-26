@@ -20,6 +20,8 @@ HRESULT CEffect_CS_CodySize::NativeConstruct_Prototype(void * pArg)
 	m_EffectDesc_Prototype.vSize = { 0.09f, 0.09f,0.f };
 	m_EffectDesc_Prototype.iInstanceCount = m_iInstance_Large;
 
+	lstrcpy(m_EffectDesc_Prototype.TextureName, TEXT("Component_Texture_Circle_Alpha"));
+
 	return S_OK;
 }
 
@@ -32,7 +34,7 @@ HRESULT CEffect_CS_CodySize::NativeConstruct(void * pArg)
 	Update_Matrix();
 	Ready_Instance();
 	Reset_Instance();
-
+	
 	return S_OK;
 }
 
