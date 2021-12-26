@@ -80,13 +80,14 @@ _int CMoonBaboon::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
 
+	if (false == m_IsActive)
+		return NO_EVENT;
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3000.f))
 		return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
 	return NO_EVENT;
 }
-
-
 
 CMoonBaboon::MOON_STATE CMoonBaboon::Check_State(_double dTimeDelta)
 {
@@ -152,15 +153,27 @@ void CMoonBaboon::Fix_MoonBaboon_Chair(_double dTimeDelta)
 
 void CMoonBaboon::SetUp_IntroOffset(_double dTimeDelta)
 {
-	_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
-	_uint iBoneIndex = m_pUFOModel->Get_BoneIndex("Chair");
-	_matrix UFOAnim = m_pUFOModel->Get_AnimTransformation(iBoneIndex);
+	if (CutScene_UFO_Boss_Intro == m_pUFOModel->Get_CurAnimIndex())
+	{
+		_uint iBoneIndex = m_pUFOModel->Get_BoneIndex("Chair");
 
-	/* 애니메이션 행렬 들고와서 곱해줌 */
-	_float4x4 matWorld, matScale;
-	XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f) * UFOAnim * BoneChair * m_pUFOTransform->Get_WorldMatrix());
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
-	m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+		_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+		_matrix UFOAnim = m_pUFOModel->Get_AnimTransformation(iBoneIndex);
+
+		/* 애니메이션 행렬 들고와서 곱해줌 */
+		_float4x4 matWorld, matScale;
+		XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f) * UFOAnim * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+		m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+	}
+	else if (true == ((CUFO*)DATABASE->Get_BossUFO())->Get_Phase2InterActive())
+	{
+		_matrix BoneChair = m_pUFOModel->Get_BoneMatrix("Chair");
+		_float4x4 matWorld, matScale;
+		XMStoreFloat4x4(&matWorld, XMMatrixRotationY(-90.f) * XMMatrixScaling(95.f, 95.f, 95.f)  * BoneChair * m_pUFOTransform->Get_WorldMatrix());
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&matWorld));
+		m_vChairOffSetPos = { matWorld._41, matWorld._42, matWorld._43, 1.f };
+	}
 }
 
 HRESULT CMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
@@ -192,6 +205,10 @@ void CMoonBaboon::Set_Animation(_uint iCurAnimIndex, _uint iNextAnimIndex)
 	m_pModelCom->Set_NextAnimIndex(iNextAnimIndex);
 }
 
+void CMoonBaboon::Set_Active(_bool IsActive)
+{
+	m_IsActive = IsActive;
+}
 
 void CMoonBaboon::Add_LerpInfo_To_Model()
 {

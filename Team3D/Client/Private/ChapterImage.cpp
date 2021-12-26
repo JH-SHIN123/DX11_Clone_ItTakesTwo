@@ -64,7 +64,7 @@ HRESULT CChapterImage::Ready_Component()
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);
 
-	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("ChapterImage"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_LOGO, TEXT("ChapterImage"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom), E_FAIL);
 
 	return S_OK;
 }
