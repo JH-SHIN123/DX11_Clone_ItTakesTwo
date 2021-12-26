@@ -2632,7 +2632,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PushButton_Var2_SapGun);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			m_bLaserTennis = true;

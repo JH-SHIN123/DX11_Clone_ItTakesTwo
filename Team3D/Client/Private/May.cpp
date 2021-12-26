@@ -2166,7 +2166,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_PushButton_Var2);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 			m_bLaserTennis = true;
@@ -2321,6 +2321,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 			m_IsEnterValve = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			DATABASE->Add_ValveCount_Cody(false);
 			DATABASE->Set_Valve_Activate(true);
 		}
