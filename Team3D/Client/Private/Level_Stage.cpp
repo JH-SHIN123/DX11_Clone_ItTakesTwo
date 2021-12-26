@@ -128,15 +128,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
-	if (m_pGameInstance->Key_Down(DIK_V))
-	{
-		if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Outro))
-		{
-			CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Outro");
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Outro, true);
-		}
-	}
-
 	CGameInstance* pGameinstance = CGameInstance::GetInstance();
 
 #ifdef __INSTALL_LIGHT
