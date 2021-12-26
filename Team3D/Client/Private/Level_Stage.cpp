@@ -6,6 +6,8 @@
 /* Framework */
 #include "Loading.h"
 #include "EndingCredit_Manager.h"
+#include "Level_Loading.h"
+#include "UI_Generator.h"
 /* Se */
 /* Jung */
 #include "Effect_Generator.h"
@@ -155,16 +157,19 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
-	if (m_pGameInstance->Key_Down(DIK_M))
-	{
-		/* ¾ÀÀüÈ¯ */
-		if (FAILED(pGameinstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO))))
-		{
-			MSG_BOX("Failed to Change_CurrentLevel, Error to CMenuScreen::Late_Tick");
-			return EVENT_ERROR;
-		}
-		pGameinstance->Clear_LevelResources(Level::LEVEL_STAGE);
-	}
+	/* ¾À ÀüÈ¯ Å×½ºÆ®Áß */
+	//CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+	//if (true == pGameInstance->Key_Down(DIK_T))
+	//{
+	//	if (FAILED(pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO))))
+	//	{
+	//		MSG_BOX("AAAAAAAAAAAAAAAAAAAA");
+	//		return EVENT_ERROR;
+	//	}
+
+	//	pGameInstance->Clear_LevelResources(Level::LEVEL_STAGE);
+	//}
 
 	return NO_EVENT;
 }

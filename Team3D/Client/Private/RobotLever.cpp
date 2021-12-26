@@ -56,7 +56,6 @@ HRESULT CRobotLever::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
-
 	return S_OK;
 }
 

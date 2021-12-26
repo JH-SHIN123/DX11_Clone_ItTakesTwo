@@ -68,6 +68,7 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 	{
 		m_eInterActiveID = UI::RobotBattery1;
 	}
+
 	return S_OK;
 }
 
@@ -104,8 +105,21 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 		}
 	}
 
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
-		m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollide, !m_bUpdate);
+	switch (m_tRobotPartsDesc.iStageNum)
+	{
+	case ST_GRAVITYPATH:
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+			XMVectorSet(71.1877518f, 23.28266802f + 0.15f , 179.770789f + 0.09f, 1.f), 10.f, m_IsCollide, !m_bUpdate);
+		break;
+	case ST_RAIL:
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+			XMVectorSet(1035.44493f, 743.288574f + 0.15, 216.964385f + 0.12, 1.f), 10.f, m_IsCollide, !m_bUpdate);
+		break;
+	default:
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+			m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollide, !m_bUpdate);
+		break;
+	}
 
 	return NO_EVENT;
 }
