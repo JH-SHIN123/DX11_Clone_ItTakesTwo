@@ -36,6 +36,7 @@ private:
 	_bool				m_IsLockActive = false;
 	_bool				m_IsLockDeActive = false;
 	_uint				m_iOption = 0;
+	_bool				m_bConnectEffectOnce = false;
 
 protected:
 	/* For.Component */
