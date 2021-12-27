@@ -51,7 +51,7 @@ private:
 
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _double m_dInstance_Pos_Update_Time = 1.0;
-	const _float2 m_vDefaultSize = { 0.9f, 0.9f };
+	const _float2 m_vDefaultSize = { 0.6f, 0.6f };
 
 public:
 	static CEffect_Hit_BossLaser_Particle_Star* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
