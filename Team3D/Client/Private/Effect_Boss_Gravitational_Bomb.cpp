@@ -89,8 +89,6 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 	/* 레이 발사!!!!!!!!!!! */
 	m_pGameInstance->Raycast(MH_PxVec3(vPos), MH_PxVec3(XMVector3Normalize(vDown)), 50.f, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 
-	_float fTest = m_RaycastBuffer.getAnyHit(0).distance;
-
 	if (m_RaycastBuffer.getAnyHit(0).distance < 5.f)
 	{
 		PxVec3 fTestPos = m_RaycastBuffer.getAnyHit(0).position;

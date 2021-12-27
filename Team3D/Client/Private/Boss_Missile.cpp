@@ -59,6 +59,22 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		return EVENT_DEAD;
 	}
+	else if (true == m_IsCollide_Wall_Floor)
+	{
+		if (m_bCodyControl == true && m_bMayControl == false)
+		{
+			((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
+		}
+		else if (m_bMayControl == true && m_bCodyControl == false)
+		{
+			((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
+		}
+
+		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
+		Explosion_Effect();
+
+		return EVENT_DEAD;
+	}
 	else if (m_bBossExplosion == true)
 	{
 		if (m_bCodyControl == true && m_bMayControl == false)
@@ -90,13 +106,13 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 	if (m_IsCrashed == false)
 		Combat_Move(dTimeDelta);
-	else if (m_IsCrashed == true && true == m_bMayCollide && false == m_IsTargetCody && (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
+	else if (m_IsCrashed == true && true == m_IsMayCollide && false == m_IsTargetCody && (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
 	{
 		UI_Delete(Cody, InputButton_PS_InterActive);
 		m_bMayControl = true;
 
 	}
-	else if (m_IsCrashed == true && true == m_bCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
+	else if (m_IsCrashed == true && true == m_IsCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
 		UI_Delete(Cody, InputButton_InterActive);
 		m_bCodyControl = true;
@@ -105,12 +121,12 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	if (m_IsCrashed == true && false == m_IsTargetCody)
 	{
 		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, m_eInterActiveID, m_pTransformCom->Get_State(CTransform::STATE_POSITION),
-			10.f, m_bMayCollide, m_bMayControl);
+			10.f, m_IsMayCollide, m_bMayControl);
 	}
 	else if (m_IsCrashed == true && true == m_IsTargetCody)
 	{
 		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID, m_pTransformCom->Get_State(CTransform::STATE_POSITION),
-			10.f, m_bCodyCollide, m_bCodyControl);
+			10.f, m_IsCodyCollide, m_bCodyControl);
 	}
 
 	if (m_bMayControl)
@@ -158,22 +174,22 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_bCodyCollide = true;
+		m_IsCodyCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-		m_bCodyCollide = false;
+		m_IsCodyCollide = false;
 	}
 
 	//May
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_bMayCollide = true;
+		m_IsMayCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-		m_bMayCollide = false;
+		m_IsMayCollide = false;
 	}
 }
 
@@ -221,7 +237,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		{
 			m_bPlayerExplosion = true;
 #ifndef __PLAYER_INVINCIBLE_BOSSROOM
-			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(40);
+			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(120);
 #endif //__PLAYER_INVINCIBLE_BOSSROOM
 			
 		}
@@ -246,7 +262,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		{
 			m_bPlayerExplosion = true;
 #ifndef __PLAYER_INVINCIBLE_BOSSROOM
-			((CMay*)DATABASE->GetMay())->Set_HpBarReduction(40);
+			((CMay*)DATABASE->GetMay())->Set_HpBarReduction(120);
 #endif //__PLAYER_INVINCIBLE_BOSSROOM
 		}
 		else
@@ -274,6 +290,17 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eMAY);
 		m_bBossExplosion = true;
 		return;
+	}
+
+	m_fCollideTime += (_float)dTimeDelta;
+
+	if (3.f <= m_fCollideTime)
+	{
+		m_pGameInstance->Raycast(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), MH_PxVec3(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK))),
+			10.f, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+
+		if (m_RaycastBuffer.getAnyHit(0).distance < 1.f)
+			m_IsCollide_Wall_Floor = true;
 	}
 
 	m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
@@ -433,7 +460,7 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 
 	_vector vDir = vUFOPos - vMissilePos;
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-	if (fDist < 10.f)
+	if (fDist < 8.f)
 	{
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eCODY);
 		m_bBossExplosion = true;
@@ -447,7 +474,6 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 	matRocket = m_pTransformCom->Get_WorldMatrix();
 	((CCody*)DATABASE->GetCody())->Set_RocketMatrix(matRocket);
 
-
 	if (m_bCodyControl && ((CCody*)DATABASE->GetCody())->Get_CurState() == ANI_C_Rocket_MH)
 	{
 
@@ -460,8 +486,10 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
 
 
-		if (fDegree >= 15.f)
+		if (fDegree >= 30.f)
 		{
+			m_fTestDegree = fDegree;
+
 			if (m_pGameInstance->Key_Pressing(DIK_S))
 			{
 				if (m_fRotateAcceleration < 1.f)
@@ -500,6 +528,18 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 			m_fRotateAcceleration = 0.f;
 
 		m_pTransformCom->Go_Straight(dTimeDelta * m_fMoveAcceleration);
+	}
+
+	m_fCollideTime += (_float)dTimeDelta;
+
+	if (3.f <= m_fCollideTime)
+	{
+		m_pGameInstance->Raycast(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION)),
+			MH_PxVec3(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK))),
+			10.f, m_MissileRaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+
+		if (m_MissileRaycastBuffer.getAnyHit(0).distance < 1.f)
+			m_IsCollide_Wall_Floor = true;
 	}
 
 }
@@ -553,6 +593,10 @@ void CBoss_Missile::Adjust_Angle(_double dTimeDelta)
 		tTriggerDesc.pTransform = m_pTransformCom;
 		tTriggerDesc.pGeometry = new PxSphereGeometry(6.f);
 		CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &tTriggerDesc);
+
+		PxShape* pShape = nullptr;
+		m_pTriggerActorCom->Get_Actor()->getShapes(&pShape, 1);
+		pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
 
 		Safe_Delete(tTriggerDesc.pGeometry);
 		m_pTriggerActorCom->Update_TriggerActor();

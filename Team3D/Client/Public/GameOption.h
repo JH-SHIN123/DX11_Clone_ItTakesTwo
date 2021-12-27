@@ -34,7 +34,7 @@
 * 사용할 스레드 개수 지정
 */
 #ifdef _DEBUG
-#define __THREAD_NUM 8
+#define __THREAD_NUM 4
 #else
 #define __THREAD_NUM 4
 #endif
@@ -50,7 +50,7 @@
 * 우주선 내부 맵만 제거
 * 프레임 살리기용
 */
-//#define __SPACESHIP_OFF
+#define __SPACESHIP_OFF
 
 /************************************************************************/
 

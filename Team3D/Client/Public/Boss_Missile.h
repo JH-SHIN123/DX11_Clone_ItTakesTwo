@@ -64,21 +64,25 @@ private:
 	_bool m_IsFalling = false;
 	_bool m_bStartAdjustAngle = false;
 
-	_bool m_bCodyCollide = false;
-	_bool m_bMayCollide = false;
+	_bool m_IsCodyCollide = false;
+	_bool m_IsMayCollide = false;
 
 	_bool m_bMayControl = false;
 	_bool m_bCodyControl = false;
 
 	_bool m_bPlayerExplosion = false;
 	_bool m_bBossExplosion = false;
+	_bool m_IsCollide_Wall_Floor = false;
 
 	_float m_fAttackTime = 0.f;
 	_float m_fSpeed = 0.f;
 	_float m_fRotateAcceleration = 0.f;
 	_float m_fMoveAcceleration = 0.f;
+	_float m_fCollideTime = 0.f;
+	_float m_fTestDegree = 0.f;
 
 	UI::INTERACTIVE_ID m_eInterActiveID = UI::INTERACTIVE_ID_END;
+	PxRaycastBuffer	m_MissileRaycastBuffer;
 
 	_vector m_vPlayerOffSetPosition = XMVectorZero();
 
