@@ -410,6 +410,23 @@ _bool CCutScene::Tick_CutScene_Eject_InUFO(_double dTimeDelta)
 
 _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 {
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	if (m_dTime < 3.49)//문바분 사출
+	{
+		//pMoonBaboon->
+	}
+	if (m_dTime >= 24.31&&m_dTime < 24.31 + dTimeDelta)
+	{
+		pCody->Get_Actor()->Set_Position(XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.14f, 1011.77844f - 0.04f - 0.5f,1.f));
+	}
+	if(m_dTime >=28.3f && m_dTime < 28.3f+dTimeDelta)
+	{
+		pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 75.f,105.f,199.f }, { 1.f, 1.f,1.f }, {10.f,0.f,0.f}));
+		pMoonBaboon->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 64.f,345.f,195.f }, { 1.f,1.f,1.f }, { 90.f,0.f,0.f }));
+	}
 	return true;
 }
 
