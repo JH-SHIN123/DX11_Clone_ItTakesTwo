@@ -41,10 +41,9 @@ HRESULT CDummyWall::NativeConstruct(void * pArg)
 
 	_matrix PhysxWorldMatrix = XMMatrixIdentity();
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) + 5.f, XMVectorGetZ(vTrans));
+	PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans), XMVectorGetY(vTrans) + 6.f, XMVectorGetZ(vTrans));
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);
-
 
 	// Æ®¸®°Å
 	m_UserData = USERDATA(GameID::eDUMMYWALL, this);
