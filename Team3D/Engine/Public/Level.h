@@ -17,6 +17,7 @@ public:
 	virtual HRESULT	NativeConstruct();
 	virtual _int	Tick(_double Timedelta);
 	virtual HRESULT	Render();
+	void			Go_NextLevelStep() { ++m_iLevelStep; }
 
 protected:
 	ID3D11Device*			m_pDevice = nullptr;

@@ -546,8 +546,8 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Teleport
-	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
-		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
+	//if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
+	//	m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
 
 	if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
 	{
@@ -844,7 +844,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_LButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false) 
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -874,7 +874,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_RButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -2621,7 +2621,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eBOSSUFO && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_IsHolding_UFO = true;
+			m_IsHolding_UFO = true;//
 		}
 		else if (m_eTargetGameID == GameID::eBOSSENTERUFO)
 		{
@@ -2641,7 +2641,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PushButton_Var2_SapGun);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			m_bLaserTennis = true;
@@ -4317,14 +4317,14 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 
 	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
 	{
-		/* Sound */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			m_pGameInstance->Play_Sound(TEXT("22.wav"), CHANNEL_PINBALLVOICE);
-		/* 코디가 잘못했을 때 */
-		else
-			m_pGameInstance->Play_Sound(TEXT("21.wav"), CHANNEL_PINBALLVOICE);
-		m_bPinBallScript = true;
+		///* Sound */
+		///* 메이가 잘못했을 때 */
+		//if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
+		//	m_pGameInstance->Play_Sound(TEXT("22.wav"), CHANNEL_PINBALLVOICE);
+		///* 코디가 잘못했을 때 */
+		//else
+		//	m_pGameInstance->Play_Sound(TEXT("21.wav"), CHANNEL_PINBALLVOICE);
+		//m_bPinBallScript = true;
 	}
 
 	m_IsPinBall = false;
