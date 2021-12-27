@@ -816,6 +816,7 @@ HRESULT CCutScene::End_CutScene_Intro()
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 	((CUFO*)DATABASE->Get_BossUFO())->Set_Active(false);
+	static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_RemoteContollerCutScene1"))->Set_Position({ 0.f,0.f,0.f });
 
 	return S_OK;
 }
