@@ -211,7 +211,10 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		if (fDist < 3.f)
 		{
 			m_bPlayerExplosion = true;
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(40);
+#endif //__PLAYER_INVINCIBLE_BOSSROOM
+			
 		}
 		else
 		{
@@ -233,7 +236,9 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		if (fDist < 3.f)
 		{
 			m_bPlayerExplosion = true;
-			((CCody*)DATABASE->GetMay())->Set_HpBarReduction(40);
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+			((CMay*)DATABASE->GetMay())->Set_HpBarReduction(40);
+#endif //__PLAYER_INVINCIBLE_BOSSROOM
 		}
 		else
 		{
