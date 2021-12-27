@@ -844,7 +844,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_LButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false) 
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -874,7 +874,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_RButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -2618,7 +2618,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eBOSSUFO && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_IsHolding_UFO = true;
+			m_IsHolding_UFO = true;//
 		}
 		else if (m_eTargetGameID == GameID::eBOSSENTERUFO)
 		{
@@ -2638,7 +2638,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PushButton_Var2_SapGun);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			m_bLaserTennis = true;
