@@ -2169,10 +2169,10 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			LASERTENNIS->Set_PowerCoordUI_May(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
+			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.55f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_M_PushButton_Var2);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_LaserTennis_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_LaserTennis_MH);
 
 			m_bLaserTennis = true;
 		}
@@ -2678,7 +2678,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 	if (true == LASERTENNIS->Get_PushCoord())
 	{
 		m_pActorCom->Jump_Start(2.f);
-		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
+		m_pModelCom->Set_Animation(ANI_M_LaserTennis_PushButton);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 		m_bLaserTennis = false;
