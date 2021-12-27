@@ -2163,7 +2163,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
-
+			//
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Delete(May, InputButton_PS_InterActive);
