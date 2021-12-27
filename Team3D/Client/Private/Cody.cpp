@@ -2618,7 +2618,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eBOSSUFO && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_IsHolding_UFO = true;
+			m_IsHolding_UFO = true;//
 		}
 		else if (m_eTargetGameID == GameID::eBOSSENTERUFO)
 		{
