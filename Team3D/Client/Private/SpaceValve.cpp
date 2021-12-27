@@ -151,7 +151,7 @@ HRESULT CSpaceValve::Render(RENDER_GROUP::Enum eGroup)
 void CSpaceValve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
 	// Cody
-	if (m_iTargetPlayer == Player::Cody)
+	if (m_iTargetPlayer == Player::Cody && DATABASE->Get_PinBallStageClear() == true && DATABASE->Get_RailStageClear() == true)
 	{
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 		{
@@ -164,7 +164,7 @@ void CSpaceValve::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameOb
 		}
 	}
 	//May
-	if (m_iTargetPlayer == Player::May)
+	if (m_iTargetPlayer == Player::May && DATABASE->Get_PinBallStageClear() == true && DATABASE->Get_RailStageClear() == true)
 	{
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 		{
