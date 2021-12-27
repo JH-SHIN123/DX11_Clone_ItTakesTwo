@@ -44,7 +44,7 @@ HRESULT CVIBuffer_PointInstance_Custom_ST::NativeConstruct_Prototype(_uint iMaxI
 		m_pInstanceVertices[iIndex].vTextureUV	= _float4(0.f, 0.f, 1.f, 1.f);
 	}
 
-	Create_Buffer(&m_pVBInstance, m_iMaxInstanceCount * sizeof(VTXMATRIX_CUSTOM_ST), D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, sizeof(VTXMATRIX), m_pInstanceVertices, false);
+	Create_Buffer(&m_pVBInstance, m_iMaxInstanceCount * sizeof(VTXMATRIX_CUSTOM_ST), D3D11_USAGE_DYNAMIC, D3D11_BIND_VERTEX_BUFFER, D3D11_CPU_ACCESS_WRITE, 0, sizeof(VTXMATRIX_CUSTOM_ST), m_pInstanceVertices, false);
 
 	/* For.InputLayouts*/
 	D3D11_INPUT_ELEMENT_DESC ElementDesc[] =

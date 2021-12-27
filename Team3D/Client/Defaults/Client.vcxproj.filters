@@ -2198,6 +2198,9 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Rocket_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3180,6 +3183,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Rocket_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

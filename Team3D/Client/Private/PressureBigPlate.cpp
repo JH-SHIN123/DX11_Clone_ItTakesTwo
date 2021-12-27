@@ -267,12 +267,16 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		}
 		else
 		{
-			_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-			WorldMatrix.r[3] = XMVectorSet(81.1f, 213.f, 217.15f, 1.f);
-			EFFECT->Add_Effect(Effect_Value::PipeLocker_Ball, WorldMatrix);
-			m_IsBatteryCheck = true;
-			m_IsButtonActive = false;
-			m_fActiveMove = 0.17f;
+			if (false == m_IsEffect_Once)
+			{
+				m_IsEffect_Once = true;
+				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[3] = XMVectorSet(81.1f, 213.f, 217.15f, 1.f);
+				EFFECT->Add_Effect(Effect_Value::PipeLocker_Ball, WorldMatrix);
+				m_IsBatteryCheck = true;
+				m_IsButtonActive = false;
+				m_fActiveMove = 0.17f;
+			}
 		}
 	}
 

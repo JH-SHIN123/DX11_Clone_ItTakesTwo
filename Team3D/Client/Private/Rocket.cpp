@@ -5,7 +5,8 @@
 #include "Cody.h"
 #include "May.h"
 #include "RobotParts.h"
-#include "Effect_Boss_Missile_Smoke_Color.h"
+#include "Effect_Generator.h"
+#include "Effect_Rocket_Smoke.h"
 
 CRocket::CRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -67,6 +68,8 @@ _int CRocket::Tick(_double dTimeDelta)
 		|| m_IsMayCollide && m_pGameInstance->Key_Down(DIK_O)
 		|| m_IsMayCollide && m_pGameInstance->Pad_Key_Down(DIP_Y))
 	{
+		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Rocket_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Rocket_Smoke"), nullptr, (CGameObject**)&m_pEffect_Smoke);
+
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_PS_InterActive);
 		UI_Delete(Cody, InputButton_InterActive);
@@ -88,7 +91,7 @@ _int CRocket::Tick(_double dTimeDelta)
 		}
 		if (m_fLifeTime > 3.5f)
 		{
-
+			Effect_Explosion();
 			return EVENT_DEAD;
 		}
 	}
@@ -196,6 +199,21 @@ void CRocket::Launch_Rocket(_double dTimeDelta)
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), m_fUpAcceleration);
 	m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), (m_fUpAcceleration - 0.06f) * (m_fUpAcceleration - 0.06f)/*/ 4.f*/);
 	m_pTransformCom->Go_Up(m_fUpAcceleration / 6.f);
+
+	if (nullptr != m_pEffect_Smoke)
+		m_pEffect_Smoke->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+}
+
+void CRocket::Effect_Explosion()
+{
+	m_pEffect_Smoke->Set_Dead();
+
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+
+	_int iRand = rand() % 3 + 3;
+	for (_int i = 0; i < iRand; ++i)
+		EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
 }
 
 

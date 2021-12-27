@@ -38,17 +38,21 @@ HRESULT CEffect_Boss_Core::NativeConstruct(void * pArg)
 
 	Ready_Instance();
 
-
 	return S_OK;
 }
 
 _int CEffect_Boss_Core::Tick(_double TimeDelta)
 {
-	if (true == m_IsHit)
+	if (true == m_IsHit)//
 		return Explosion();
 
 	if (m_isDead) return EVENT_DEAD;
 
+	if (nullptr == m_pPointInstanceCom || nullptr == m_pInstanceBuffer)
+		return EVENT_DEAD;
+
+
+	// 문제없음
 	m_fDistortion_Time += (_float)TimeDelta * 0.5f;
 	if (1.f < m_fDistortion_Time)
 		m_fDistortion_Time = 0.f;
@@ -72,17 +76,22 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Core::Late_Tick(_double TimeDelta)
 {
+	if (nullptr == m_pRendererCom)
+		return NO_EVENT;
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
 }
 
 HRESULT CEffect_Boss_Core::Render(RENDER_GROUP::Enum eGroup)
 {
-	//g_vColorRamp_UV, g_vUV
+	if (nullptr == m_pPointInstanceCom || nullptr == m_pInstanceBuffer)
+		return S_OK;
+
 	_float fRandian = XMConvertToRadians(m_fDegree_Angle);
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	_float4 vColorRamp_UV = { 0.f, 0.f, 1.f, 1.f };
-	m_pPointInstanceCom->Set_DefaultVariables();
 	_int i = 1;
+	m_pPointInstanceCom->Set_DefaultVariables();
 	m_pPointInstanceCom->Set_Variable("g_IsBillBoard", &i, sizeof(_int));
 	m_pPointInstanceCom->Set_Variable("g_fRadianAngle", &fRandian, sizeof(_float));
 	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRamp_UV, sizeof(_float4));
@@ -91,7 +100,7 @@ HRESULT CEffect_Boss_Core::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTextureCom_Color->Get_ShaderResourceView(2));
 
-	m_pPointInstanceCom->Render(14, m_pInstanceBuffer, 2, 0);
+	m_pPointInstanceCom->Render(14, m_pInstanceBuffer, 2); /////
 
 	return S_OK;
 }
@@ -134,11 +143,12 @@ HRESULT CEffect_Boss_Core::Ready_Instance()
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, vPos);
 
-
 	m_pInstanceBuffer[1].vRight = { 1.f, 0.f, 0.f, 0.f };
 	m_pInstanceBuffer[1].vUp = { 0.f, 1.f, 0.f, 0.f };
 	m_pInstanceBuffer[1].vLook = { 0.f, 0.f, 1.f, 0.f };
 	m_pInstanceBuffer[1].vSize = { 0.f, 0.f };
+	m_pInstanceBuffer[1].vTextureUV = { 0.f, 0.f, 1.f, 1.f };
+	m_pInstanceBuffer[1].vPosition = m_pInstanceBuffer[0].vPosition;
 
 	return S_OK;
 }
@@ -159,7 +169,6 @@ _float4 CEffect_Boss_Core::Check_UV()
 	}
 	else
 		++m_vTexUV.x;
-
 
 	_float fLeft	= (1.f / m_vTexUV_Max.x) *  m_vTexUV.x;
 	_float fTop		= (1.f / m_vTexUV_Max.y) *  m_vTexUV.y;
