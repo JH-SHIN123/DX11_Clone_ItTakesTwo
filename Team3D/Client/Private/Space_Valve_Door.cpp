@@ -35,7 +35,7 @@ _int CSpace_Valve_Door::Tick(_double TimeDelta)
 _int CSpace_Valve_Door::Late_Tick(_double TimeDelta)
 {
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 100.f))
-		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 
 	return S_OK;
 }
