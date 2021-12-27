@@ -53,6 +53,7 @@ typedef struct tagEffect_Desc_Clone // 상황에 따라 얘는 좀 이랬으면 좋겠다 싶은 
 	_int		iPlayerValue = PV_MAY;
 	_float		fCullingRadius = 10.f;
 	_float4		vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	_int		iCutSceneTake = 0;
 
 	void* pArg = nullptr;
 }EFFECT_DESC_CLONE; 

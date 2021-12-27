@@ -19,6 +19,7 @@ public:
 	_int	Tick(_double dTimedelta);
 	HRESULT	Render();
 	HRESULT Clear_Level();
+	void	Go_NextLevelStep();
 
 private:
 	class CLevel* m_pCurrentLevel = nullptr;

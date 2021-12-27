@@ -117,6 +117,7 @@ private:
 	_bool				m_isDouble = false;
 	_bool				m_bBackGround = false;
 
+	_bool				m_bVoice = false;
 	_float				m_fChangeTimeCheck = 0.f;
 	_double				m_dChangeTime = 0.0;
 	queue<SCRIPTINFO>	m_queueScriptInfo;

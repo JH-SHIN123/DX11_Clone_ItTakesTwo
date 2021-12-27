@@ -1547,6 +1547,18 @@ PS_OUT  PS_MAIN_PILLAR_ONLY_COLOR(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_MAIN_PILLAR_GRADATE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_vColor;
+
+	float fAlpha = In.vTexUV.x;
+
+
+	return Out;
+}
+
 PS_OUT  PS_SMOKE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -2068,202 +2080,14 @@ technique11		DefaultTechnique
 		GeometryShader = compile gs_5_0  GS_MAIN();
 		PixelShader = compile ps_5_0  PS_PIPELOCKER_BALL();
 	}
+
+	pass Levitation_Beam// 25
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN_AXIS_Y_NO_GLOBAL_UV();
+		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y_ROTATE_UV();
+		PixelShader = compile ps_5_0  PS_MAIN_PILLAR_ONLY_COLOR();
+	}
 };
-
-/*
-PS_OUT  PS_DISTORTION_DASH(PS_IN_DIST In)
-{
-PS_OUT		Out = (PS_OUT)0;
-
-float4 vFX_tex = g_SecondTexture.Sample(DiffuseSampler, In.vWeightUV);
-float4 vColor = (float4)0.f;
-float fWeight = vFX_tex.r * 0.5f;
-
-float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV);
-vColor = g_DiffuseTexture.Sample(ColorSampler, In.vTexUV + fWeight);
-vColor.rgb *= (vColorRamp.rgb);
-
-//if (0.1f >= vFX_tex.r)
-//	discard;
-
-Out.vColor = vColor;
-return Out;
-}
-
-////////////
-struct  GS_OUT_AXIS
-{
-float4 vPosition		: SV_POSITION;
-float2 vTexUV			: TEXCOORD0;
-float2 vWightUV			: TEXCOORD1;
-float2 vColorRamp_UV	: TEXCOORD2;
-float4 vProjPosition	: TEXCOORD3;
-float4 vAxisRotate		: TEXCOORD4; // 해당 축으로만 회전
-uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
-};
-[maxvertexcount(12)]
-/*
-/*
-void  GS_MAIN_DIST_AXIS(point  VS_OUT In[1], inout TriangleStream<GS_OUT_DIST> TriStream)
-{
-GS_OUT_DIST		Out[8];
-
-// Main View 0,0
-float3		vLook = normalize(In[0].vPointAxis).xyz;
-
-float3		vUp = normalize(g_vMainCamUp).xyz;
-float3		vRight = normalize(cross(vUp, vLook)).xyz;
-
-matrix		matVP = mul(g_MainViewMatrix, g_MainProjMatrix);;
-
-float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y * 0.5f);
-
-float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
-float4		vWolrdPointPos_Y = vector(vLook, 0.f)		*	vHalfSize.y;
-
-Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
-Out[0].vPosition = mul(Out[0].vPosition, matVP);
-Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
-Out[0].vWightUV = float2(g_vUV.x, g_vUV.y);
-Out[0].vColorRamp_UV = float2(g_vColorRamp_UV.x, g_vColorRamp_UV.y);
-Out[0].vProjPosition = Out[0].vPosition;
-Out[0].iViewportIndex = 1;
-TriStream.Append(Out[0]);
-
-Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
-Out[1].vPosition = mul(Out[1].vPosition, matVP);
-Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
-Out[1].vWightUV = float2(g_vUV.z, g_vUV.y);
-Out[1].vColorRamp_UV = float2(g_vColorRamp_UV.z, g_vColorRamp_UV.y);
-Out[1].vProjPosition = Out[1].vPosition;
-Out[1].iViewportIndex = 1;
-TriStream.Append(Out[1]);
-Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
-Out[2].vPosition = mul(Out[2].vPosition, matVP);
-Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
-Out[2].vWightUV = float2(g_vUV.z, g_vUV.w);
-Out[2].vColorRamp_UV = float2(g_vColorRamp_UV.z, g_vColorRamp_UV.w);
-Out[2].vProjPosition = Out[2].vPosition;
-Out[2].iViewportIndex = 1;
-TriStream.Append(Out[2]);
-
-TriStream.RestartStrip();
-Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
-Out[3].vPosition = mul(Out[3].vPosition, matVP);
-Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
-Out[3].vWightUV = float2(g_vUV.x, g_vUV.w);
-Out[3].vColorRamp_UV = float2(g_vColorRamp_UV.x, g_vColorRamp_UV.w);
-Out[3].vProjPosition = Out[3].vPosition;
-Out[3].iViewportIndex = 1;
-TriStream.Append(Out[0]);
-TriStream.Append(Out[2]);
-TriStream.Append(Out[3]);
-
-TriStream.RestartStrip();
-
-// Sub View 0,1
-
-vLook = normalize(In[0].vPointAxis).xyz;
-vUp = normalize(g_vMainCamUp).xyz;
-vRight = normalize(cross(vUp, vLook)).xyz;
-matVP = mul(g_SubViewMatrix, g_SubProjMatrix);;
-
-vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
-vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
-
-Out[4].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
-Out[4].vPosition = mul(Out[4].vPosition, matVP);
-Out[4].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
-Out[4].vWightUV = float2(g_vUV.x, g_vUV.y);
-Out[4].vColorRamp_UV = float2(g_vColorRamp_UV.x, g_vColorRamp_UV.y);
-Out[4].vProjPosition = Out[4].vPosition;
-Out[4].iViewportIndex = 2;
-TriStream.Append(Out[4]);
-
-Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
-Out[5].vPosition = mul(Out[5].vPosition, matVP);
-Out[5].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
-Out[5].vWightUV = float2(g_vUV.z, g_vUV.y);
-Out[5].vColorRamp_UV = float2(g_vColorRamp_UV.z, g_vColorRamp_UV.y);
-Out[5].vProjPosition = Out[5].vPosition;
-Out[5].iViewportIndex = 2;
-TriStream.Append(Out[5]);
-
-Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
-Out[6].vPosition = mul(Out[6].vPosition, matVP);
-Out[6].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
-Out[6].vWightUV = float2(g_vUV.z, g_vUV.w);
-Out[6].vColorRamp_UV = float2(g_vColorRamp_UV.z, g_vColorRamp_UV.w);
-Out[6].vProjPosition = Out[6].vPosition;
-Out[6].iViewportIndex = 2;
-TriStream.Append(Out[6]);
-
-TriStream.RestartStrip();
-
-Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
-Out[7].vPosition = mul(Out[7].vPosition, matVP);
-Out[7].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
-Out[7].vWightUV = float2(g_vUV.x, g_vUV.w);
-Out[7].vColorRamp_UV = float2(g_vColorRamp_UV.x, g_vColorRamp_UV.w);
-Out[7].vProjPosition = Out[7].vPosition;
-Out[7].iViewportIndex = 2;
-TriStream.Append(Out[4]);
-TriStream.Append(Out[6]);
-TriStream.Append(Out[7]);
-}
-
-*/
-
-// 중심에서 멀어 질 수록 알파를 낮추자
-
-//float4 vDiffuse = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-
-//vDiffuse *= g_vColor;
-//vDiffuse.a = 1.f;
-//float2 vCenter = In.vTexUV - 0.5f;
-//vCenter = abs(vCenter);
-////vCenter -= 0.5f;
-////vCenter = abs(vCenter) * 2.f;
-//float fDist = (vCenter.x + vCenter.y) *0.5f;
-////float4 vAlphaTex = g_SecondTexture.Sample(DiffuseSampler, In.vTexUV);
-////
-////vAlphaTex.r -= 1.f;
-////vAlphaTex.r = abs(vAlphaTex.r);
-
-//vDiffuse.a = 0.5f * COS_ARR(3.14f * pow(fDist, 1.5f)) + 0.5f;//vAlphaTex.r * g_fAlpha;
-
-//Out.vColor = vDiffuse;
-
-
-//float4 vDiffuse =  { 0.498039246f, 1.000000000f, 0.831372619f, 1.000000000f };
-//float2 vCenter = In.vTexUV - 0.5f;
-//vCenter = abs(vCenter);
-////vCenter -= 0.5f;
-////vCenter = abs(vCenter) * 2.f;
-
-//float fLenght = length(vCenter);
-//if (0.5f < fLenght)
-//	discard;
-
-//vDiffuse.a = 0.5f;
-
-//fLenght = fLenght / 0.5f; // normalize
-//float2 vColorUV = float2((fLenght * -1.f) + 1.f);
-//float4 vColor = g_SecondTexture.Sample(DiffuseSampler, vColorUV);
-
-//fLenght *= 100.f; // 원하는 만큼 곱하기 (길이)
-//vDiffuse.rgb *= (100.f - fLenght);// *0.25f;// +0.5f;//0.5f * COS_ARR(3.14f * pow(fDist, 1.5f)) + 0.5f;//vAlphaTex.r * g_fAlpha;
-//vDiffuse.rgb /= 1000.f;	// 감쇠 파워?
-//Out.vColor = vDiffuse;
-
-
-
-//float2 vCenter = In.vColorRamp_UV - 0.5f;
-//vCenter = abs(vCenter);
-//float fLength = length(vCenter);
-//if (0.5f < fLength)
-//	discard;
-//if (0.4f < fLength && 0.45f > fLength)
-//discard;
-//if (0.28f < fLength && 0.33f > fLength)
-//discard;

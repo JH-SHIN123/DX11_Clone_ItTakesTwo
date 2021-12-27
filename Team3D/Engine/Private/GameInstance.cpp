@@ -340,6 +340,11 @@ const _uint CGameInstance::Get_CurrentLevelStep()
 	NULL_CHECK_RETURN(m_pLevel_Manager, E_FAIL);
 	return m_pLevel_Manager->Get_CurrentLevelStep();
 }
+void CGameInstance::Go_NextLevelStep()
+{
+	NULL_CHECK(m_pLevel_Manager);
+	m_pLevel_Manager->Go_NextLevelStep();
+}
 #pragma endregion 
 
 #pragma region GameObjcet_Manager

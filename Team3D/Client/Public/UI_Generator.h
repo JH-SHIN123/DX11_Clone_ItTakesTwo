@@ -119,7 +119,6 @@ private:
 	_uint							m_iMayCount = 0;
 
 private:
-	vector<CUIObject::UI_DESC*>		m_vecPSData;
 	vector<CUIObject*>				m_vecUIOBjects[Player::PLAYER_END][UI::TRIGGER_END];
 	vector<CUIObject*>				m_vecInterActiveUI[Player::PLAYER_END][UI::INTERACTIVE_ID_END];
 	vector<class CHeaderBox*>		m_vecHeaderBox;

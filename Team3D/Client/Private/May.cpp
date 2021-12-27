@@ -1802,6 +1802,12 @@ void CMay::Add_OffSet_Pos(_fvector vAddOffSet)
 
 
 #pragma region Trigger
+_bool CMay::Get_WarpEnd_CountDown()
+{
+	_float fTime = m_fWarpTimer_InWormhole + m_fWarpTimer_Max - 1.f;
+	return m_fWarpTimer > fTime;
+}
+
 void CMay::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;
@@ -1922,13 +1928,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
 			/* Script */
-			if (false == m_bPinBallScript_Once[0])
-			{
-				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-				m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
-				SCRIPT->Render_Script(37, CScript::HALF, 1.f);
-				m_bPinBallScript_Once[0] = true;
-			}
+			//if (false == m_bPinBallScript_Once[0])
+			//{
+			//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+			//	m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
+			//	SCRIPT->Render_Script(37, CScript::HALF, 1.f);
+			//	m_bPinBallScript_Once[0] = true;
+			//}
 
 			/* UI */
 			UI_Delete(May, InputButton_PS_InterActive);
@@ -2505,13 +2511,13 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* °ø ¹ß»ç */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
-				if (false == m_bPinBallScript_Once[1])
-				{
-					m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-					m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
-					SCRIPT->Render_Script(38, CScript::HALF, 1.f);
-					m_bPinBallScript_Once[1] = true;
-				}
+				//if (false == m_bPinBallScript_Once[1])
+				//{
+				//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+				//	m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
+				//	SCRIPT->Render_Script(38, CScript::HALF, 1.f);
+				//	m_bPinBallScript_Once[1] = true;
+				//}
 
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);

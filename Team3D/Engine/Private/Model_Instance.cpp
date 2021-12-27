@@ -51,12 +51,6 @@ CModel_Instance::CModel_Instance(const CModel_Instance & rhs)
 			Safe_AddRef(pMesh);
 	}
 
-	for (auto& pMaterial : m_Materials)
-	{
-		for (auto& pTexture : pMaterial->pMaterialTexture)
-			Safe_AddRef(pTexture);
-	}
-
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
 	Safe_AddRef(m_pVBInstance);
@@ -628,15 +622,6 @@ void CModel_Instance::Free()
 		Safe_Release(pMesh);
 	m_Meshes.clear();
 
-	for (auto& pMaterial : m_Materials)
-	{
-		for (auto& pTexture : pMaterial->pMaterialTexture)
-			Safe_Release(pTexture);
-		if (false == m_isClone)
-			Safe_Delete(pMaterial);
-	}
-	m_Materials.clear();
-
 	for (auto& Meshes : m_SortedMeshes)
 	{
 		for (auto& pMesh : Meshes)
@@ -646,6 +631,14 @@ void CModel_Instance::Free()
 
 	if (false == m_isClone)
 	{
+		for (auto& pMaterial : m_Materials)
+		{
+			for (_uint iIndex = 0; iIndex < AI_TEXTURE_TYPE_MAX; ++iIndex)
+				Safe_Release(pMaterial->pMaterialTexture[iIndex]);
+			Safe_Delete(pMaterial);
+		}
+		m_Materials.clear();
+
 		Safe_Delete_Array(m_pInstanceVertices);
 
 		for (auto& TriMesh : m_PxTriMeshes)

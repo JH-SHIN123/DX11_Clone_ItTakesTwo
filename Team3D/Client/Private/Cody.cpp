@@ -546,8 +546,8 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma endregion
 
 #pragma region Teleport
-	if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
-		m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
+	//if (m_pGameInstance->Key_Down(DIK_C)) /* 파이프 베터리 */
+	//	m_pActorCom->Set_Position(XMVectorSet(44.8652f, 220.9396f, 223.94134f, 1.f));
 
 	if (m_pGameInstance->Key_Down(DIK_1)) /* 스타트 지점 */
 	{
@@ -938,10 +938,6 @@ void CCody::KeyInput(_double dTimeDelta)
 
 #pragma endregion
 
-	if (m_pGameInstance->Key_Down(DIK_M))
-	{
-		SCRIPT->VoiceFile_No03();
-	}
 }
 
 _uint CCody::Get_CurState() const
@@ -2177,6 +2173,12 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma endregion
 
 #pragma region Trigger
+_bool CCody::Get_WarpEnd_CountDown()
+{
+	_float fTime = m_fWarpTimer_InWormhole + m_fWarpTimer_Max - 1.f;
+	return m_fWarpTimer > fTime;
+}
+
 void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;
@@ -4283,14 +4285,14 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 
 	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
 	{
-		/* Sound */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			m_pGameInstance->Play_Sound(TEXT("22.wav"), CHANNEL_PINBALLVOICE);
-		/* 코디가 잘못했을 때 */
-		else
-			m_pGameInstance->Play_Sound(TEXT("21.wav"), CHANNEL_PINBALLVOICE);
-		m_bPinBallScript = true;
+		///* Sound */
+		///* 메이가 잘못했을 때 */
+		//if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
+		//	m_pGameInstance->Play_Sound(TEXT("22.wav"), CHANNEL_PINBALLVOICE);
+		///* 코디가 잘못했을 때 */
+		//else
+		//	m_pGameInstance->Play_Sound(TEXT("21.wav"), CHANNEL_PINBALLVOICE);
+		//m_bPinBallScript = true;
 	}
 
 	m_IsPinBall = false;

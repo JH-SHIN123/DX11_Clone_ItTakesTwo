@@ -528,11 +528,6 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 	/* 공전 드가자 */
 	OrbitalMovementCenter(dTimeDelta);
 
-	//if (nullptr != m_pCodyMissile && true == m_pCodyMissile->Get_BossExplosion())
-	//	m_pCodyMissile->Set_MissileDead();
-	//else if (nullptr != m_pMayMissile && true == m_pMayMissile->Get_BossExplosion())
-	//	m_pMayMissile->Set_MissileDead();
-
 	if (4 == m_iGuidedMissileHitCount)
 	{
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
@@ -860,6 +855,7 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 
 			/* 보스 2페이즈로 바꿔주자 */
 			m_ePhase = CUFO::PHASE_2;
+			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
 		}
 	}

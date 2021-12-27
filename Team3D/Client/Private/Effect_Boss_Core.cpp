@@ -36,8 +36,6 @@ HRESULT CEffect_Boss_Core::NativeConstruct(void * pArg)
 	_matrix  WolrdMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
 	m_pTransformCom->Set_WorldMatrix(WolrdMatrix);
 
-	/*Gara*/m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(58.f, 1.525f, 30.f, 1.f));
-
 	Ready_Instance();
 
 
@@ -51,7 +49,6 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 
 	if (m_isDead) return EVENT_DEAD;
 
-	// UV회전 하면서 일정 범위만 Distortion
 	m_fDistortion_Time += (_float)TimeDelta * 0.5f;
 	if (1.f < m_fDistortion_Time)
 		m_fDistortion_Time = 0.f;
@@ -61,40 +58,14 @@ _int CEffect_Boss_Core::Tick(_double TimeDelta)
 		m_fDegree_Angle = 0.f;
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	XMStoreFloat4(&m_pInstanceBuffer->vPosition, vPos);
+	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, vPos);
 
 	m_fTextureUV_Time -= (_float)TimeDelta * 0.75f;
 	if (0.f >= m_fTextureUV_Time)
 	{
 		m_fTextureUV_Time = 0.01f;
-		m_pInstanceBuffer->vTextureUV = Check_UV();
+		m_pInstanceBuffer[0].vTextureUV = Check_UV();
 	}
-
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Hit, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Explosion, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Smoke, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossCore_Lightning_Big, m_pTransformCom->Get_WorldMatrix());
-
-	//  /*GARA*/if (m_pGameInstance->Key_Down(DIK_V))
-	// 	/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_B))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_N))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_M))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossBomb_Particle, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_COMMA))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_PERIOD))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, m_pTransformCom->Get_WorldMatrix());
-	// 	/*GARA*/if (m_pGameInstance->Key_Down(DIK_SLASH))
-	// 		/*GARA*/	EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }
@@ -120,7 +91,7 @@ HRESULT CEffect_Boss_Core::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(2));
 	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTextureCom_Color->Get_ShaderResourceView(2));
 
-	m_pPointInstanceCom->Render(14, m_pInstanceBuffer, 1);
+	m_pPointInstanceCom->Render(14, m_pInstanceBuffer, 2, 0);
 
 	return S_OK;
 }
@@ -153,16 +124,21 @@ _int CEffect_Boss_Core::Explosion()
 
 HRESULT CEffect_Boss_Core::Ready_Instance()
 {
-	m_pInstanceBuffer = new VTXMATRIX_CUSTOM_ST;
+	m_pInstanceBuffer = new VTXMATRIX_CUSTOM_ST[2];
 
-	m_pInstanceBuffer->vRight	= { 1.f, 0.f, 0.f, 0.f };
-	m_pInstanceBuffer->vUp		= { 0.f, 1.f, 0.f, 0.f };
-	m_pInstanceBuffer->vLook	= { 0.f, 0.f, 1.f, 0.f };
-	m_pInstanceBuffer->vSize	= { 2.5f, 2.75f };
-	m_pInstanceBuffer->vTextureUV = { 0.f, 0.f, 1.f, 1.f };
+	m_pInstanceBuffer[0].vRight	= { 1.f, 0.f, 0.f, 0.f };
+	m_pInstanceBuffer[0].vUp	= { 0.f, 1.f, 0.f, 0.f };
+	m_pInstanceBuffer[0].vLook	= { 0.f, 0.f, 1.f, 0.f };
+	m_pInstanceBuffer[0].vSize	= { 2.5f, 2.75f };
+	m_pInstanceBuffer[0].vTextureUV = { 0.f, 0.f, 1.f, 1.f };
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	XMStoreFloat4(&m_pInstanceBuffer->vPosition, vPos);
+	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, vPos);
 
+
+	m_pInstanceBuffer[1].vRight = { 1.f, 0.f, 0.f, 0.f };
+	m_pInstanceBuffer[1].vUp = { 0.f, 1.f, 0.f, 0.f };
+	m_pInstanceBuffer[1].vLook = { 0.f, 0.f, 1.f, 0.f };
+	m_pInstanceBuffer[1].vSize = { 0.f, 0.f };
 
 	return S_OK;
 }
