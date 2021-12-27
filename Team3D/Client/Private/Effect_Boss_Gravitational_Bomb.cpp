@@ -132,7 +132,11 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 
 	Explosion_Check();
 	Scale_Check(TimeDelta);
+
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 	PlayerHit_Check(TimeDelta);
+#endif // __PLAYER_INVINCIBLE_BOSSROOM
+
 
 	/* Light */
 	if (m_pLight)
