@@ -72,7 +72,7 @@ private:
 	//For.Debug
 	void KeyCheck(_double dTimeDelta);
 	//For.OnRail
-	_float Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash = false);
+	_float	Get_ZoomVal_OnRail(_uint iNodeIdx, _bool bCanDash = false);
 	_float	DotProgress(_float fOffSetDist);	//직선구간
 	_float  DotProgress_Bezier(_float fOffSetDist);
 	_float	Find_Player_OnBossMiniRoom(_double dTimeDelta);	//Return Progress
