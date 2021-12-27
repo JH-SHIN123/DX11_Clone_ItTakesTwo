@@ -293,6 +293,9 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_F9))
+		UI_CreateOnlyOnce(Cody, RespawnCircle);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
