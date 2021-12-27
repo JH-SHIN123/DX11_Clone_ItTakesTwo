@@ -15,8 +15,9 @@ CInGameEffect::CInGameEffect(const CInGameEffect & rhs)
 
 HRESULT CInGameEffect::NativeConstruct_Prototype(void* pArg)
 {
-	memcpy(&m_EffectDesc_Prototype, pArg, sizeof(EFFECT_DESC_PROTO));
-	//Test
+	if(nullptr != pArg)
+		memcpy(&m_EffectDesc_Prototype, pArg, sizeof(EFFECT_DESC_PROTO));
+
 	return S_OK;
 }
 

@@ -465,7 +465,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 			m_pModelCom->Set_DefaultVariables_Shadow();
 			m_pModelCom->Render_Model(0);
 		}
-		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && (false == m_IsHolding_Low_UFO || false == m_IsHolding_UFO))
 		{
 			m_pModelCom->Render_Model(30);
 			m_pModelCom->Render_Model(32);
@@ -844,7 +844,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_LButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false) 
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 커져라
 		switch (m_eCurPlayerSize)
@@ -874,7 +874,7 @@ void CCody::KeyInput(_double dTimeDelta)
 #pragma region Mouse_RButton
 
 	if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_RB) &&
-		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false)
+		m_bSprint == false && m_bShortJump == false && m_IsJumping == false && m_IsSizeChanging == false && CLaserTennis_Manager::GetInstance()->Get_StartGame() == false)
 	{
 		// 작아져라
 		switch (m_eCurPlayerSize)
@@ -2173,6 +2173,12 @@ HRESULT CCody::Render_ShadowDepth()
 #pragma endregion
 
 #pragma region Trigger
+_bool CCody::Get_WarpEnd_CountDown()
+{
+	_float fTime = m_fWarpTimer_InWormhole + m_fWarpTimer_Max - 1.f;
+	return m_fWarpTimer > fTime;
+}
+
 void CCody::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;
@@ -2612,7 +2618,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eBOSSUFO && m_pGameInstance->Key_Down(DIK_E))
 		{
-			m_IsHolding_UFO = true;
+			m_IsHolding_UFO = true;//
 		}
 		else if (m_eTargetGameID == GameID::eBOSSENTERUFO)
 		{
@@ -2632,7 +2638,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_PushButton_Var2_SapGun);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
 			m_bLaserTennis = true;
@@ -2765,7 +2771,7 @@ void CCody::Push_Battery(const _double dTimeDelta)
 	{
 		if (true == m_IsPipeBattery)
 		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
+			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_IsCollide = false;
 
 			if (m_pGameInstance->Key_Down(DIK_Q))
@@ -2777,7 +2783,7 @@ void CCody::Push_Battery(const _double dTimeDelta)
 			}
 		}
 
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_MH))
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 	}
 	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
@@ -3252,12 +3258,26 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_pActorCom->Set_WallCollide(false);
 		}
-
 	}
 }
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
+	if (false == m_bElectricWallAttach)
+		return;
+
+	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+		m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
+
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		m_pActorCom->Update(dTimeDelta);
+		m_pActorCom->Set_ZeroGravity(true, false, true);
+		m_bRespawnCheck = false;
+		m_bRespawn = true;
+	}
+
 	if (true == m_bElectricWallAttach && false == m_IsElectricWallJumping)
 	{
 		if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_CHARACTER_WALLJUMP_SLIDE) == false)
@@ -4024,6 +4044,8 @@ void CCody::Start_RadiarBlur_FullScreen(_double dBlurTime)
 
 void CCody::Start_RadiarBlur(_double dBlurTime)
 {
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame()) return;
+
 	//if (m_bRadiarBlur) return;
 	m_bRadiarBlur_FullScreen = false;
 
@@ -4176,12 +4198,18 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 	if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_LARGE && false == m_IsHolding_Low_UFO)
 	{
-		m_pActorCom->Set_Position(XMVectorSet(57.8480f, 342.83f, 199.5068f, 1.f));
+		m_pActorCom->Set_Position(XMVectorSet(57.5f, 342.83f, 199.8f, 1.f));
+		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(293));
 		m_pModelCom->Set_Animation(ANI_C_Holding_Enter_UFO);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_Low_UFO);
-		m_pTransformCom->RotateYaw_Angle(190.f);
 		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding_Enter, UFO_CodyHolding_low);
+
+		CTransform* pUFOTransform = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform();
+		_vector vUFOPos = XMVectorSet(64.f - 0.4f, 355.0263f + 0.8f, 195.f, 1.f);
+		pUFOTransform->Set_State(CTransform::STATE_POSITION, vUFOPos);
+
 		m_IsHolding_Low_UFO = true;
+
 	}
 	else if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_MEDIUM && false == m_IsHolding_Low_UFO)

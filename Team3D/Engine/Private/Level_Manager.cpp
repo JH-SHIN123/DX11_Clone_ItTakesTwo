@@ -36,6 +36,11 @@ HRESULT CLevel_Manager::Clear_Level()
 	return S_OK;
 }
 
+void CLevel_Manager::Go_NextLevelStep()
+{
+	m_pCurrentLevel->Go_NextLevelStep(); 
+}
+
 void CLevel_Manager::Free()
 {
 	Safe_Release(m_pCurrentLevel);

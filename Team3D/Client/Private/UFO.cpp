@@ -59,7 +59,6 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_ePattern = UFO_PATTERN::LASER;
 	m_IsCutScene = true;
 
-
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos.m128_f32[1] += 6.f;
@@ -92,13 +91,10 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
-		_vector dd = { 61.7f, 348.8f, 197.2f, 1.f };
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, dd);
+		m_IsActive = true;
 	}
-
 	/* 테스트 용 */
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
@@ -109,7 +105,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
 		m_pBossHpBar->Set_Active(true);
 	}
-	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
 		// 마지막에 누가 박았는지에 따라 뷰포트 전환이 다름
 		if (m_WhoCollide == GameID::eCODY)
@@ -149,7 +145,6 @@ _int CUFO::Tick(_double dTimeDelta)
 		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
 	}
 
-	/* 나중에 컷 신 완전히 완성되면 바꿈 */
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
 
@@ -206,6 +201,9 @@ _int CUFO::Tick(_double dTimeDelta)
 _int CUFO::Late_Tick(_double dTimeDelta)
 {
 	CGameObject::Late_Tick(dTimeDelta);
+
+	if (false == m_IsActive)
+		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3000.f))
 		return Add_GameObject_ToRenderGroup();
@@ -399,7 +397,7 @@ void CUFO::Core_Destroyed()
 
 			if (false == m_IsHit)
 			{
-				m_pBossHpBar->Set_HpBarReduction(110);
+				Set_BossHpBarReduction(110);
 				m_IsHit = true;
 			}
 
@@ -420,8 +418,6 @@ void CUFO::Core_Destroyed()
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD2))
 	{
 		m_ePattern = UFO_PATTERN::INTERACTION;
-
-		//m_pBossHpBar->Set_Ratio(0.11f);
 
 		/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
 		if (3 != m_iPhaseChangeCount)
@@ -532,10 +528,12 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 	/* 공전 드가자 */
 	OrbitalMovementCenter(dTimeDelta);
 
-	if (nullptr != m_pCodyMissile && true == m_pCodyMissile->Get_BossExplosion())
-		m_pCodyMissile->Set_MissileDead();
-	else if (nullptr != m_pMayMissile && true == m_pMayMissile->Get_BossExplosion())
-		m_pMayMissile->Set_MissileDead();
+	if (4 == m_iGuidedMissileHitCount)
+	{
+		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
+		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
+		m_IsCutScene = true;
+	}
 
 	switch (m_ePattern)
 	{
@@ -572,14 +570,22 @@ void CUFO::OrbitalMovementCenter(_double dTimeDelta)
 
 	_float fAngle = XMConvertToDegrees(XMVectorGetX(vDot));
 
-	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
+	if (true == m_IsFirstAngleSetting)
+	{
+		m_fRotAngle = fAngle;
+		m_IsFirstAngleSetting = false;
+	}
 
+	/* 자전 각도 돌리는 속도 */
 	if (m_fRotAngle < fAngle)
 		m_fRotAngle += (_float)dTimeDelta * 50.f;
 	else if (m_fRotAngle >= fAngle)
 		m_fRotAngle -= (_float)dTimeDelta * 50.f;
 
+	/* 공전 속도 */
 	m_fRevAngle += (_float)dTimeDelta * 20.f;
+
+	_matrix matWorld, matRotY, matTrans, matRevRotY, matParent;
 
 	matRotY = XMMatrixRotationY(XMConvertToRadians(-m_fRotAngle));
 	matTrans = XMMatrixTranslation(m_vTranslationPos.x, m_vTranslationPos.y, m_vTranslationPos.z);
@@ -860,7 +866,7 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 HRESULT CUFO::Ready_TriggerActor_Component()
 {
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
-
+	
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vUFOPos.m128_f32[1] -= 8.f;
 
@@ -940,6 +946,7 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		Ready_StaticActor_Component();
 		TriggerActorReplacement();
 		m_IsTriggerActive = true;
+		m_IsPhase2InterActive = true;
 	}
 
 	if (true == m_IsCodyEnter)
@@ -984,7 +991,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		_matrix AnimUFOWorld = BaseBone * UFOWorld;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4((_float4*)&AnimUFOWorld.r[3].m128_f32[0]));
 	}
-
 
 	return S_OK;
 }
@@ -1325,8 +1331,30 @@ void CUFO::Set_MissilePtrReset(_bool IsTargetCheck)
 	else
 	{
 		m_pMayMissile = nullptr;
-		Safe_Release(m_pCodyMissile);
+		Safe_Release(m_pMayMissile);
 	}
+}
+
+void CUFO::Set_BossHpBarReduction(_float fDamage)
+{
+	m_pBossHpBar->Set_HpBarReduction(fDamage);
+}
+
+void CUFO::Set_GuidedMissileIncreaseHitCount()
+{
+	++m_iGuidedMissileHitCount;
+
+	if (4 <= m_iGuidedMissileHitCount)
+		m_iGuidedMissileHitCount = 4;
+	
+	if(3 >= m_iGuidedMissileHitCount)
+		Set_UFOAnimation(UFO_Laser_HitPod, UFO_Left);
+}
+
+void CUFO::Set_Active(_bool IsActive)
+{
+	m_IsActive = IsActive;
+	m_pMoonBaboon->Set_Active(IsActive);
 }
 
 HRESULT CUFO::Add_GameObject_ToRenderGroup()
@@ -1384,10 +1412,10 @@ void CUFO::Free()
 	if (nullptr != m_pEnterTriggerActorCom)
 		Safe_Release(m_pEnterTriggerActorCom);
 
-	//for (auto pSubLaser : m_vecSubLaser)
-	//	Safe_Release(pSubLaser);
+	for (auto pSubLaser : m_vecSubLaser)
+		Safe_Release(pSubLaser);
 
-	//m_vecSubLaser.clear();
+	m_vecSubLaser.clear();
 
 	if(nullptr != m_pCodyMissile)
 		Safe_Release(m_pCodyMissile);

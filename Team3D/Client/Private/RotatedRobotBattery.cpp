@@ -63,7 +63,6 @@ _int CRotatedRobotBattery::Tick(_double dTimeDelta)
 {
 	CRotatedRobotParts::Tick(dTimeDelta);
 
-
 	if (m_bUpdate)
 	{
 		if (m_IsCollide && m_pGameInstance->Key_Down(DIK_E))
@@ -79,6 +78,21 @@ _int CRotatedRobotBattery::Tick(_double dTimeDelta)
 			Push_Battery(dTimeDelta);
 		}
 	}
+
+	//_vector vPos = XMVectorZero();
+	//TCHAR szBuff[256] = L"";
+	//GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");
+	//_float x = _ttof(szBuff);
+
+	//GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
+	//_float y = _ttof(szBuff);
+
+	//GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
+	//_float z = _ttof(szBuff);
+	// 
+	//UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+	//	XMVectorSet(1035.44493f, 743.288574f, 216.964385f, 1.f), 10.f, m_IsCollide, !m_bUpdate);
+
 	return NO_EVENT;
 }
 

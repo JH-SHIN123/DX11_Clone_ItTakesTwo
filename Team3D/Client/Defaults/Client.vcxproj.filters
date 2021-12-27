@@ -294,9 +294,6 @@
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\3DText">
       <UniqueIdentifier>{3beb1e00-8189-4688-bc2f-75d5101fdba2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock">
-      <UniqueIdentifier>{a0b69245-8c4c-41f4-aec1-511acd4c0358}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\MeshParticle">
       <UniqueIdentifier>{8aaaa757-28eb-4382-8875-13b404f24e22}</UniqueIdentifier>
     </Filter>
@@ -308,6 +305,12 @@
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle">
       <UniqueIdentifier>{82b1a154-6103-4995-92e1-201875b61a16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\Rock">
+      <UniqueIdentifier>{a0b69245-8c4c-41f4-aec1-511acd4c0358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\WhiteOut">
+      <UniqueIdentifier>{2f93e70e-be33-4964-a050-4969724dbe7e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen">
       <UniqueIdentifier>{cb99fc26-4d07-4ee9-bdf8-b9a43ea37b0e}</UniqueIdentifier>
@@ -921,6 +924,39 @@
     <Filter Include="02.GameObject\05.Effect/Particle\3D\Player\00.Dash">
       <UniqueIdentifier>{fc41b5af-9653-4a75-9538-c438084e2b68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene">
+      <UniqueIdentifier>{da5ea654-35bb-4a07-80b3-313026c4789e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\Intro">
+      <UniqueIdentifier>{75c35e83-8caa-4a07-9428-c3222d5e95d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\Intro\CodySize">
+      <UniqueIdentifier>{d7d91530-704e-4a37-a024-9af535124e2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land">
+      <UniqueIdentifier>{4954cac0-e0e5-4ecc-862c-f768ba3e6741}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossIntro">
+      <UniqueIdentifier>{177eb253-7d58-4c2b-b60b-d972f4236ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro">
+      <UniqueIdentifier>{c4afdccf-0580-48d0-b203-63610d99ccb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam">
+      <UniqueIdentifier>{26c463ee-2de1-414f-9405-f06ffc7dbecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle">
+      <UniqueIdentifier>{23d57268-9286-4aee-9025-39a92dd2cb2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke">
+      <UniqueIdentifier>{5ee0907e-9e8d-41f3-99d0-8273667b1dc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke_Burn">
+      <UniqueIdentifier>{55ee2676-f9f9-4c6b-861c-355069a57f8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\CutScene\BossOutro\UFO_Land">
+      <UniqueIdentifier>{6a7696b5-816b-463c-8485-5335b63b79ff}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\06.UI">
       <UniqueIdentifier>{655701b4-ca8c-4776-ab23-332f0781581e}</UniqueIdentifier>
     </Filter>
@@ -1409,6 +1445,9 @@
     <ClInclude Include="..\Public\RockParticle.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\WhiteOut.h">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\WhiteOut</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\AlienScreen.h">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
     </ClInclude>
@@ -1885,7 +1924,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_UFO_Inside_ElectricWall_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\ElectricWall\00.Particle</Filter>
-    </ClInclude>    
+    </ClInclude>
     <ClInclude Include="..\Public\InGameEffect_Rect.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Rect</Filter>
     </ClInclude>
@@ -1939,6 +1978,27 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_DashMesh.h">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_CodySize.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\CodySize</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_Land.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_Levitation_Beam_Particle.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_FallDown_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_FallDown_Smoke_Burn.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke_Burn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_CS_UFO_Land.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\UFO_Land</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_CS_Levitation_Beam.h">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIObject.h">
       <Filter>02.GameObject\06.UI\00.Main</Filter>
@@ -2391,6 +2451,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RockParticle.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\RockParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WhiteOut.cpp">
+      <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\04.EndingCredit\WhiteOut</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AlienScreen.cpp">
       <Filter>02.GameObject\04.Stage_Space\04.Hye\01.Environment\03.Dynamic_Env\AlienScreen</Filter>
@@ -2922,6 +2985,27 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_DashMesh.cpp">
       <Filter>02.GameObject\05.Effect/Particle\3D\Player\00.Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_CodySize.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\CodySize</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_Land.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\Intro\MoonBaboon_Land</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_Levitation_Beam_Particle.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_FallDown_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_FallDown_Smoke_Burn.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\MoonBaboon_FallDown_Smoke_Burn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_CS_UFO_Land.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossOutro\UFO_Land</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_CS_Levitation_Beam.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\CutScene\BossIntro\Levitation_Beam</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIObject.cpp">
       <Filter>02.GameObject\06.UI\00.Main</Filter>

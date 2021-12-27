@@ -62,7 +62,7 @@ HRESULT CHookUFO::NativeConstruct(void * pArg)
 
 	DATABASE->Set_HookUFO(this);
 	Set_MeshRenderGroup();
-
+	//
 	return S_OK;
 }
 
@@ -83,7 +83,7 @@ _int CHookUFO::Tick(_double dTimeDelta)
 		if (true == m_IsMayCollide)
 		{
 			m_IsMayUIDisalbe = true;
-			UI_Delete(May, InputButton_InterActive);
+			UI_Delete(May, InputButton_PS_InterActive);
 		}
 	}
 
@@ -255,7 +255,7 @@ HRESULT CHookUFO::Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag)
 	m_pCodyGauge_Circle->Set_Position(vPos);
 
 	// 범위 설정
-	m_pCodyGauge_Circle->Set_Range(30.f);
+	m_pCodyGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
 }
@@ -306,7 +306,7 @@ HRESULT CHookUFO::Ready_Layer_MayGauge_Circle(const _tchar * pLayerTag)
 	m_pCodyGauge_Circle->Set_Position(vPos);
 
 	// 범위 설정
-	m_pCodyGauge_Circle->Set_Range(30.f);
+	m_pCodyGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
 }

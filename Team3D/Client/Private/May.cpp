@@ -985,6 +985,8 @@ void CMay::KeyInput(_double dTimeDelta)
 
 			m_bAction = false;
 			m_bRoll = true;
+
+			Start_RadiarBlur(0.3f);
 		}
 		else
 		{
@@ -1000,6 +1002,8 @@ void CMay::KeyInput(_double dTimeDelta)
 				m_pActorCom->Jump_Start(1.2f);
 				m_pModelCom->Set_Animation(ANI_M_AirDash_Start);
 				m_IsAirDash = true;
+
+				Start_RadiarBlur(0.3f);
 			}
 		}
 	}
@@ -1798,6 +1802,12 @@ void CMay::Add_OffSet_Pos(_fvector vAddOffSet)
 
 
 #pragma region Trigger
+_bool CMay::Get_WarpEnd_CountDown()
+{
+	_float fTime = m_fWarpTimer_InWormhole + m_fWarpTimer_Max - 1.f;
+	return m_fWarpTimer > fTime;
+}
+
 void CMay::SetTriggerID(GameID::Enum eID, _bool IsCollide, _fvector vTriggerTargetPos, _uint _iPlayerName)
 {
 	m_eTargetGameID = eID;
@@ -2131,7 +2141,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				m_IsLaserRippedOff = false;
 			}
 
-			if (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y))
+			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
@@ -2146,7 +2156,6 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
-
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
@@ -2162,7 +2171,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_PushButton_Var2);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 			m_bLaserTennis = true;
@@ -2317,6 +2326,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 			m_IsEnterValve = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			DATABASE->Add_ValveCount_Cody(false);
 			DATABASE->Set_Valve_Activate(true);
 		}
@@ -3368,6 +3378,8 @@ HRESULT CMay::Ready_Layer_Gauge_Circle(const _tchar * pLayerTag)
 #pragma region RadiarBlur
 void CMay::Start_RadiarBlur(_double dBlurTime)
 {
+	if (CLaserTennis_Manager::GetInstance()->Get_StartGame()) return;
+
 	//if (m_bRadiarBlur) return;
 
 	m_bRadiarBlur_Trigger = true;

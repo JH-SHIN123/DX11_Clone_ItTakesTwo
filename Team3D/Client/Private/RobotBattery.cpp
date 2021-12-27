@@ -60,6 +60,14 @@ HRESULT CRobotBattery::NativeConstruct(void * pArg)
 
 	Safe_Delete(TriggerArgDesc.pGeometry);
 
+	if (m_tRobotPartsDesc.iStageNum == ST_GRAVITYPATH)
+	{
+		m_eInterActiveID = UI::RobotBattery0;
+	}
+	else if (m_tRobotPartsDesc.iStageNum == ST_RAIL)
+	{
+		m_eInterActiveID = UI::RobotBattery1;
+	}
 
 	return S_OK;
 }
@@ -81,6 +89,7 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 		if (m_bRotate == true)
 		{
 			Push_Battery(dTimeDelta);
+			UI_Delete(Cody, InputButton_InterActive);
 		}
 	}
 	else
@@ -95,6 +104,23 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 			Rewind_Battery(dTimeDelta);
 		}
 	}
+
+	switch (m_tRobotPartsDesc.iStageNum)
+	{
+	case ST_GRAVITYPATH:
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+			XMVectorSet(71.1877518f, 23.28266802f + 0.15f , 179.770789f + 0.09f, 1.f), 10.f, m_IsCollide, !m_bUpdate);
+		break;
+	case ST_RAIL:
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+			XMVectorSet(1035.44493f, 743.288574f + 0.15, 216.964385f + 0.12, 1.f), 10.f, m_IsCollide, !m_bUpdate);
+		break;
+	default:
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
+			m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f, m_IsCollide, !m_bUpdate);
+		break;
+	}
+
 	return NO_EVENT;
 }
 
@@ -126,14 +152,14 @@ void CRobotBattery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTBATTERY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			UI_Create(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			//UI_Create(Cody, InputButton_InterActive);
+			//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_IsCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 		{
 			m_IsCollide = false;
-			UI_Delete(Cody, InputButton_InterActive);
+			//UI_Delete(Cody, InputButton_InterActive);
 		}
 
 		//// May

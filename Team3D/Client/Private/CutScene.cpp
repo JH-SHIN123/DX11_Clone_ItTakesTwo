@@ -16,6 +16,7 @@
 #include"Script.h"
 #include"ControlRoom_Monitor.h"
 #include"GameInstance.h"
+#include "Effect_Generator.h"
 CCutScene::CCutScene()
 {
 }
@@ -29,7 +30,7 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 	{
 		UI_Delete(Cody, CutSceneBar);
 		UI_Delete(May, CutSceneBar);
-		UI_Generator->Set_AllActivation(true);
+		UI_Generator->Set_AllActivation(false);
 
 		switch (m_eCutSceneOption)
 		{
@@ -94,6 +95,8 @@ _bool CCutScene::Tick_CutScene(_double dTimeDelta)
 		MSG_BOX("CutScene Error");
 	}
 
+	EFFECT->CutScene_Effect_Timer(dTimeDelta);
+
 	return true;
 }
 
@@ -135,6 +138,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 		}
 		if (m_dTime >= 99.92)//~코디 사이즈키우기 M~L 5
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_ML);
 			StartCodyLerp(_float3(63.9f, 0.2f, 0.9f), _float3(1.f,1.f,1.f),
 				_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f), 7);
 			m_iCutSceneTake++;
@@ -144,6 +148,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 103.4)//코디 사이즈키우기 L~S 0.1
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_LS);
 			StartCodyLerp(_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f), 
 				_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f), 3);
 			m_iCutSceneTake++;
@@ -153,6 +158,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 108.9f)//코디 사이즈키우기 S~L
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SL);
 			StartCodyLerp(_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f), 
 				_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f),  7);
 			m_iCutSceneTake++;
@@ -162,6 +168,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 111.32f)//코디 사이즈키우기 L~S
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_LS);
 			StartCodyLerp(_float3(57.8f, -8.1f, 3.5f), _float3(5.f, 5.f, 5.f), 
 				_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f), 3);
 			m_iCutSceneTake++;
@@ -171,6 +178,7 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 	{
 		if (m_dTime >= 116.49f)//코디 사이즈키우기 S~M 1
 		{
+			EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
 			StartCodyLerp(_float3(65.f, 0.2f, 0.3f), _float3(0.1f, 0.1f, 0.1f),
 				_float3(63.9f, 0.2f, 0.9f), _float3(1.f, 1.f, 1.f), 7);
 			m_iCutSceneTake++;
@@ -298,6 +306,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 		{
 			pCody->Get_Actor()->Set_Position(XMVectorSet(73.5f, 244.5f, 168.5f, 1.f));
 			pMay->Get_Actor()->Set_Position(XMVectorSet(72.f, 243.8f, 170.4f, 1.f));
+			((CUFO*)DATABASE->Get_BossUFO())->Set_Active(true);
 			m_iCutSceneTake++;
 		}
 	}
@@ -445,7 +454,7 @@ _bool CCutScene::Tick_CutScene_Outro(_double dTimeDelta)
 		pCody->Get_Transform()->Set_WorldMatrix(matWorld);
 		pCody->Get_Actor()->Set_Position(XMVectorSet(80.f, 758.f, 205.f, 1.f));
 		pMay->Get_Transform()->Set_WorldMatrix(matWorld);
-		pMay->Get_Actor()->Set_Position(XMVectorSet(80.f, 758.f, 205.f, 1.f));
+		pMay->Get_Actor()->Set_Position(XMVectorSet(80.f, 758.f, 205.f, 1.f)); 
 	}
 
 	return true;
@@ -496,6 +505,7 @@ HRESULT CCutScene::Start_CutScene()
 			return E_FAIL;
 		break;
 	}
+
 	return S_OK;
 }
 
@@ -574,6 +584,9 @@ HRESULT CCutScene::Start_CutScene_Intro()
 		return E_FAIL;
 	static_cast<CPerformer*>(pPerformer)->Set_PerformerDesc(tDesc);
 	static_cast<CPerformer*>(pPerformer)->Start_Perform(0, dTime);
+
+	EFFECT->Add_Effect_CutScene_Timer(5.26f, Effect_Value_CutScene::MoonBaboon_Land);
+
 
 	return S_OK;
 }
@@ -660,6 +673,10 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 
 	pButton = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(TEXT("Component_Model_ControlRoom_Button_Large_01_Button")));
 	pButton->Set_Position(_float3(60.4f, 218.652f, 238.221f));
+
+	EFFECT->Add_Effect_CutScene_Timer(64.77f, Effect_Value_CutScene::Levitation_Beam);
+	EFFECT->Add_Effect_CutScene_Timer(64.77f, Effect_Value_CutScene::Levitation_Beam);
+
 	return S_OK;
 }
 
@@ -747,6 +764,8 @@ HRESULT CCutScene::Start_CutScene_Outro()
 	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(30.f, 758.f, 203.f), _float3(1.f, 1.f, 1.f), _float3(0.f, 9.f, 4.f)));
 	pUfo->Get_Model()->Set_Animation(CutScene_UFO_Outro);
 
+	EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::MoonBaboon_FallDown_Smoke);
+
 	return S_OK;
 }
 
@@ -763,6 +782,7 @@ HRESULT CCutScene::End_CutScene_Intro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto();
 	UI_Generator->Set_AllActivation(true);
+	((CUFO*)DATABASE->Get_BossUFO())->Set_Active(false);
 
 	return S_OK;
 }
@@ -787,6 +807,8 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -802,6 +824,8 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_IsPlayerSizeSmall(false);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
@@ -823,15 +847,20 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
 	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 	static_cast<CMay*>(DATABASE->GetMay())->Enforce_IdleState();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	/* 상태 초기화 */
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
 	UI_Generator->Set_AllActivation(true);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
+	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
-
 
 	return S_OK;
 }
@@ -860,6 +889,7 @@ HRESULT CCutScene::End_CutScene_Outro()
 	pMainCam->ReSet_Cam_FreeToAuto(true);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true);
+
 	return S_OK;
 }
 
@@ -1016,6 +1046,7 @@ void CCutScene::CodyMove_EjectUfo(_double dTimeDelta)
 	}
 	else
 	{
+		EFFECT->Add_Effect_CutScene_Timer(0.1f, Effect_Value_CutScene::Cody_Size_SM);
 		m_bCodyEjectUFO = true;
 		pCody->Get_Transform()->Set_WorldMatrix(XMMatrixRotationRollPitchYaw(XMConvertToRadians(4.f), 0.f, XMConvertToRadians(9.f)));
 		pCody->Get_Actor()->Set_Position(XMVectorSet(29.f,757.4f,203.f,1.f));
@@ -1223,6 +1254,25 @@ void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
 void CCutScene::Script_Outro(_double dTimeDelta)
 {
 	_double dSoundTime = m_dTime;
+
+	if (dSoundTime >= 0.8 && dSoundTime < 0.8 + dTimeDelta)
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::MoonBaboon_Land);
+	if (dSoundTime >= 1.2 && dSoundTime < 1.2 + dTimeDelta)
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::MoonBaboon_Land);
+	//else if (dSoundTime >= 4.4 && dSoundTime < 4.4 + dTimeDelta)
+	//	EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::UFO_Land);
+	else if (dSoundTime >= 9.9 && dSoundTime < 9.9 + dTimeDelta)
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
+	else if (dSoundTime >= 10.2 && dSoundTime < 10.2 + dTimeDelta)
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
+	else if (dSoundTime >= 10.5 && dSoundTime < 10.5 + dTimeDelta)
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Cody_Size_SM);
+	else if (dSoundTime >= 11.0 && dSoundTime < 11.0 + dTimeDelta)
+	{
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::MoonBaboon_Land);
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::MoonBaboon_Land);
+	}
+
 	if(dSoundTime >= 12.0 && dSoundTime < 12.0 +dTimeDelta)
 		SCRIPT->Render_Script(220, CScript::FULL, 0.9f);
 	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + dTimeDelta)
@@ -1268,7 +1318,10 @@ void CCutScene::Script_Outro(_double dTimeDelta)
 	else if (dSoundTime >= 56.0 && dSoundTime < 56.0 + dTimeDelta)
 		SCRIPT->Render_Script(243, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 59.0 && dSoundTime < 59.0 + dTimeDelta)
+	{
+		EFFECT->Add_Effect_CutScene(Effect_Value_CutScene::Levitation_Beam_Moon);
 		SCRIPT->Render_Script(243, CScript::FULL, 1.9f);
+	}
 
 
 }
