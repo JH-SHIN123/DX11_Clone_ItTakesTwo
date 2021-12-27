@@ -234,9 +234,10 @@ _int CMay::Tick(_double dTimeDelta)
 		return NO_EVENT;
 
 	KeyInput_Rail(dTimeDelta);
+	DeadInBossroom(dTimeDelta);
 	_bool Test = m_pActorCom->Get_IsOnGravityPath();
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO && false == m_bDead_InBossroom)
 	{
 		LaserTennis(dTimeDelta);
 		Wall_Jump(dTimeDelta);

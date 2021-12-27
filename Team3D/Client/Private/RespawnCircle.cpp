@@ -77,6 +77,8 @@ _int CRespawnCircle::Tick(_double TimeDelta)
 		}
 		else if (Player::ID::May == m_ePlayerID)
 		{
+			CMay* pMay = (CMay*)(DATABASE->GetMay());
+			if (pMay) pMay->Respawn_InBossroom();
 			m_IsRespawnCharacterOnce = true;
 		}
 	}
