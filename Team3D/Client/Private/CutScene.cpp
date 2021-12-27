@@ -1292,21 +1292,21 @@ void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
 void CCutScene::Script_GotoMoon(_double dTimeDelta)
 {
 	_double dSoundTime = m_dTime;
-	if (dSoundTime >= 12.0 && dSoundTime < 12.0 + dTimeDelta)
+	if (dSoundTime >= 12.0 && dSoundTime < 12.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(212, CScript::FULL, 0.9);
-	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + dTimeDelta)
+	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(213, CScript::FULL, 1.9);
-	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + dTimeDelta)
+	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(214, CScript::FULL, 1.9);
-	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + dTimeDelta)
+	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(215, CScript::FULL, 1.9);
-	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + dTimeDelta)
+	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(216, CScript::FULL, 1.9);
-	else if (dSoundTime >= 21.0 && dSoundTime < 21.0 + dTimeDelta)
+	else if (dSoundTime >= 21.0 && dSoundTime < 21.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(217, CScript::FULL, 1.9);
-	else if (dSoundTime >= 23.0 && dSoundTime < 23.0 + dTimeDelta)
+	else if (dSoundTime >= 23.0 && dSoundTime < 23.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(218, CScript::FULL, 1.9);
-	else if (dSoundTime >= 25.0 && dSoundTime < 25.0 + dTimeDelta)
+	else if (dSoundTime >= 25.0 && dSoundTime < 25.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(219, CScript::FULL, 1.9);
 
 }
