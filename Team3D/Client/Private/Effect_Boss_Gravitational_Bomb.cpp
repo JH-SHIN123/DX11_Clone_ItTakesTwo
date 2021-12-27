@@ -210,10 +210,10 @@ void CEffect_Boss_Gravitational_Bomb::PlayerHit_Check(_double TimeDelta)
 	_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	_float vCodyDistance = XMVectorGetX(XMVector3Length(vCodyPos - vPos));
-	_float vMayDistance = XMVectorGetX(XMVector3Length(vMayPos - vPos));
+	_float fCodyDistance = XMVectorGetX(XMVector3Length(vCodyPos - vPos));
+	_float fMayDistance = XMVectorGetX(XMVector3Length(vMayPos - vPos));
 
-	if (fRange >= vCodyDistance)
+	if (fRange >= fCodyDistance)
 	{
 		m_fCodyHitTime += (_float)TimeDelta;
 
@@ -224,7 +224,7 @@ void CEffect_Boss_Gravitational_Bomb::PlayerHit_Check(_double TimeDelta)
 		}
 	}
 
-	if (fRange >= vMayDistance)
+	if (fRange >= fMayDistance)
 	{
 		m_fMayHitTime += (_float)TimeDelta;
 
