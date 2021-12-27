@@ -42,6 +42,11 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 	m_IsTargetCody = Data.IsTarget_Cody;
 
+	if (true == m_IsTargetCody)
+		m_eInterActiveID = UI::Boss_Missile_Cody;
+	else
+		m_eInterActiveID = UI::Boss_Missile_May;
+
 	return S_OK;
 }
 
@@ -85,17 +90,27 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 	if (m_IsCrashed == false)
 		Combat_Move(dTimeDelta);
-	else if (m_IsCrashed == true && m_IsCollide && false == m_IsTargetCody && (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
+	else if (m_IsCrashed == true && true == m_bMayCollide && false == m_IsTargetCody && (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
 	{
+		UI_Delete(Cody, InputButton_PS_InterActive);
 		m_bMayControl = true;
-		//UI_Delete(Cody, InputButton_InterActive);
-		//UI_Delete(May, InputButton_PS_InterActive);
+
 	}
-	else if (m_IsCrashed == true && m_IsCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
+	else if (m_IsCrashed == true && true == m_bCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
+		UI_Delete(Cody, InputButton_InterActive);
 		m_bCodyControl = true;
-		//UI_Delete(Cody, InputButton_InterActive);
-		//UI_Delete(May, InputButton_PS_InterActive);
+	}
+
+	if (m_IsCrashed == true && false == m_IsTargetCody)
+	{
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, m_eInterActiveID, m_pTransformCom->Get_State(CTransform::STATE_POSITION),
+			10.f, m_bMayCollide, m_bMayControl);
+	}
+	else if (m_IsCrashed == true && true == m_IsTargetCody)
+	{
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID, m_pTransformCom->Get_State(CTransform::STATE_POSITION),
+			10.f, m_bCodyCollide, m_bCodyControl);
 	}
 
 	if (m_bMayControl)
@@ -143,28 +158,22 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		//UI_Create(Cody, InputButton_InterActive);
-		//UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		m_bCodyCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-		m_IsCollide = false;
-		//UI_Delete(Cody, InputButton_InterActive);
+		m_bCodyCollide = false;
 	}
 
 	//May
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		//UI_Create(May, InputButton_InterActive);
-		//UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_IsCollide = true;
+		m_bMayCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-		m_IsCollide = false;
-		//UI_Delete(May, InputButton_PS_InterActive);
+		m_bMayCollide = false;
 	}
 }
 

@@ -60,7 +60,6 @@ private:
 	GameID::Enum m_eTarget_GameID;
 
 	_bool m_IsTargetCody = false;
-	_bool m_IsCollide = false;
 	_bool m_IsCrashed = false;
 	_bool m_IsFalling = false;
 	_bool m_bStartAdjustAngle = false;
@@ -78,6 +77,8 @@ private:
 	_float m_fSpeed = 0.f;
 	_float m_fRotateAcceleration = 0.f;
 	_float m_fMoveAcceleration = 0.f;
+
+	UI::INTERACTIVE_ID m_eInterActiveID = UI::INTERACTIVE_ID_END;
 
 	_vector m_vPlayerOffSetPosition = XMVectorZero();
 
