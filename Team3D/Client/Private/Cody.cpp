@@ -309,9 +309,6 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-	/* Script */
-	PinBall_Script(dTimeDelta);
-
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	//TEST
@@ -4150,43 +4147,6 @@ void CCody::Ready_PinBall(const _double dTimeDelta)
 		m_IsReadyPinball = false;
 }
 
-void CCody::PinBall_Script(const _double dTimeDelta)
-{
-	if (false == m_bPinBallScript)
-		return;
-
-	m_dScriptTime += dTimeDelta;
-
-	if (0.5f <= m_dScriptTime && 0 == m_iScriptCount)
-	{
-		/* 첫번째 */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			SCRIPT->Render_Script(41, CScript::HALF, 2.f);
-
-		/* 코디가 잘못했을 때 */
-		else
-			SCRIPT->Render_Script(39, CScript::HALF, 2.f);
-
-		++m_iScriptCount;
-	}
-	if (2.8f <= m_dScriptTime && 1 == m_iScriptCount)
-	{
-		/* 두번째 */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			SCRIPT->Render_Script(42, CScript::HALF, 2.f);
-
-		/* 코디가 잘못했을 때 */
-		else
-			SCRIPT->Render_Script(40, CScript::HALF, 2.f);
-
-		m_iScriptCount = 0;
-		m_dScriptTime = 0.0;
-		m_bPinBallScript = false;
-	}
-}
-
 void CCody::Holding_BossUFO(const _double dTimeDelta)
 {
 	if (false == m_IsHolding_UFO)
@@ -4285,14 +4245,13 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 
 	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
 	{
-		///* Sound */
-		///* 메이가 잘못했을 때 */
-		//if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-		//	m_pGameInstance->Play_Sound(TEXT("22.wav"), CHANNEL_PINBALLVOICE);
-		///* 코디가 잘못했을 때 */
-		//else
-		//	m_pGameInstance->Play_Sound(TEXT("21.wav"), CHANNEL_PINBALLVOICE);
-		//m_bPinBallScript = true;
+		/* Sound */
+		/* 메이가 잘못했을 때 */
+		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
+			SCRIPT->VoiceFile_No22();
+		/* 코디가 잘못했을 때 */
+		else
+			SCRIPT->VoiceFile_No21();
 	}
 
 	m_IsPinBall = false;
