@@ -12,6 +12,7 @@ public:
 	HRESULT NativeConstruct(ID3D11Device* pDevice,ID3D11DeviceContext* pDeviceContext);
 public:
 	HRESULT Add_CutScene(const _tchar* pCutSceneTag,CCutScene* pCutScene);
+	CCutScene::CutSceneOption Get_CurCutScene();
 	_bool	Get_IsPlayCutScene() { return m_bIsPlayingCutScene; }
 	_bool	Get_IsCutScenePlayed(CCutScene::CutSceneOption eCutSceneOption) { return m_bIsPlayedCutScene[(_uint)eCutSceneOption]; }
 

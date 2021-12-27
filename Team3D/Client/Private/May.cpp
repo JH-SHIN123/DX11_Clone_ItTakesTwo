@@ -216,7 +216,8 @@ void CMay::Add_LerpInfo_To_Model()
 _int CMay::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
-	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() &&
+		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
 	{
 
 		m_pActorCom->Update(dTimeDelta); 
@@ -1928,13 +1929,13 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
 			/* Script */
-			if (false == m_bPinBallScript_Once[0])
-			{
-				m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-				m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
-				SCRIPT->Render_Script(37, CScript::HALF, 1.f);
-				m_bPinBallScript_Once[0] = true;
-			}
+			//if (false == m_bPinBallScript_Once[0])
+			//{
+			//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+			//	m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
+			//	SCRIPT->Render_Script(37, CScript::HALF, 1.f);
+			//	m_bPinBallScript_Once[0] = true;
+			//}
 
 			/* UI */
 			UI_Delete(May, InputButton_PS_InterActive);
@@ -2171,7 +2172,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
 			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_PushButton_Var2);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 			m_bLaserTennis = true;
@@ -2326,6 +2327,7 @@ void CMay::Rotate_Valve(const _double dTimeDelta)
 			m_IsEnterValve = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 			DATABASE->Add_ValveCount_Cody(false);
 			DATABASE->Set_Valve_Activate(true);
 		}
@@ -2511,13 +2513,13 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* °ø ¹ß»ç */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
-				if (false == m_bPinBallScript_Once[1])
-				{
-					m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-					m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
-					SCRIPT->Render_Script(38, CScript::HALF, 1.f);
-					m_bPinBallScript_Once[1] = true;
-				}
+				//if (false == m_bPinBallScript_Once[1])
+				//{
+				//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
+				//	m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
+				//	SCRIPT->Render_Script(38, CScript::HALF, 1.f);
+				//	m_bPinBallScript_Once[1] = true;
+				//}
 
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
