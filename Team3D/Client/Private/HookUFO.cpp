@@ -185,7 +185,7 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 
 	vComparePos = vPos - vTargetPos;
 
-	_float fRange = 50.f;
+	_float fRange = 40.f;
 
 	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
 	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
@@ -255,7 +255,7 @@ HRESULT CHookUFO::Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag)
 	m_pCodyGauge_Circle->Set_Position(vPos);
 
 	// 범위 설정
-	m_pCodyGauge_Circle->Set_Range(30.f);
+	m_pCodyGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
 }
@@ -306,7 +306,7 @@ HRESULT CHookUFO::Ready_Layer_MayGauge_Circle(const _tchar * pLayerTag)
 	m_pCodyGauge_Circle->Set_Position(vPos);
 
 	// 범위 설정
-	m_pCodyGauge_Circle->Set_Range(30.f);
+	m_pCodyGauge_Circle->Set_Range(20.f);
 
 	return S_OK;
 }
