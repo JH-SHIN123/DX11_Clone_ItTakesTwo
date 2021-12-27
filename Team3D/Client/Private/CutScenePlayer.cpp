@@ -41,6 +41,12 @@ HRESULT CCutScenePlayer::Add_CutScene(const _tchar * pCutSceneTag, CCutScene * p
 	m_CutScenes.emplace(CUTSCENES::value_type(pCutSceneTag, pCutScene));
 	return S_OK;
 }
+CCutScene::CutSceneOption CCutScenePlayer::Get_CurCutScene()
+{
+	if (m_pCurCutScene == nullptr)
+		return CCutScene::CutSceneOption::CutScene_End;
+	return m_pCurCutScene->Get_Option();
+}
 HRESULT CCutScenePlayer::Add_Performer(const _tchar * pPerformerTag, CGameObject * pPerformer)
 {
 	if (pPerformer == nullptr ||

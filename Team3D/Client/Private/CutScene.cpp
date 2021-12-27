@@ -423,9 +423,24 @@ _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
-	if (m_dTime < 3.49)//문바분 사출
+	if (m_dTime < 1.f)
 	{
-		//pMoonBaboon->
+		_matrix matUfo =
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(-90.f), XMConvertToRadians(-90.f), 0.f)*
+			XMMatrixScaling(95.f, 95.f, 95.f)*
+			pUfo->Get_Model()->Get_BoneMatrix("Chair")* pUfo->Get_Transform()->Get_WorldMatrix();
+		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3])+2.f);
+		pMoonBaboon->Get_Transform()->Set_WorldMatrix(matUfo);
+
+	}
+	if (m_dTime > 7.6)
+	{
+		_matrix matUfo = 
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(90.f))*
+			XMMatrixScaling(100.f, 100.f, 100.f)* pUfo->Get_Model()->Get_BoneMatrix("Align")
+			*pUfo->Get_Transform()->Get_WorldMatrix() ;
+		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3]) + 2.f);
+		pMay->Get_Transform()->Set_WorldMatrix(matUfo);
 	}
 	if (m_dTime >= 24.31&&m_dTime < 24.31 + dTimeDelta)
 	{
@@ -462,14 +477,16 @@ _bool CCutScene::Tick_CutScene_Outro(_double dTimeDelta)
 
 HRESULT CCutScene::Start_CutScene()
 {
+	if (m_eCutSceneOption != CutSceneOption::CutScene_Eject_InUFO)
+	{
+		m_dTime = 0.0;
+		m_iCutSceneTake = 0;
+		UI_CreateOnlyOnce(Cody, CutSceneBar);
+		UI_CreateOnlyOnce(May, CutSceneBar);
 
-	m_dTime = 0.0;
-	m_iCutSceneTake = 0;
-	UI_CreateOnlyOnce(Cody, CutSceneBar);
-	UI_CreateOnlyOnce(May, CutSceneBar);
-
-	UI_Generator->Set_AllActivation(false);
-
+		UI_Generator->Set_AllActivation(false);
+		
+	}
 	switch (m_eCutSceneOption)
 	{
 	case Client::CCutScene::CutSceneOption::CutScene_Intro:
@@ -712,12 +729,14 @@ HRESULT CCutScene::Start_CutScene_GotoMoon()
 	pMay->Get_Model()->Set_Animation(ANI_M_CutScene_SpaceStation_BossFight_Eject);
 
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
-	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(_float3(64.f, 357.5f, 195.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
+	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(
+		_float3(64.f, 357.5f, 195.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
 	pUfo->Get_Model()->Set_Animation(CutScene_Eject_FlyingSaucer);
-	
-	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
-	pMoonBaboon->Set_Animation(CutScene_Eject_MoonBaboon, Moon_Ufo_MH);
+	pUfo->Set_Active(true);
 
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	pMoonBaboon->Set_Animation(Moon_Eject, Moon_Ufo_MH);
+	pMoonBaboon->Set_Active(true);
 	return S_OK;
 }
 
@@ -778,9 +797,9 @@ HRESULT CCutScene::End_CutScene_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto();
+	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto();
+	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 	((CUFO*)DATABASE->Get_BossUFO())->Set_Active(false);
 
@@ -810,9 +829,9 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true);
+	pMainCam->ReSet_Cam_FreeToAuto(true, false , 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true);
+	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
@@ -827,9 +846,9 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true);
+	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true);
+	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
@@ -852,9 +871,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	/* 상태 초기화 */
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true);
+	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true);
+	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
@@ -875,7 +894,10 @@ HRESULT CCutScene::End_CutScene_GotoMoon()
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	
+	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
+	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
+	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	return S_OK;
 }
 

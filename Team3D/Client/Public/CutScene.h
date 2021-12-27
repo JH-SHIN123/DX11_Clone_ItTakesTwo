@@ -15,6 +15,7 @@ public:
 public:
 	CCutScene();
 	virtual ~CCutScene() = default;
+	CutSceneOption Get_Option() { return m_eCutSceneOption; }
 public:
 	_bool Tick_CutScene(_double dTimeDelta);
 	
