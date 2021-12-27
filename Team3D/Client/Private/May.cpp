@@ -219,7 +219,6 @@ _int CMay::Tick(_double dTimeDelta)
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() &&
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
 	{
-
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -2513,13 +2512,7 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* °ø ¹ß»ç */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
-				//if (false == m_bPinBallScript_Once[1])
-				//{
-				//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-				//	m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
-				//	SCRIPT->Render_Script(38, CScript::HALF, 1.f);
-				//	m_bPinBallScript_Once[1] = true;
-				//}
+				SCRIPT->VoiceFile_No20();
 
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
