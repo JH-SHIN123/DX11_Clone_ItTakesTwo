@@ -2,6 +2,7 @@
 #include "..\public\PressurePlateLock.h"
 #include "Cody.h"
 #include "May.h"
+#include "Effect_Generator.h"
 
 CPressurePlateLock::CPressurePlateLock(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -120,7 +121,14 @@ void CPressurePlateLock::LockActive(_double TimeDelta)
 		fScaleX += (_float)TimeDelta * 2.5f;
 
 		if (fMaxScale <= fScaleX)
+		{
+			if (false == m_bConnectEffectOnce) 
+			{
+				EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, m_pTransformCom->Get_WorldMatrix());
+				m_bConnectEffectOnce = true;
+			}
 			return;
+		}
 
 		_vector vScale = { fScaleX, fScaleY, fScaleZ, 1.f };
 
@@ -141,6 +149,8 @@ void CPressurePlateLock::LockActive(_double TimeDelta)
 
 		_vector vScale = { fScaleX, fScaleY, fScaleZ, 1.f };
 		m_pTransformCom->Set_Scale(vScale);
+
+		m_bConnectEffectOnce = false;
 	}
 }
 

@@ -95,6 +95,16 @@
 #include "Effect_EndingRocket_Circle.h"
 #pragma endregion
 
+#pragma region CutSceneEffect
+#include "Effect_CS_CodySize.h"
+#include "Effect_CS_MoonBaboon_Land.h"
+#include "Effect_CS_Levitation_Beam.h"
+#include "Effect_CS_Levitation_Beam_Particle.h"
+#include "Effect_CS_MoonBaboon_FallDown_Smoke.h"
+#include "Effect_CS_MoonBaboon_FallDown_Smoke_Burn.h"
+#include "Effect_CS_UFO_Land.h"
+#pragma endregion
+
 IMPLEMENT_SINGLETON(CEffect_Generator)
 
 
@@ -102,6 +112,7 @@ CEffect_Generator::CEffect_Generator()
 {
 	m_pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(m_pGameInstance);
+	m_listEffectTimer.resize(0);
 }
 
 HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix, void* pArg)
@@ -434,6 +445,8 @@ HRESULT CEffect_Generator::Load_EffectData(const _tchar* pFilePath, ID3D11Device
 	}
 
 	CloseHandle(hFile);
+
+	FAILED_CHECK_RETURN(Create_CutScene_Effect(pDevice, pDeviceContext), E_FAIL);
 
 	return S_OK;
 }
@@ -780,29 +793,111 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Mask_Drop"),			CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/drop_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Star"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Star.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Zoom"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/Zoom_01.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_WarpGates_Cable"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/WarpGates_Cable.png"))), E_FAIL);
 
-	
+	//
 	
 #pragma endregion
 
 	return S_OK;
 }
 
-void CEffect_Generator::LoopSpawner(_double TimeDelta)
+HRESULT CEffect_Generator::Create_CutScene_Effect(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-#ifdef _DEBUG
-	m_dSpawnTerm -= TimeDelta;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Cody_Size", CEffect_CS_CodySize::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_MoonBaboon_Land", CEffect_CS_MoonBaboon_Land::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Levitation_Beam", CEffect_CS_Levitation_Beam::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_Levitation_Beam_Particle", CEffect_CS_Levitation_Beam_Particle::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
 
-	if (0.0 >= m_dSpawnTerm)
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke", CEffect_CS_MoonBaboon_FallDown_Smoke::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke_Burn", CEffect_CS_MoonBaboon_FallDown_Smoke_Burn::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Prototype(Level::LEVEL_STAGE, L"GameObject_2DCS_UFO_Land", CEffect_CS_UFO_Land::Create(pDevice, pDeviceContext, nullptr)), E_FAIL);
+
+	return S_OK;
+}
+
+void CEffect_Generator::CutScene_Effect_Timer(_double dDeltaTime)
+{
+	if (0 >= m_listEffectTimer.size())
+		return;
+
+	for (auto& iter = m_listEffectTimer.begin(); iter != m_listEffectTimer.end();)
 	{
-		m_dSpawnTerm = 5.0;
-
-		_matrix WorldMatrix = XMMatrixIdentity();
-		
-		WorldMatrix.r[3] = { 30.f, 0.f, 30.f, 1.f };
-		//Add_Effect(Effect_Value::Cody_DeadEffect, WorldMatrix);
+		iter->fTime -= (_float)dDeltaTime;
+		if (0.f > iter->fTime)
+		{
+			Add_Effect_CutScene(iter->eEffect_Value_CS);
+			iter = m_listEffectTimer.erase(iter);
+		}
+		else ++iter;
 	}
-#endif // _DEBUG
+}
+
+HRESULT CEffect_Generator::Add_Effect_CutScene(Effect_Value_CutScene eEffect, _fmatrix WorldMatrix)
+{
+	if (Effect_Value_CutScene::Effect_Value_End <= eEffect)
+		return E_FAIL;
+
+	EFFECT_DESC_CLONE Clone_Data;
+
+	_tchar szLayer[MAX_PATH] = L"Layer_Effect_CutScene";
+	_tchar szPrototype[MAX_PATH] = L"";
+
+	XMStoreFloat4x4(&Clone_Data.WorldMatrix, WorldMatrix);
+
+#pragma region Effect_CutScene
+	switch (eEffect)
+	{
+	case Effect_Value_CutScene::Cody_Size_ML:
+		Clone_Data.iCutSceneTake = 1;
+		lstrcpy(szPrototype, L"GameObject_2DCS_Cody_Size");
+		break;
+	case Effect_Value_CutScene::Cody_Size_LS:
+		Clone_Data.iCutSceneTake = 2;
+		lstrcpy(szPrototype, L"GameObject_2DCS_Cody_Size");
+		break;
+	case Effect_Value_CutScene::Cody_Size_SL:
+		Clone_Data.iCutSceneTake = 3;
+		lstrcpy(szPrototype, L"GameObject_2DCS_Cody_Size");
+		break;
+	case Effect_Value_CutScene::Cody_Size_SM:
+		Clone_Data.iCutSceneTake = 4;
+		lstrcpy(szPrototype, L"GameObject_2DCS_Cody_Size");
+		break;
+	case Effect_Value_CutScene::MoonBaboon_Land:
+		lstrcpy(szPrototype, L"GameObject_2DCS_MoonBaboon_Land");
+		break;
+	case Effect_Value_CutScene::Levitation_Beam:
+		Clone_Data.iCutSceneTake = 0;
+		lstrcpy(szPrototype, L"GameObject_2DCS_Levitation_Beam");
+		break;
+	case Effect_Value_CutScene::Levitation_Beam_Moon:
+		Clone_Data.iCutSceneTake = 1;
+		lstrcpy(szPrototype, L"GameObject_2DCS_Levitation_Beam");
+		break;
+	case Effect_Value_CutScene::MoonBaboon_FallDown_Smoke:
+		lstrcpy(szPrototype, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke");
+		lstrcpy(szPrototype, L"GameObject_2DCS_MoonBaboon_FallDown_Smoke_Burn");
+		break;
+	case Effect_Value_CutScene::UFO_Land:
+		lstrcpy(szPrototype, L"GameObject_2DCS_UFO_Land");
+		break;
+	default:
+		break;
+	}
+
+#pragma endregion
+
+m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Generator::Add_Effect_CutScene_Timer(_float fTime, Effect_Value_CutScene eEffect)
+{
+	m_listEffectTimer.emplace_back(tagCutSceneTimer_Desc(fTime, eEffect));
+
+	return S_OK;
 }
 
 _fmatrix CEffect_Generator::Compute_Pivot(_vector vScale, _vector vRotate)

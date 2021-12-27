@@ -6,6 +6,8 @@
 /* Framework */
 #include "Loading.h"
 #include "EndingCredit_Manager.h"
+#include "Level_Loading.h"
+#include "UI_Generator.h"
 /* Se */
 /* Jung */
 #include "Effect_Generator.h"
@@ -32,6 +34,7 @@
 #include "Camera.h"
 #include"CutScenePlayer.h"
 #include"Performer.h"
+#include "Level_Loading.h"
 
 #pragma endregion
 
@@ -125,6 +128,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 {
 	CLevel::Tick(dTimedelta);
 
+	CGameInstance* pGameinstance = CGameInstance::GetInstance();
+
 #ifdef __INSTALL_LIGHT
 	CLight_Generator::GetInstance()->KeyInput(dTimedelta);
 
@@ -151,6 +156,12 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		ENDINGCREDIT->Create_Environment();
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
+
+	if (m_iLevelStep == 3)
+	{
+		m_pGameInstance->Stop_SoundAll();
+		FAILED_CHECK_RETURN(m_pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO)), EVENT_ERROR);
+	}
 
 	return NO_EVENT;
 }
@@ -293,7 +304,7 @@ HRESULT CLevel_Stage::Ready_Test()
 
 	/* Hye */
 #ifdef __TEST_HYE
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Environment", Level::LEVEL_STAGE, TEXT("GameObject_Laser_LaserTennis")), E_FAIL);
+	Ready_Layer_SecurityCamera(TEXT("Layer_Test"));
 #endif // __TEST_HYE
 
 	/* Teak */
@@ -1003,11 +1014,6 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 	if (m_iEndingCreditStep == 0)
 	{
 		++m_iEndingCreditStep;
-
-		//for (_uint i = 0; i < 23; ++i)
-		//{
-		//	ENDINGCREDIT->Create_3DText(i, -600.f - i * 250.f);
-		//}
 
 		ENDINGCREDIT->Create_3DText(0, -792.5f);
 		ENDINGCREDIT->Create_3DText(1, -1080.f);

@@ -1209,6 +1209,17 @@ PS_OUT  PS_MAIN_COLOR(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_MOONBABOON_SMOKE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor.a *= In.fTime;
+	
+
+	return Out;
+}
+
 PS_OUT  PS_CIRCLE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1895,4 +1906,15 @@ technique11		DefaultTechnique
 		GeometryShader = compile gs_5_0  GS_MAIN();
 		PixelShader = compile ps_5_0  PS_ROCKET_CIRCLE();
 	}
+
+	pass moonbaboon_smoke // 25
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_MOONBABOON_SMOKE();
+	}
+	//
 }

@@ -265,6 +265,25 @@ PS_OUT  PS_DASH(PS_IN_DIST In)
 	return Out;
 }
 
+PS_OUT  PS_LEVITATION_BEAM(PS_IN_DIST In)//
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+
+	float fLenght = length(vCenter);
+	fLenght = fLenght / 0.5f; // normalize
+
+	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	Out.vColor *= g_vColor;
+
+	Out.vColor.a = Out.vColor.b * g_fAlpha;
+
+	return Out;
+}
+
 PS_OUT  PS_MASKING_DISTORTION(PS_IN_DIST In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -280,7 +299,7 @@ PS_OUT  PS_MASKING_DISTORTION(PS_IN_DIST In)
 	float4 vColor = g_DiffuseTexture.Sample(DiffuseSampler, vDiffUV);
 	vColor.a = vFX_tex.r;
 	Out.vColor = vColor;
-	 
+
 	if (0.f >= vFX_tex.r)
 		discard;
 
@@ -372,5 +391,15 @@ technique11 DefaultTechnique
 		VertexShader = compile vs_5_0 VS_ANGLE_UV();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0 PS_DISTORTION_UFO_RING();
+	}
+
+	pass CS_Levitation_Beam // 4
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_ANGLE_UV();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0 PS_LEVITATION_BEAM();
 	}
 };

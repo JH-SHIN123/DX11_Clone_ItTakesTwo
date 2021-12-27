@@ -72,6 +72,7 @@ protected:
 	_float						m_fFadeOutSpeed = 5.f;
 	_bool						m_IsFadeOut = false;
 	_bool						m_IsActive = true;
+	_int						m_iColorOption = 0;
 
 protected:
 	/* For.Component */

@@ -80,42 +80,47 @@ void CGameObject::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGame
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)
 {
-	_tchar* pTag = new _tchar[lstrlenW(pComponentTag) + 1];
-	lstrcpyW(pTag, pComponentTag);
+	//_tchar* pTag = new _tchar[lstrlenW(pComponentTag) + 1];
+	//lstrcpyW(pTag, pComponentTag);
 
-	CComponent*	pComponent = Find_Component(pTag);
-	NOT_NULL_CHECK_RETURN(pComponent, E_FAIL);
+	//CComponent*	pComponent = Find_Component(pTag);
+	//NOT_NULL_CHECK_RETURN(pComponent, E_FAIL);
 
-	pComponent = m_pGameInstance->Add_Component_Clone(iPrototypeLevelIndex, pPrototypeTag, pArg);
+	//pComponent = m_pGameInstance->Add_Component_Clone(iPrototypeLevelIndex, pPrototypeTag, pArg);
+	//NULL_CHECK_RETURN(pComponent, E_FAIL);
+
+	//m_Components.emplace(pTag, pComponent);
+
+	//*ppOut = pComponent;
+	//Safe_AddRef(pComponent);
+
+	/* 구조 변경 */
+	CComponent* pComponent = m_pGameInstance->Add_Component_Clone(iPrototypeLevelIndex, pPrototypeTag, pArg);
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 
-	m_Components.emplace(pTag, pComponent);
-
 	*ppOut = pComponent;
-	Safe_AddRef(pComponent);
 
 	return S_OK;
 }
 
-CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
-{
-	auto iter = find_if(m_Components.begin(), m_Components.end(), CTagFinder(pComponentTag));
-
-	if (iter == m_Components.end())
-		return nullptr;
-
-	return iter->second;
-}
+//CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
+//{
+//	auto iter = find_if(m_Components.begin(), m_Components.end(), CTagFinder(pComponentTag));
+//
+//	if (iter == m_Components.end())
+//		return nullptr;
+//
+//	return iter->second;
+//}
 
 void CGameObject::Free()
 {
-	for (auto& rPair : m_Components)
-	{
-		delete[] rPair.first;
-		Safe_Release(rPair.second);
-	}
-
-	m_Components.clear();
+	//for (auto& rPair : m_Components)
+	//{
+	//	delete[] rPair.first;
+	//	Safe_Release(rPair.second);
+	//}
+	//m_Components.clear();
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

@@ -29,7 +29,7 @@ private:
 	CTransform*			m_pCodyTransformCom = nullptr;
 
 	_float				m_fScale = 0.3f;
-	_float				m_fMaxScale = 1.2f;
+	_float				m_fMaxScale = 1.5f;
 	_bool				m_bCollision = false;
 
 private:

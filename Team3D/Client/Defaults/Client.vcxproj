@@ -267,6 +267,13 @@
     <ClInclude Include="..\public\Effect_Boss_UFO_Flying_Particle_Flow.h" />
     <ClInclude Include="..\Public\Effect_Cody_Size.h" />
     <ClInclude Include="..\public\Effect_Cody_Size_ShockWave.h" />
+    <ClInclude Include="..\public\Effect_CS_CodySize.h" />
+    <ClInclude Include="..\Public\Effect_CS_Levitation_Beam.h" />
+    <ClInclude Include="..\public\Effect_CS_Levitation_Beam_Particle.h" />
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_FallDown_Smoke.h" />
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_FallDown_Smoke_Burn.h" />
+    <ClInclude Include="..\public\Effect_CS_MoonBaboon_Land.h" />
+    <ClInclude Include="..\public\Effect_CS_UFO_Land.h" />
     <ClInclude Include="..\Public\Effect_Dash.h" />
     <ClInclude Include="..\public\Effect_DashMesh.h" />
     <ClInclude Include="..\Public\Effect_Dead_Particle_Fire.h" />
@@ -505,6 +512,7 @@
     <ClInclude Include="..\Public\Wall_LaserTennis.h" />
     <ClInclude Include="..\Public\WarpGate.h" />
     <ClInclude Include="..\Public\WarpGate_Star.h" />
+    <ClInclude Include="..\Public\WhiteOut.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -585,6 +593,13 @@
     <ClCompile Include="..\private\Effect_Boss_UFO_Flying_Particle_Flow.cpp" />
     <ClCompile Include="..\Private\Effect_Cody_Size.cpp" />
     <ClCompile Include="..\private\Effect_Cody_Size_ShockWave.cpp" />
+    <ClCompile Include="..\private\Effect_CS_CodySize.cpp" />
+    <ClCompile Include="..\Private\Effect_CS_Levitation_Beam.cpp" />
+    <ClCompile Include="..\private\Effect_CS_Levitation_Beam_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_FallDown_Smoke.cpp" />
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_FallDown_Smoke_Burn.cpp" />
+    <ClCompile Include="..\private\Effect_CS_MoonBaboon_Land.cpp" />
+    <ClCompile Include="..\private\Effect_CS_UFO_Land.cpp" />
     <ClCompile Include="..\Private\Effect_Dash.cpp" />
     <ClCompile Include="..\private\Effect_DashMesh.cpp" />
     <ClCompile Include="..\Private\Effect_Dead_Particle_Fire.cpp" />
@@ -822,6 +837,7 @@
     <ClCompile Include="..\Private\Wall_LaserTennis.cpp" />
     <ClCompile Include="..\Private\WarpGate.cpp" />
     <ClCompile Include="..\Private\WarpGate_Star.cpp" />
+    <ClCompile Include="..\Private\WhiteOut.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
