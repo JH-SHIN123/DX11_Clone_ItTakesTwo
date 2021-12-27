@@ -66,34 +66,36 @@ HRESULT CTutorialDoor::NativeConstruct(void * pArg)
 _int CTutorialDoor::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
+	_float fUI_Radius = 6.f;
+
+	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor,
+		m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION), fUI_Radius, m_IsCollide, m_bPull);
 
 	if (m_pGameInstance->Pad_Key_Down(DIP_Y) && m_IsCollide
 		|| m_pGameInstance->Key_Down(DIK_O) && m_IsCollide)
 	{
 		m_bPull = true;
 		m_IsNoGrab = false;
-		UI_Delete(May, InputButton_InterActive);
-		m_pGameInstance->Stop_Sound(CHANNEL_FIRE_DOOR);
-		m_pGameInstance->Play_Sound(TEXT("FireDoor_Open.wav"), CHANNEL_FIRE_DOOR);
-	}
-
-	if (m_pGameInstance->Pad_Key_Down(DIP_A) || m_pGameInstance->Key_Down(DIK_I))
-	{
-		m_bPull = false;
-		m_IsNoGrab = true;
-		m_IsDelete_UI = false;
-		m_pGameInstance->Stop_Sound(CHANNEL_FIRE_DOOR);
-		m_pGameInstance->Play_Sound(TEXT("FireDoor_Close.wav"), CHANNEL_FIRE_DOOR);
+		if (false == m_IsDelete_UI)
+		{
+			m_IsDelete_UI = true;
+			UI_Delete(May, InputButton_PS_InterActive);
+			m_pGameInstance->Stop_Sound(CHANNEL_FIRE_DOOR);
+			m_pGameInstance->Play_Sound(TEXT("FireDoor_Open.wav"), CHANNEL_FIRE_DOOR);
+		}
 	}
 
 	if (true == m_IsCollide)
 	{
 		if (m_bPull == true)
 		{
-			if (false == m_IsDelete_UI)
+			if (m_pGameInstance->Pad_Key_Down(DIP_A) || m_pGameInstance->Key_Down(DIK_I))
 			{
-				UI_Generator->Delete_InterActive_UI(Player::May, UI::TutorialDoor);
-				m_IsDelete_UI = true;
+				m_bPull = false;
+				m_IsNoGrab = true;
+				m_IsDelete_UI = false;
+				m_pGameInstance->Stop_Sound(CHANNEL_FIRE_DOOR);
+				m_pGameInstance->Play_Sound(TEXT("FireDoor_Close.wav"), CHANNEL_FIRE_DOOR);
 			}
 
 			m_IsPullMax = false;
@@ -147,10 +149,6 @@ _int CTutorialDoor::Tick(_double dTimeDelta)
 	}
 
 	m_pEffectFireDoor->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-	if(false == m_IsCollide)
-	UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::TutorialDoor,
-		m_pTransformCom_Trigger->Get_State(CTransform::STATE_POSITION), 6.f, m_IsCollide);
 
 	if (true == m_IsPullMax_Once)
 	{
