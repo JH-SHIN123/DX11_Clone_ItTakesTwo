@@ -219,7 +219,6 @@ _int CMay::Tick(_double dTimeDelta)
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() &&
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
 	{
-
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -2164,17 +2163,17 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
-
+			//
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Delete(May, InputButton_PS_InterActive);
 			LASERTENNIS->Set_PowerCoordUI_May(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
+			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.55f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_M_PushButton_Var2);
-			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+			m_pModelCom->Set_Animation(ANI_M_LaserTennis_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_LaserTennis_MH);
 
 			m_bLaserTennis = true;
 		}
@@ -2514,13 +2513,7 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* °ø ¹ß»ç */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
-				//if (false == m_bPinBallScript_Once[1])
-				//{
-				//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-				//	m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
-				//	SCRIPT->Render_Script(38, CScript::HALF, 1.f);
-				//	m_bPinBallScript_Once[1] = true;
-				//}
+				SCRIPT->VoiceFile_No20();
 
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
@@ -2680,7 +2673,7 @@ void CMay::LaserTennis(const _double dTimeDelta)
 	if (true == LASERTENNIS->Get_PushCoord())
 	{
 		m_pActorCom->Jump_Start(2.f);
-		m_pModelCom->Set_Animation(ANI_M_RocketFirework);
+		m_pModelCom->Set_Animation(ANI_M_LaserTennis_PushButton);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 		m_bLaserTennis = false;

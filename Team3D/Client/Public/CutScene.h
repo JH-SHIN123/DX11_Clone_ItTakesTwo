@@ -69,6 +69,7 @@ private:
 	void Script_Intro(_double dTimeDelta);
 	void Script_Boss_Intro(_double dTimeDelta);
 	void Script_Eject_InUFO(_double dTimeDelta);
+	void Script_GotoMoon(_double dTimeDelta);
 	void Script_Outro(_double dTimeDelta);
 private:
 	class CCutScenePlayer* m_pCutScenePlayer = nullptr;

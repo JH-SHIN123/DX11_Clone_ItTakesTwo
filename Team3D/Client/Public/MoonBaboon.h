@@ -57,7 +57,7 @@ public:
 	void During_Animation_Behavior(_double dTimeDelta);
 	void Fix_MoonBaboon_Chair(_double dTimeDelta);
 	void SetUp_IntroOffset(_double dTimeDelta);
-
+	void Set_CutSceneAnimation(_uint iAnimIdx, _double dTime);
 private:
 	MOON_STATE m_eCurState = MOON_STATE_END;
 	MOON_STATE m_eNextState = MOON_STATE_END;
