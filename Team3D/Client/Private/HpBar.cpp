@@ -98,6 +98,12 @@ HRESULT CHpBar::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+void CHpBar::Reset()
+{
+	// 부활시 한번 호출됨 - 테스트 부탁
+	m_fHp = m_fMaxHp;
+}
+
 void CHpBar::Set_Active(_bool IsCheck)
 {
 	m_IsActive = IsCheck;

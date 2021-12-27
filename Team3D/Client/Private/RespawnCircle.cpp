@@ -3,6 +3,8 @@
 
 #include "GameInstance.h"
 #include "UI_Generator.h"
+#include "Cody.h"
+#include "May.h"
 
 CRespawnCircle::CRespawnCircle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -65,6 +67,20 @@ _int CRespawnCircle::Tick(_double TimeDelta)
 
 	Spawn_Effect(TimeDelta);
 
+	if (m_IsFullGuage && false == m_IsRespawnCharacterOnce)
+	{
+		if (Player::ID::Cody == m_ePlayerID)
+		{
+			CCody* pCody = (CCody*)(DATABASE->GetCody());
+			if (pCody) pCody->Respawn_InBossroom();
+			m_IsRespawnCharacterOnce = true;
+		}
+		else if (Player::ID::May == m_ePlayerID)
+		{
+			m_IsRespawnCharacterOnce = true;
+		}
+	}
+
 	return _int();
 }
 
@@ -126,7 +142,7 @@ HRESULT CRespawnCircle::Ready_Component()
 
 void CRespawnCircle::Set_Gauge(_double TimeDelta)
 {
-	if (1 == m_iOption)
+	if (true == m_IsFullGuage)
 		return;
 
 	if (m_pGameInstance->Key_Down(DIK_E))
@@ -134,7 +150,9 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		m_fTime += (_float)TimeDelta * 2.f;
 
 		m_iRespawnOption = 1;
-		UI_Generator->Set_ScaleEffect(Player::Cody, UI::RespawnCircle);
+
+		if (1.f <= m_fTime)
+			m_IsFullGuage = true;
 	}
 	else
 	{

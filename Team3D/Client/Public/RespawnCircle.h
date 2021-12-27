@@ -26,6 +26,10 @@ public:
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
+	_bool							m_IsRespawnCharacterOnce = false;
+
+private:
+	_bool							m_IsFullGuage = false;
 	_float							m_fTime = 0.5f;
 	_uint							m_iPassNum = 0;
 	_float2							m_vStartScale;

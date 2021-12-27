@@ -319,8 +319,9 @@ _int CCody::Tick(_double dTimeDelta)
 #pragma region BasicActions
 	/////////////////////////////////////////////
 	KeyInput_Rail(dTimeDelta);
+	DeadInBossroom(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit && false == m_bDead_InBossroom)
 	{
 		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
@@ -446,7 +447,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 
 HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn) 
+	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn || m_bDead_InBossroom)
 		return S_OK;
 
 	CCharacter::Render(eGroup);
@@ -4132,6 +4133,66 @@ void CCody::Set_RadiarBlur(_bool bActive)
 	}
 	else
 		m_pGameInstance->Set_RadiarBlur_Main(bActive, vFocusPos);
+}
+#pragma endregion
+
+#pragma region Dead_InBossroom
+void CCody::Respawn_InBossroom()
+{
+	m_pHpBar->Reset();
+	m_bDead_InBossroom = false;
+	m_pGameInstance->Set_MainViewBlur(false);
+
+	/* Sound */
+	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+	m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
+
+	m_pModelCom->Set_Animation(ANI_C_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+	//m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+	Enforce_IdleState();
+	m_pActorCom->Set_ZeroGravity(false, false, false);
+	m_dDeadTime = 0.f;
+	m_IsCollide = false;
+	m_IsDeadLine = false;
+	m_bRespawnCheck = true;
+
+	/* Effect */
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+}
+void CCody::DeadInBossroom(const _double dTimeDelta)
+{
+	NULL_CHECK(m_pHpBar);
+
+	/* 데드라인과 충돌시 1초후에 리스폰 */
+	_float fHp = m_pHpBar->Get_Hp();
+	if (fHp <= 0.f)
+	{
+		if (false == m_bDead_InBossroom)
+		{
+			// Create Respawn UI
+			UI_CreateOnlyOnce(Cody, RespawnCircle);
+
+			// Create Effect
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+			// Set Blur
+			m_pGameInstance->Set_MainViewBlur(true);
+
+			// Set States
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			Enforce_IdleState();
+			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
+			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
+			m_bDead_InBossroom = true;
+		}
+
+		m_pActorCom->Get_Actor()->putToSleep();
+		m_pActorCom->Update(dTimeDelta);
+	}
 }
 #pragma endregion
 
