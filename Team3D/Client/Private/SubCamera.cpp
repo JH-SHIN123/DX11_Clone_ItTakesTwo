@@ -589,10 +589,10 @@ _int CSubCamera::Tick_CamHelper_SeeCamNode(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-_int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook,_bool bIsCalculateCamLook)
+_int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook,_bool bIsCalculateCamLook,_float fLerpSpeed)
 {
 
-	m_fChangeCamModeLerpSpeed = 6.f;
+	m_fChangeCamModeLerpSpeed = fLerpSpeed;
 	m_fChangeCamModeTime = 0.f;
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	for (_uint i = 0; i < Rev_End; i++)

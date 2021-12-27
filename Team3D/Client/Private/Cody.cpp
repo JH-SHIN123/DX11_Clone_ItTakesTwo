@@ -294,7 +294,8 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 	 
-	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
+	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
+		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
 	{
 		m_pActorCom->Set_ZeroGravity(true, true, true);
 		m_pActorCom->Update(dTimeDelta); 
