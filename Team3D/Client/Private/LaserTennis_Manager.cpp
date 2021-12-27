@@ -167,7 +167,6 @@ void CLaserTennis_Manager::KeyCheck(TARGET eTarget)
 	{
 		UI_Delete(Cody, Minigame_Ready_Cody);
 		UI_Delete(May, Minigame_Ready_May);
-
 		((CCody*)DATABASE->GetCody())->Set_ActiveMinigameHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveMinigameHpBar(true);
 

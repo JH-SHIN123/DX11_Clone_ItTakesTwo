@@ -2,6 +2,7 @@
 #include "..\Public\Effect_Boss_UFO_Flying.h"
 #include "DataStorage.h"
 #include "UFO.h"
+#include "CutScenePlayer.h"
 
 CEffect_Boss_UFO_Flying::CEffect_Boss_UFO_Flying(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -49,6 +50,9 @@ _int CEffect_Boss_UFO_Flying::Tick(_double TimeDelta)
 {
 	if (false == m_IsActivate && 0.f >= m_fTime)
 		return EVENT_DEAD;
+
+	if (true == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Outro))
+		return NO_EVENT;
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	if (true == m_IsActivate)

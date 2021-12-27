@@ -157,19 +157,11 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
-	/* 씬 전환 테스트중 */
-	//CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	//if (true == pGameInstance->Key_Down(DIK_T))
-	//{
-	//	if (FAILED(pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO))))
-	//	{
-	//		MSG_BOX("AAAAAAAAAAAAAAAAAAAA");
-	//		return EVENT_ERROR;
-	//	}
-
-	//	pGameInstance->Clear_LevelResources(Level::LEVEL_STAGE);
-	//}
+	if (m_iLevelStep == 3)
+	{
+		m_pGameInstance->Stop_SoundAll();
+		FAILED_CHECK_RETURN(m_pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO)), EVENT_ERROR);
+	}
 
 	return NO_EVENT;
 }
@@ -1022,11 +1014,6 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 	if (m_iEndingCreditStep == 0)
 	{
 		++m_iEndingCreditStep;
-
-		//for (_uint i = 0; i < 23; ++i)
-		//{
-		//	ENDINGCREDIT->Create_3DText(i, -600.f - i * 250.f);
-		//}
 
 		ENDINGCREDIT->Create_3DText(0, -792.5f);
 		ENDINGCREDIT->Create_3DText(1, -1080.f);
