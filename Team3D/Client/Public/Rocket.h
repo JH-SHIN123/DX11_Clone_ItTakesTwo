@@ -58,6 +58,9 @@ private:
 	CTriggerActor*		m_pTriggerCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
 
+private:
+	class CEffect_Boss_Missile_Smoke_Color* m_pEffect_Smoke = nullptr;
+
 public:
 	static CRocket* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

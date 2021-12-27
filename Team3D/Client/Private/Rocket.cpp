@@ -5,6 +5,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "RobotParts.h"
+#include "Effect_Boss_Missile_Smoke_Color.h"
 
 CRocket::CRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -86,7 +87,10 @@ _int CRocket::Tick(_double dTimeDelta)
 			}
 		}
 		if (m_fLifeTime > 3.5f)
+		{
+
 			return EVENT_DEAD;
+		}
 	}
 
 	UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
