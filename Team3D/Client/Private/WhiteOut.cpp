@@ -43,14 +43,7 @@ _int CWhiteOut::Tick(_double dTimeDelta)
 	{
 		m_fAlpha = 1.f;
 
-		///* ¾ÀÀüÈ¯ */
-		//if (FAILED(m_pGameInstance->Change_CurrentLevel(CLevel_Loading::Create(m_pDevice, m_pDeviceContext, Level::LEVEL_STAGE, Level::LEVEL_LOGO))))
-		//{
-		//	MSG_BOX("Failed to Change_CurrentLevel, Error to CMenuScreen::Late_Tick");
-		//	return EVENT_ERROR;
-		//}
-
-		//m_pGameInstance->Clear_LevelResources(Level::LEVEL_STAGE);
+		m_pGameInstance->Go_NextLevelStep();
 	}
 
 	return NO_EVENT;
