@@ -105,6 +105,7 @@ private:
 	//For.Outro
 	_float m_fCodyMove_EjectUfoTime = 0.f;
 	_bool  m_bCodyEjectUFO = false;
+
 public:
 	static CCutScene* Create(CutSceneOption eOption);
 	virtual void Free() override;

@@ -148,12 +148,13 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 #endif // __PLAY_CUTSCENE
 
 	/* For.EndingCredit */
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Key_Down(DIK_END)||CCutScenePlayer::GetInstance()->Get_IsEndingCredit())
 	{
 		m_pGameInstance->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 		m_iLevelStep = 2; 
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
 		ENDINGCREDIT->Create_Environment();
+		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 

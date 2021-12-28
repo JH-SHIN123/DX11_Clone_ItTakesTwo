@@ -231,7 +231,7 @@ void CRotatedRobotLever::Activate_Lever(_double dTimeDelta)
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Clear_Umbrella) == false)
 		{
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Clear_Umbrella"));
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Clear_Umbrella, true);
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Clear_Umbrella, true);
 		}
 #endif
 

@@ -10,6 +10,7 @@
 #include "RunningMoonBaboon.h"
 #include "MoonUFO.h"
 #include "PixelCrossHair.h"
+#include"CutScenePlayer.h"
 
 CPixelBaboon::CPixelBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CGameObject(pDevice, pDeviceContext)
@@ -95,7 +96,17 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 		else if (m_iLifeCount == 1)
 			m_pPixelHeart[1]->Set_LifeCountRenderOff(true);
 		else if (m_iLifeCount == 0)
+		{
+#ifdef __PLAY_CUTSCENE
+			if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Outro) == false)
+			{
+				CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
+				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Outro,true);
+			}
+
+#endif
 			m_pPixelHeart[0]->Set_LifeCountRenderOff(true);    
+		}
 	}
 
 	if (m_bStartHeartDelay == true)

@@ -2671,17 +2671,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F9) && m_IsInJoyStick == false && m_eCurPlayerSize == SIZE_SMALL)
-	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
-		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
-		_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
-		_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
-
-		m_pActorCom->Set_Position(vOffSetPosition);
-		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
-		m_IsInJoyStick = true;
-	}
+		Set_InJoyStick();
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
@@ -3581,6 +3571,18 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_eCurPlayerSize = SIZE_MEDIUM;
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	m_pActorCom->Set_IsPlayerSizeSmall(false);
+}
+void CCody::Set_InJoyStick()
+{
+	m_pActorCom->Set_ZeroGravity(true, true, true);
+	m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+	_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
+	_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
+
+	m_pActorCom->Set_Position(vOffSetPosition);
+	m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
+	m_IsInJoyStick = true;
 }
 void CCody::Set_HpBarReduction(_float fDamage)
 {

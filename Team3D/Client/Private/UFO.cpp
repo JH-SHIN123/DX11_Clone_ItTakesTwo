@@ -1025,10 +1025,9 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
-		
 	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))

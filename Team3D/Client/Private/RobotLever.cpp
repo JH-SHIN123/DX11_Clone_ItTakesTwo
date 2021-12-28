@@ -223,7 +223,7 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 			if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01) )
 			{
 				CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Active_GravityPath_01"));
-				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01, true);
+				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Active_GravityPath_01, true);
 			}
 #endif
 			DATABASE->Set_GravityStageClear(true);
@@ -234,7 +234,7 @@ void CRobotLever::Activate_Lever(_double dTimeDelta)
 			if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Clear_Rail))
 			{
 				CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Clear_Rail"));
-				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Clear_Rail, true);
+				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Clear_Rail, true);
 			}
 #endif
 			DATABASE->Set_RailStageClear(true);

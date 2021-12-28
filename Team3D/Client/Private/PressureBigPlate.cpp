@@ -286,7 +286,7 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Boss_Intro))
 		{
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Boss_Intro"));
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Boss_Intro,true);
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Boss_Intro,true);
 		}
 #endif	
 		m_IsPowerSupplyActive = true;
