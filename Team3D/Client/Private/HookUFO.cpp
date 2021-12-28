@@ -166,11 +166,6 @@ HRESULT CHookUFO::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CHookUFO::Launch_HookUFO(_double dTimeDelta)
-{
-	
-}
-
 void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisable)
 {
 	if (true == IsDisable)

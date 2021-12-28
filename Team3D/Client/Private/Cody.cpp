@@ -3598,6 +3598,19 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	m_pActorCom->Set_IsPlayerSizeSmall(false);
 }
+
+void CCody::Set_PlayerSizeSmall_INUFO()
+{
+	m_IsCollide = false;
+	m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 1.f));
+	m_pActorCom->Set_Scale(0.025f, 0.025f);
+	m_pActorCom->Set_IsPlayerSizeSmall(true);
+	m_eCurPlayerSize = SIZE_SMALL;
+	m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
+	m_pActorCom->Get_Controller()->setStepOffset(0.02f);
+}
+
+
 void CCody::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)

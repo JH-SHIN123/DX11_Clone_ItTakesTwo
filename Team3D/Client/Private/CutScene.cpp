@@ -701,6 +701,7 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 {
 	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.3511f, 599.567f, 1002.51f, 1.f));
 	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
+	((CCody*)DATABASE->GetCody())->Set_PlayerSizeSmall_INUFO();
 	// 우주선 들어가는거
 	CGameInstance::GetInstance()->Set_MainViewFog(true);
 	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));

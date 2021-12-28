@@ -361,8 +361,8 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 		// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
 		// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
-		// m_pGameInstance->Get_Pad_LStickY() < 20000 (Down)
-		// m_pGameInstance->Get_Pad_LStickY() > 44000 (Up)
+		// m_pGameInstance->Get_Pad_LStickY() < 20000 (Up)
+		// m_pGameInstance->Get_Pad_LStickY() > 44000 (Down)
 
 		if (fDegree >= 15.f)
 		{
@@ -400,8 +400,8 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 		}
 
 
-		if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
-			m_fRotateAcceleration = 0.f;
+		//if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
+		//	m_fRotateAcceleration = 0.f;
 
 
 		m_pTransformCom->Go_Straight(dTimeDelta * m_fMoveAcceleration);
