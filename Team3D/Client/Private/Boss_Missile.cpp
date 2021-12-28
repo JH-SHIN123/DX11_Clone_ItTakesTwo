@@ -59,6 +59,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		return EVENT_DEAD;
 	}
+	/* 미사일 벽이랑 바닥 충돌*/
 	else if (true == m_IsCollide_Wall_Floor)
 	{
 		if (m_bCodyControl == true && m_bMayControl == false)
