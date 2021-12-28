@@ -4182,6 +4182,7 @@ void CCody::Push_ControlRoomBattery(const _double dTimeDelta)
 	{
 		m_IsCollide = false;
 
+		/* 전력공급 버튼이 활성화 안됬는데 배터리랑 상호작용 했을 때 플레이어 대기 애니메이션으로 돌리고 키인풋 타게 하자*/
 		if (true == m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd) && 
 			false == ((CPressureBigPlate*)DATABASE->Get_PressureBigPlate())->Get_PowerSupplyAvailable())
 		{
@@ -4190,7 +4191,8 @@ void CCody::Push_ControlRoomBattery(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 
-		if (m_pGameInstance->Key_Down(DIK_Q))
+		/* 전력공급 버튼이 활성화 됬고 배터리랑 상호작용 했을 때 Q누르면 플레이어 대기 애니메이션으로 돌리고 키인풋 타게 하자*/
+		if (m_pGameInstance->Key_Down(DIK_Q) && true == ((CPressureBigPlate*)DATABASE->Get_PressureBigPlate())->Get_PowerSupplyAvailable())
 		{
 			m_IsPushingControlRoomBattery = false;
 			m_pModelCom->Set_Animation(ANI_C_MH);
