@@ -205,7 +205,8 @@ void CUmbrellaBeam::PutGravitationalField()
 
 		CCody* pCody = (CCody*)DATABASE->GetCody();
 		pCody->Set_ControlJoystick(false);
-		pCody->Get_Model()->Set_Animation(ANI_C_ActionMH);
+		pCody->Get_Model()->Set_Animation(ANI_C_MH);
+		pCody->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
 
 		if(nullptr != m_pUmbrellaBeam_Effect)
 			m_pUmbrellaBeam_Effect->Set_Dead();

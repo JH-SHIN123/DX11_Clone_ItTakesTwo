@@ -305,6 +305,8 @@ PS_OUT PS_RespawnCircle(PS_IN In)
 	else
 		Out.vColor.a = 0.8f;
 
+	Out.vColor.a -= g_fAlpha;
+
 	return Out;
 }
 
@@ -336,6 +338,8 @@ PS_OUT PS_RespawnCircleHeart(PS_IN In)
 	}
 	else
 		discard;
+
+	Out.vColor.a -= g_fAlpha;
 
 	return Out;
 }

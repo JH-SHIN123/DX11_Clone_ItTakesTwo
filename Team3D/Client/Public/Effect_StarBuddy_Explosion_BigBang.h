@@ -22,7 +22,7 @@ private:
 	_bool  m_IsScaling = true;
 	_double m_dLifeTime = 0.0;
 	_float m_fAlphaTime = 0.0f;
-	_float m_fScalePow = 20.f;
+	_float 	m_fScalePow = 9.f;
 
 	_float4 m_vColor = { 0.780392218f, 0.700392218f, 0.147058856f, 1.000000000f };
 

@@ -293,6 +293,9 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_F9))
+		UI_CreateOnlyOnce(Cody, RespawnCircle);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
@@ -2380,6 +2383,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// 코디 전용 포탈로 이동(웜홀)
+			Enforce_IdleState();
+			Check_Warp_Wormhole_Size();
+			Change_Size(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_fWarpTimer = 0.f;
 			m_IsWarpNextStage = true;
@@ -2765,26 +2771,23 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 void CCody::Push_Battery(const _double dTimeDelta)
 {
 	// May가 배터리 들어온 상태에서 Lever 치고 컷씬이 등장하면 그때 -> ANI_C_MH
-	if (m_IsPushingBattery == true)
+	if (m_IsPushingBattery == true && true == m_IsPipeBattery)
 	{
-		if (true == m_IsPipeBattery)
-		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
-			m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
+		m_IsCollide = false;
 
-			if (m_pGameInstance->Key_Down(DIK_Q))
-			{
-				m_IsPushingBattery = false;
-				m_IsPipeBattery = false;
-				m_pModelCom->Set_Animation(ANI_C_MH);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-			}
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsPipeBattery = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 	}
-	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
+	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 	{
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
 		{
@@ -3438,9 +3441,11 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 
 	m_fWarpTimer += (_float)dTimeDelta;
 
+	Change_Size(dTimeDelta);
+
 	if (true == m_IsWarpNextStage)
 	{
-		if (m_fWarpTimer_InWormhole <= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole <= m_fWarpTimer) // 포탈 타기
 		{
 			_float4 vWormhole = m_vWormholePos;
 			vWormhole.z -= 1.f;
@@ -3452,7 +3457,7 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
 		}
 
-		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max <= m_fWarpTimer)
+		if (m_fWarpTimer_InWormhole + m_fWarpTimer_Max <= m_fWarpTimer) // 빠져나가자
 		{
 			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
@@ -3462,25 +3467,24 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			vNextStage_Pos.m128_f32[3] = 1.f;
 
 			m_pActorCom->Set_Position(vNextStage_Pos);
-
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNextStage_Pos);
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
 			vTriggerPos += vLook * 10000.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
-
 		}
 	}
 	else
 	{
 		m_IsWarpNextStage = false;
-		if (false == m_IsWarpRotate)
+		if (false == m_IsWarpRotate) // 회전
 		{
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 30.f;
+			vTriggerPos += vLook * 300.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 			m_IsWarpRotate = true;
@@ -3494,7 +3498,9 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			m_pActorCom->Move(vDir * 0.25f, dTimeDelta);
 		}
 		else
-		{
+		{ 
+			// 끝
+			m_IsWarpNextStage = false;
 			m_IsWarpRotate = false;
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_IsWarpDone = false;
@@ -3653,6 +3659,32 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 		m_IsWallLaserTrap_Touch = false;
 		m_IsWallLaserTrap_Effect = false;
 		m_pActorCom->Set_ZeroGravity(false, false, false);
+	}
+}
+
+void CCody::Check_Warp_Wormhole_Size()
+{
+	switch (m_eCurPlayerSize)
+	{
+	case Client::CCody::SIZE_SMALL:
+		m_eNextPlayerSize = SIZE_MEDIUM;
+		m_IsSizeChanging = true;
+		m_pActorCom->Set_Gravity(-9.8f);
+		m_pActorCom->Set_IsPlayerSizeSmall(false);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
+		m_pGameInstance->Play_Sound(TEXT("Sizing_StoM.wav"), CHANNEL_SIZE_STOM, m_fSizing_SToM_Volume);
+		m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+		m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
+		break;
+	case Client::CCody::SIZE_LARGE:
+		m_eNextPlayerSize = SIZE_MEDIUM;
+		m_IsSizeChanging = true;
+		m_pActorCom->Set_Gravity(-9.8f);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
+		m_pGameInstance->Play_Sound(TEXT("Sizing_BtoM.wav"), CHANNEL_SIZE_BTOM, m_fSizing_BToM_Volume);
+		m_pGameInstance->Stop_Sound(CHANNEL_CODYM_WALK);
+		m_pGameInstance->Stop_Sound(CHANNEL_CODYB_WALK);
+		break;
 	}
 }
 
