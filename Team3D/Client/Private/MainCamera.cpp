@@ -1345,11 +1345,11 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 	_float3 vLastAt;
 	XMStoreFloat3(&vLastAt, vMoonBaboonPos);
 
-	_vector vCurEye =XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyPos, m_vLastEye, m_dDestroyCoreTime));
-	_vector vCurAt = XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyLook, vLastAt, m_dDestroyCoreTime)); 	
+	_vector vCurEye =XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyPos, m_vLastEye, (_float)m_dDestroyCoreTime));
+	_vector vCurAt = XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyLook, vLastAt, (_float)m_dDestroyCoreTime));
 	
 
-	_matrix matResult = MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vCurEye, vCurAt), dTimeDelta);
+	_matrix matResult = MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vCurEye, vCurAt), (_float)dTimeDelta);
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
 	{
 		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult))
