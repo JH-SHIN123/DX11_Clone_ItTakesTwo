@@ -4,6 +4,7 @@
 #include "DataStorage.h"
 #include "Cody.h"
 #include "May.h"
+#include "Effect_Generator.h"
 
 CLaser_TypeB::CLaser_TypeB(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -79,7 +80,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 							#endif // __PLAYER_INVINCIBLE_BOSSROOM
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.5;
-							__super::Player_Hit_Effect();
+							Hit_Effect(GameID::eCODY);
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -92,8 +93,8 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						// 데미지 주기 초기화
 						m_dDamagingDelay_Cody = 0.5;
 						m_isHitCody = true;
-						__super::Player_Hit_Effect();
-						__super::Player_Hit_Effect();
+						Hit_Effect(GameID::eCODY);
+						Hit_Effect(GameID::eCODY);
 					}
 				}
 				else
@@ -119,7 +120,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 							
 							// 데미지 주기 초기화
 							m_dDamagingDelay_May = 0.5;
-							__super::Player_Hit_Effect();
+							Hit_Effect(GameID::eMAY);
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -132,8 +133,8 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						// 데미지 주기 초기화
 						m_dDamagingDelay_May = 0.5;
 						m_isHitMay = true;
-						__super::Player_Hit_Effect();
-						__super::Player_Hit_Effect();
+						Hit_Effect(GameID::eMAY);
+						Hit_Effect(GameID::eMAY);
 					}
 				}
 				else
@@ -310,6 +311,24 @@ void CLaser_TypeB::GoUp(_double dTimeDelta)
 	}
 
 	m_vStartPoint.y += m_fUpSpeed * (_float)dTimeDelta;
+}
+
+void CLaser_TypeB::Hit_Effect(GameID::Enum eID)
+{
+	// 너무 빨라서 레이가 이미 벽쪽임
+	_matrix WorldMatrix = XMMatrixIdentity();
+
+	if (GameID::eCODY == eID)
+	{
+		WorldMatrix.r[3] = DATABASE->GetCody()->Get_Position();
+	}
+	else if (GameID::eMAY == eID)
+	{
+		WorldMatrix.r[3] = DATABASE->GetMay()->Get_Position();
+	}
+
+	WorldMatrix.r[3].m128_f32[1] += 0.65f;
+	EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, WorldMatrix);
 }
 
 CLaser_TypeB * CLaser_TypeB::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

@@ -560,6 +560,17 @@ private:
 	_double m_dRadiarBlurDeltaT = 0.0;
 #pragma endregion
 
+#pragma region Dead_InBossroom
+public:
+	void Respawn_InBossroom();
+
+private:
+	void DeadInBossroom(const _double dTimeDelta);
+
+private:
+	_bool m_bDead_InBossroom = false;
+#pragma endregion
+
 private: /* For. Ending */
 	_bool	m_IsEnding = false;
 	_bool   m_bSetEndingOffSetOnce = false;

@@ -784,7 +784,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 1000;
+			MouseMove = MouseMove / 700;
 		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta * m_fMouseRevSpeed[Rev_Holizontal];
 
 	}
@@ -793,7 +793,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 1000;
+			MouseMove = MouseMove / 700;
 
 
 		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);

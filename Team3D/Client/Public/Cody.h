@@ -566,6 +566,7 @@ private:
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
+	void Check_Warp_Wormhole_Size(); // 포탈 타기 직전 사이즈 체크
 
 	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
@@ -644,6 +645,17 @@ private:
 	_bool	m_bRadiarBlur_Loop = false;
 	_double m_dRadiarBlurTime = 0.0;
 	_double m_dRadiarBlurDeltaT = 0.0;
+#pragma endregion
+
+#pragma region Dead_InBossroom
+public:
+	void Respawn_InBossroom();
+
+private:
+	void DeadInBossroom(const _double dTimeDelta);
+
+private:
+	_bool m_bDead_InBossroom = false;
 #pragma endregion
 
 private: /* For. Ending */

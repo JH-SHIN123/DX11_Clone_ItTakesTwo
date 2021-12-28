@@ -45,6 +45,7 @@ private:
 	_bool										m_IsBatteryCheck = false;
 	_bool										m_IsButtonDown = false;
 	_bool										m_IsDoorOpen = false;
+	_bool										m_IsEffect_Once = false; // Effect
 	_bool										m_IsEffect_Done = false; // Effect
 	_float										m_fMove = 0.f;
 	_float										m_fActiveMove = 0.f;

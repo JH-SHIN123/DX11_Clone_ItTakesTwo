@@ -1,26 +1,24 @@
 #include "stdafx.h"
-#include "..\Public\Effect_Boss_Missile_Smoke_Color.h"
+#include "..\Public\Effect_Rocket_Smoke.h"
 #include "DataStorage.h"
-#include "Cody.h"
-#include "May.h"
 
-CEffect_Boss_Missile_Smoke_Color::CEffect_Boss_Missile_Smoke_Color(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CEffect_Rocket_Smoke::CEffect_Rocket_Smoke(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
 {
 }
 
-CEffect_Boss_Missile_Smoke_Color::CEffect_Boss_Missile_Smoke_Color(const CEffect_Boss_Missile_Smoke_Color & rhs)
+CEffect_Rocket_Smoke::CEffect_Rocket_Smoke(const CEffect_Rocket_Smoke & rhs)
 	: CInGameEffect(rhs)
 {
 }
 
-HRESULT CEffect_Boss_Missile_Smoke_Color::NativeConstruct_Prototype(void * pArg)
+HRESULT CEffect_Rocket_Smoke::NativeConstruct_Prototype(void * pArg)
 {
 	m_EffectDesc_Prototype.iInstanceCount = 40;
 	return S_OK;
 }
 
-HRESULT CEffect_Boss_Missile_Smoke_Color::NativeConstruct(void * pArg)
+HRESULT CEffect_Rocket_Smoke::NativeConstruct(void * pArg)
 {
 	if (nullptr != pArg)
 		memcpy(&m_EffectDesc_Clone, pArg, sizeof(EFFECT_DESC_CLONE));
@@ -42,13 +40,8 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_int CEffect_Boss_Missile_Smoke_Color::Tick(_double TimeDelta)
+_int CEffect_Rocket_Smoke::Tick(_double TimeDelta)
 {
-#ifdef __TEST_JUNG
-//		/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CCody*>(DATABASE->GetCody())->Get_WorldMatrix());
-//	/*Gara*/ m_pTransformCom->Set_WorldMatrix(static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix());
-#endif // __TEST_JUNG
-
 	if (true == m_isDead && 0.0 >= m_dControlTime)
 		return EVENT_DEAD;
 
@@ -70,12 +63,12 @@ _int CEffect_Boss_Missile_Smoke_Color::Tick(_double TimeDelta)
 	return NO_EVENT;
 }
 
-_int CEffect_Boss_Missile_Smoke_Color::Late_Tick(_double TimeDelta)
+_int CEffect_Rocket_Smoke::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
-HRESULT CEffect_Boss_Missile_Smoke_Color::Render(RENDER_GROUP::Enum eGroup)
+HRESULT CEffect_Rocket_Smoke::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dControlTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
@@ -83,7 +76,7 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_Variable("g_fAlpha", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(1));	//스모크
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(7)); // 색상
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(3)); // 색상
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(1)); // 왜곡
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DissolveTexture", m_pTexturesCom_Distortion->Get_ShaderResourceView(0)); // 디졸브
 
@@ -92,12 +85,12 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
-void CEffect_Boss_Missile_Smoke_Color::Set_Pos(_fvector vPos)
+void CEffect_Rocket_Smoke::Set_Pos(_fvector vPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
-void CEffect_Boss_Missile_Smoke_Color::Check_Instance(_double TimeDelta)
+void CEffect_Rocket_Smoke::Check_Instance(_double TimeDelta)
 {
 	_float4 vMyPos;
 	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -121,17 +114,17 @@ void CEffect_Boss_Missile_Smoke_Color::Check_Instance(_double TimeDelta)
 	}
 }
 
-void CEffect_Boss_Missile_Smoke_Color::Instance_Size(_float TimeDelta, _int iIndex)
+void CEffect_Rocket_Smoke::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * 4.25f;
-	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * 4.25f;
+	m_pInstanceBuffer_STT[iIndex].vSize.x += TimeDelta * 3.25f;
+	m_pInstanceBuffer_STT[iIndex].vSize.y += TimeDelta * 3.25f;
 }
 
-void CEffect_Boss_Missile_Smoke_Color::Instance_Pos(_float TimeDelta, _int iIndex)
+void CEffect_Rocket_Smoke::Instance_Pos(_float TimeDelta, _int iIndex)
 {
 }
 
-void CEffect_Boss_Missile_Smoke_Color::Instance_UV(_float TimeDelta, _int iIndex)
+void CEffect_Rocket_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 {
 	m_pInstance_Update_TextureUV_Time[iIndex] -= TimeDelta;
 
@@ -165,7 +158,7 @@ void CEffect_Boss_Missile_Smoke_Color::Instance_UV(_float TimeDelta, _int iIndex
 	}
 }
 
-void CEffect_Boss_Missile_Smoke_Color::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
+void CEffect_Rocket_Smoke::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)
 {
 	m_pInstanceBuffer_STT[iIndex].vPosition = vPos;
 	m_pInstanceBuffer_STT[iIndex].vRight = Get_RandTexUV();
@@ -179,7 +172,7 @@ void CEffect_Boss_Missile_Smoke_Color::Reset_Instance(_double TimeDelta, _float4
 	m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 }
 
-HRESULT CEffect_Boss_Missile_Smoke_Color::Ready_InstanceBuffer()
+HRESULT CEffect_Rocket_Smoke::Ready_InstanceBuffer()
 {
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
@@ -198,9 +191,9 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::Ready_InstanceBuffer()
 
 	for (_int iIndex = 0; iIndex < iInstanceCount; ++iIndex)
 	{
-		m_pInstanceBuffer_STT[iIndex].vRight	= Get_RandTexUV();
-		m_pInstanceBuffer_STT[iIndex].vUp		= Get_RandTexUV();
-		m_pInstanceBuffer_STT[iIndex].vLook		= { 0.f, 0.f, 1.f, 0.f };
+		m_pInstanceBuffer_STT[iIndex].vRight = Get_RandTexUV();
+		m_pInstanceBuffer_STT[iIndex].vUp = Get_RandTexUV();
+		m_pInstanceBuffer_STT[iIndex].vLook = { 0.f, 0.f, 1.f, 0.f };
 		m_pInstanceBuffer_STT[iIndex].vPosition = vMyPos;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV = __super::Get_TexUV_Rand(m_vTexUV.x, m_vTexUV.y);
@@ -213,7 +206,7 @@ HRESULT CEffect_Boss_Missile_Smoke_Color::Ready_InstanceBuffer()
 	return S_OK;
 }
 
-_float4 CEffect_Boss_Missile_Smoke_Color::Get_RandTexUV()
+_float4 CEffect_Rocket_Smoke::Get_RandTexUV()
 {
 	_float fRandUV = (_float)(rand() % 10) / 10.f;
 
@@ -221,29 +214,29 @@ _float4 CEffect_Boss_Missile_Smoke_Color::Get_RandTexUV()
 	return vTexLTRB;
 }
 
-CEffect_Boss_Missile_Smoke_Color * CEffect_Boss_Missile_Smoke_Color::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
+CEffect_Rocket_Smoke * CEffect_Rocket_Smoke::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)
 {
-	CEffect_Boss_Missile_Smoke_Color*	pInstance = new CEffect_Boss_Missile_Smoke_Color(pDevice, pDeviceContext);
+	CEffect_Rocket_Smoke*	pInstance = new CEffect_Rocket_Smoke(pDevice, pDeviceContext);
 	if (FAILED(pInstance->NativeConstruct_Prototype(pArg)))
 	{
-		MSG_BOX("Failed to Create Instance - CEffect_Boss_Missile_Smoke_Color");
+		MSG_BOX("Failed to Create Instance - CEffect_Rocket_Smoke");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CEffect_Boss_Missile_Smoke_Color::Clone_GameObject(void * pArg)
+CGameObject * CEffect_Rocket_Smoke::Clone_GameObject(void * pArg)
 {
-	CEffect_Boss_Missile_Smoke_Color* pInstance = new CEffect_Boss_Missile_Smoke_Color(*this);
+	CEffect_Rocket_Smoke* pInstance = new CEffect_Rocket_Smoke(*this);
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSG_BOX("Failed to Clone Instance - CEffect_Boss_Missile_Smoke_Color");
+		MSG_BOX("Failed to Clone Instance - CEffect_Rocket_Smoke");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CEffect_Boss_Missile_Smoke_Color::Free()
+void CEffect_Rocket_Smoke::Free()
 {
 	Safe_Delete_Array(m_pInstance_Update_TextureUV_Time);
 	Safe_Delete_Array(m_pInstanceBuffer_STT);
