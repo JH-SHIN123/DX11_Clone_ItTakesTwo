@@ -292,17 +292,6 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 		return;
 	}
 
-	m_fCollideTime += (_float)dTimeDelta;
-
-	if (3.f <= m_fCollideTime)
-	{
-		m_pGameInstance->Raycast(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), MH_PxVec3(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK))),
-			10.f, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
-
-		if (m_RaycastBuffer.getAnyHit(0).distance < 1.f)
-			m_IsCollide_Wall_Floor = true;
-	}
-
 	m_vPlayerOffSetPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP)) * 0.13f);
 	((CMay*)DATABASE->GetMay())->Set_RocketOffSetPos(m_vPlayerOffSetPosition);
 
@@ -326,7 +315,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 		// m_pGameInstance->Get_Pad_LStickY() < 20000 (Down)
 		// m_pGameInstance->Get_Pad_LStickY() > 44000 (Up)
 
-		if (fDegree >= 15.f)
+		if (fDegree >= 30.f)
 		{
 			if (m_pGameInstance->Key_Pressing(DIK_DOWN))
 			{
@@ -367,6 +356,18 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 		m_pTransformCom->Go_Straight(dTimeDelta * m_fMoveAcceleration);
 	}
+
+	m_fCollideTime += (_float)dTimeDelta;
+
+	if (3.f <= m_fCollideTime)
+	{
+		m_pGameInstance->Raycast(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), MH_PxVec3(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK))),
+			10.f, m_MissileRaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+
+		if (m_MissileRaycastBuffer.getAnyHit(0).distance < 1.f)
+			m_IsCollide_Wall_Floor = true;
+	}
+
 #else
 
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
@@ -488,8 +489,6 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 
 		if (fDegree >= 30.f)
 		{
-			m_fTestDegree = fDegree;
-
 			if (m_pGameInstance->Key_Pressing(DIK_S))
 			{
 				if (m_fRotateAcceleration < 1.f)
