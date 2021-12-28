@@ -892,11 +892,11 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 		_matrix matLaserGunWorld = LaserGunRing * m_pTransformCom->Get_WorldMatrix();
 
 		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::Boss_UFO_LaserGunRing, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
-			10.f, m_IsMayCollide, ((CMay*)DATABASE->GetMay())->Get_InterActiveUIDisable());
+			50.f, m_IsMayCollide, ((CMay*)DATABASE->GetMay())->Get_InterActiveUIDisable());
 
 		matLaserGunWorld.r[3].m128_f32[1] += 3.f;
 		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Boss_UFO, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
-			10.f, m_IsCodyCollide, ((CCody*)DATABASE->GetCody())->Get_InterActiveUICreate());
+			50.f, m_IsCodyCollide, ((CCody*)DATABASE->GetCody())->Get_InterActiveUICreate());
 
 		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
 		if(100.f <= m_pModelCom->Get_CurrentTime(UFO_LaserRippedOff) && false == m_IsLaserGunRid)
