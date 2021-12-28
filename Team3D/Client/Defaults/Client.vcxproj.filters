@@ -822,6 +822,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle">
       <UniqueIdentifier>{5bfb0833-cc63-4158-a256-924e223c5331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket">
+      <UniqueIdentifier>{c1b38c7f-ec18-420b-b312-0bb3b47ff4aa}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside">
       <UniqueIdentifier>{1e244afa-1f22-4105-8bc1-f281d82c5211}</UniqueIdentifier>
     </Filter>
@@ -1901,6 +1904,9 @@
     <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Rocket_Smoke.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_UFO_Inside_Battery_Spark.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>
     </ClInclude>
@@ -2907,6 +2913,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Rocket_Smoke.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Effect_UFO_Inside_Battery_Spark.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\UFO_Inside\Battery\02.Spark</Filter>

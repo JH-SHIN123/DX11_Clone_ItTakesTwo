@@ -27,7 +27,6 @@ public:
 	void Set_RotateSpeed(_float fSpeed);
 	void Set_LaserTypeBUp(_float fMaxDistance, _float fSpeed);
 
-
 public:
 	_bool Get_LaserRecovery() const { return m_IsLaserRecovery; }
 
@@ -48,6 +47,7 @@ private:
 
 private:
 	void GoUp(_double dTimeDelta);
+	void Hit_Effect(GameID::Enum eID);
 
 public:
 	static CLaser_TypeB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

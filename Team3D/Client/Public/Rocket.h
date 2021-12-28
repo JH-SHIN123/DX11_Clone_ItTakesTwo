@@ -34,6 +34,7 @@ public: /* Getter */
 
 private:
 	void Launch_Rocket(_double dTimeDelta);
+	void Effect_Explosion();
 
 private:
 	_float		m_fUpAcceleration = 0.f;
@@ -57,6 +58,9 @@ private:
 	CModel*				m_pModelCom = nullptr;
 	CTriggerActor*		m_pTriggerCom = nullptr;
 	CStaticActor*		m_pStaticActorCom = nullptr;
+
+private:
+	class CEffect_Rocket_Smoke* m_pEffect_Smoke = nullptr;
 
 public:
 	static CRocket* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -15,9 +15,10 @@ public:
 	{
 		_uint		iScriptIndex;
 		_float		dChangeTime;
+		SCREEN		eScreen;
 
 		tagScriptInfo() {}
-		tagScriptInfo(_uint iScriptIndex, _float dChangeTime) : iScriptIndex(iScriptIndex), dChangeTime(dChangeTime) {}
+		tagScriptInfo(_uint iScriptIndex, _float dChangeTime, SCREEN eScreen = SCREEN::HALF) : iScriptIndex(iScriptIndex), dChangeTime(dChangeTime), eScreen(eScreen) {}
 	}SCRIPTINFO;
 
 private:

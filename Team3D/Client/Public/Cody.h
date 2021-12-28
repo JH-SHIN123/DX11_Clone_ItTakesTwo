@@ -428,8 +428,6 @@ private:
 	_bool	 m_IsPinBall = false;
 	_bool	 m_IsReadyPinball = false;
 	_bool	 m_bPinBallScript = false;
-	_double  m_dScriptTime = 0.0;
-	_uint	 m_iScriptCount = 0;
 	/* Hye::For.Tube*/
 	_bool	 m_IsTube = false;
 	/* Hye::For.SpaceShip */
@@ -566,12 +564,12 @@ private:
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
+	void Check_Warp_Wormhole_Size(); // 포탈 타기 직전 사이즈 체크
 
 	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);
 	void PinBall(const _double dTimeDelta);
 	void Ready_PinBall(const _double dTimeDelta);
-	void PinBall_Script(const _double dTimeDelta);
 	void LaserTennis(const _double dTimeDelta);
 
 	/* 진혁 */

@@ -219,7 +219,6 @@ _int CMay::Tick(_double dTimeDelta)
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() &&
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
 	{
-
 		m_pActorCom->Update(dTimeDelta); 
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return NO_EVENT;
@@ -1982,6 +1981,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// ¸ÞÀÌ Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
+			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_fWarpTimer = 0.f;
 			m_IsWarpNextStage = true;
@@ -2513,13 +2513,7 @@ void CMay::PinBall(const _double dTimeDelta)
 			/* °ø ¹ß»ç */
 			if (m_pGameInstance->Key_Down(DIK_LBRACKET) || m_pGameInstance->Pad_Key_Down(DIP_LB))
 			{
-				//if (false == m_bPinBallScript_Once[1])
-				//{
-				//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-				//	m_pGameInstance->Play_Sound(TEXT("20.wav"), CHANNEL_PINBALLVOICE);
-				//	SCRIPT->Render_Script(38, CScript::HALF, 1.f);
-				//	m_bPinBallScript_Once[1] = true;
-				//}
+				SCRIPT->VoiceFile_No20();
 
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_PINBALL_HANDLE);
@@ -2743,12 +2737,12 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 
 			m_pActorCom->Set_Position(vNextStage_Pos);
 
-			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
-			_vector vTriggerPos = PortalMatrix.r[3];
-			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 10000.f;
-			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
-			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+			//_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			//_vector vTriggerPos = PortalMatrix.r[3];
+			//_vector vLook = PortalMatrix.r[2];
+			//vTriggerPos += vLook * 10000.f;
+			//m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			//m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
 		}
 	}
@@ -2760,7 +2754,7 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 30.f;
+			vTriggerPos += vLook * 300.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 			m_IsWarpRotate = true;
