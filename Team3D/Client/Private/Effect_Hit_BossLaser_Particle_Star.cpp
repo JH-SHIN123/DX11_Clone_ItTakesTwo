@@ -102,8 +102,11 @@ _float2 CEffect_Hit_BossLaser_Particle_Star::Get_RandSize()
 
 void CEffect_Hit_BossLaser_Particle_Star::Check_Instance(_double TimeDelta)
 {
-	_float4 vMyPos;
-	XMStoreFloat4(&vMyPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_bool IsGoUp = DATABASE->Get_BossFloorUp();
+
+	_float fDist = 0.f;
+	if (true == IsGoUp)
+		fDist = (_float)TimeDelta * 10.f;
 
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
@@ -121,7 +124,7 @@ void CEffect_Hit_BossLaser_Particle_Star::Check_Instance(_double TimeDelta)
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x) m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.y) m_pInstanceBuffer_STT[iIndex].vSize.y = 0.f;
 
-		Instance_Pos((_float)TimeDelta, iIndex);
+		Instance_Pos((_float)TimeDelta, iIndex, fDist);
 	}
 }
 
@@ -131,14 +134,20 @@ void CEffect_Hit_BossLaser_Particle_Star::Instance_Size(_float TimeDelta, _int i
 
 void CEffect_Hit_BossLaser_Particle_Star::Instance_Pos(_float TimeDelta, _int iIndex)
 {
-	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
-	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 4.f * (m_fInstance_SpeedPerSec * m_fInstance_SpeedPerSec);
-
-	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }
 
 void CEffect_Hit_BossLaser_Particle_Star::Instance_UV(_float TimeDelta, _int iIndex)
 {
+}
+
+void CEffect_Hit_BossLaser_Particle_Star::Instance_Pos(_float TimeDelta, _int iIndex, _float fDist)
+{
+	_vector vDir = XMLoadFloat3(&m_pInstance_Dir[iIndex]);
+	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 4.f * (m_fInstance_SpeedPerSec * m_fInstance_SpeedPerSec);
+
+	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
+
+	m_pInstanceBuffer_STT[iIndex].vPosition.y += fDist;
 }
 
 void CEffect_Hit_BossLaser_Particle_Star::Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex)

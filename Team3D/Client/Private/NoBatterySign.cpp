@@ -78,11 +78,11 @@ _int CNoBatterySign::Tick(_double dTimeDelta)
 		}
 	}
 
-	if (m_pGameInstance->Key_Pressing(DIK_L))
-	{
-		m_fTestAngle += (_float)dTimeDelta * 2.f;
-		m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_fTestAngle));
-	}
+	//if (m_pGameInstance->Key_Pressing(DIK_L)) ???
+	//{
+	//	m_fTestAngle += (_float)dTimeDelta * 2.f;
+	//	m_pTransformCom->Set_RotateAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_fTestAngle));
+	//}
 
 	return NO_EVENT;
 }

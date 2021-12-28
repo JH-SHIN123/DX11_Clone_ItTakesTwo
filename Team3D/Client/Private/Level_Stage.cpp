@@ -395,10 +395,52 @@ HRESULT CLevel_Stage::Ready_Layer_GravityPipe(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_Env_Particles(const _tchar * pLayerTag)
 {
 	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
-	Arg_Desc.iInstanceCount = 8000;
-	Arg_Desc.vPosition = { 60.f, 0.f, 30.f, 1.f };
-	Arg_Desc.vRadiusXYZ = { 30.f, 10.f, 100.f };
+
+#pragma region MainStage
+	
+	Arg_Desc.iInstanceCount = 5000;
+	Arg_Desc.vPosition = { 60.f, 0.f, 60.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 50.f, 50.f, 200.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+#pragma endregion
+
+#pragma region Boss
+
+	Arg_Desc.iInstanceCount = 5000;
+	Arg_Desc.vPosition = { 60.f, 10000.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 50.f, 50.f, 200.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+#pragma endregion
+
+#pragma region Moon
+
+	Arg_Desc.iInstanceCount = 5000;
+	Arg_Desc.vPosition = { 60.f, 10000.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 50.f, 50.f, 200.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+#pragma endregion
+
+#pragma region Umbrella
+
+	Arg_Desc.iInstanceCount = 5000;
+	Arg_Desc.vPosition = { 60.f, 10000.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 50.f, 50.f, 200.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+#pragma endregion
+
+#pragma region Pinball
+
+	Arg_Desc.iInstanceCount = 5000;
+	Arg_Desc.vPosition = { 60.f, 10000.f, 30.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 50.f, 50.f, 200.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+
+#pragma endregion
+
 
 	return S_OK;
 }

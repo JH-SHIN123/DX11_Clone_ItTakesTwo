@@ -30,6 +30,7 @@ private:
 	virtual void Instance_Size(_float TimeDelta, _int iIndex = 0)	override;
 	virtual void Instance_Pos(_float TimeDelta, _int iIndex = 0)	override;
 	virtual void Instance_UV(_float TimeDelta, _int iIndex = 0)		override;
+	void Instance_Pos(_float TimeDelta, _int iIndex, _float fDist);
 
 private:
 	void Reset_Instance(_double TimeDelta, _float4 vPos, _int iIndex = 0);
@@ -51,7 +52,7 @@ private:
 
 	const _float  m_fAlphaTime_Power = 1.f;
 	const _double m_dInstance_Pos_Update_Time = 1.0;
-	const _float2 m_vDefaultSize = { 0.6f, 0.6f };
+	const _float2 m_vDefaultSize = { 0.5f, 0.5f };
 
 public:
 	static CEffect_Hit_BossLaser_Particle_Star* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
