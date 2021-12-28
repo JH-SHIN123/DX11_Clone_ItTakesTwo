@@ -110,6 +110,12 @@ void CUIObject::Set_UIAllActivation(_bool IsCheck)
 	m_IsActive = IsCheck;
 }
 
+void CUIObject::Set_Scale(_float2 vScale)
+{
+	m_UIDesc.vScale.x = vScale.x;
+	m_UIDesc.vScale.y = vScale.y;
+}
+
 void CUIObject::Set_ScaleEffect()
 {
 }

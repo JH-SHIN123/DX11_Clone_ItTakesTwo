@@ -66,6 +66,7 @@ _int CRespawnCircle::Tick(_double TimeDelta)
 	CUIObject::Tick(TimeDelta);
 
 	Spawn_Effect(TimeDelta);
+	Alpha_Effect(TimeDelta);
 
 	if (m_IsFullGuage && false == m_IsRespawnCharacterOnce)
 	{
@@ -118,6 +119,8 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
 		return E_FAIL;
 
+	m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+
 	if (0 == m_iOption)
 	{
 		m_pVIBuffer_RectCom->Set_Variable("g_Angle", &m_fSubTime, sizeof(_float));
@@ -152,6 +155,7 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		m_fTime += (_float)TimeDelta * 2.f;
 
 		m_iRespawnOption = 1;
+		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));
 
 		if (1.f <= m_fTime)
 			m_IsFullGuage = true;
@@ -194,6 +198,26 @@ void CRespawnCircle::Spawn_Effect(_double TimeDelta)
 		m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
 
 		m_IsSpawnEnd = true;
+	}
+}
+
+void CRespawnCircle::Alpha_Effect(_double TimeDelta)
+{
+	if (false == m_IsFullGuage)
+		return;
+
+	m_fAlpha += (_float)TimeDelta * 1.5f;
+
+	if (1.f <= m_fAlpha)
+	{
+		if (m_ePlayerID == Player::Cody)
+		{
+			UI_Delete(Cody, RespawnCircle);
+		}
+		else
+		{
+			UI_Delete(May, RespawnCircle);
+		}
 	}
 }
 

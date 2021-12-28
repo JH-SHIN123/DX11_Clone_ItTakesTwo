@@ -64,7 +64,7 @@ _int CEffect_Boss_Missile_Particle::Tick(_double TimeDelta)
 
 _int CEffect_Boss_Missile_Particle::Late_Tick(_double TimeDelta)
 {
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_NO_BLUR, this);
+	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect_Boss_Missile_Particle::Render(RENDER_GROUP::Enum eGroup)
@@ -137,7 +137,7 @@ void CEffect_Boss_Missile_Particle::Check_Parabola(_double TimeDelta)
 
 void CEffect_Boss_Missile_Particle::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	m_pInstanceBuffer_STT[iIndex].vSize.x -= TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 10.f);
+	m_pInstanceBuffer_STT[iIndex].vSize.x -= TimeDelta * m_fSize_Power * (m_pInstanceBuffer_STT[iIndex].vSize.x * 7.f);
 	if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x)
 		m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
 

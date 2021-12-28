@@ -1491,6 +1491,15 @@ void CUI_Generator::Set_AllActivation(_bool IsActivation)
 	}
 }
 
+void CUI_Generator::Set_Scale(Player::ID ePlayer, UI::TRIGGER eTrigger, _float2 vScale)
+{
+	if (true == m_vecUIOBjects[ePlayer][eTrigger].empty())
+		return;
+
+	for (auto UIObject : m_vecUIOBjects[ePlayer][eTrigger])
+		UIObject->Set_Scale(vScale);
+}
+
 _bool CUI_Generator::Get_MinigameAllReady()
 {
 	if (true == m_IsCodyReady && true == m_IsMayReady)

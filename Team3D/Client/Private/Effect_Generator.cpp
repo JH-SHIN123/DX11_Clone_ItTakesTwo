@@ -93,6 +93,7 @@
 #include "Effect_EndingRocket_Smoke.h"
 #include "Effect_EndingRocket_Boost.h"
 #include "Effect_EndingRocket_Circle.h"
+#include "Effect_Rocket_Smoke.h"
 #pragma endregion
 
 #pragma region CutSceneEffect
@@ -565,6 +566,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Smoke"))
 	{
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Rocket_Smoke", CEffect_Rocket_Smoke::Create(pDevice, pDeviceContext, pData));
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke", CEffect_Boss_Missile_Smoke::Create(pDevice, pDeviceContext, pData));
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke_Black", CEffect_Boss_Missile_Smoke_Black::Create(pDevice, pDeviceContext, pData));
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Smoke_Color", CEffect_Boss_Missile_Smoke_Color::Create(pDevice, pDeviceContext, pData));
@@ -665,7 +667,7 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PipeLocker_Button_Ball"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PipeLocker_Button_Ball", CEffect_PipeLocker_Ball::Create(pDevice, pDeviceContext, pData));
-		//
+
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_PipeLocker_Button_Particle"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_PipeLocker_Button_Particle", CEffect_PipeLocker_Particle::Create(pDevice, pDeviceContext, pData));
 

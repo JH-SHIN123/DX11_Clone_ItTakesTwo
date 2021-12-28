@@ -4,6 +4,9 @@
 #include "Effect_Boss_Gravitational_Bomb_Particle.h"
 #include "Effect_Generator.h"
 
+#include "Cody.h"
+#include "May.h"
+
 CEffect_Boss_Gravitational_Bomb::CEffect_Boss_Gravitational_Bomb(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
@@ -86,8 +89,6 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 	/* ·¹ÀÌ ¹ß»ç!!!!!!!!!!! */
 	m_pGameInstance->Raycast(MH_PxVec3(vPos), MH_PxVec3(XMVector3Normalize(vDown)), 50.f, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 
-	_float fTest = m_RaycastBuffer.getAnyHit(0).distance;
-
 	if (m_RaycastBuffer.getAnyHit(0).distance < 5.f)
 	{
 		PxVec3 fTestPos = m_RaycastBuffer.getAnyHit(0).position;
@@ -129,6 +130,11 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 
 	Explosion_Check();
 	Scale_Check(TimeDelta);
+
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+	PlayerHit_Check(TimeDelta);
+#endif // __PLAYER_INVINCIBLE_BOSSROOM
+
 
 	/* Light */
 	if (m_pLight)
@@ -196,6 +202,41 @@ void CEffect_Boss_Gravitational_Bomb::Scale_Check(_double TimeDelta)
 void CEffect_Boss_Gravitational_Bomb::Explosion_Check()
 {
 	// ¶¥¿¡ ´ê¾Ò´Ù¸é m_IsExplosion = true;
+}
+
+void CEffect_Boss_Gravitational_Bomb::PlayerHit_Check(_double TimeDelta)
+{
+	_float fRange = 5.f;
+
+	_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_float fCodyDistance = XMVectorGetX(XMVector3Length(vCodyPos - vPos));
+	_float fMayDistance = XMVectorGetX(XMVector3Length(vMayPos - vPos));
+
+	if (fRange >= fCodyDistance)
+	{
+		m_fCodyHitTime += (_float)TimeDelta;
+
+		if (1.f <= m_fCodyHitTime)
+		{
+			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
+			m_fCodyHitTime = 0.f;
+		}
+	}
+
+	if (fRange >= fMayDistance)
+	{
+		m_fMayHitTime += (_float)TimeDelta;
+
+		if (1.f <= m_fMayHitTime)
+		{
+			((CMay*)DATABASE->GetMay())->Set_HpBarReduction(10);
+			m_fMayHitTime = 0.f;
+		}
+	}
+
 }
 
 CEffect_Boss_Gravitational_Bomb * CEffect_Boss_Gravitational_Bomb::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

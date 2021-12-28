@@ -6,7 +6,17 @@
 //#define __START_LEVEL_LOGO
 //#define __PLAY_CUTSCENE
 #define __FIRST_CUTSCENE_OFF
-        
+
+<<<<<<< HEAD
+=======
+/************************************************************************/
+
+/**
+* 보스방 무적
+*/
+#define __PLAYER_INVINCIBLE_BOSSROOM
+
+>>>>>>> origin/main
 /************************************************************************/
   
 /**
