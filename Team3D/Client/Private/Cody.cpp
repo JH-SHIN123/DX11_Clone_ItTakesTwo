@@ -313,9 +313,6 @@ _int CCody::Tick(_double dTimeDelta)
 	if (nullptr == m_pCamera)
 		return NO_EVENT;
 
-	/* Script */
-	PinBall_Script(dTimeDelta);
-
 	//tEST
 	_vector vTestPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	//TEST
@@ -2640,10 +2637,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			LASERTENNIS->Set_PowerCoordUI_Cody(true);
 
 			m_pTransformCom->Rotate_ToTargetOnLand(XMLoadFloat3(&m_vTriggerTargetPos));
-			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.f, 1.f));
+			m_pActorCom->Set_Position(XMVectorSet(m_vTriggerTargetPos.x, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), m_vTriggerTargetPos.z - 3.55f, 1.f));
 
-			m_pModelCom->Set_Animation(ANI_C_Bhv_PushButton_Var2_SapGun);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_C_LaserTennis_Enter);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_LaserTennis_MH);
 
 			m_bLaserTennis = true;
 		}
@@ -2879,6 +2876,7 @@ void CCody::Rotate_Valve(const _double dTimeDelta)
 			m_IsEnterValve = false;
 			m_IsCollide = false;
 			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			DATABASE->Add_ValveCount_Cody(true);
 
 			UI_Create(Cody, Arrowkeys_Side);
@@ -4151,43 +4149,6 @@ void CCody::Ready_PinBall(const _double dTimeDelta)
 		m_IsReadyPinball = false;
 }
 
-void CCody::PinBall_Script(const _double dTimeDelta)
-{
-	if (false == m_bPinBallScript)
-		return;
-
-	m_dScriptTime += dTimeDelta;
-
-	if (0.5f <= m_dScriptTime && 0 == m_iScriptCount)
-	{
-		/* 첫번째 */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			SCRIPT->Render_Script(41, CScript::HALF, 2.f);
-
-		/* 코디가 잘못했을 때 */
-		else
-			SCRIPT->Render_Script(39, CScript::HALF, 2.f);
-
-		++m_iScriptCount;
-	}
-	if (2.8f <= m_dScriptTime && 1 == m_iScriptCount)
-	{
-		/* 두번째 */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			SCRIPT->Render_Script(42, CScript::HALF, 2.f);
-
-		/* 코디가 잘못했을 때 */
-		else
-			SCRIPT->Render_Script(40, CScript::HALF, 2.f);
-
-		m_iScriptCount = 0;
-		m_dScriptTime = 0.0;
-		m_bPinBallScript = false;
-	}
-}
-
 void CCody::Holding_BossUFO(const _double dTimeDelta)
 {
 	if (false == m_IsHolding_UFO)
@@ -4245,7 +4206,7 @@ void CCody::LaserTennis(const _double dTimeDelta)
 		{
 			m_pActorCom->Jump_Start(2.f);
 
-			m_pModelCom->Set_Animation(ANI_C_Bhv_RocketFirework);
+			m_pModelCom->Set_Animation(ANI_C_LaserTennis_PushButton);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_bCheckAnim = true;
 		}
@@ -4286,14 +4247,13 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 
 	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
 	{
-		///* Sound */
-		///* 메이가 잘못했을 때 */
-		//if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-		//	m_pGameInstance->Play_Sound(TEXT("22.wav"), CHANNEL_PINBALLVOICE);
-		///* 코디가 잘못했을 때 */
-		//else
-		//	m_pGameInstance->Play_Sound(TEXT("21.wav"), CHANNEL_PINBALLVOICE);
-		//m_bPinBallScript = true;
+		/* Sound */
+		/* 메이가 잘못했을 때 */
+		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
+			SCRIPT->VoiceFile_No22();
+		/* 코디가 잘못했을 때 */
+		else
+			SCRIPT->VoiceFile_No21();
 	}
 
 	m_IsPinBall = false;

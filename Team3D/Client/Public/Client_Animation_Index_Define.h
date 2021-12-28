@@ -554,6 +554,13 @@
 #define ANI_C_Holding_UFO 550
 #define ANI_C_CodyCutSceneIntro 551
 
+/* For. LaserTennis */
+#define ANI_C_LaserTennis_Emote_Robot 552
+#define ANI_C_LaserTennis_Enter 553
+#define ANI_C_LaserTennis_Exit 554
+#define ANI_C_LaserTennis_MH 555
+#define ANI_C_LaserTennis_PushButton 556
+
 #pragma endregion
 
 #pragma region May_Animation
@@ -1081,6 +1088,14 @@
 #define ANI_M_ZeroGravity_Fwd 520
 #define ANI_M_ZeroGravity_MH 521
 
+#define ANI_IDONTKNOW 522
+/* For.LaserTennis */
+#define ANI_M_LaserTennis_Enter 523
+#define ANI_M_LaserTennis_Exit 524
+#define ANI_M_LaserTennis_MH 525
+#define ANI_M_LaserTennis_PushButton 526
+#define ANI_M_LaserTennis_Emote_Shoulder 527
+
 
 #pragma endregion
 
@@ -1159,7 +1174,7 @@
 #define Moon_Ufo_Laser_HitPod 30
 #define Moon_Ufo_MH 31
 #define Moon_Ufo_Programming 32
-
+#define Z_Moon_Eject_NoneMove 33
 #pragma endregion
 
 #define UP 0

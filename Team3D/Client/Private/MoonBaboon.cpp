@@ -176,6 +176,11 @@ void CMoonBaboon::SetUp_IntroOffset(_double dTimeDelta)
 	}
 }
 
+void CMoonBaboon::Set_CutSceneAnimation(_uint iAnimIdx, _double dTime)
+{
+	m_pModelCom->Set_CutSceneAnimation(iAnimIdx, dTime);
+}
+
 HRESULT CMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);

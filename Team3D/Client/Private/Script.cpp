@@ -117,31 +117,31 @@ void CScript::VoiceFile_No10()
 void CScript::VoiceFile_No11()
 {
 	m_pGameInstance->Play_Sound(TEXT("11.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(18, 2.f));
+	m_queueScriptInfo.emplace(SCRIPTINFO(18, 2.f, SCREEN::FULL));
 }
 
 void CScript::VoiceFile_No12()
 {
 	m_pGameInstance->Play_Sound(TEXT("12.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(19, 2.f));
+	m_queueScriptInfo.emplace(SCRIPTINFO(19, 2.f, SCREEN::FULL));
 }
 
 void CScript::VoiceFile_No13()
 {
 	m_pGameInstance->Play_Sound(TEXT("13.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(20, 2.f));
+	m_queueScriptInfo.emplace(SCRIPTINFO(20, 2.f, SCREEN::FULL));
 }
 
 void CScript::VoiceFile_No14()
 {
 	m_pGameInstance->Play_Sound(TEXT("14.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(21, 2.f));
+	m_queueScriptInfo.emplace(SCRIPTINFO(21, 2.f, SCREEN::FULL));
 }
 
 void CScript::VoiceFile_No15()
 {
 	m_pGameInstance->Play_Sound(TEXT("15.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(22, 2.f));
+	m_queueScriptInfo.emplace(SCRIPTINFO(22, 2.f, SCREEN::FULL));
 }
 
 void CScript::VoiceFile_No16()
@@ -478,7 +478,7 @@ _int CScript::Tick(_double dTimeDelta)
 		{
 			m_fChangeTimeCheck = 0.f;
 			m_dChangeTime = m_queueScriptInfo.front().dChangeTime;
-			Render_Script(m_queueScriptInfo.front().iScriptIndex, CScript::HALF, m_queueScriptInfo.front().dChangeTime);
+			Render_Script(m_queueScriptInfo.front().iScriptIndex, m_queueScriptInfo.front().eScreen, m_queueScriptInfo.front().dChangeTime);
 			m_queueScriptInfo.pop();
 		}
 	}

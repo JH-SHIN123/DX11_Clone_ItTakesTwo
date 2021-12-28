@@ -23,14 +23,11 @@ void CTimer_LaserTennis::OnOff_Timer(_bool bOnOff)
 		m_dButton_Time = 0.0;
 		m_dLargeButton_Time = 0.0;
 		m_dLaserActivation_Time = 0.0;
-		m_dScriptTime = 0.0;
 		m_dSoundTime = 0.0;
 
 		m_iLaserActivation_Count = 0;
 		m_iSound_Count = 0;
-		m_iScript_Count = 0;
 
-		m_bScript = false;
 		m_bSoundCheck = false;
 	}
 }
@@ -154,46 +151,6 @@ _int CTimer_LaserTennis::Tick(_double dTimeDelta)
 		}
 	}
 
-	if (true == m_bScript)
-	{
-		m_dScriptTime += dTimeDelta;
-
-		if (1.2f <= m_dScriptTime && 0 == m_iScript_Count)
-		{
-			if (CLaserTennis_Manager::TARGET_CODY == LASERTENNIS->Get_Winner())
-			{
-				if (0 == m_iScript_Count)
-				{
-					m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
-					m_pGameInstance->Play_Sound(TEXT("16.wav"), CHANNEL_LASERTENNISVOICE);
-					SCRIPT->Render_Script(23, CScript::HALF, 1.5f);
-					++m_iScript_Count;
-				}
-			}
-			else
-			{
-				m_pGameInstance->Stop_Sound(CHANNEL_LASERTENNISVOICE);
-				m_pGameInstance->Play_Sound(TEXT("17.wav"), CHANNEL_LASERTENNISVOICE);
-				SCRIPT->Render_Script(25, CScript::HALF, 1.5f);
-				++m_iScript_Count;
-			}
-
-			m_dScriptTime = 0.0;
-		}
-		else if (2.2f <= m_dScriptTime && 1 == m_iScript_Count)
-		{
-			if (CLaserTennis_Manager::TARGET_CODY == LASERTENNIS->Get_Winner())
-			{
-				SCRIPT->Render_Script(24, CScript::HALF, 2.f);
-				OnOff_Timer(false);
-			}
-			else
-			{
-				SCRIPT->Render_Script(26, CScript::HALF, 2.f);
-				OnOff_Timer(false);
-			}
-		}
-	}
 	return NO_EVENT;
 }
 
