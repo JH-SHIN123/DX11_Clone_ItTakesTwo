@@ -151,7 +151,7 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		return;
 
 #ifdef __CONTROL_MAY_KEYBOARD
-	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Key_Down(DIK_Y)))
+	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Key_Down(DIK_O)))
 #else
 	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Pad_Key_Down(DIP_Y)))
 #endif

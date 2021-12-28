@@ -148,6 +148,7 @@ private:
 	_bool	m_bRespawn = false;
 	//For.OpenThirdFloor
 	_bool m_bOpenThirdFloor = false;
+	_bool	m_bScriptCheck = false;
 	_float m_fOpenThirdFloorTime = 0.f;
 	//For.Destory_BossCore
 	_double m_dDestroyCoreTime = 0.f;

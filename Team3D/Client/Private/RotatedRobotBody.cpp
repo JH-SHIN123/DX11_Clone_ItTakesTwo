@@ -51,15 +51,13 @@ _int CRotatedRobotBody::Tick(_double dTimeDelta)
 {
 	CRotatedRobotParts::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::RobotBattery_Spark, m_pTransformCom->Get_WorldMatrix());
-
 	return NO_EVENT;
 }
 
 _int CRotatedRobotBody::Late_Tick(_double dTimeDelta)
 {
 	CRotatedRobotParts::Tick(dTimeDelta);
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 25.f))
 		Add_GameObject_ToRenderGroup();
 

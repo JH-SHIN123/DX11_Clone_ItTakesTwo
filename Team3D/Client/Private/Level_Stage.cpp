@@ -229,22 +229,30 @@ HRESULT CLevel_Stage::Ready_Test()
 	//
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
 	//
-	//_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
-	//CDynamic_Env::ARG_DESC Arg;
-	//Arg.iMaterialIndex = 0;
-	//Arg.iOption = 0;
-	//Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
+	CDynamic_Env::ARG_DESC Arg;
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
 	//memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
 	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_SmallOpen_01"));
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricBox", Level::LEVEL_STAGE, TEXT("GameObject_ElectricBox"), &Arg), E_FAIL);
 	//
-	//vPos = { 60.f, 1.f, 25.f, 1.f };
-	//Arg.iMaterialIndex = 0;
-	//Arg.iOption = 0;
-	//Arg.WorldMatrix = MH_XMFloat4x4Identity();
-	//memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
-	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+	vPos = { 60.f, 1.f, 25.f, 1.f };
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+
+	vPos = { 60.f, 1.f, 27.f, 1.f };
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+	WorldMatrix.r[3] = XMLoadFloat4(&vPos);
+	XMStoreFloat4x4(&Arg.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+
 	//
 	//vPos = { 58.f, 0.21f, 25.f, 1.f };
 	//Arg.iMaterialIndex = 0;
@@ -295,9 +303,9 @@ HRESULT CLevel_Stage::Ready_Test()
 	////MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
 
-	ROBOTDESC StarDesc;
-	StarDesc.vPosition = { 63.0f, 0.5f, 55.f, 1.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"º°", Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
+	//ROBOTDESC StarDesc;
+	//StarDesc.vPosition = { 63.0f, 0.5f, 55.f, 1.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"º°", Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"·¹", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
 

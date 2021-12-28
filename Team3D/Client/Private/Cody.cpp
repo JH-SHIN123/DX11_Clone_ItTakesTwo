@@ -293,6 +293,9 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_B))
+		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
+
 	if (m_pGameInstance->Key_Down(DIK_F9))
 		UI_CreateOnlyOnce(Cody, RespawnCircle);
 	 
@@ -452,6 +455,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 		return S_OK;
 
 	CCharacter::Render(eGroup);
+
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
@@ -2909,15 +2913,12 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE_MAY_1) == false)
+				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f *//*&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false*/)
 				{
-					SCRIPT->Render_Script(0, CScript::HALF, 2.f);
-					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
-					m_pGameInstance->Play_Sound(TEXT("01.wav"), CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
+					SCRIPT->VoiceFile_No01();
 					m_bGravityPipe_FirstIn = true;
 				}
 			}
-
 			if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
@@ -2983,13 +2984,13 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 			if (true == m_IsHitPlanet_Once)
 			{
 				((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_HANGINGPLANET);
 				m_pGameInstance->Play_Sound(TEXT("HangingPlanet_Push.wav"), CHANNEL_HANGINGPLANET);
 				m_IsHitPlanet_Once = false;
 			}
 		}
-
 		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
 		{
 			if (true == m_IsHitPlanet_Effect)
@@ -3002,8 +3003,6 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 				m_IsHitPlanet_Effect = false;
 			}
 		}
-
-
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);

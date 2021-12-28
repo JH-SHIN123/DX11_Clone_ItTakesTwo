@@ -15,7 +15,7 @@ HRESULT CEffect_UFO_Inside_Battery_Explosion::NativeConstruct_Prototype(void * p
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 50;
+	m_EffectDesc_Prototype.iInstanceCount = 100;
 
 	return S_OK;
 }
@@ -102,7 +102,6 @@ void CEffect_UFO_Inside_Battery_Explosion::Check_Instance(_double TimeDelta)
 			continue;
 
 		Instance_Pos((_float)TimeDelta, iIndex);
-
 	}
 }
 

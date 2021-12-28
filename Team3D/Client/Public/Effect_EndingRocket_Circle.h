@@ -55,7 +55,7 @@ private:
 	const _float  m_fSize_Power = 0.75f;
 	const _float  m_fInstance_SpeedPerSec = 0.5f;
 	const _double m_dInstance_Pos_Update_Time = 0.75;
-	const _float2 m_vDefaultSize = { 0.5f, 0.5f };
+	const _float2 m_vDefaultSize = { 0.4f, 0.4f };
 	const _float2 m_vBoostingSize = { 1.f, 1.f };
 
 public:
