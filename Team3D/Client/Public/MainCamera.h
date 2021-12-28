@@ -13,8 +13,8 @@ class CMainCamera final : public CCamera
 
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Ending, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,
-						//보스 3페
-		Cam_LaserTennis,Cam_Boss_HitRocket,Cam_End};
+						//보스 마지막 코어	터트림	//보스 3페
+		Cam_LaserTennis,Cam_Destroy_BossCore,		Cam_Boss_HitRocket,Cam_End};
 
 	//O CamFreeMove P FollowPlayer																 
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_OnBossMiniRoom_Cody,
@@ -56,6 +56,7 @@ private:
 	_int	Tick_Cam_PinBall_Cody(_double dTimeDelta);
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
 	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
+	_int	Tick_Cam_Destroy_BossCore(_double dTimeDelta);		//문바분 마지막 코어 부술때
 	_int	Tick_Cam_Boss_HitRocket(_double dTimeDelta);		//달나라 갈때
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)

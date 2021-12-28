@@ -1299,6 +1299,12 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
+{
+
+	return NO_EVENT;
+}
+
 _int CMainCamera::Tick_Cam_Boss_HitRocket(_double dTimeDelta)
 {
 	return NO_EVENT;
@@ -1562,8 +1568,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
 		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
-		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
-
+		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
 		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 		return NO_EVENT;
 	}
@@ -1654,6 +1659,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CMainCamera::CamMode::Cam_LaserTennis:
 		iResult = Tick_Cam_LaserTennis(dTimeDelta);
+		break;
+	case Client::CMainCamera::CamMode::Cam_Destroy_BossCore:
+		iResult = Tick_Cam_Destroy_BossCore(dTimeDelta);
 		break;
 
 	}
