@@ -351,6 +351,9 @@ _int CMay::Late_Tick(_double dTimeDelta)
 
 HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (true == m_IsDeadLine || m_bDead_InBossroom)
+		return S_OK;
+
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
