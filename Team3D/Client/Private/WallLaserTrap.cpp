@@ -249,7 +249,7 @@ void CWallLaserTrap::Render_PointInstance()
 	m_pPointInstanceCom->Set_Variable("g_vSubCamPosition", &vSubCamPosition, sizeof(_vector));
 
 
-	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
+	_float4 vUV = { 0.f, 0.f, 1.f, 1.f }; //
 	_float4 vColor = { 1.000000000f, 0.070588249f, 0.0f, 1.000000000f };
 	m_pPointInstanceCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_vUV", &vUV, sizeof(_float4));
