@@ -61,8 +61,8 @@ _int CElectricWall::Tick(_double dTimeDelta)
 			++m_iEffectCount;
 			for (_uint i = 0; i < 2; ++i)
 			{
-				_matrix World = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f)) 
-					* XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y + (i * 1.f) + 0.65f, (m_vOriginPos.z + 0.0125f) * fRotate_Z);
+				_matrix World = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f)) * XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.f))
+					* XMMatrixTranslation(m_vOriginPos.x, m_vOriginPos.y + (i * 1.f) + 0.65f, m_vOriginPos.z + (0.0125f * fRotate_Z));
 				EFFECT->Add_Effect(Effect_Value::UFO_Inside_ElectricWall_Spark, World);
 			}
 			for (_uint i = 0; i < 8; ++i)

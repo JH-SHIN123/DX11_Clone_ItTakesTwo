@@ -24,7 +24,10 @@ enum class Effect_Value
 	May_Rail,
 	May_Boots_Walking,
 	Player_Dead_Explosion,
+
 	RobotBattery_Spark,
+	RobotBattery_Spark_Rotated,
+	RobotBattery_Spark_ControlRoom,
 
 	BossCore_Hit,
 	BossCore_Smoke,

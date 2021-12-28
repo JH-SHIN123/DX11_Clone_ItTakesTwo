@@ -15,7 +15,7 @@ HRESULT CEffect_StarBuddy_Move_Particle::NativeConstruct_Prototype(void * pArg)
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 40;
+	m_EffectDesc_Prototype.iInstanceCount = 60;
 
 	return S_OK;
 }

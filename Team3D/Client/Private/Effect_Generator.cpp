@@ -5,6 +5,7 @@
 #pragma  region Effect Include
 #include "Effect_RespawnTunnel.h"
 #include "Effect_FireDoor.h"
+#include "Effect_WallLaser_Trap_Plane.h"
 #include "Effect_Walking_Smoke.h"
 #include "Effect_Landing_Smoke.h"
 #include "Effect_Dash.h"
@@ -24,6 +25,8 @@
 #include "Effect_Env_Particle_Field_Dust.h"
 #include "Effect_Dead_Particle_Fire.h"
 #include "Effect_Robot_Battery_Spark.h"
+#include "Effect_Robot_Battery_Spark_Rotated.h"
+#include "Effect_Robot_Battery_Spark_ControlRoom.h"
 #include "Effect_Umbrella_Pipe.h"
 #include "Effect_Pinball_Move.h"
 #include "Effect_Pinball_Explosion.h"
@@ -206,6 +209,12 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		break;
 	case Effect_Value::RobotBattery_Spark:
 		lstrcpy(szPrototype, L"GameObject_2D_Robot_Battery_Spark");
+		break;
+	case Effect_Value::RobotBattery_Spark_Rotated:
+		lstrcpy(szPrototype, L"GameObject_2D_Robot_Battery_Spark_Rotated");
+		break;
+	case Effect_Value::RobotBattery_Spark_ControlRoom:
+		lstrcpy(szPrototype, L"GameObject_2D_Robot_Battery_Spark_ControlRoom");
 		break;
 	case Effect_Value::BossCore_Hit:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Core_Hit");
@@ -457,7 +466,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 #pragma region 2D_Effect
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
+	{
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_WallLaser_Trap_Plane", CEffect_WallLaser_Trap_Plane::Create(pDevice, pDeviceContext, pData));
+	}
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke", CEffect_Walking_Smoke::Create(pDevice, pDeviceContext, pData));
@@ -493,7 +505,11 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Env_Particle", CEffect_Env_Particle::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Robot_Battery_Spark"))
+	{
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Robot_Battery_Spark", CEffect_Robot_Battery_Spark::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Robot_Battery_Spark_Rotated", CEffect_Robot_Battery_Spark_Rotated::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Robot_Battery_Spark_ControlRoom", CEffect_Robot_Battery_Spark_ControlRoom::Create(pDevice, pDeviceContext, pData));
+	}
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Pinball_Move"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Pinball_Move", CEffect_Pinball_Move::Create(pDevice, pDeviceContext, pData));

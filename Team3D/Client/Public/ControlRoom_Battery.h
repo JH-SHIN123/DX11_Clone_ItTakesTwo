@@ -42,6 +42,7 @@ private:
 	_bool										m_IsPlayerInterActive = false;
 	_bool										m_IsBatteryHolding = false;
 	_bool										m_IsUIDisable = false;
+	_bool										m_IsEffect = false;
 
 private:
 	vector<class CControlRoom_Door*>			m_vecDoor;

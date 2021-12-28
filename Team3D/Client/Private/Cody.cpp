@@ -293,6 +293,9 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_B))
+		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
+
 	if (m_pGameInstance->Key_Down(DIK_F9))
 		UI_CreateOnlyOnce(Cody, RespawnCircle);
 	 
@@ -452,6 +455,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 		return S_OK;
 
 	CCharacter::Render(eGroup);
+
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
