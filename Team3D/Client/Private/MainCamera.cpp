@@ -1637,7 +1637,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}
 
 #endif
-	
+
 	if (m_eCurCamMode != m_ePreCamMode)
 	{
 		switch (m_eCurCamMode)

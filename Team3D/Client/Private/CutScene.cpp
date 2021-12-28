@@ -377,6 +377,14 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 
 		}
 	}
+	else
+	{
+		CMainCamera* pMainCam = static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam());
+		CSubCamera* pSubCam = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam());
+
+		pMainCam->Get_Transform()->Set_WorldMatrix(pSubCam->Get_Transform()->Get_WorldMatrix());
+
+	}
 	//ButtonPress 
 	//31.32	Fourth
 	//46.84 Third
@@ -669,6 +677,7 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
+	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
 
