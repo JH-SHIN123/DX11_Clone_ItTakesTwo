@@ -1561,7 +1561,8 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}*/
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
 
 		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 		return NO_EVENT;
