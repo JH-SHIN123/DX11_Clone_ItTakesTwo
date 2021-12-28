@@ -154,7 +154,7 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		++m_iCount;
 
 		if(1 == m_iCount)
-			m_fTime += (_float)TimeDelta * 5.f;
+			m_fTime += (_float)TimeDelta * 4.f;
 		else
 			m_fTime += (_float)TimeDelta * 2.f;
 
@@ -216,11 +216,11 @@ void CRespawnCircle::Alpha_Effect(_double TimeDelta)
 	{
 		if (m_ePlayerID == Player::Cody)
 		{
-			UI_Delete(Cody, RespawnCircle);
+			UI_Delete(Cody, RespawnCircle_Cody);
 		}
 		else
 		{
-			UI_Delete(May, RespawnCircle);
+			UI_Delete(May, RespawnCircle_May);
 		}
 	}
 }

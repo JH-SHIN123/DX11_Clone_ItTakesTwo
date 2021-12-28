@@ -3492,7 +3492,7 @@ void CMay::DeadInBossroom(const _double dTimeDelta)
 		if (false == m_bDead_InBossroom)
 		{
 			// Create Respawn UI
-			UI_CreateOnlyOnce(May, RespawnCircle);
+			UI_CreateOnlyOnce(May, RespawnCircle_May);
 
 			// Create Effect
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
