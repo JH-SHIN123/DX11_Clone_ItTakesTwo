@@ -244,6 +244,7 @@ public:
 	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
 
 	_bool			 Get_IsEnding() { return m_IsEnding; }
+	_bool			Get_IsDeadInBossroom() { return m_bDead_InBossroom; }
 
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
