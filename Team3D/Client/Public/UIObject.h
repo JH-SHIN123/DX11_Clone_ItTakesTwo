@@ -53,6 +53,7 @@ public:
 	void Set_FadeOut();
 	void Set_Ready();
 	void Set_UIAllActivation(_bool IsCheck);
+	void Set_Scale(_float2 vScale);
 
 public:
 	virtual void Set_TargetPos(_vector vPos);

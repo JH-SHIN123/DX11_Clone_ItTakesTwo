@@ -293,6 +293,9 @@ void CCody::Add_LerpInfo_To_Model()
 _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_F9))
+		UI_CreateOnlyOnce(Cody, RespawnCircle);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
@@ -2765,26 +2768,23 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 void CCody::Push_Battery(const _double dTimeDelta)
 {
 	// May가 배터리 들어온 상태에서 Lever 치고 컷씬이 등장하면 그때 -> ANI_C_MH
-	if (m_IsPushingBattery == true)
+	if (m_IsPushingBattery == true && true == m_IsPipeBattery)
 	{
-		if (true == m_IsPipeBattery)
-		{
-			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
-			m_IsCollide = false;
+		m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
+		m_IsCollide = false;
 
-			if (m_pGameInstance->Key_Down(DIK_Q))
-			{
-				m_IsPushingBattery = false;
-				m_IsPipeBattery = false;
-				m_pModelCom->Set_Animation(ANI_C_MH);
-				m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-			}
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingBattery = false;
+			m_IsPipeBattery = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd))
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
 	}
-	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
+	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 	{
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
 		{

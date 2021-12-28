@@ -22,6 +22,7 @@ public:
 private:
 	void Scale_Check(_double TimeDelta);
 	void Explosion_Check();
+	void PlayerHit_Check(_double TimeDelta);
 
 private:
 	CTextures* m_pTexture_Distortion = nullptr;
@@ -40,6 +41,9 @@ private:
 	_float m_fJumpTime = 0.f;
 	_float m_fJumpY = 0.f;
 	_float m_fDist = 0.f;
+	_float m_fCodyHitTime = 1.f;
+	_float m_fMayHitTime = 1.f;
+
 
 	_float m_fScale_Pow = 7.f;
 	const _float m_fScale_Max = 13.f;
