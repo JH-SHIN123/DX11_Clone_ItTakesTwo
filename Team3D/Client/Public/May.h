@@ -197,7 +197,7 @@ public: /* Getter */
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool		Get_OnRail() { return m_bOnRail; }
 	_bool		Get_IsLaserTennis() { return m_bLaserTennis; }
-
+	_bool		Get_IsDeadInBossroom() { return m_bDead_InBossroom; }
 
 public:
 	void		Update_Tirgger_Pos(_vector vPos);
