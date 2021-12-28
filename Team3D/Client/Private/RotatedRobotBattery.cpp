@@ -79,20 +79,6 @@ _int CRotatedRobotBattery::Tick(_double dTimeDelta)
 		}
 	}
 
-	//_vector vPos = XMVectorZero();
-	//TCHAR szBuff[256] = L"";
-	//GetPrivateProfileString(L"Section_1", L"Key_1", L"0", szBuff, 256, L"../test.ini");
-	//_float x = _ttof(szBuff);
-
-	//GetPrivateProfileString(L"Section_1", L"Key_2", L"0", szBuff, 256, L"../test.ini");
-	//_float y = _ttof(szBuff);
-
-	//GetPrivateProfileString(L"Section_1", L"Key_3", L"0", szBuff, 256, L"../test.ini");
-	//_float z = _ttof(szBuff);
-	// 
-	//UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
-	//	XMVectorSet(1035.44493f, 743.288574f, 216.964385f, 1.f), 10.f, m_IsCollide, !m_bUpdate);
-
 	return NO_EVENT;
 }
 
@@ -123,9 +109,12 @@ void CRotatedRobotBattery::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID
 	{
 		if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 		{
-			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTBATTERY, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			// 0.2f, 0.f, 0.7f
+			_vector vUIPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.2f, 0.f, 0.7f, 0.f);
+
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eROBOTBATTERY, true, vUIPos);
 			UI_Create(Cody, InputButton_InterActive);
-			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vUIPos);
 			m_IsCollide = true;
 		}
 		else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
