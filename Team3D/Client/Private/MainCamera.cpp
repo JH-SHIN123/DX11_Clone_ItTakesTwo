@@ -343,30 +343,35 @@ _int CMainCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 {
 	m_fOpenThirdFloorTime += (_float)dTimeDelta;
 	_float fDelay = 2.f;
-	if (m_fOpenThirdFloorTime > fDelay *9.f)
+	if (m_fOpenThirdFloorTime > fDelay * 9.f)
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 		ReSet_Cam_FreeToAuto(true ,false,1.f);
 		UI_Generator->Set_AllActivation(true);
 	}
-	else if (m_fOpenThirdFloorTime > fDelay *8.f)
-		SCRIPT->Render_Script(53, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *7.f)
-		SCRIPT->Render_Script(52, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *6.f)
-		SCRIPT->Render_Script(51, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *5.f)
-		SCRIPT->Render_Script(50, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime >fDelay * 4.f)
-		SCRIPT->Render_Script(49, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *3.f)
-		SCRIPT->Render_Script(48, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay * 2.f)
-		SCRIPT->Render_Script(47, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay)
-		SCRIPT->Render_Script(46, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > 0.f)
-		SCRIPT->Render_Script(45, CScript::SCREEN::HALF, fDelay);
+	if (false == m_bScriptCheck)
+	{
+		SCRIPT->VoiceFile_No24();
+		m_bScriptCheck = true;
+	}
+	//else if (m_fOpenThirdFloorTime > fDelay *8.f)
+	//	SCRIPT->Render_Script(53, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *7.f)
+	//	SCRIPT->Render_Script(52, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *6.f)
+	//	SCRIPT->Render_Script(51, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *5.f)
+	//	SCRIPT->Render_Script(50, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay * 4.f)
+	//	SCRIPT->Render_Script(49, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *3.f)
+	//	SCRIPT->Render_Script(48, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay * 2.f)
+	//	SCRIPT->Render_Script(47, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay)
+	//	SCRIPT->Render_Script(46, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > 0.f)
+	//	SCRIPT->Render_Script(45, CScript::SCREEN::HALF, fDelay);
 
 	_vector vCodyPos = m_pCody->Get_Position();
 	_vector vUpPos = XMVectorSet(65.f, 218.f, 179.f, 1.f);
