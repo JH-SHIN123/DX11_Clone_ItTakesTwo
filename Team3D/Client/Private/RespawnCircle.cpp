@@ -159,7 +159,7 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		m_fTime += (_float)TimeDelta * 2.f;
 
 		m_iRespawnOption = 1;
-		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));
+		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));;
 
 		if (1.f <= m_fTime)
 			m_IsFullGuage = true;
