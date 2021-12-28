@@ -126,6 +126,8 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			if (false == m_bIsChangeToCody)
 			{
 				CPerformer* pCodyCutScene = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+				static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_ToyBox1"))->Finish_Perform();
+
 				pCodyCutScene->Set_Position(_float3(0, 0, 0));
 				CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 				pCody->Get_Actor()->Set_Position(XMVectorSet(63.9f, 0.2f, 0.9f, 1.f));
@@ -811,12 +813,13 @@ HRESULT CCutScene::End_CutScene_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pMainCam->ReSet_Cam_FreeToAuto(false, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pSubCam->ReSet_Cam_FreeToAuto(false, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 	((CUFO*)DATABASE->Get_BossUFO())->Set_Active(false);
-
+	static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_RemoteContollerCutScene1"))->Set_Position({ 0.f,0.f,0.f });
+	
 	return S_OK;
 }
 
@@ -846,6 +849,7 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	pMainCam->ReSet_Cam_FreeToAuto(true, false , 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pSubCam->Get_Transform()->Set_WorldMatrix(pMainCam->Get_Transform()->Get_WorldMatrix());
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
@@ -863,6 +867,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pMainCam->Get_Transform()->Set_WorldMatrix(pSubCam->Get_Transform()->Get_WorldMatrix());
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
@@ -1293,21 +1298,21 @@ void CCutScene::Script_GotoMoon(_double dTimeDelta)
 {
 	_double dSoundTime = m_dTime;
 	if (dSoundTime >= 12.0 && dSoundTime < 12.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(212, CScript::FULL, 0.9);
+		SCRIPT->Render_Script(212, CScript::FULL, 0.9f);
 	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(213, CScript::FULL, 1.9);
+		SCRIPT->Render_Script(213, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(214, CScript::FULL, 1.9);
+		SCRIPT->Render_Script(214, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(215, CScript::FULL, 1.9);
+		SCRIPT->Render_Script(215, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(216, CScript::FULL, 1.9);
+		SCRIPT->Render_Script(216, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 21.0 && dSoundTime < 21.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(217, CScript::FULL, 1.9);
+		SCRIPT->Render_Script(217, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 23.0 && dSoundTime < 23.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(218, CScript::FULL, 1.9);
+		SCRIPT->Render_Script(218, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 25.0 && dSoundTime < 25.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(219, CScript::FULL, 1.9);
+		SCRIPT->Render_Script(219, CScript::FULL, 1.9f);
 
 }
 
