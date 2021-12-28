@@ -98,6 +98,22 @@ HRESULT CHpBar::Render(RENDER_GROUP::Enum eGroup)
 	return S_OK;
 }
 
+void CHpBar::Reset()
+{
+	m_fHp = m_fMaxHp;
+
+	if (m_ePlayerID == Player::Cody)
+	{
+		m_fRatio = 0.f;
+		m_fDecreaseRateRatio = 0.f;
+	}
+	else
+	{
+		m_fRatio = 0.5f;
+		m_fDecreaseRateRatio = 0.5f;
+	}
+}
+
 void CHpBar::Set_Active(_bool IsCheck)
 {
 	m_IsActive = IsCheck;

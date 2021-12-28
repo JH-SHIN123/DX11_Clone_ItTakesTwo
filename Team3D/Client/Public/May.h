@@ -197,7 +197,7 @@ public: /* Getter */
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool		Get_OnRail() { return m_bOnRail; }
 	_bool		Get_IsLaserTennis() { return m_bLaserTennis; }
-
+	_bool		Get_IsDeadInBossroom() { return m_bDead_InBossroom; }
 
 public:
 	void		Update_Tirgger_Pos(_vector vPos);
@@ -558,6 +558,17 @@ private:
 	_bool	m_bRadiarBlur_Loop = false;
 	_double m_dRadiarBlurTime = 0.0;
 	_double m_dRadiarBlurDeltaT = 0.0;
+#pragma endregion
+
+#pragma region Dead_InBossroom
+public:
+	void Respawn_InBossroom();
+
+private:
+	void DeadInBossroom(const _double dTimeDelta);
+
+private:
+	_bool m_bDead_InBossroom = false;
 #pragma endregion
 
 private: /* For. Ending */

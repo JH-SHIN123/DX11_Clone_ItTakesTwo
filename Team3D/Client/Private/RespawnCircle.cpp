@@ -3,6 +3,8 @@
 
 #include "GameInstance.h"
 #include "UI_Generator.h"
+#include "Cody.h"
+#include "May.h"
 
 CRespawnCircle::CRespawnCircle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -65,6 +67,22 @@ _int CRespawnCircle::Tick(_double TimeDelta)
 
 	Spawn_Effect(TimeDelta);
 	Alpha_Effect(TimeDelta);
+
+	if (m_IsFullGuage && false == m_IsRespawnCharacterOnce)
+	{
+		if (Player::ID::Cody == m_ePlayerID)
+		{
+			CCody* pCody = (CCody*)(DATABASE->GetCody());
+			if (pCody) pCody->Respawn_InBossroom();
+			m_IsRespawnCharacterOnce = true;
+		}
+		else if (Player::ID::May == m_ePlayerID)
+		{
+			CMay* pMay = (CMay*)(DATABASE->GetMay());
+			if (pMay) pMay->Respawn_InBossroom();
+			m_IsRespawnCharacterOnce = true;
+		}
+	}
 
 	return _int();
 }
@@ -132,12 +150,16 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 	if (true == m_IsFullGuage)
 		return;
 
-	if (m_pGameInstance->Key_Down(DIK_E))
+#ifdef __CONTROL_MAY_KEYBOARD
+	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Key_Down(DIK_Y)))
+#else
+	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Pad_Key_Down(DIP_Y)))
+#endif
 	{
 		m_fTime += (_float)TimeDelta * 2.f;
 
 		m_iRespawnOption = 1;
-		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));
+		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));;
 
 		if (1.f <= m_fTime)
 			m_IsFullGuage = true;

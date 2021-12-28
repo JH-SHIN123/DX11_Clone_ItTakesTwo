@@ -1290,11 +1290,11 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 	_vector vMiddlePos = vCodyPos - (vCodyPos - vMayPos)*0.5f;
 
 	vMiddlePos = XMVectorSetY(vMiddlePos, 730.f);
-	vMiddlePos = XMVectorSetZ(vMiddlePos, 998.f);
+	vMiddlePos = XMVectorSetZ(vMiddlePos, 995.f);
 
 	vTargetPos = XMVectorSetX(vTargetPos, XMVectorGetX(vMiddlePos));
-	m_pTransformCom->Set_WorldMatrix(
-		MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(),MakeViewMatrixByUp(vTargetPos,vMiddlePos),(_float)dTimeDelta));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(),XMMatrixTranslation(0.f, -7.f, -9.f) * XMMatrixRotationX(XMConvertToRadians(-30.f)) * MakeViewMatrixByUp(vTargetPos,vMiddlePos),(_float)dTimeDelta));
+
 	return NO_EVENT;
 }
 

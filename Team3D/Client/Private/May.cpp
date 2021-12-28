@@ -233,9 +233,10 @@ _int CMay::Tick(_double dTimeDelta)
 		return NO_EVENT;
 
 	KeyInput_Rail(dTimeDelta);
+	DeadInBossroom(dTimeDelta);
 	_bool Test = m_pActorCom->Get_IsOnGravityPath();
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO && false == m_bDead_InBossroom)
 	{
 		LaserTennis(dTimeDelta);
 		Wall_Jump(dTimeDelta);
@@ -336,7 +337,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	InUFO(dTimeDelta);
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
-		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer))
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer) || m_bDead_InBossroom)
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f)) 
@@ -350,6 +351,9 @@ _int CMay::Late_Tick(_double dTimeDelta)
 
 HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (true == m_IsDeadLine || m_bDead_InBossroom)
+		return S_OK;
+
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
@@ -2911,7 +2915,7 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		m_pModelCom->Set_Animation(ANI_M_MH);
 		m_fDeadTime = 0.f;
 		m_IsCollide = false;
@@ -2948,8 +2952,8 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 			m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 
-			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+			m_pModelCom->Set_Animation(ANI_M_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 			m_pActorCom->Set_Gravity_Normally();
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
@@ -2962,7 +2966,7 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 			m_IsDeadLine = false;
 
 			/* Effect */
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 		}
 		else
 		{
@@ -3445,6 +3449,65 @@ void CMay::Set_RadiarBlur(_bool bActive)
 	_float2 vFocusPos = { vConvertPos.x / g_iWinCX + 0.5f, vConvertPos.y / g_iWinCY };
 	vFocusPos.y -= 0.08f; // Offset 0.04f
 	m_pGameInstance->Set_RadiarBlur_Sub(bActive, vFocusPos);
+}
+#pragma endregion
+
+#pragma region Dead_InBossroom
+void CMay::Respawn_InBossroom()
+{
+	m_pHpBar->Reset();
+	m_bDead_InBossroom = false;
+	m_pGameInstance->Set_SubViewBlur(false);
+
+	/* Sound */
+	m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+	m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
+
+	m_pModelCom->Set_Animation(ANI_M_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+	//m_pActorCom->Set_Position(XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
+
+	Enforce_IdleState();
+	m_pActorCom->Set_ZeroGravity(false, false, false);
+	m_fDeadTime = 0.f;
+	m_IsCollide = false;
+	m_IsDeadLine = false;
+
+	/* Effect */
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+}
+void CMay::DeadInBossroom(const _double dTimeDelta)
+{
+	NULL_CHECK(m_pHpBar);
+
+	/* 데드라인과 충돌시 1초후에 리스폰 */
+	_float fHp = m_pHpBar->Get_Hp();
+	if (fHp <= 0.f)
+	{
+		if (false == m_bDead_InBossroom)
+		{
+			// Create Respawn UI
+			UI_CreateOnlyOnce(May, RespawnCircle);
+
+			// Create Effect
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+
+			// Set Blur
+			m_pGameInstance->Set_SubViewBlur(true);
+
+			// Set States
+			m_pActorCom->Set_ZeroGravity(true, false, true);
+			Enforce_IdleState();
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+			m_pGameInstance->Play_Sound(TEXT("May_Dead_Burn.wav"), CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+			m_bDead_InBossroom = true;
+		}
+
+		m_pActorCom->Get_Actor()->putToSleep();
+		m_pActorCom->Update(dTimeDelta);
+	}
 }
 #pragma endregion
 

@@ -217,6 +217,7 @@ public:
 	_bool			 Get_IsInGravityPipe() { return m_IsInGravityPipe; }
 	_bool			 Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool			 Get_PushingBattery() { return m_IsPushingBattery; }
+	_bool			 Get_ControlRoomPushingBattery() { return m_IsPushingControlRoomBattery; }
 	_uint			 Get_CurState() const;
 	_bool			 Get_IsPlayerInUFO();
 	_float4x4		 Get_TriggerTargetWorld() { return m_TriggerTargetWorld; }
@@ -243,6 +244,7 @@ public:
 	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
 
 	_bool			 Get_IsEnding() { return m_IsEnding; }
+	_bool			Get_IsDeadInBossroom() { return m_bDead_InBossroom; }
 
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
@@ -418,6 +420,7 @@ private:
 	_bool m_IsPushingBattery = false;
 	_float m_fPushDist = 0.f;
 	_float m_fPushBatteryDelay = 0.f;
+	_bool m_IsPushingControlRoomBattery = false;
 
 	/* Hye::For.DeadLine, SavePoint */
 	_bool	 m_IsDeadLine = false;
@@ -574,6 +577,7 @@ private:
 
 	/* ÁøÇõ */
 	void Holding_BossUFO(const _double dTimeDelta);
+	void Push_ControlRoomBattery(const _double dTimeDelta);
 
 public:
 	void PinBall_Respawn(const _double dTimeDelta);
@@ -642,6 +646,17 @@ private:
 	_bool	m_bRadiarBlur_Loop = false;
 	_double m_dRadiarBlurTime = 0.0;
 	_double m_dRadiarBlurDeltaT = 0.0;
+#pragma endregion
+
+#pragma region Dead_InBossroom
+public:
+	void Respawn_InBossroom();
+
+private:
+	void DeadInBossroom(const _double dTimeDelta);
+
+private:
+	_bool m_bDead_InBossroom = false;
 #pragma endregion
 
 private: /* For. Ending */
