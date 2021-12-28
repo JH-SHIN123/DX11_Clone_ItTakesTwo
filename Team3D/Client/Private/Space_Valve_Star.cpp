@@ -53,7 +53,7 @@ _int CSpace_Valve_Star::Late_Tick(_double TimeDelta)
 {
 	if (0 < m_pModelInstanceCom_Star->Culling())
 	{
-		if (0 < m_pModelCom_Base->Culling(m_pTransformCom_Base->Get_State(CTransform::STATE_POSITION), 10.f))
+		if (0 < m_pModelCom_Base->Culling(m_pTransformCom_Base->Get_State(CTransform::STATE_POSITION), 30.f))
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 	}
 
@@ -62,20 +62,30 @@ _int CSpace_Valve_Star::Late_Tick(_double TimeDelta)
 
 HRESULT CSpace_Valve_Star::Render(RENDER_GROUP::Enum eGroup)
 {
+	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom_Base, E_FAIL);
-	m_pModelCom_Base->Set_DefaultVariables_Perspective(m_pTransformCom_Base->Get_WorldMatrix());
-	m_pModelCom_Base->Set_DefaultVariables_Shadow();
-	m_pModelCom_Base->Render_Model(1, 0);
+	NULL_CHECK_RETURN(m_pModelInstanceCom_Star, E_FAIL);
 
 	m_pModelInstanceCom_Star->Set_DefaultVariables_Perspective();
 	m_pModelInstanceCom_Star->Set_DefaultVariables_Shadow();
 	m_pModelInstanceCom_Star->Render_Model(0);
+
+	m_pModelCom_Base->Set_DefaultVariables_Perspective(m_pTransformCom_Base->Get_WorldMatrix());
+	m_pModelCom_Base->Set_DefaultVariables_Shadow();
+	m_pModelCom_Base->Render_Model(1, 0);
 
 	return S_OK;
 }
 
 HRESULT CSpace_Valve_Star::Render_ShadowDepth()
 {
+	NULL_CHECK_RETURN(m_pModelCom_Base, E_FAIL);
+
+	m_pModelCom_Base->Set_DefaultVariables_ShadowDepth(m_pTransformCom_Base->Get_WorldMatrix());
+
+	// Skinned: 2 / Normal: 3
+	m_pModelCom_Base->Render_Model(3, 0, true);
+
 	return S_OK;
 }
 

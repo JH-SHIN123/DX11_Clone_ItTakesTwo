@@ -26,6 +26,10 @@ public:
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
+	_bool							m_IsRespawnCharacterOnce = false;
+
+private:
+	_bool							m_IsFullGuage = false;
 	_float							m_fTime = 0.5f;
 	_uint							m_iPassNum = 0;
 	_float2							m_vStartScale;
@@ -36,7 +40,6 @@ private:
 	_float							m_fSubTime = 0.f;
 	_float							m_fHeartTime = 0.f;
 	_float							m_fAlpha = 0.f;
-	_bool							m_IsFullGuage = false;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
