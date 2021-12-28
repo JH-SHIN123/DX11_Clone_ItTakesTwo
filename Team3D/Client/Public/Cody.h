@@ -564,6 +564,7 @@ private:
 	void Warp_Wormhole(const _double dTimeDelta);
 	void Touch_FireDoor(const _double dTimeDelta);
 	void WallLaserTrap(const _double dTimeDelta);
+	void Check_Warp_Wormhole_Size(); // 포탈 타기 직전 사이즈 체크
 
 	/* Hye */
 	void Falling_Dead(const _double dTimeDelta);

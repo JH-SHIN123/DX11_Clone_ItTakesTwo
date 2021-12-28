@@ -15,7 +15,7 @@ HRESULT CEffect_StarBuddy_Explosion_Particle::NativeConstruct_Prototype(void * p
 {
 	__super::NativeConstruct_Prototype(pArg);
 
-	m_EffectDesc_Prototype.iInstanceCount = 60;
+	m_EffectDesc_Prototype.iInstanceCount = 200;
 
 	return S_OK;
 }
@@ -160,7 +160,7 @@ HRESULT CEffect_StarBuddy_Explosion_Particle::Ready_InstanceBuffer()
 
 		_vector vRandDir = XMLoadFloat3(&__super::Get_Dir_Rand(_int3(100, 100, 100)));
 
-		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, WorldMatrix.r[3] + (vRandDir * (_float)(rand() % 11)));
+		XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, WorldMatrix.r[3] + (vRandDir * (_float)(rand() % 40)));
 
 		XMStoreFloat3(&m_pInstance_Dir[iIndex], vRandDir);
 	}

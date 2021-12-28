@@ -1981,6 +1981,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eWARPGATE == m_eTargetGameID && false == m_IsWarpNextStage && false == m_IsWarpDone)
 		{
 			// ¸ÞÀÌ Àü¿ë Æ÷Å»·Î ÀÌµ¿(¿úÈ¦)
+			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_fWarpTimer = 0.f;
 			m_IsWarpNextStage = true;
@@ -2736,12 +2737,12 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 
 			m_pActorCom->Set_Position(vNextStage_Pos);
 
-			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
-			_vector vTriggerPos = PortalMatrix.r[3];
-			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 10000.f;
-			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
-			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+			//_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
+			//_vector vTriggerPos = PortalMatrix.r[3];
+			//_vector vLook = PortalMatrix.r[2];
+			//vTriggerPos += vLook * 10000.f;
+			//m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
+			//m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 
 		}
 	}
@@ -2753,7 +2754,7 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 			_matrix PortalMatrix = XMLoadFloat4x4(&m_TriggerTargetWorld);
 			_vector vTriggerPos = PortalMatrix.r[3];
 			_vector vLook = PortalMatrix.r[2];
-			vTriggerPos += vLook * 30.f;
+			vTriggerPos += vLook * 300.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 			m_IsWarpRotate = true;

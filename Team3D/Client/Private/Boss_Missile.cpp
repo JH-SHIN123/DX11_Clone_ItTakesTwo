@@ -609,12 +609,16 @@ void CBoss_Missile::Adjust_Angle(_double dTimeDelta)
 
 void CBoss_Missile::Explosion_Effect()
 {
-	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
-	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	WorldMatrix.r[3] += WorldMatrix.r[2] * 2.9f;
+
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, WorldMatrix);
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, WorldMatrix);
 
 	_int iRand = rand() % 3 + 3;
 	for(_int i = 0; i < iRand; ++i)
-		EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, WorldMatrix);
 
 	m_pEffect_Smoke_1->Set_Dead();
 	m_pEffect_Smoke_2->Set_Dead();
