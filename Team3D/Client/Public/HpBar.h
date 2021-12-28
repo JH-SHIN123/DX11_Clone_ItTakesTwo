@@ -23,7 +23,11 @@ public:
 	virtual _int Late_Tick(_double TimeDelta) override;
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
+ public:
+	 const _float Get_Hp() const { return m_fHp; };
+
 public:
+	void Reset();
 	void Set_Active(_bool IsCheck);
 	void Set_Hp(_float fHp);
 	void Set_ShaderOption(_int iOption);

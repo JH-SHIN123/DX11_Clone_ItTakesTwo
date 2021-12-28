@@ -4,14 +4,11 @@
 #include "GameInstance.h"
 #include "Cody.h"
 #include "May.h"
+#include "DataStorage.h"
+#include "Effect_Generator.h"
+#include "Effect_Env_Particle.h"
 #include "Effect_RespawnTunnel.h"
 #include "Effect_RespawnTunnel_Portal.h"
-#include "DataStorage.h"
-#include "Effect_Env_Particle.h"
-#include "DataStorage.h"
-#include "Cody.h"
-#include "May.h"
-#include "Effect_Generator.h"
 
 CWarpGate::CWarpGate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)

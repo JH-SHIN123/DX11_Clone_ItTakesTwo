@@ -126,6 +126,8 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			if (false == m_bIsChangeToCody)
 			{
 				CPerformer* pCodyCutScene = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+				static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_ToyBox1"))->Finish_Perform();
+
 				pCodyCutScene->Set_Position(_float3(0, 0, 0));
 				CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 				pCody->Get_Actor()->Set_Position(XMVectorSet(63.9f, 0.2f, 0.9f, 1.f));
@@ -419,11 +421,12 @@ _bool CCutScene::Tick_CutScene_Eject_InUFO(_double dTimeDelta)
 
 _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 {
+	Script_GotoMoon(dTimeDelta);
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
-	if (m_dTime < 1.f)
+	if (m_dTime < 1.0)
 	{
 		_matrix matUfo =
 			XMMatrixRotationRollPitchYaw(XMConvertToRadians(-90.f), XMConvertToRadians(-90.f), 0.f)*
@@ -431,7 +434,6 @@ _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 			pUfo->Get_Model()->Get_BoneMatrix("Chair")* pUfo->Get_Transform()->Get_WorldMatrix();
 		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3])+2.f);
 		pMoonBaboon->Get_Transform()->Set_WorldMatrix(matUfo);
-
 	}
 	if (m_dTime > 7.6)
 	{
@@ -442,15 +444,27 @@ _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3]) + 2.f);
 		pMay->Get_Transform()->Set_WorldMatrix(matUfo);
 	}
+	if (m_dTime > 24.31)
+	{
+		_matrix matUfo =
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(90.f))*
+			XMMatrixScaling(100.f, 100.f, 100.f)* pUfo->Get_Model()->Get_BoneMatrix("Chair")
+			*pUfo->Get_Transform()->Get_WorldMatrix();
+		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3]) + 2.f);
+		pMay->Get_Transform()->Set_WorldMatrix(matUfo);
+	}
+
 	if (m_dTime >= 24.31&&m_dTime < 24.31 + dTimeDelta)
 	{
-		pCody->Get_Actor()->Set_Position(XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.14f, 1011.77844f - 0.04f - 0.5f,1.f));
+		pCody->Get_Actor()->Set_Position(XMVectorSet(64.0674942f, 601.063843f + 0.14f, 1011.77844f - 0.04f - 0.5f,1.f));
+		pUfo->Get_Transform()->Set_WorldMatrix(
+			MakeRollPitchYawMatrix({ 75.f,105.f,199.f }, { 1.f, 1.f,1.f }, { 10.f,0.f,0.f }));
+		pMoonBaboon->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 88.f, 753.5f, 202.f }, { 1.f,1.f,1.f }, { -90.f, -90.f, 0.f }));
+		pMoonBaboon->Set_CutSceneAnimation(Z_Moon_Eject_NoneMove,730.0);
+
 	}
-	if(m_dTime >=28.3f && m_dTime < 28.3f+dTimeDelta)
-	{
-		pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 75.f,105.f,199.f }, { 1.f, 1.f,1.f }, {10.f,0.f,0.f}));
-		pMoonBaboon->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 64.f,345.f,195.f }, { 1.f,1.f,1.f }, { 90.f,0.f,0.f }));
-	}
+
+	
 	return true;
 }
 
@@ -713,7 +727,9 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 
 HRESULT CCutScene::Start_CutScene_GotoMoon()
 {
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene03.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_GotoMoon");
+	
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f),false);
 
 	CCody* pCody = ((CCody*)DATABASE->GetCody());
@@ -798,12 +814,13 @@ HRESULT CCutScene::End_CutScene_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pMainCam->ReSet_Cam_FreeToAuto(false, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pSubCam->ReSet_Cam_FreeToAuto(false, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 	((CUFO*)DATABASE->Get_BossUFO())->Set_Active(false);
-
+	static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_RemoteContollerCutScene1"))->Set_Position({ 0.f,0.f,0.f });
+	
 	return S_OK;
 }
 
@@ -833,6 +850,7 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	pMainCam->ReSet_Cam_FreeToAuto(true, false , 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pSubCam->Get_Transform()->Set_WorldMatrix(pMainCam->Get_Transform()->Get_WorldMatrix());
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
@@ -850,6 +868,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pMainCam->Get_Transform()->Set_WorldMatrix(pSubCam->Get_Transform()->Get_WorldMatrix());
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
@@ -993,9 +1012,11 @@ HRESULT CCutScene::NativeConstruct(CutSceneOption eOption)
 	case Client::CCutScene::CutSceneOption::CutScene_Eject_InUFO:
 		if (FAILED(Ready_CutScene_Eject_InUFO()))
 			return E_FAIL;
+		break;
 	case Client::CCutScene::CutSceneOption::CutScene_GotoMoon:
 		if (FAILED(Ready_CutScene_GotoMoon()))
 			return E_FAIL;
+		break;
 	case Client::CCutScene::CutSceneOption::CutScene_Outro:
 		if (FAILED(Ready_CutScene_Outro()))
 			return E_FAIL;
@@ -1271,6 +1292,28 @@ void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
 		SCRIPT->Render_Script(92, CScript::HALF, 2.9f);
 	else if (dSoundTime >= 5.0 && dSoundTime < 5.0 + dTimeDelta)
 		SCRIPT->Render_Script(93, CScript::HALF, 2.0f);
+
+}
+
+void CCutScene::Script_GotoMoon(_double dTimeDelta)
+{
+	_double dSoundTime = m_dTime;
+	if (dSoundTime >= 12.0 && dSoundTime < 12.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(212, CScript::FULL, 0.9f);
+	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(213, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(214, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(215, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(216, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 21.0 && dSoundTime < 21.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(217, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 23.0 && dSoundTime < 23.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(218, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 25.0 && dSoundTime < 25.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(219, CScript::FULL, 1.9f);
 
 }
 

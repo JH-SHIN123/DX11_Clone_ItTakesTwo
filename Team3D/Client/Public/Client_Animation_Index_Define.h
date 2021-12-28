@@ -1174,7 +1174,7 @@
 #define Moon_Ufo_Laser_HitPod 30
 #define Moon_Ufo_MH 31
 #define Moon_Ufo_Programming 32
-
+#define Z_Moon_Eject_NoneMove 33
 #pragma endregion
 
 #define UP 0

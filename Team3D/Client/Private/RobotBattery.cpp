@@ -113,7 +113,7 @@ _int CRobotBattery::Tick(_double dTimeDelta)
 		break;
 	case ST_RAIL:
 		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,
-			XMVectorSet(1035.44493f, 743.288574f + 0.15, 216.964385f + 0.12, 1.f), 10.f, m_IsCollide, !m_bUpdate);
+			XMVectorSet(1035.44493f, 743.288574f + 0.15f, 216.964385f + 0.12f, 1.f), 10.f, m_IsCollide, !m_bUpdate);
 		break;
 	default:
 		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, m_eInterActiveID,

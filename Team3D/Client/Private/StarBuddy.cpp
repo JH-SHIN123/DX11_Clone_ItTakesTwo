@@ -196,7 +196,7 @@ void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
 	}
 
 
-	m_pTransformCom->MoveToDir(m_vMoveDirection, dTimeDelta * 5.f);
+	m_pTransformCom->MoveToDir(m_vMoveDirection, dTimeDelta * 9.f);
 
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);

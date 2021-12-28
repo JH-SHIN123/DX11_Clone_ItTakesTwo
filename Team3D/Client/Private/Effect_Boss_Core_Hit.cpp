@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "..\Public\Effect_Boss_Core_Hit.h"
 #include "Effect_Generator.h"

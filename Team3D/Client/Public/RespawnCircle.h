@@ -26,6 +26,10 @@ public:
 	virtual HRESULT Render(RENDER_GROUP::Enum eGroup) override;
 
 private:
+	_bool							m_IsRespawnCharacterOnce = false;
+
+private:
+	_bool							m_IsFullGuage = false;
 	_float							m_fTime = 0.5f;
 	_uint							m_iPassNum = 0;
 	_float2							m_vStartScale;
@@ -35,6 +39,7 @@ private:
 	_float2							m_vUV;
 	_float							m_fSubTime = 0.f;
 	_float							m_fHeartTime = 0.f;
+	_float							m_fAlpha = 0.f;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;
@@ -45,6 +50,7 @@ private:
 	HRESULT Ready_Component();
 	void Set_Gauge(_double TimeDelta);
 	void Spawn_Effect(_double TimeDelta);
+	void Alpha_Effect(_double TimeDelta);
 
 public:
 	static CRespawnCircle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

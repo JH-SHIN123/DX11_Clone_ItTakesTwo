@@ -66,7 +66,7 @@ HRESULT CLevel_Loading::Render()
 {
 	CLevel::Render();
 
-	m_pFont->Render_Font(TEXT("불러오는중"), _float2(1120.f, 675.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
+	m_pFont->Render_Font(TEXT("불러오는 중"), _float2(1120.f, 675.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
 
 	return S_OK;
 }
