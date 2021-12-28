@@ -15,8 +15,10 @@ public:
 	CCutScene::CutSceneOption Get_CurCutScene();
 	_bool	Get_IsPlayCutScene() { return m_bIsPlayingCutScene; }
 	_bool	Get_IsCutScenePlayed(CCutScene::CutSceneOption eCutSceneOption) { return m_bIsPlayedCutScene[(_uint)eCutSceneOption]; }
-
-	void	Set_IsCutScenePlayer(CCutScene::CutSceneOption eCutSceneOption, _bool bSet) { m_bIsPlayedCutScene[(_uint)eCutSceneOption] = bSet; }
+	_bool	Get_IsEndingCredit() { return m_bIsEndingCredit; }
+	
+	void	Set_IsCutScenePlayed(CCutScene::CutSceneOption eCutSceneOption, _bool bSet) { m_bIsPlayedCutScene[(_uint)eCutSceneOption] = bSet; }
+	void	Set_IsEndingCredit(_bool bSet) { m_bIsEndingCredit = bSet; }
 	//if Finish,Return false;
 	_bool	Tick_CutScene(_double dTimeDelta);
 	HRESULT Start_CutScene(const _tchar* pCutSceneTag);
@@ -41,6 +43,8 @@ private:
 
 	class CGameInstance* m_pGameInstance = nullptr;
 	_bool	m_bIsPlayedCutScene[(_uint)CCutScene::CutSceneOption::CutScene_End];
+
+	_bool  m_bIsEndingCredit = false;
 public:
 	virtual void Free() override;
 

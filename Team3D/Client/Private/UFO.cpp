@@ -221,14 +221,32 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_vector vDir, vTargetPos;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
+	// 죽었을때 다른 타겟 설정
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+	_bool bCodyDead = pCody->Get_IsDeadInBossroom();
+	_bool bMayDead = pMay->Get_IsDeadInBossroom();
+
 	switch (m_eTarget)
 	{
 	case Client::CUFO::TARGET_CODY:
-		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if(false == bCodyDead)
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	case Client::CUFO::TARGET_MAY:
-		vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if (false == bMayDead)
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -319,14 +337,32 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 	_uint iGravitationalBombMaxCount = 8;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
+	// 죽었을때 다른 타겟 설정
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+	_bool bCodyDead = pCody->Get_IsDeadInBossroom();
+	_bool bMayDead = pMay->Get_IsDeadInBossroom();
+
 	switch (m_eTarget)
 	{
 	case Client::CUFO::TARGET_CODY:
-		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if (false == bCodyDead)
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	case Client::CUFO::TARGET_MAY:
-		vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if (false == bMayDead)
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -351,10 +387,26 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 			RightLaserHatch *= vUFOWorld;
 
 			EFFECT_DESC_CLONE tEffectDesc;
-			if (m_eTarget == CUFO::TARGET_MAY)
-				tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
+
+			CCody* pCody = (CCody*)DATABASE->GetCody();
+			CMay* pMay = (CMay*)DATABASE->GetMay();
+			_bool bCodyDead = pCody->Get_IsDeadInBossroom();
+			_bool bMayDead = pMay->Get_IsDeadInBossroom();
+
+			if (m_eTarget == CUFO::TARGET_MAY) 
+			{
+				if(bMayDead)
+					tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+				else
+					tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
+			}
 			else
-				tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+			{
+				if (bCodyDead)
+					tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
+				else
+					tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+			}
 
 			XMStoreFloat3(&tEffectDesc.vDir, vDir);
 
@@ -982,10 +1034,9 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
-		
 	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))

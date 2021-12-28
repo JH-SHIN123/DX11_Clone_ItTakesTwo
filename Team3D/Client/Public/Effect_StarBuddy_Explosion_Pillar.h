@@ -29,7 +29,7 @@ private:
 	_bool m_IsActivate = true;
 	_float m_fTime = 1.5f;
 	_float2 m_vSize = { 0.01f, 0.5f };
-	const _float2 m_vSize_Max = { 1.f, 0.5f };
+	const _float2 m_vSize_Max = { 2.f, 0.5f };
 	_float4 m_vColor = { 0.780392218f, 0.780392218f, 0.147058856f, 1.000000000f };
 
 	_bool m_IsEffect = false;

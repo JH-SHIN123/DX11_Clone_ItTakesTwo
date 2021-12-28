@@ -244,6 +244,7 @@ public:
 	_bool			 Get_IsLaserTennis() { return m_bLaserTennis; }
 
 	_bool			 Get_IsEnding() { return m_IsEnding; }
+	_bool			Get_IsDeadInBossroom() { return m_bDead_InBossroom; }
 
 	_bool			 Get_InterActiveUICreate() { return m_IsInterActiveUICreate; }
 
@@ -261,6 +262,7 @@ public:
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void			 Set_Change_Size_After_UmbrellaCutScene();
+	void			 Set_InJoyStick();
 
 	/* For. Ending */
 	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
