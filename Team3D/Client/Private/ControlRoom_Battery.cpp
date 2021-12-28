@@ -158,7 +158,7 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 		CCody* pCody = (CCody*)DATABASE->GetCody();
 		NULL_CHECK_RETURN(pCody, EVENT_ERROR);
 
-		if (false == pCody->Get_PushingBattery())
+		if (false == pCody->Get_ControlRoomPushingBattery())
 		{
 			m_fAngle += (_float)TimeDelta * 15.f;
 			m_fRotate += (_float)TimeDelta * 15.f;

@@ -15,6 +15,7 @@
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
 #include "CutScenePlayer.h"
+#include "PressureBigPlate.h"
 
 /* For. PinBall */
 #include "PinBall.h"
@@ -136,10 +137,8 @@ HRESULT CCody::Ready_Component()
 	//CapsuleControllerDesc.maxJumpHeight = 10.f;
 	//CapsuleControllerDesc.volumeGrowth = 1.5f;
 
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 	m_pActorCom->Set_PlayerType(CPlayerActor::PLAYER_CODY);
-
 
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
@@ -334,6 +333,7 @@ _int CCody::Tick(_double dTimeDelta)
 			Hit_Rocket(dTimeDelta);
 			Activate_RobotLever(dTimeDelta);
 			Push_Battery(dTimeDelta);
+			Push_ControlRoomBattery(dTimeDelta);
 			Rotate_Valve(dTimeDelta);
 			In_GravityPipe(dTimeDelta);
 			Hit_Planet(dTimeDelta);
@@ -2291,11 +2291,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
-			m_IsPushingBattery = true;
-			m_IsPipeBattery = true;
-
-			//UI_Delete(Cody, InputButton_InterActive);
-			//((CControlRoom_Battery*)DATABASE->Get_ControlRoom_Battery())->Set_UIDisable(true);
+			m_IsPushingControlRoomBattery = true;
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E) && m_iValvePlayerName == Player::Cody)
 		{
@@ -2683,7 +2679,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Control || m_IsDeadLine
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO
-		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding || m_IsReadyPinball)
+		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding || m_IsReadyPinball || m_IsPushingControlRoomBattery)
 		return true;
 
 	return false;
@@ -2768,23 +2764,8 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 void CCody::Push_Battery(const _double dTimeDelta)
 {
 	// May가 배터리 들어온 상태에서 Lever 치고 컷씬이 등장하면 그때 -> ANI_C_MH
-	if (m_IsPushingBattery == true && true == m_IsPipeBattery)
-	{
-		m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
-		m_IsCollide = false;
 
-		if (m_pGameInstance->Key_Down(DIK_Q))
-		{
-			m_IsPushingBattery = false;
-			m_IsPipeBattery = false;
-			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-		}
-
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd))
-			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
-	}
-	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
+	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 	{
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
 		{
@@ -4191,6 +4172,29 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
 			m_IsHolding_High_UFO = true;
+		}
+	}
+}
+
+void CCody::Push_ControlRoomBattery(const _double dTimeDelta)
+{
+	if (true == m_IsPushingControlRoomBattery)
+	{
+		m_IsCollide = false;
+
+		if (true == m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd) && 
+			false == ((CPressureBigPlate*)DATABASE->Get_PressureBigPlate())->Get_PowerSupplyAvailable())
+		{
+			m_IsPushingControlRoomBattery = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_Q))
+		{
+			m_IsPushingControlRoomBattery = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 	}
 }
