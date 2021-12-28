@@ -764,9 +764,10 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 	{
 		if (false == m_IsGroundPoundEffectCreate && 30.f <= m_pModelCom->Get_CurrentTime(UFO_GroundPound))
 		{
-			_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+			//_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
-			UFOWorld.r[3].m128_f32[1] = MayPos.m128_f32[1] + 0.5f;
+			UFOWorld.r[3].m128_f32[1] -= 10.f;
+
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, UFOWorld);

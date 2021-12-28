@@ -45,6 +45,12 @@ HRESULT CHpBar::NativeConstruct(void * pArg)
 	m_fMaxHp = 120.f;
 	m_fHp = m_fMaxHp;
 
+	D3D11_VIEWPORT MainViewport = m_pGameInstance->Get_ViewportInfo(1);
+	D3D11_VIEWPORT SubViewPort = m_pGameInstance->Get_ViewportInfo(2);
+
+	m_fSaveMainViewPortWidth = MainViewport.Width;
+	m_fSaveSubViewPortWidth = SubViewPort.Width;
+
 	return S_OK;
 }
 
@@ -54,6 +60,23 @@ _int CHpBar::Tick(_double TimeDelta)
 		return EVENT_DEAD;
 
 	CUIObject::Tick(TimeDelta);
+
+	D3D11_VIEWPORT MainViewport = m_pGameInstance->Get_ViewportInfo(1);
+	D3D11_VIEWPORT SubViewPort = m_pGameInstance->Get_ViewportInfo(2);
+
+	if (m_fSaveMainViewPortWidth < MainViewport.Width)
+	{
+		_float fDecreaseWidth = fabs(m_fSaveMainViewPortWidth - MainViewport.Width);
+
+		m_fSaveMainViewPortWidth += (_float)TimeDelta * fDecreaseWidth;
+		m_UIDesc.vPos.x -= (_float)TimeDelta * fDecreaseWidth / 2.f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+
+		if(nullptr != m_pPortrait)
+			m_pPortrait->Set_Position((_float)TimeDelta * fDecreaseWidth / 2.f);
+
+		m_pHpBarFrame->Set_Position((_float)TimeDelta * fDecreaseWidth / 2.f);
+	}
 
 	switch (m_ePlayerID)
 	{
