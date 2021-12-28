@@ -2937,7 +2937,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f */&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
+				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f *//*&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false*/)
 				{
 					SCRIPT->VoiceFile_No01();
 					m_bGravityPipe_FirstIn = true;
