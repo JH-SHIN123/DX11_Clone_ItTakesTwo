@@ -3,6 +3,8 @@
 
 #include "GameInstance.h"
 #include "UI_Generator.h"
+#include "Cody.h"
+#include "May.h"
 
 CRespawnCircle::CRespawnCircle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -65,6 +67,22 @@ _int CRespawnCircle::Tick(_double TimeDelta)
 
 	Spawn_Effect(TimeDelta);
 	Alpha_Effect(TimeDelta);
+
+	if (m_IsFullGuage && false == m_IsRespawnCharacterOnce)
+	{
+		if (Player::ID::Cody == m_ePlayerID)
+		{
+			CCody* pCody = (CCody*)(DATABASE->GetCody());
+			if (pCody) pCody->Respawn_InBossroom();
+			m_IsRespawnCharacterOnce = true;
+		}
+		else if (Player::ID::May == m_ePlayerID)
+		{
+			CMay* pMay = (CMay*)(DATABASE->GetMay());
+			if (pMay) pMay->Respawn_InBossroom();
+			m_IsRespawnCharacterOnce = true;
+		}
+	}
 
 	return _int();
 }
