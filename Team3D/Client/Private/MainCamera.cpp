@@ -17,6 +17,8 @@
 #include"AlphaScreen.h"
 #include"Script.h"
 #include "SubCamera.h"
+#include"UFO.h"
+#include"MoonBaboon.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -235,6 +237,12 @@ _bool CMainCamera::LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta)
 
 	XMStoreFloat4x4(&m_matBeginWorld, MakeLerpMatrix(CurStartMatrix, TargetMatrix, (_float)m_dLerpToCurSizeTime));
 	return true;
+}
+
+void CMainCamera::Set_Start_Destroy_BossCore()
+{
+	m_eCurCamMode = CamMode::Cam_Destroy_BossCore;
+	m_dDestroyCoreTime = 0.0;
 }
 
 HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
@@ -1300,7 +1308,53 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 
 _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 {
+	//√— 4.7√ 
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	CTransform* pCodyTransform = m_pCody->Get_Transform();
+	CTransform* pMoonBaboonTransform = pMoonBaboon->Get_Transform();
+	_vector vMoonBaboonPos = pMoonBaboonTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vCodyPos = pCodyTransform->Get_State(CTransform::STATE_POSITION);
 
+	if (m_dDestroyCoreTime == 0.f)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f),2.f);
+		_vector vStartEye = vCodyPos;
+		_vector vDir = XMVector3Normalize(vMoonBaboonPos- vCodyPos);
+		_vector vStartAt = vStartEye + vDir;
+		_vector vLastEye = vMoonBaboonPos - 1.5*vDir;
+		XMStoreFloat3(&m_vStartCodyPos,vStartEye);
+		XMStoreFloat3(&m_vStartCodyLook, vStartAt);
+		XMStoreFloat3(&m_vLastEye, vLastEye);
+		m_vStartCodyLook.y = m_vLastEye.y;
+		Start_CamEffect(TEXT("Cam_Shake_MissileBoom"));
+	}
+	if (m_dDestroyCoreTime >= 4.7)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		ReSet_Cam_FreeToAuto(true,true,1.f);
+	}
+
+	_vector vStartEye =XMVectorSetW(XMLoadFloat3(&m_vStartCodyPos),1.f);
+	_vector vStartAt = XMVectorSetW(XMLoadFloat3(&m_vStartCodyLook),1.f);
+	_vector vLastEye = XMVectorSetW(XMLoadFloat3(&m_vLastEye), 1.f);
+	_float3 vLastAt;
+	XMStoreFloat3(&vLastAt, vMoonBaboonPos);
+
+	_vector vCurEye =XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyPos, m_vLastEye, m_dDestroyCoreTime));
+	_vector vCurAt = XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyLook, vLastAt, m_dDestroyCoreTime)); 	
+	
+
+	_matrix matResult = MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vCurEye, vCurAt), dTimeDelta);
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
+	{
+		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult))
+			matResult = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
+
+	}
+
+	m_pTransformCom->Set_WorldMatrix(matResult);
+
+	m_dDestroyCoreTime += dTimeDelta;
 	return NO_EVENT;
 }
 

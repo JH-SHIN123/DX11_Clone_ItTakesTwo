@@ -270,12 +270,16 @@ void CMoonBaboonCore::Set_Broken()
 		m_pEffectBossCore = nullptr;
 	}
 
-	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어
+	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어 아니면
 	{
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
 		static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
 	}
-	//else
+	else
+	{
+		_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Set_Start_Destroy_BossCore();
+	}
 
 }
 

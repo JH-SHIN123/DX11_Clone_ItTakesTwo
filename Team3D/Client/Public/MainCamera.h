@@ -37,6 +37,7 @@ public:
 	/*Setter*/
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
+	void		Set_Start_Destroy_BossCore();
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	HRESULT Start_CamEffect(const _tchar* pEffectTag);
@@ -148,6 +149,12 @@ private:
 	//For.OpenThirdFloor
 	_bool m_bOpenThirdFloor = false;
 	_float m_fOpenThirdFloorTime = 0.f;
+	//For.Destory_BossCore
+	_double m_dDestroyCoreTime = 0.f;
+	_float3 m_vStartCodyPos;
+	_float3 m_vStartCodyLook;
+	_float3 m_vLastEye;
+	
 private:
 	CCody*			m_pCody = nullptr;
 	CCam_Helper*	m_pCamHelper = nullptr;
