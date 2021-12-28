@@ -152,7 +152,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	{
 		m_pGameInstance->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 		m_iLevelStep = 2; 
-		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
+		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
 		ENDINGCREDIT->Create_Environment();
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
@@ -1015,30 +1015,32 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 	{
 		++m_iEndingCreditStep;
 
-		ENDINGCREDIT->Create_3DText(0, -792.5f);
-		ENDINGCREDIT->Create_3DText(1, -1080.f);
-		ENDINGCREDIT->Create_3DText(2, -1363.f);
-		ENDINGCREDIT->Create_3DText(3, -1646.f);
-		ENDINGCREDIT->Create_3DText(4, -1930.f);
-		ENDINGCREDIT->Create_3DText(5, -2214.f);
-		ENDINGCREDIT->Create_3DText(6, -2496.f);
-		ENDINGCREDIT->Create_3DText(7, -2781.f);
-		ENDINGCREDIT->Create_3DText(8, -3064.f);
-		ENDINGCREDIT->Create_3DText(9, -3349.f);
-		ENDINGCREDIT->Create_3DText(10, -3632.f);
-		ENDINGCREDIT->Create_3DText(12, -3916.f);
-		ENDINGCREDIT->Create_3DText(11, -4100.f);
-		ENDINGCREDIT->Create_3DText(13, -4270.f);
-		ENDINGCREDIT->Create_3DText(14, -4380.f);
-		ENDINGCREDIT->Create_3DText(15, -4545.f);
-		ENDINGCREDIT->Create_3DText(16, -4707.f);
-		ENDINGCREDIT->Create_3DText(17, -4992.f);
-		ENDINGCREDIT->Create_3DText(18, -5276.f);
-		ENDINGCREDIT->Create_3DText(19, -5558.f);
-		ENDINGCREDIT->Create_3DText(20, -5846.f);
-		ENDINGCREDIT->Create_3DText(21, -6131.f);
-		ENDINGCREDIT->Create_3DText(22, -6415.f);
-		ENDINGCREDIT->Create_3DText(23, -6696.f);
+		_float fSync = 7.f;
+
+		ENDINGCREDIT->Create_3DText(0, -792.5f + fSync);
+		ENDINGCREDIT->Create_3DText(1, -1080.f + fSync);
+		ENDINGCREDIT->Create_3DText(2, -1363.f + fSync);
+		ENDINGCREDIT->Create_3DText(3, -1646.f + fSync);
+		ENDINGCREDIT->Create_3DText(4, -1930.f + fSync);
+		ENDINGCREDIT->Create_3DText(5, -2214.f + fSync);
+		ENDINGCREDIT->Create_3DText(6, -2496.f + fSync);
+		ENDINGCREDIT->Create_3DText(7, -2781.f + fSync);
+		ENDINGCREDIT->Create_3DText(8, -3064.f + fSync);
+		ENDINGCREDIT->Create_3DText(9, -3349.f + fSync);
+		ENDINGCREDIT->Create_3DText(10, -3632.f + fSync);
+		ENDINGCREDIT->Create_3DText(12, -3916.f + fSync);
+		ENDINGCREDIT->Create_3DText(11, -4100.f + fSync);
+		ENDINGCREDIT->Create_3DText(13, -4270.f + fSync);
+		ENDINGCREDIT->Create_3DText(14, -4380.f + fSync);
+		ENDINGCREDIT->Create_3DText(15, -4545.f + fSync);
+		ENDINGCREDIT->Create_3DText(16, -4707.f + fSync);
+		ENDINGCREDIT->Create_3DText(17, -4992.f + fSync);
+		ENDINGCREDIT->Create_3DText(18, -5276.f + fSync);
+		ENDINGCREDIT->Create_3DText(19, -5558.f + fSync);
+		ENDINGCREDIT->Create_3DText(20, -5846.f + fSync);
+		ENDINGCREDIT->Create_3DText(21, -6131.f + fSync);
+		ENDINGCREDIT->Create_3DText(22, -6415.f + fSync);
+		ENDINGCREDIT->Create_3DText(23, -6696.f + fSync);
 	}
 
 	return NO_EVENT;
