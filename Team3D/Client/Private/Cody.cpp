@@ -3723,7 +3723,6 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
-		UI_Delete(Cody, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -3952,7 +3951,6 @@ void CCody::ShowRailTargetTriggerUI()
 		m_pGauge_Circle->Set_Active(false);
 		UI_Delete(Cody, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
-
 	}
 }
 #pragma endregion
@@ -4152,6 +4150,9 @@ void CCody::Set_RadiarBlur(_bool bActive)
 void CCody::Respawn_InBossroom()
 {
 	m_pHpBar->Reset();
+	m_pSubHpBar->Reset();
+	m_pSubHpBar->Set_Active(false);
+
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_MainViewBlur(false);
 

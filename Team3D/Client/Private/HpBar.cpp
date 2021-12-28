@@ -112,6 +112,13 @@ void CHpBar::Reset()
 		m_fRatio = 0.5f;
 		m_fDecreaseRateRatio = 0.5f;
 	}
+
+	//m_IsHit = false;			
+	//m_IsActive = false;
+	//m_pHpBarFrame->Set_Active(false);
+	//m_fWatingTime = 0.f;
+	//m_IsRecovery = false;
+	//m_fRecoveryTime = 0.f;
 }
 
 void CHpBar::Set_Active(_bool IsCheck)
