@@ -849,6 +849,7 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 	pMainCam->ReSet_Cam_FreeToAuto(true, false , 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pSubCam->Get_Transform()->Set_WorldMatrix(pMainCam->Get_Transform()->Get_WorldMatrix());
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
@@ -866,6 +867,7 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pMainCam->Get_Transform()->Set_WorldMatrix(pSubCam->Get_Transform()->Get_WorldMatrix());
 	UI_Generator->Set_AllActivation(true);
 
 	return S_OK;
