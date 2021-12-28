@@ -98,7 +98,7 @@ HRESULT CEffect_WallLaser_Trap_Plane::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom->Set_Variable("g_vUV", &m_vWeight, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vColorRamp, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_fTime", &fTime, sizeof(_float));
-	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(3));
+	m_pPointInstanceCom->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_ColorRamp->Get_ShaderResourceView(7));
 
 	m_pPointInstanceCom->Render(26, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
 
