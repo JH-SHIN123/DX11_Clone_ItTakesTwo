@@ -87,11 +87,6 @@ _int CHookUFO::Tick(_double dTimeDelta)
 		}
 	}
 
-	else if (m_bLaunch == true)
-	{
-
-	}
-
 	InterActive_UI(((CCody*)DATABASE->GetCody())->Get_Position(), GameID::eCODY, m_IsCodyUIDisable);
 	InterActive_UI(((CCody*)DATABASE->GetMay())->Get_Position(), GameID::eMAY, m_IsMayUIDisalbe);
 
