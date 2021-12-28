@@ -126,6 +126,8 @@ _bool CCutScene::Tick_CutScene_Intro(_double dTimeDelta)
 			if (false == m_bIsChangeToCody)
 			{
 				CPerformer* pCodyCutScene = static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_Cody_CutScene1"));
+				static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_ToyBox1"))->Finish_Perform();
+
 				pCodyCutScene->Set_Position(_float3(0, 0, 0));
 				CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 				pCody->Get_Actor()->Set_Position(XMVectorSet(63.9f, 0.2f, 0.9f, 1.f));
@@ -811,13 +813,13 @@ HRESULT CCutScene::End_CutScene_Intro()
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pMainCam->ReSet_Cam_FreeToAuto(false, false, 1.f);
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pSubCam->ReSet_Cam_FreeToAuto(false, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
 	((CUFO*)DATABASE->Get_BossUFO())->Set_Active(false);
 	static_cast<CPerformer*>(m_pCutScenePlayer->Find_Performer(L"Component_Model_RemoteContollerCutScene1"))->Set_Position({ 0.f,0.f,0.f });
-
+	
 	return S_OK;
 }
 

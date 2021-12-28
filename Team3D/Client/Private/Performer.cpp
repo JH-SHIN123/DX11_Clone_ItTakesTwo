@@ -72,11 +72,6 @@ _int CPerformer::Tick(_double dTimeDelta)
 		XMMatrixTranslation(m_tDesc.vPosition.x, m_tDesc.vPosition.y, m_tDesc.vPosition.z);
 	m_pTransformCom->Set_WorldMatrix(matWorld);
 
-
-#ifdef __TEST_JUN
-	if (m_pGameInstance->Key_Down(DIK_NUMPADENTER))
-		m_bStartAnim = !m_bStartAnim;
-#endif
 	if (m_bButtonDown)
 		Start_ButtonPress(dTimeDelta);
 	

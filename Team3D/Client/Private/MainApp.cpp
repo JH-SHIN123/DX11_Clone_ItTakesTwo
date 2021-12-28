@@ -62,8 +62,8 @@ HRESULT CMainApp::Run_App()
 
 	if (m_dFrameAcc >= 1.0 / 60.0)
 	{
-		if (g_bWndActivate && m_bMouseLock)
-			Lock_Mouse();
+	/*	if (g_bWndActivate && m_bMouseLock)
+			Lock_Mouse();*/
 
 		m_dFrameAcc = 0.0;
 
