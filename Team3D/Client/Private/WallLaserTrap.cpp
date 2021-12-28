@@ -2,7 +2,7 @@
 #include "..\Public\WallLaserTrap.h"
 #include "May.h"
 #include "Cody.h"
-
+#include "Effect_WallLaser_Trap_Plane.h"
 
 CWallLaserTrap::CWallLaserTrap(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -93,6 +93,7 @@ void CWallLaserTrap::Set_TriggerActivate(_bool IsActivate)
 	}
 
 	m_IsActivate = IsActivate;
+	m_pEffect->Set_Activate(IsActivate);
 }
 
 HRESULT CWallLaserTrap::Render_ShadowDepth()
@@ -155,6 +156,10 @@ HRESULT CWallLaserTrap::Ready_Component(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom"), TEXT("Com_PointInstance"), (CComponent**)&m_pPointInstanceCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_T_Ember_Texture"), TEXT("Com_Textures_Mask"), (CComponent**)&m_pTexturesCom_Mask), E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_WallLaserTrap_Effect")
+		, Level::LEVEL_STAGE, TEXT("GameObject_2D_WallLaser_Trap_Plane"), nullptr, (CGameObject**)&m_pEffect), E_FAIL);
+
+	m_pEffect->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 
 	m_vPosition_Lamp[0] = { -m_vHalfSize.x,  0.f,  m_vHalfSize.y,  1.f };
 	m_vPosition_Lamp[1] = { m_vHalfSize.x,  0.f,  m_vHalfSize.y,  1.f };
@@ -245,7 +250,7 @@ void CWallLaserTrap::Render_PointInstance()
 
 
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
-	_float4 vColor = { 1.000000000f, 0.270588249f, 0.000000000f, 1.000000000f };
+	_float4 vColor = { 1.000000000f, 0.070588249f, 0.0f, 1.000000000f };
 	m_pPointInstanceCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom->Set_Variable("g_fTime", &m_fActivateTime, sizeof(_float));
@@ -329,6 +334,7 @@ CGameObject * CWallLaserTrap::Clone_GameObject(void * pArg)
 
 void CWallLaserTrap::Free()
 {
+	Safe_Release(m_pEffect);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelInstanceCom);
