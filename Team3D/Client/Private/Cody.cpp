@@ -4271,6 +4271,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 
 void CCody::Push_ControlRoomBattery(const _double dTimeDelta)
 {
+	/* Push_Battery에서 함수 따로 뺌 */
 	if (true == m_IsPushingControlRoomBattery)
 	{
 		m_IsCollide = false;
