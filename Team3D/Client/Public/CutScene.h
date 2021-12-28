@@ -9,12 +9,13 @@ class CCutScene : public CBase
 public:
 	enum class CutSceneOption {
 		CutScene_Intro,CutScene_Active_GravityPath_01,CutScene_Clear_Umbrella,CutScene_Clear_Rail,
-		CutScene_Boss_Intro,
-		CutScene_Eject_InUFO,CutScene_Outro,CutScene_End
+		CutScene_Boss_Intro,CutScene_Eject_InUFO,
+		CutScene_GotoMoon,CutScene_Outro,CutScene_End
 	};
 public:
 	CCutScene();
 	virtual ~CCutScene() = default;
+	CutSceneOption Get_Option() { return m_eCutSceneOption; }
 public:
 	_bool Tick_CutScene(_double dTimeDelta);
 	
@@ -24,6 +25,7 @@ public:
 	_bool Tick_CutScene_Clear_Rail(_double dTimeDelta);
 	_bool Tick_CutScene_Boss_Intro(_double dTimeDelta);
 	_bool Tick_CutScene_Eject_InUFO(_double dTimeDelta);
+	_bool Tick_CutScene_GotoMoon(_double dTimeDelta);
 	_bool Tick_CutScene_Outro(_double dTimeDelta);
 public:
 	HRESULT Start_CutScene();
@@ -34,6 +36,7 @@ public:
 	HRESULT Start_CutScene_Clear_Rail();
 	HRESULT Start_CutScene_Boss_Intro();
 	HRESULT Start_CutScene_Eject_UFO();
+	HRESULT Start_CutScene_GotoMoon();
 	HRESULT Start_CutScene_Outro();
 	//For.End
 	HRESULT End_CutScene_Intro();
@@ -42,6 +45,7 @@ public:
 	HRESULT End_CutScene_Clear_Rail();
 	HRESULT End_CutScene_Boss_Intro();
 	HRESULT End_CutScene_Eject_InUFO();
+	HRESULT End_CutScene_GotoMoon();
 	HRESULT End_CutScene_Outro();
 private:
 	HRESULT Ready_CutScene_Intro();
@@ -50,6 +54,7 @@ private:
 	HRESULT Ready_CutScene_Clear_Rail();
 	HRESULT Ready_CutScene_Boss_Intro();
 	HRESULT Ready_CutScene_Eject_InUFO();
+	HRESULT Ready_CutScene_GotoMoon();
 	HRESULT Ready_CutScene_Outro();
 private:
 	HRESULT NativeConstruct(CutSceneOption eOption);
@@ -64,6 +69,7 @@ private:
 	void Script_Intro(_double dTimeDelta);
 	void Script_Boss_Intro(_double dTimeDelta);
 	void Script_Eject_InUFO(_double dTimeDelta);
+	void Script_GotoMoon(_double dTimeDelta);
 	void Script_Outro(_double dTimeDelta);
 private:
 	class CCutScenePlayer* m_pCutScenePlayer = nullptr;

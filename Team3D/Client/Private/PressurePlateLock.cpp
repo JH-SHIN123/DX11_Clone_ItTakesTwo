@@ -124,7 +124,9 @@ void CPressurePlateLock::LockActive(_double TimeDelta)
 		{
 			if (false == m_bConnectEffectOnce) 
 			{
-				EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, m_pTransformCom->Get_WorldMatrix());
+				_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
+				matWorld.r[3].m128_f32[1] -= fMaxScale;
+				EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, matWorld);
 				m_bConnectEffectOnce = true;
 			}
 			return;

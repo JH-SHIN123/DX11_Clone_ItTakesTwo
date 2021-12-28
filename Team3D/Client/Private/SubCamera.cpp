@@ -589,10 +589,10 @@ _int CSubCamera::Tick_CamHelper_SeeCamNode(_double dTimeDelta)
 	return NO_EVENT;
 }
 
-_int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook,_bool bIsCalculateCamLook)
+_int CSubCamera::ReSet_Cam_FreeToAuto(_bool bCalculatePlayerLook,_bool bIsCalculateCamLook,_float fLerpSpeed)
 {
 
-	m_fChangeCamModeLerpSpeed = 6.f;
+	m_fChangeCamModeLerpSpeed = fLerpSpeed;
 	m_fChangeCamModeTime = 0.f;
 	m_eCurCamMode = CamMode::Cam_AutoToFree;
 	for (_uint i = 0; i < Rev_End; i++)
@@ -784,7 +784,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 1000;
+			MouseMove = MouseMove / 700;
 		m_fMouseRev[Rev_Holizontal] += (_float)MouseMove * (_float)dTimeDelta * m_fMouseRevSpeed[Rev_Holizontal];
 
 	}
@@ -793,7 +793,7 @@ _fmatrix CSubCamera::MakeViewMatrix_FollowPlayer(_double dTimeDelta)
 		if (abs(MouseMove) < 2000)
 			MouseMove = 0;
 		else
-			MouseMove = MouseMove / 1000;
+			MouseMove = MouseMove / 700;
 
 
 		_float fVal = (_float)(MouseMove* m_fMouseRevSpeed[Rev_Prependicul] * dTimeDelta);

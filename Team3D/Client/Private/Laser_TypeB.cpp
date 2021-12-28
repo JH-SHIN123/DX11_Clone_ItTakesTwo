@@ -75,7 +75,9 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						if (m_dDamagingDelay_Cody <= 0.0)
 						{
 							// 데미지를 주는 함수
+							#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
+							#endif // __PLAYER_INVINCIBLE_BOSSROOM
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.5;
 							Hit_Effect(GameID::eCODY);
@@ -85,7 +87,9 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 					else
 					{		
 						// 데미지를 주는 함수
+						#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
+						#endif // __PLAYER_INVINCIBLE_BOSSROOM
 						// 데미지 주기 초기화
 						m_dDamagingDelay_Cody = 0.5;
 						m_isHitCody = true;
@@ -110,7 +114,10 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						if (m_dDamagingDelay_May <= 0.0)
 						{
 							// 데미지를 주는 함수
+							#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
+							#endif // __PLAYER_INVINCIBLE_BOSSROOM
+							
 							// 데미지 주기 초기화
 							m_dDamagingDelay_May = 0.5;
 							Hit_Effect(GameID::eMAY);
@@ -120,7 +127,9 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 					else
 					{
 						// 데미지를 주는 함수
+						#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
+						#endif // __PLAYER_INVINCIBLE_BOSSROOM
 						// 데미지 주기 초기화
 						m_dDamagingDelay_May = 0.5;
 						m_isHitMay = true;
