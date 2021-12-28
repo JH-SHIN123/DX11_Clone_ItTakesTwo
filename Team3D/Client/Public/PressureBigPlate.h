@@ -31,6 +31,7 @@ public:
 
 public:
 	_bool Get_PowerSupplyActive() { return m_IsPowerSupplyActive; }
+	_bool Get_PowerSupplyAvailable() { return m_IsPowerSupplyAvailable;  }
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
