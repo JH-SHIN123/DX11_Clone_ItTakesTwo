@@ -100,8 +100,18 @@ HRESULT CHpBar::Render(RENDER_GROUP::Enum eGroup)
 
 void CHpBar::Reset()
 {
-	// 부활시 한번 호출됨 - 테스트 부탁
 	m_fHp = m_fMaxHp;
+
+	if (m_ePlayerID == Player::Cody)
+	{
+		m_fRatio = 0.f;
+		m_fDecreaseRateRatio = 0.f;
+	}
+	else
+	{
+		m_fRatio = 0.5f;
+		m_fDecreaseRateRatio = 0.5f;
+	}
 }
 
 void CHpBar::Set_Active(_bool IsCheck)

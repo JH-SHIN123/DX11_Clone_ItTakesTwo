@@ -337,7 +337,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	InUFO(dTimeDelta);
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
-		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer))
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer) || m_bDead_InBossroom)
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f)) 
@@ -351,6 +351,9 @@ _int CMay::Late_Tick(_double dTimeDelta)
 
 HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 {
+	if (true == m_IsDeadLine || m_bDead_InBossroom)
+		return S_OK;
+
 	CCharacter::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
