@@ -1194,6 +1194,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\01.ControlRoom">
       <UniqueIdentifier>{cdfddbe2-996f-4b93-853c-3b912a16c97e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\06.WallLaserTrap_Plane">
+      <UniqueIdentifier>{4acac014-9a07-4d7a-9330-6411a945fcfb}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2213,6 +2216,9 @@
     <ClInclude Include="..\public\Effect_Robot_Battery_Spark_ControlRoom.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\01.ControlRoom</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_WallLaser_Trap_Plane.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\06.WallLaserTrap_Plane</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3204,6 +3210,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Robot_Battery_Spark_ControlRoom.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\01.ControlRoom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_WallLaser_Trap_Plane.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\06.WallLaserTrap_Plane</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

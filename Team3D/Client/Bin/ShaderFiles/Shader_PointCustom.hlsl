@@ -1793,6 +1793,22 @@ PS_OUT  PS_DISTORTION_COLOR(PS_IN_DIST In)
 	return Out;
 }
 
+PS_OUT  PS_DISTORTION_COLOR_TIME(PS_IN_DIST In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vFX_tex = g_SecondTexture.Sample(DiffuseSampler, In.vWeightUV);
+	float4 vColor = (float4)0.f;
+	float fWeight = vFX_tex.r * 0.5f;
+
+	float4 vColorRamp = g_ColorTexture.Sample(ColorSampler, In.vColorRamp_UV);
+	vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV + fWeight);
+	vColor.rgb *= vColorRamp.rgb * g_fTime;
+
+	Out.vColor = vColor;
+	return Out;
+}
+
 PS_OUT  PS_BOSS_CORE(PS_IN_DIST In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -2089,5 +2105,15 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN_AXIS_Y_NO_GLOBAL_UV();
 		GeometryShader = compile gs_5_0  GS_MAIN_NO_BILL_Y_ROTATE_UV();
 		PixelShader = compile ps_5_0  PS_MAIN_PILLAR_ONLY_COLOR();
+	}
+
+	pass WallLaser_Trap // 26
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN_DIST();
+		PixelShader = compile ps_5_0  PS_DISTORTION_COLOR_TIME();
 	}
 };

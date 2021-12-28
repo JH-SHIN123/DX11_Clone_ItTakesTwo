@@ -340,6 +340,7 @@
     <ClInclude Include="..\public\Effect_UFO_Inside_PressWall_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Umbrella_Pipe.h" />
     <ClInclude Include="..\Public\Effect_Walking_Smoke.h" />
+    <ClInclude Include="..\public\Effect_WallLaser_Trap_Plane.h" />
     <ClInclude Include="..\public\Effect_WarpGate_Clear.h" />
     <ClInclude Include="..\Public\Effect_Wormhole.h" />
     <ClInclude Include="..\Public\EjectionButton.h" />
@@ -669,6 +670,7 @@
     <ClCompile Include="..\private\Effect_UFO_Inside_PressWall_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Umbrella_Pipe.cpp" />
     <ClCompile Include="..\Private\Effect_Walking_Smoke.cpp" />
+    <ClCompile Include="..\private\Effect_WallLaser_Trap_Plane.cpp" />
     <ClCompile Include="..\private\Effect_WarpGate_Clear.cpp" />
     <ClCompile Include="..\Private\Effect_Wormhole.cpp" />
     <ClCompile Include="..\Private\EjectionButton.cpp" />

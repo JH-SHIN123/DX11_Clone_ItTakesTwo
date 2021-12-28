@@ -5,6 +5,7 @@
 #pragma  region Effect Include
 #include "Effect_RespawnTunnel.h"
 #include "Effect_FireDoor.h"
+#include "Effect_WallLaser_Trap_Plane.h"
 #include "Effect_Walking_Smoke.h"
 #include "Effect_Landing_Smoke.h"
 #include "Effect_Dash.h"
@@ -465,7 +466,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 
 #pragma region 2D_Effect
 	if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_FireDoor"))
+	{
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_FireDoor", CEffect_FireDoor::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_WallLaser_Trap_Plane", CEffect_WallLaser_Trap_Plane::Create(pDevice, pDeviceContext, pData));
+	}
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Walking_Smoke"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Walking_Smoke", CEffect_Walking_Smoke::Create(pDevice, pDeviceContext, pData));
