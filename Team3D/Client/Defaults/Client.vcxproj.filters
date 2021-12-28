@@ -1188,6 +1188,12 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\00.Rotated">
+      <UniqueIdentifier>{b92bd383-ec30-4388-b422-ec7e32f092ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\01.ControlRoom">
+      <UniqueIdentifier>{cdfddbe2-996f-4b93-853c-3b912a16c97e}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2201,6 +2207,12 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Robot_Battery_Spark_Rotated.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\00.Rotated</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Effect_Robot_Battery_Spark_ControlRoom.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\01.ControlRoom</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3186,6 +3198,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Robot_Battery_Spark_Rotated.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\00.Rotated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Robot_Battery_Spark_ControlRoom.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\00.Robot_Battery_Spark\01.ControlRoom</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

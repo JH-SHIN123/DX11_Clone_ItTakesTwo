@@ -5,6 +5,7 @@
 #include "UI_Generator.h"
 #include "RotatedRobotHead.h"
 #include "RotatedRobotLever.h"
+#include "Effect_Generator.h"
 
 CRotatedRobotBattery::CRotatedRobotBattery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CRotatedRobotParts(pDevice, pDeviceContext)
@@ -178,6 +179,7 @@ void CRotatedRobotBattery::Push_Battery(_double dTimeDelta)
 	{
 		m_pGameInstance->Set_SoundVolume(CHANNEL_ROBOT_BATTERY_IN, m_fBattery_Volume);
 		m_pGameInstance->Play_Sound(TEXT("Battery_In.wav"), CHANNEL_ROBOT_BATTERY_IN, m_fBattery_Volume);
+		EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark_Rotated, m_pTransformCom->Get_WorldMatrix());
 
 		((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_RobotHead()->Set_Battery_Charged(true);
 		((CRotatedRobotParts*)DATABASE->Get_STPinBallRobot())->Get_Robot_Lever()->Set_BatteryCharged(true);

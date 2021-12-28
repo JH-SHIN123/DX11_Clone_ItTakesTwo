@@ -102,7 +102,6 @@ void CEffect_UFO_Inside_Battery_Explosion::Check_Instance(_double TimeDelta)
 			continue;
 
 		Instance_Pos((_float)TimeDelta, iIndex);
-
 	}
 }
 
