@@ -108,7 +108,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 		Combat_Move(dTimeDelta);
 	else if (m_IsCrashed == true && true == m_IsMayCollide && false == m_IsTargetCody && (m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)))
 	{
-		UI_Delete(Cody, InputButton_PS_InterActive);
+		UI_Delete(May, InputButton_PS_InterActive);
 		m_bMayControl = true;
 
 	}
