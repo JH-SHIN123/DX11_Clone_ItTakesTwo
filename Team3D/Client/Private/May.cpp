@@ -2145,6 +2145,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
+				m_IsInterActiveUIDisable = true;
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
@@ -2158,6 +2159,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
+				UI_Delete(May, InputButton_PS_InterActive);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
@@ -2665,6 +2667,10 @@ void CMay::Set_MinigameHpBarReduction(_float fDamage)
 	m_pMinigameSubHpBar->Set_Hp(fDamage);
 }
 
+void CMay::Set_InterActiveUIDisable(_bool IsCheck)
+{
+	m_IsInterActiveUIDisable = IsCheck;
+}
 
 void CMay::LaserTennis(const _double dTimeDelta)
 {

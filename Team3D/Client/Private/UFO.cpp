@@ -16,6 +16,7 @@
 #include "HpBar.h"
 #include "MoonBaboonCore.h"
 #include "BossDoor.h"
+#include "UI_Generator.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -835,10 +836,17 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 	/* 컷 신 애니메이션이 끝났다면 이제 상호작용 하자 ㅇㅇ */
 	if(true == m_IsInterActive)
 	{
-		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
-		//if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
-		//	GetRidLaserGun();
+		_matrix LaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
+		_matrix matLaserGunWorld = LaserGunRing * m_pTransformCom->Get_WorldMatrix();
 
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::Boss_UFO_LaserGunRing, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
+			10.f, m_IsMayCollide, ((CMay*)DATABASE->GetMay())->Get_InterActiveUIDisable());
+
+		matLaserGunWorld.r[3].m128_f32[1] += 3.f;
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Boss_UFO, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
+			10.f, m_IsCodyCollide, ((CCody*)DATABASE->GetCody())->Get_InterActiveUICreate());
+
+		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
 		if(100.f <= m_pModelCom->Get_CurrentTime(UFO_LaserRippedOff) && false == m_IsLaserGunRid)
 				GetRidLaserGun();
 
@@ -1107,8 +1115,11 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		if(m_ePhase == CUFO::PHASE_1)
+		if (m_ePhase == CUFO::PHASE_1)
+		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyCollide = true;
+		}
 		else if (m_ePhase == CUFO::PHASE_2 && true == m_IsTriggerActive)
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSENTERUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -1118,17 +1129,22 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-
+		if (m_ePhase == CUFO::PHASE_1)
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyCollide = false;
+		}
 	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
+		m_IsMayCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsMayCollide = false;
 	}
 }
 

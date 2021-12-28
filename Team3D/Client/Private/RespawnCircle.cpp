@@ -103,7 +103,6 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 	if (360.f <= m_fHeartTime)
 		m_fHeartTime = 0.f;
 	
-
 	Set_Gauge(TimeDelta);
 
 	m_vUV.x += (_float)TimeDelta * 0.5f;
@@ -152,7 +151,12 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_E))
 	{
-		m_fTime += (_float)TimeDelta * 2.f;
+		++m_iCount;
+
+		if(1 == m_iCount)
+			m_fTime += (_float)TimeDelta * 5.f;
+		else
+			m_fTime += (_float)TimeDelta * 2.f;
 
 		m_iRespawnOption = 1;
 		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));

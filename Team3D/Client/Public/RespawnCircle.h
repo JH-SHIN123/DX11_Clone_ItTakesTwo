@@ -40,6 +40,7 @@ private:
 	_float							m_fSubTime = 0.f;
 	_float							m_fHeartTime = 0.f;
 	_float							m_fAlpha = 0.f;
+	_uint							m_iCount = 0;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

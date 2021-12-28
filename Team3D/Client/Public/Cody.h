@@ -245,6 +245,8 @@ public:
 
 	_bool			 Get_IsEnding() { return m_IsEnding; }
 
+	_bool			 Get_InterActiveUICreate() { return m_IsInterActiveUICreate; }
+
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
@@ -537,6 +539,7 @@ private:
 	_bool m_IsHolding_High_UFO = false;
 	_uint m_iKeyDownCount = 0;
 	_bool m_IsCodyEnter = false;
+	_bool m_IsInterActiveUICreate = false;
 
 	/* For.Boss Missile */
 	_bool	m_IsBossMissile_Control = false;
