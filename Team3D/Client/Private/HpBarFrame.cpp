@@ -77,6 +77,13 @@ void CHpBarFrame::Set_Active(_bool IsCheck)
 	m_IsActive = IsCheck;
 }
 
+void CHpBarFrame::Set_Position(_float fTime)
+{
+	m_UIDesc.vPos.x -= fTime;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+}
+
+
 HRESULT CHpBarFrame::Ready_Component()
 {
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_VIBuffer_Rect_UI"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer_RectCom), E_FAIL);

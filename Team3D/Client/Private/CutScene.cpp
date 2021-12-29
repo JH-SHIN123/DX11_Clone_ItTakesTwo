@@ -722,6 +722,7 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 {
 	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.3511f, 599.567f, 1002.51f, 1.f));
 	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
+	((CCody*)DATABASE->GetCody())->Set_PlayerSizeSmall_INUFO();
 	// 우주선 들어가는거
 	CGameInstance::GetInstance()->Set_MainViewFog(true);
 	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
@@ -890,9 +891,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	/* 상태 초기화 */
 	static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
-	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 	static_cast<CMay*>(DATABASE->GetMay())->Enforce_IdleState();
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	//static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	/* 상태 초기화 */
@@ -901,9 +902,6 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
 

@@ -2139,6 +2139,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
+				m_IsInterActiveUIDisable = true;
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
@@ -2152,6 +2153,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
+				UI_Delete(May, InputButton_PS_InterActive);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
@@ -2401,7 +2403,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_DOWN))
@@ -2415,11 +2417,11 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 #else
-			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))
+			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))//
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
@@ -2430,7 +2432,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 			if (m_pGameInstance->Get_Pad_LStickY() > 44000 || m_pGameInstance->Key_Pressing(DIK_DOWN))
@@ -2444,7 +2446,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 #endif
@@ -2657,6 +2659,10 @@ void CMay::Set_MinigameHpBarReduction(_float fDamage)
 	m_pMinigameSubHpBar->Set_Hp(fDamage);
 }
 
+void CMay::Set_InterActiveUIDisable(_bool IsCheck)
+{
+	m_IsInterActiveUIDisable = IsCheck;
+}
 
 void CMay::LaserTennis(const _double dTimeDelta)
 {
@@ -3445,6 +3451,9 @@ void CMay::Set_RadiarBlur(_bool bActive)
 void CMay::Respawn_InBossroom()
 {
 	m_pHpBar->Reset();
+	m_pSubHpBar->Reset();
+	m_pSubHpBar->Set_Active(false);
+
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_SubViewBlur(false);
 
@@ -3478,7 +3487,7 @@ void CMay::DeadInBossroom(const _double dTimeDelta)
 		if (false == m_bDead_InBossroom)
 		{
 			// Create Respawn UI
-			UI_CreateOnlyOnce(May, RespawnCircle);
+			UI_CreateOnlyOnce(May, RespawnCircle_May);
 
 			// Create Effect
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
