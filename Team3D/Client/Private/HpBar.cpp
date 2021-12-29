@@ -61,6 +61,20 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
+	if (m_bPlayerGodTemp)
+	{
+		if (m_dPlayerGodDeltaT >= 2.0) // 부활후 플레이어 무적시간 2초
+		{
+			m_dPlayerGodDeltaT = 0.f;
+			m_bPlayerGodTemp = false;
+			m_bPlayerDead = false;
+		}
+		else
+		{
+			m_dPlayerGodDeltaT += TimeDelta;
+		}
+	}
+
 	D3D11_VIEWPORT MainViewport = m_pGameInstance->Get_ViewportInfo(1);
 	D3D11_VIEWPORT SubViewPort = m_pGameInstance->Get_ViewportInfo(2);
 
@@ -136,7 +150,6 @@ void CHpBar::Reset()
 		m_fDecreaseRateRatio = 0.5f;
 	}
 
-	m_bPlayerDead = false;
 	m_IsHit = false;	
 	if (1 == m_iOption)
 	{
@@ -146,6 +159,9 @@ void CHpBar::Reset()
 	m_fWatingTime = 0.f;
 	m_IsRecovery = false;
 	m_fRecoveryTime = 0.f;
+
+	m_bPlayerGodTemp = true;
+	//m_bPlayerDead = false;
 }
 
 void CHpBar::Set_Active(_bool IsCheck)

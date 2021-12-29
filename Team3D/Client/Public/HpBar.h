@@ -35,6 +35,8 @@ public:
 
  private:
 	 _bool							m_bPlayerDead = false;
+	 _bool							m_bPlayerGodTemp = false;
+	 _double						m_dPlayerGodDeltaT = 0.0;
 
 private:
 	STAGE							m_eStage = Stage_End;
