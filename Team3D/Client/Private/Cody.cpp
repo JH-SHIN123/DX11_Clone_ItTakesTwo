@@ -297,7 +297,10 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
 	if (m_pGameInstance->Key_Down(DIK_F9))
-		UI_CreateOnlyOnce(May, RespawnCircle_May);
+	{
+		m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+	}
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)

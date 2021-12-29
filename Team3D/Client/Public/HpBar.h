@@ -77,6 +77,7 @@ private:
 	 void MayHpBar_Boss(_double TimeDelta);
 	 void CodyHpBar_Minigame(_double TimeDelta);
 	 void MayHpBar_Minigame(_double TimeDelta);
+	 void AdJust_Position_According_CutScene(_double TimeDelta);
 
 public:
 	static CHpBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

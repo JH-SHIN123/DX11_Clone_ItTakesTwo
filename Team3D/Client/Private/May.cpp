@@ -2055,7 +2055,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 				//_vector vPosition = XMVectorSet(XMVectorGetX(vTestPos), m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
 				XMStoreFloat3(&m_vStartPosition, XMVectorSet(XMVectorGetX(vTestPos), XMVectorGetY(vTestPos), XMVectorGetZ(vTestPos), 1.f)/* + (XMLoadFloat3(&m_vTriggerTargetPos)*/);
-
+				UI_Delete(May, InputButton_PS_InterActive);
 			}
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_UFO_THROW, m_fMay_Rope_UFO_Throw_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Throw.wav"), CHANNEL_CHARACTER_UFO_THROW, m_fMay_Rope_UFO_Throw_Volume);
@@ -2135,7 +2135,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eBOSSUFO && true == m_IsLaserRippedOff)
 		{
-			if (true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
+			if (210.f <= m_pModelCom->Get_CurrentTime(ANI_M_SpaceStation_BossFight_LaserRippedOff) || 
+				true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
 			{
 				m_IsRippedOffAnimPlaying = false;
 				m_IsLaserRippedOff = false;
@@ -2204,7 +2205,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsOnGrind || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPullVerticalDoor || m_IsEnterValve || m_IsInGravityPipe || m_IsPinBall || m_IsDeadLine
-		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach || 
+		|| m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsHookUFO || m_IsBossMissile_Control || m_IsWallLaserTrap_Touch || m_bWallAttach ||
 		m_IsRippedOffAnimPlaying || m_bLaserTennis || m_IsEnding)
 		return true;
 
@@ -3001,7 +3002,6 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 		m_faVelocity *= m_faDamping;
 		m_fRopeAngle += m_faVelocity / 50.f;
 
-
 		_vector vPosition = XMVectorSet((m_vHookUFOOffsetPos.m128_f32[0] - m_vStartPosition.x) * sin(-m_fRopeAngle), (m_vHookUFOOffsetPos.m128_f32[1] - m_vStartPosition.y) * cos(m_fRopeAngle), ((m_vHookUFOOffsetPos.m128_f32[2] - m_vStartPosition.z) * sin(-m_fRopeAngle)), 1.f);
 		m_pActorCom->Set_Position(m_vHookUFOOffsetPos + vPosition);
 
@@ -3009,7 +3009,7 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 
-
+		UI_Delete(May, InputButton_PS_InterActive);
 
 		////////////////////////////////////////
 

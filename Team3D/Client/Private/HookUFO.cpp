@@ -165,21 +165,16 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 
 	_vector vComparePos;
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float4 vConvertPos;
-	XMStoreFloat4(&vConvertPos, vPos);
-	vConvertPos.y -= 5.f;
-	vPos = XMLoadFloat4(&vConvertPos);
+	vPos.m128_f32[1] -= 4.f;
 
 	vComparePos = vPos - vTargetPos;
 
 	_float fRange = 40.f;
 
-	_float vComparePosX = fabs(XMVectorGetX(vComparePos));
-	_float vComparePosY = fabs(XMVectorGetY(vComparePos));
-	_float vComparePosZ = fabs(XMVectorGetZ(vComparePos));
+	_float fDistance = XMVectorGetX(XMVector3Length(vComparePos));
 
 	/* 범위 안에 있다*/
-	if (fRange >= vComparePosX && fRange >= vComparePosY && fRange >= vComparePosZ)
+	if (fRange >= fDistance)
 	{
 		if (eID == GameID::Enum::eCODY)
 		{
@@ -225,6 +220,7 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
  		m_IsCodyCollide = false;
+		UI_Delete(Cody, InputButton_InterActive);
 	}
 
 	// May
@@ -240,6 +236,7 @@ void CHookUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObjec
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
 		m_IsMayCollide = false;
+		UI_Delete(May, InputButton_PS_InterActive);
 	}
 }
 
