@@ -259,6 +259,7 @@ public:
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void			 Set_Change_Size_After_UmbrellaCutScene();
 	void			 Set_PlayerSizeSmall_INUFO();
+	void			 Set_Player_Instance_Dead();
 
 	/* For. Ending */
 	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }

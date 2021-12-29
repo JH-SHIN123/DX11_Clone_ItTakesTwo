@@ -81,10 +81,14 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 		if (m_bCodyControl == true && m_bMayControl == false)
 		{
 			((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
+			((CCody*)DATABASE->GetCody())->SetTriggerID(GameID::Enum::eEND, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 		}
 		else if (m_bMayControl == true && m_bCodyControl == false)
 		{
 			((CMay*)DATABASE->GetMay())->Set_Escape_From_Rocket(true);
+			((CMay*)DATABASE->GetMay())->SetTriggerID(GameID::Enum::eEND, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 		}
 
 		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
@@ -179,6 +183,7 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
+		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsCodyCollide = false;
 	}
 
@@ -190,6 +195,7 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsMayCollide = false;
 	}
 }
