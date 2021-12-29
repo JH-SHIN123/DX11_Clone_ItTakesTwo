@@ -77,13 +77,13 @@ _int CHookUFO::Tick(_double dTimeDelta)
 		if (true == m_IsCodyCollide)
 		{
 			m_IsCodyUIDisable = true;
-			UI_Delete(Cody, InputButton_InterActive);
+			UI_Delete(Cody, InputButton_InterActive_HookUFO);
 		}
 
 		if (true == m_IsMayCollide)
 		{
 			m_IsMayUIDisalbe = true;
-			UI_Delete(May, InputButton_PS_InterActive);
+			UI_Delete(May, InputButton_PS_InterActive_HookUFO);
 		}
 	}
 
@@ -199,13 +199,13 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 			if (true == m_IsCodyCollide)
 			{
 				m_pCodyGauge_Circle->Set_Active(false);
-				UI_CreateOnlyOnce(Cody, InputButton_InterActive);
+				UI_CreateOnlyOnce(Cody, InputButton_InterActive_HookUFO);
 				UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, vPos);
 				return;
 			}
 			else
 			{
-				UI_Delete(Cody, InputButton_InterActive);
+				UI_Delete(Cody, InputButton_PS_InterActive_HookUFO);
 				m_pCodyGauge_Circle->Set_Active(true);
 			}
 		}
@@ -214,13 +214,13 @@ void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisa
 			if (true == m_IsMayCollide)
 			{
 				m_pMayGauge_Circle->Set_Active(false);
-				UI_CreateOnlyOnce(May, InputButton_PS_InterActive);
+				UI_CreateOnlyOnce(May, InputButton_PS_InterActive_HookUFO);
 				UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive, vPos);
 				return;
 			}
 			else
 			{
-				UI_Delete(May, InputButton_PS_InterActive);
+				UI_Delete(May, InputButton_PS_InterActive_HookUFO);
 				m_pMayGauge_Circle->Set_Active(true);
 			}
 		}

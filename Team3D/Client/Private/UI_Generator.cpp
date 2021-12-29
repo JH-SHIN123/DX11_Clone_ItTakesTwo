@@ -304,6 +304,13 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 		iOption = 1;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Title"), Level::LEVEL_STATIC, &iOption);
 		break;
+	case UI::InputButton_InterActive_HookUFO:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::InputButton_PS_InterActive_HookUFO:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"), Level::LEVEL_STATIC, pArg);
+		break;
 	case UI::TESTUI:
 		iOption = 8;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
