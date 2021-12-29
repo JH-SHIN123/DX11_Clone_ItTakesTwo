@@ -1195,7 +1195,6 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsMayCollide = false;
 	}
 }

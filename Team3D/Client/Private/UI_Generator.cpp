@@ -233,6 +233,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC, pArg);
 		/* 리스폰 서클 하트 */
+		iOption = 1;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
 		iOption = 0;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
@@ -244,6 +245,7 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_TriAngle"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC, pArg);
 		/* 리스폰 서클 하트 */
+		iOption = 1;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
 		iOption = 0;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);

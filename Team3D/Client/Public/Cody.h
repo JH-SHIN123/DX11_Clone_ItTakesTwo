@@ -296,7 +296,6 @@ private:
 	class CMainCamera*	m_pCamera = nullptr;
 
 	// UI
-private:
 	class CGauge_Circle*	m_pGauge_Circle = nullptr;
 
 	// 积己 棺 家戈 包访

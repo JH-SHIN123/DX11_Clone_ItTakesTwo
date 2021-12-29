@@ -12,7 +12,7 @@
 /**
 * 보스방 무적
 */
-//#define __PLAYER_INVINCIBLE_BOSSROOM
+#define __PLAYER_INVINCIBLE_BOSSROOM
 
 /************************************************************************/
   
@@ -34,7 +34,7 @@
 * 사용할 스레드 
 */
 #ifdef _DEBUG
-#define __THREAD_NUM 8
+#define __THREAD_NUM 4
 #else
 #define __THREAD_NUM 4
 #endif
@@ -50,14 +50,14 @@
 * 우주선 내부 맵만 제거
 * 프레임 살리기용
 */
-//#define __SPACESHIP_OFF
+#define __SPACESHIP_OFF
 
 /************************************************************************/
 
 /**
 * 메이 키보드로 컨트롤하려면 주석 해제.
 */
-//#define __CONTROL_MAY_KEYBOARD
+#define __CONTROL_MAY_KEYBOARD
 
 /************************************************************************/
 
