@@ -741,7 +741,7 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 	else if (m_iNodeIdx[0] < 39)	//올라가는 구간
 	{
 		_float fCurNodeY = m_CamNodes[m_iNodeIdx[0]]->vEye.y;
-		_float fNextNodeY = m_CamNodes[m_iNodeIdx[1]]->vEye.y;
+		_float fNextNodeY = m_CamNodes[m_iNodeIdx[1]]->vEye.y - 0.5f;
 		_float fPlayerY = XMVectorGetY(m_pCody->Get_Position());
 
 		_bool bIsStart = fCurNodeY > fPlayerY;
