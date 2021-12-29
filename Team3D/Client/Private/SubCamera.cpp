@@ -14,6 +14,7 @@
 #include"AlphaScreen.h"
 #include"MoonUFO.h"
 #include "MainCamera.h"
+#include"UFO.h"
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -183,6 +184,11 @@ void CSubCamera::Set_Zoom(_float4 vEye, _float4 vAt, _float fZoomVal, _double dT
 }
 
 
+
+void CSubCamera::Start_RippedOff_BossLaser()
+{
+	m_eCurCamMode = CamMode::Cam_RippedOffBossLaser;
+}
 
 HRESULT CSubCamera::Start_Film(const _tchar * pFilmTag)
 {
@@ -412,6 +418,33 @@ _int CSubCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
+{
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	if (pUfo->Get_IsRidLaserGun() == true)
+	{
+		ReSet_Cam_FreeToAuto(false,false,1.f);
+		return NO_EVENT;
+	}
+	CTransform* pMayTransform = m_pMay->Get_Transform();
+	CTransform* pUfoTransform = pUfo->Get_Transform();
+
+	_matrix matLaserGunRing = pUfo->Get_Model()->Get_BoneMatrix("LaserGunRing3") * pUfoTransform->Get_WorldMatrix();
+
+	_vector vMayPos = pMayTransform->Get_State(CTransform::STATE_POSITION);
+	vMayPos = XMVectorSetY(vMayPos, XMVectorGetY(vMayPos) + 1.f);
+	_vector vLaserGunPos = matLaserGunRing.r[3];
+
+	_vector vDir = XMVector3Normalize(vLaserGunPos - vMayPos);
+
+	_vector vLastEye = vMayPos - vDir;
+	_vector vLastAt = vMayPos + vDir;
+
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vLastAt), dTimeDelta));
+
+	return NO_EVENT;
+}
+
 
 _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
@@ -567,6 +600,10 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CSubCamera::CamMode::Cam_LaserTennis:
 		iResult = Tick_Cam_LaserTennis(dTimeDelta);
 		break;
+	case Client::CSubCamera::CamMode::Cam_RippedOffBossLaser:
+		iResult = Tick_Cam_RippedOff_BossLaser(dTimeDelta);
+		break;
+
 	}
 	return iResult;
 }

@@ -2139,6 +2139,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
+				m_pCamera->Start_RippedOff_BossLaser();
+				
 				m_IsInterActiveUIDisable = true;
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
