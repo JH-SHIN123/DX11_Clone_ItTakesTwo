@@ -3454,6 +3454,7 @@ void CMay::Respawn_InBossroom()
 	m_pSubHpBar->Reset();
 	m_pSubHpBar->Set_Active(false);
 
+	m_pActorCom->Set_SceneQuery(true);
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_SubViewBlur(false);
 
@@ -3500,6 +3501,8 @@ void CMay::DeadInBossroom(const _double dTimeDelta)
 			Enforce_IdleState();
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("May_Dead_Burn.wav"), CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+
+			m_pActorCom->Set_SceneQuery(false);
 			m_bDead_InBossroom = true;
 		}
 
