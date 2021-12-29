@@ -1354,7 +1354,7 @@ PS_OUT  PS_MAIN_COLORTEXTURE(PS_IN_DOUBLEUV In)
 
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, In.vTexUV);
 
-	Out.vColor.rgb *= vColor.rgb;
+	Out.vColor.rgb *= vColor.rgb * 2.f;
 	Out.vColor.rgb *= In.fTime * g_fTime;
 	Out.vColor.a = In.fTime;
 

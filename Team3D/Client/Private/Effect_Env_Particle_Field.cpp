@@ -42,6 +42,7 @@ _int CEffect_Env_Particle_Field::Tick(_double TimeDelta)
 {
 	Check_Culling();
 	Check_State(TimeDelta);
+	Check_BossFloor(TimeDelta);
 
 	return _int();
 }
@@ -63,7 +64,7 @@ HRESULT CEffect_Env_Particle_Field::Render(RENDER_GROUP::Enum eGroup)
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(0));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_Particle_Desc.iTexIndex));
 	m_pPointInstanceCom_STT->Render(2, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 	return S_OK;
 }
@@ -218,6 +219,22 @@ void CEffect_Env_Particle_Field::Check_Culling()
 	m_IsCulling = false;
 	if (fDist_Far < fDist_Particle && fDist_Far_Sub < fDist_Particle_Sub)
 		m_IsCulling = true;
+}
+
+void CEffect_Env_Particle_Field::Check_BossFloor(_double TimeDelta)
+{
+	if (false == m_Particle_Desc.IsBossFloor)
+		return;
+
+	if (true == DATABASE->Get_BossFloorUp())
+	{
+		_float fDist = (_float)TimeDelta * 10.f;
+
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		vPos.m128_f32[1] += fDist;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	}
 }
 
 _float4 CEffect_Env_Particle_Field::Get_Rand_Pos()

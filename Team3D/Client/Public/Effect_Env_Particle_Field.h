@@ -12,7 +12,7 @@ public:
 		_float4 vPosition;
 
 		_float		fSpeedPerSec = 0.125f;
-		_float		fReSizing_Power = 0.033f;
+		_float		fReSizing_Power = 0.05f;
 		_float		fReSize = 0.05f;
 		_float		fResetPosTime = 3.5f;
 		XMINT2		vTextureUV = { 4, 2 };
@@ -21,7 +21,9 @@ public:
 
 		_float		fInitialize_UpdatePos_Term = 1.f;
 		_int		iGrouping_Count = 1;
+		_int		iTexIndex = 0;
 		_bool		IsGrouping = false;
+		_bool		IsBossFloor = false;
 // 		_bool		IsGrouping_Dir = false;
 // 		_bool		IsGrouping_Pos = false;
 
@@ -55,6 +57,7 @@ protected:
 	void State_Start(_double TimeDelta);
 	void State_Disappear(_double TimeDelta);
 	void Check_Culling();
+	void Check_BossFloor(_double TimeDelta);
 
 protected:
 	_float4 Get_Rand_Pos();
