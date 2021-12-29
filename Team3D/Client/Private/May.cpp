@@ -2027,6 +2027,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && m_IsHookUFO == false)
 		{
+			m_iAirDashCount = 0;
+
 			// 최초 1회 OffSet 조정
 			if (m_IsHookUFO == false)
 			{
