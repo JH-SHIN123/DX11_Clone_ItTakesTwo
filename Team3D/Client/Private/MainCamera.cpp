@@ -245,6 +245,13 @@ void CMainCamera::Set_Start_Destroy_BossCore()
 	m_dDestroyCoreTime = 0.0;
 }
 
+void CMainCamera::Start_HitRocket_Boss()
+{
+	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	m_dHitRocketTime = 0.0;
+	m_eCurCamMode = CamMode::Cam_Boss_HitRocket;
+}
+
 HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
 {
 	m_pCamHelper->Start_Film(pFilmTag, CFilm::LScreen);
@@ -1365,6 +1372,7 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 
 _int CMainCamera::Tick_Cam_Boss_HitRocket(_double dTimeDelta)
 {
+	
 	return NO_EVENT;
 }
 
@@ -1720,7 +1728,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CMainCamera::CamMode::Cam_Destroy_BossCore:
 		iResult = Tick_Cam_Destroy_BossCore(dTimeDelta);
 		break;
-
+	case Client::CMainCamera::CamMode::Cam_Boss_HitRocket:
+		iResult = Tick_Cam_Boss_HitRocket(dTimeDelta);
+		break;
 	}
 	return iResult;
 }

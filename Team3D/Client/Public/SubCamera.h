@@ -10,7 +10,8 @@ class CCameraActor;
 class CSubCamera final : public CCamera
 {
 	enum CamRev { Rev_Holizontal, Rev_Prependicul, Rev_End };
-	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_LaserTennis, Cam_RippedOffBossLaser,Cam_End };
+	enum class CamMode { Cam_Free, Cam_AutoToFree, Cam_Warp_WormHole, Cam_WallJump, Cam_PinBall_May, Cam_LaserTennis, 
+		Cam_RippedOffBossLaser, Cam_Boss_HitRocket, Cam_End };
 	//O CamFreeMove P FollowPlayer
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_RidingSpaceShip_May,Cam_Free_End };
 private:
@@ -31,6 +32,7 @@ public:
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal, matWorld); }
 	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 	void		Start_RippedOff_BossLaser();
+	void		Start_HitRocket_Boss();
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	HRESULT Start_CamEffect(const _tchar* pEffectTag);
@@ -50,6 +52,7 @@ private:
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
 	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
 	_int	Tick_Cam_RippedOff_BossLaser(_double dTimeDelta);
+	_int	Tick_Cam_HitRocket_Boss(_double dTimeDelta);
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);			//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);				//카메라가 자유롭게 이동함
@@ -116,10 +119,10 @@ private:
 	//For.RidingUFO
 	_float	m_fDistFromUFO = 10.f;
 	//For.OpenThirdFloor
-	//For.OpenThirdFloor
 	_bool m_bOpenThirdFloor = false;
 	_float m_fOpenThirdFloorTime = 0.f;
-
+	//For.HitRocket
+	_double	m_dHitRocketTime = 0.0;
 public:
 	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;

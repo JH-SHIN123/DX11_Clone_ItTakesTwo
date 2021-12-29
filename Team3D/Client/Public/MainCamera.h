@@ -38,6 +38,7 @@ public:
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 	void		Set_Start_Destroy_BossCore();
+	void		Start_HitRocket_Boss();
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	HRESULT Start_CamEffect(const _tchar* pEffectTag);
@@ -58,7 +59,7 @@ private:
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
 	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
 	_int	Tick_Cam_Destroy_BossCore(_double dTimeDelta);		//문바분 마지막 코어 부술때
-	_int	Tick_Cam_Boss_HitRocket(_double dTimeDelta);		//달나라 갈때
+	_int	Tick_Cam_Boss_HitRocket(_double dTimeDelta);		
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
 	_int	Tick_Cam_Free_FreeMode(_double dTimeDelta);			//카메라가 자유롭게 이동함
@@ -155,7 +156,8 @@ private:
 	_float3 m_vStartCodyPos;
 	_float3 m_vStartCodyLook;
 	_float3 m_vLastEye;
-	
+	//For.HitRocket
+	_double m_dHitRocketTime = 0.0;
 private:
 	CCody*			m_pCody = nullptr;
 	CCam_Helper*	m_pCamHelper = nullptr;
