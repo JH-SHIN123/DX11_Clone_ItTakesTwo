@@ -16,7 +16,7 @@ public:
 		_float		fReSize = 0.02f;
 		_float		fResetPosTime = 3.5f;
 		XMINT2		vTextureUV = { 4, 2 };
-		_float2		vDefaultSize = { 0.1f, 0.1f };
+		_float2		vDefaultSize = { 0.175f, 0.175f };
 		_int3		vRandPower = { 100, 100, 100 };
 
 		_float		fInitialize_UpdatePos_Term = 1.f;
