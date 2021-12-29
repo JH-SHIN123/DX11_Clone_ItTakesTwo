@@ -390,35 +390,84 @@ HRESULT CLevel_Stage::Ready_Layer_Env_Particles_Main(const _tchar * pLayerTag)
 }
 HRESULT CLevel_Stage::Ready_Layer_Env_Particles_PinBall(const _tchar * pLayerTag)
 {
+	_tchar szProtoTypeName[MAX_PATH] = TEXT("GameObject_2D_Env_Particle_Field");
 	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
 
 #pragma region Particle
+	Arg_Desc.fReSizing_Power = 0.05f;
 
-	Arg_Desc.iInstanceCount = 4000;
-	Arg_Desc.vPosition = { 60.f, 0.f, 60.f, 1.f };
-	Arg_Desc.vRadiusXYZ = { 30.f, 30.f, 200.f };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field"), &Arg_Desc), E_FAIL);
+	Arg_Desc.iInstanceCount = 85;
+	Arg_Desc.vPosition = { -668.f, 760.f, 195.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 100.f, 9.f, 11.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
 
+	Arg_Desc.iInstanceCount = 170;
+	Arg_Desc.vRadiusXYZ = { 10.f, 9.f, 140.f };
+	Arg_Desc.vPosition = { -672.f, 760.f, 142.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+	Arg_Desc.vPosition.z = 15.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+	Arg_Desc.vPosition.z = -130.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+
+	Arg_Desc.iInstanceCount = 3000;
+	Arg_Desc.vRadiusXYZ = { 100.f, 50.f, 100.f };
+	Arg_Desc.vPosition = { -767.f, 760.f, 200.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
 
 #pragma endregion
 
 #pragma region Star
-	Arg_Desc.iInstanceCount = 100;
-	Arg_Desc.vPosition = { 60.f, 0.f, 100.f, 1.f };
-	Arg_Desc.vRadiusXYZ = { 45.f, 45.f, 200.f };
+	lstrcpy(szProtoTypeName, TEXT("GameObject_2D_Env_Particle_Field_Star"));
 	Arg_Desc.vDefaultSize = { 0.8f, 0.8f };
 	Arg_Desc.vTextureUV = { 1, 1 };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Star"), &Arg_Desc), E_FAIL);
+
+	Arg_Desc.iInstanceCount = 30;
+	Arg_Desc.vPosition = { -668.f, 760.f, 195.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 100.f, 9.f, 11.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+
+	Arg_Desc.iInstanceCount = 70;
+	Arg_Desc.vRadiusXYZ = { 10.f, 9.f, 140.f };
+	Arg_Desc.vPosition = { -672.f, 760.f, 142.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+	Arg_Desc.vPosition.z = 15.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+	Arg_Desc.vPosition.z = -130.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+
+
+	Arg_Desc.iInstanceCount = 300;
+	Arg_Desc.vRadiusXYZ = { 100.f, 50.f, 100.f };
+	Arg_Desc.vPosition = { -767.f, 760.f, 200.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+
+
 #pragma endregion
 
 #pragma region Dust
+	lstrcpy(szProtoTypeName, TEXT("GameObject_2D_Env_Particle_Field_Dust"));
+	Arg_Desc.vDefaultSize = { 0.6f, 0.6f };
+	Arg_Desc.vTextureUV = { 2, 2 };
+
+	Arg_Desc.iInstanceCount = 10;
+	Arg_Desc.vPosition = { -668.f, 760.f, 195.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 100.f, 9.f, 11.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+
+	Arg_Desc.iInstanceCount = 50;
+	Arg_Desc.vRadiusXYZ = { 10.f, 9.f, 140.f };
+	Arg_Desc.vPosition = { -672.f, 760.f, 142.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+	Arg_Desc.vPosition.z = 15.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+	Arg_Desc.vPosition.z = -130.f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
 
 	Arg_Desc.iInstanceCount = 100;
-	Arg_Desc.vPosition = { 60.f, 0.f, 100.f, 1.f };
-	Arg_Desc.vRadiusXYZ = { 45.f, 45.f, 200.f };
-	Arg_Desc.vDefaultSize = { 0.8f, 0.8f };
-	Arg_Desc.vTextureUV = { 1, 1 };
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, TEXT("GameObject_2D_Env_Particle_Field_Star"), &Arg_Desc), E_FAIL);
+	Arg_Desc.vRadiusXYZ = { 100.f, 50.f, 100.f };
+	Arg_Desc.vPosition = { -767.f, 760.f, 200.f, 1.f };
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
 
 #pragma endregion
 

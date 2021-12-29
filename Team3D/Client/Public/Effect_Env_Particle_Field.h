@@ -13,7 +13,7 @@ public:
 
 		_float		fSpeedPerSec = 0.125f;
 		_float		fReSizing_Power = 0.033f;
-		_float		fReSize = 0.02f;
+		_float		fReSize = 0.05f;
 		_float		fResetPosTime = 3.5f;
 		XMINT2		vTextureUV = { 4, 2 };
 		_float2		vDefaultSize = { 0.175f, 0.175f };
