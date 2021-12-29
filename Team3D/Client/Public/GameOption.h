@@ -3,9 +3,9 @@
 /************************************************************************/
 
 //#define __FULLSCREEN
-//#define __START_LEVEL_LOGO
-//#define __PLAY_CUTSCENE
-#define __FIRST_CUTSCENE_OFF
+#define __START_LEVEL_LOGO
+#define __PLAY_CUTSCENE
+//#define __FIRST_CUTSCENE_OFF
       
 /************************************************************************/
 
@@ -50,14 +50,14 @@
 * 우주선 내부 맵만 제거
 * 프레임 살리기용
 */
-#define __SPACESHIP_OFF
+//#define __SPACESHIP_OFF
 
 /************************************************************************/
 
 /**
 * 메이 키보드로 컨트롤하려면 주석 해제.
 */
-#define __CONTROL_MAY_KEYBOARD
+//#define __CONTROL_MAY_KEYBOARD
 
 /************************************************************************/
 
