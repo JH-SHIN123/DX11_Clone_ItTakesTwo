@@ -137,14 +137,14 @@ _int CUFO::Tick(_double dTimeDelta)
 	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pBossHpBar->Set_Active(false);
 
-	if (m_pGameInstance->Key_Down(DIK_F11))
-	{
-		CBoss_Missile::tagBossMissile_Desc MissileDesc;
-		MissileDesc.IsTarget_Cody = true;
-		//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-		MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_F11))
+	//{
+	//	CBoss_Missile::tagBossMissile_Desc MissileDesc;
+	//	MissileDesc.IsTarget_Cody = true;
+	//	//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	//	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+	//}
 
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
