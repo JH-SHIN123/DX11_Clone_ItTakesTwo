@@ -136,16 +136,22 @@ void CHpBar::Reset()
 		m_fDecreaseRateRatio = 0.5f;
 	}
 
-	//m_IsHit = false;			
-	//m_IsActive = false;
-	//m_pHpBarFrame->Set_Active(false);
-	//m_fWatingTime = 0.f;
-	//m_IsRecovery = false;
-	//m_fRecoveryTime = 0.f;
+	m_bPlayerDead = false;
+	m_IsHit = false;	
+	if (1 == m_iOption)
+	{
+		m_IsActive = false;
+		m_pHpBarFrame->Set_Active(false);
+	}
+	m_fWatingTime = 0.f;
+	m_IsRecovery = false;
+	m_fRecoveryTime = 0.f;
 }
 
 void CHpBar::Set_Active(_bool IsCheck)
 {
+	if (m_bPlayerDead) return;
+
 	m_IsActive = IsCheck;
 	UI_CreateOnlyOnce(Cody, Portrait_Cody);
 	UI_CreateOnlyOnce(May, Portrait_May);
@@ -168,6 +174,8 @@ void CHpBar::Set_Active(_bool IsCheck)
 
 void CHpBar::Set_Hp(_float fHp)
 {
+	if (m_bPlayerDead) return;
+
 	m_fHp -= fHp;
 	m_IsHit = true;
 	m_fWatingTime = 0.f;
@@ -179,7 +187,10 @@ void CHpBar::Set_Hp(_float fHp)
 		m_fRatio = (m_fHp / m_fMaxHp) / 2.f;
 
 	if (0.f >= m_fHp)
+	{
 		m_fHp = 0.f;
+		m_bPlayerDead = true;
+	}
 }
 
 void CHpBar::Set_ShaderOption(_int iOption)
@@ -280,7 +291,7 @@ void CHpBar::CodyHpBar_Boss(_double TimeDelta)
 	{
 		if (m_fDecreaseRateRatio <= m_fRatio)
 		{
-			Shake_Effect(TimeDelta);
+			if (false == m_bPlayerDead) Shake_Effect(TimeDelta);
 
 			m_fWatingTime += (_float)TimeDelta;
 
@@ -309,7 +320,7 @@ void CHpBar::CodyHpBar_Boss(_double TimeDelta)
 			if (0.02f <= m_fRecoveryTime)
 			{
 				m_IsRecovery = true;
-				m_fHp += 10.f;
+				if (false == m_bPlayerDead) m_fHp += 10.f;
 
 				if (120.f <= m_fHp)
 				{
@@ -360,7 +371,7 @@ void CHpBar::MayHpBar_Boss(_double TimeDelta)
 			if (0.02f <= m_fRecoveryTime)
 			{
 				m_IsRecovery = true;
-				m_fHp += 10.f;
+				if (false == m_bPlayerDead) m_fHp += 10.f;
 
 				if (120.f <= m_fHp)
 				{

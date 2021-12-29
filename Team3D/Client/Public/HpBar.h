@@ -33,6 +33,9 @@ public:
 	void Set_ShaderOption(_int iOption);
 	void Set_Stage(CHpBar::STAGE eStage);
 
+ private:
+	 _bool							m_bPlayerDead = false;
+
 private:
 	STAGE							m_eStage = Stage_End;
 	_bool							m_IsActive = false;
