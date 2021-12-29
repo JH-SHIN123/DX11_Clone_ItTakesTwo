@@ -178,7 +178,27 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 		}
 	}
 	Add_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"), pShake_Destroy_Boss_Cylinder);
+	CCamEffect* pShake = CCamEffect::Create(TEXT("Cam_Shake_Boss_InUFO"));
+	{
+		_double dDuration = 2.0;
+		pShake->Set_Duration(dDuration);
+		for (_double i = 0.0; i <= dDuration; i += 0.5)
+		{
+			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+			pCycleDesc->dStartTime = i;
+			pCycleDesc->dMiddleTime = i + 0.25;
+			pCycleDesc->dFinishTime = i + 0.5;
 
+			
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.02 / (i + 1.0);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.02 / (i + 1.0);
+
+
+			pShake->Add_CamShakeCycleDesc(pCycleDesc);
+		}
+	}
+	Add_CamEffect(TEXT("Cam_Shake_Boss_InUFO"), pShake);
 
 #pragma endregion
 
