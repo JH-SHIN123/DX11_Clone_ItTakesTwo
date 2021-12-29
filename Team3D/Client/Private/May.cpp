@@ -2403,7 +2403,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_DOWN))
@@ -2417,11 +2417,11 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 #else
-			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))
+			if (m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Key_Pressing(DIK_UP))//
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_LOOK), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
@@ -2432,7 +2432,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 			if (m_pGameInstance->Get_Pad_LStickY() > 44000 || m_pGameInstance->Key_Pressing(DIK_DOWN))
@@ -2446,7 +2446,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 #endif
@@ -3451,6 +3451,9 @@ void CMay::Set_RadiarBlur(_bool bActive)
 void CMay::Respawn_InBossroom()
 {
 	m_pHpBar->Reset();
+	m_pSubHpBar->Reset();
+	m_pSubHpBar->Set_Active(false);
+
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_SubViewBlur(false);
 

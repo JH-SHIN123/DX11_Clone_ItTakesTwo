@@ -87,11 +87,6 @@ _int CHookUFO::Tick(_double dTimeDelta)
 		}
 	}
 
-	else if (m_bLaunch == true)
-	{
-
-	}
-
 	InterActive_UI(((CCody*)DATABASE->GetCody())->Get_Position(), GameID::eCODY, m_IsCodyUIDisable);
 	InterActive_UI(((CCody*)DATABASE->GetMay())->Get_Position(), GameID::eMAY, m_IsMayUIDisalbe);
 
@@ -141,7 +136,7 @@ HRESULT CHookUFO::Render(RENDER_GROUP::Enum eGroup)
 
 HRESULT CHookUFO::Set_MeshRenderGroup()
 {
-	m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_ALPHA);
+	m_pModelCom->Set_MeshRenderGroup(0, tagRenderGroup::RENDER_EFFECT_PRE_CUSTOM_BLUR);
 	m_pModelCom->Set_MeshRenderGroup(1, tagRenderGroup::RENDER_NONALPHA);
 	m_pModelCom->Set_MeshRenderGroup(2, tagRenderGroup::RENDER_NONALPHA);
 	return S_OK;
@@ -149,7 +144,7 @@ HRESULT CHookUFO::Set_MeshRenderGroup()
 
 HRESULT CHookUFO::Add_GameObject_ToRenderGroup()
 {
-	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_ALPHA, this);
+	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 	m_pRendererCom->Add_GameObject_ToRenderGroup(tagRenderGroup::RENDER_NONALPHA, this);
 	return S_OK;
 }
@@ -166,13 +161,10 @@ HRESULT CHookUFO::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CHookUFO::Launch_HookUFO(_double dTimeDelta)
-{
-	
-}
-
 void CHookUFO::InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisable)
 {
+	if (nullptr == m_pCodyGauge_Circle || nullptr == m_pMayGauge_Circle) return;
+
 	if (true == IsDisable)
 		return;
 
