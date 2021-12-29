@@ -364,26 +364,24 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	}
 	else if (m_iCutSceneTake == 7)
 	{
-		if (m_dTime >= 78.5)
+		if (m_dTime >= 74.0)
 		{
-			pCody->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
-			pMay->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
 			
-			pCody->Get_Actor()->Set_Position(XMVectorSet(64.f,	244.4f,220.6f, 1.f));
+			pCody->Get_Actor()->Set_Position(XMVectorSet(64.f, 244.4f, 220.6f, 1.f));
+			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f, 244.4f, 220.4f, 1.f));
 
-			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f,	244.4f,	220.4f, 1.f));
-			m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
 			m_iCutSceneTake++;
-
 		}
 	}
-	else
+	else if (m_iCutSceneTake == 8)
 	{
-		CMainCamera* pMainCam = static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam());
-		CSubCamera* pSubCam = static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam());
-
-		pMainCam->Get_Transform()->Set_WorldMatrix(pSubCam->Get_Transform()->Get_WorldMatrix());
-
+		if (m_dTime >= 78.5)
+		{
+			pCody->Get_Transform()->Set_RotateAxis(XMVectorSet(0.f,1.f,0.f,0.f),XMConvertToRadians(180.f));
+			pMay->Get_Transform()->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+			
+			m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
+		}
 	}
 	//ButtonPress 
 	//31.32	Fourth
