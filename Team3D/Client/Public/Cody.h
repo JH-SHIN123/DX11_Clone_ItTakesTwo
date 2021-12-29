@@ -262,6 +262,7 @@ public:
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void			 Set_Change_Size_After_UmbrellaCutScene();
+	void			 Set_PlayerSizeSmall_INUFO();
 	void			 Set_InJoyStick();
 
 	/* For. Ending */

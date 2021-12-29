@@ -215,6 +215,7 @@ public:
 	void	Set_ActiveMinigameHpBar(_bool IsCheck);
 	void	Set_MinigameHpBarReset();
 	void	Set_MinigameHpBarReduction(_float fDamage);
+	void	Set_Player_Instance_Dead();
 	void	Set_InterActiveUIDisable(_bool IsCheck);
 
 	/* For. Ending */
