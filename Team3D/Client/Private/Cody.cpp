@@ -297,7 +297,7 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
 	if (m_pGameInstance->Key_Down(DIK_F9))
-		UI_CreateOnlyOnce(Cody, RespawnCircle);
+		UI_CreateOnlyOnce(May, RespawnCircle_May);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
@@ -4187,7 +4187,7 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 		if (false == m_bDead_InBossroom)
 		{
 			// Create Respawn UI
-			UI_CreateOnlyOnce(Cody, RespawnCircle);
+			UI_CreateOnlyOnce(Cody, RespawnCircle_Cody);
 
 			// Create Effect
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -4246,7 +4246,8 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		pUFOTransform->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 		m_IsHolding_Low_UFO = true;
-
+		m_IsInterActiveUICreate = true;
+		UI_Delete(Cody, InputButton_InterActive);
 	}
 	else if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_MEDIUM && false == m_IsHolding_Low_UFO)
@@ -4265,6 +4266,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
+			((CMay*)DATABASE->GetMay())->Set_InterActiveUIDisable(false);
 			m_IsHolding_High_UFO = true;
 		}
 	}
