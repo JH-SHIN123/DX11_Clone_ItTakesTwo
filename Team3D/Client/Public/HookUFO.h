@@ -43,7 +43,6 @@ public: /* Setter */
 private:
 	void InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisable = false);
 	HRESULT Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag);
-	void Launch_HookUFO(_double dTimeDelta);
 
 private:
 	_float		m_fUpAcceleration = 0.f;

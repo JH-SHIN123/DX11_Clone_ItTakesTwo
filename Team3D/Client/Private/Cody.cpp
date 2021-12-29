@@ -2935,7 +2935,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_S))
@@ -2949,7 +2949,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 		}
@@ -3572,6 +3572,18 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	m_pActorCom->Set_IsPlayerSizeSmall(false);
 }
+
+void CCody::Set_PlayerSizeSmall_INUFO()
+{
+	m_IsCollide = false;
+	m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 1.f));
+	m_pActorCom->Set_Scale(0.025f, 0.025f);
+	m_pActorCom->Set_IsPlayerSizeSmall(true);
+	m_eCurPlayerSize = SIZE_SMALL;
+	m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
+	m_pActorCom->Get_Controller()->setStepOffset(0.02f);
+}
+
 void CCody::Set_InJoyStick()
 {
 	m_pActorCom->Set_ZeroGravity(true, true, true);
