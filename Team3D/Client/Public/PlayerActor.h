@@ -52,6 +52,7 @@ public: /* Setter */
 	void	Set_ShapeFlag(_bool bValue);
 	void	Set_PlayerUp(_fvector vPlayerUp) { XMStoreFloat3(&m_vPlayerUp, vPlayerUp); }
 	void	Set_Gravity_Normally();
+	void	Set_SceneQuery(_bool bActivate);
 
 	/* Wall */
 	void	Set_ContactPos(PxExtendedVec3 vPosition) { m_vContactPosition = vPosition; }

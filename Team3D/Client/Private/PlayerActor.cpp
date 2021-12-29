@@ -41,6 +41,15 @@ void CPlayerActor::Set_Gravity_Normally()
 	m_pTransform->Set_State(CTransform::STATE_POSITION, MH_ConvertToXMVector(m_pController->getFootPosition(), 1.f));
 }
 
+void CPlayerActor::Set_SceneQuery(_bool bActivate)
+{
+	PxShape* pShape = nullptr;
+
+	m_pActor->getShapes(&pShape, 1);
+
+	pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bActivate);
+}
+
 HRESULT CPlayerActor::NativeConstruct_Prototype()
 {
 	CActor::NativeConstruct_Prototype();

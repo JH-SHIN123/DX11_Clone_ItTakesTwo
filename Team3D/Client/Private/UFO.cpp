@@ -17,6 +17,8 @@
 #include "MoonBaboonCore.h"
 #include "BossDoor.h"
 #include "UI_Generator.h"
+#include "MainCamera.h"
+#include "SubCamera.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -137,14 +139,14 @@ _int CUFO::Tick(_double dTimeDelta)
 	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pBossHpBar->Set_Active(false);
 
-	if (m_pGameInstance->Key_Down(DIK_F11))
-	{
-		CBoss_Missile::tagBossMissile_Desc MissileDesc;
-		MissileDesc.IsTarget_Cody = true;
-		//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-		MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_F11))
+	//{
+	//	CBoss_Missile::tagBossMissile_Desc MissileDesc;
+	//	MissileDesc.IsTarget_Cody = true;
+	//	//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	//	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+	//}
 
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
@@ -583,6 +585,15 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 
 	if (4 == m_iGuidedMissileHitCount)
 	{
+		switch (m_WhoCollide)
+		{
+		case Engine::GameID::eCODY:
+			static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_HitRocket_Boss();
+			break;
+		case Engine::GameID::eMAY:
+			static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_HitRocket_Boss();
+			break;
+		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;

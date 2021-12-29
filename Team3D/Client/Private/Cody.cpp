@@ -298,11 +298,8 @@ _int CCody::Tick(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_F9))
 	{
-		//m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
-		//((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
-
-		UI_CreateOnlyOnce(Cody, RespawnCircle_Cody);
-		UI_CreateOnlyOnce(May, RespawnCircle_May);
+		m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
 	}
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
@@ -2353,6 +2350,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
 		{
+			m_iAirDashCount = 0;
+			m_iJumpCount = 1;
+			m_bShortJump = true;
+
 			// 최초 1회 OffSet 조정
 			if (m_IsHookUFO == false)
 			{
@@ -4176,6 +4177,7 @@ void CCody::Respawn_InBossroom()
 	m_pSubHpBar->Reset();
 	m_pSubHpBar->Set_Active(false);
 
+	m_pActorCom->Set_SceneQuery(true);
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_MainViewBlur(false);
 
@@ -4223,6 +4225,8 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 			Enforce_IdleState();
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
+
+			m_pActorCom->Set_SceneQuery(false);
 			m_bDead_InBossroom = true;
 		}
 

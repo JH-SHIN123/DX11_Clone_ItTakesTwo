@@ -2027,6 +2027,10 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && m_IsHookUFO == false)
 		{
+			m_iAirDashCount = 0;
+			m_iJumpCount = 1; // 오타아님 메이 0 / 코디 1
+			m_bShortJump = true;
+
 			// 최초 1회 OffSet 조정
 			if (m_IsHookUFO == false)
 			{
@@ -2051,7 +2055,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 				//_vector vPosition = XMVectorSet(XMVectorGetX(vTestPos), m_faArmLength * cos(m_fRopeAngle), m_faArmLength * sin(m_fRopeAngle), 1.f) + XMVectorSetW(XMLoadFloat3(&m_vTriggerTargetPos), 1.f);
 				XMStoreFloat3(&m_vStartPosition, XMVectorSet(XMVectorGetX(vTestPos), XMVectorGetY(vTestPos), XMVectorGetZ(vTestPos), 1.f)/* + (XMLoadFloat3(&m_vTriggerTargetPos)*/);
-				UI_Delete(May, InputButton_PS_InterActive_HookUFO);
+				UI_Delete(May, InputButton_PS_InterActive);
 			}
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_UFO_THROW, m_fMay_Rope_UFO_Throw_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Character_Rope_UFO_Throw.wav"), CHANNEL_CHARACTER_UFO_THROW, m_fMay_Rope_UFO_Throw_Volume);
@@ -2140,6 +2144,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
+				m_pCamera->Start_RippedOff_BossLaser();
+				
 				m_IsInterActiveUIDisable = true;
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
@@ -3003,7 +3009,7 @@ void CMay::Hook_UFO(const _double dTimeDelta)
 		vTriggerToPlayer = XMVectorSetW(vTriggerToPlayer, 1.f);
 		m_pTransformCom->RotateYawDirectionOnLand(-vTriggerToPlayer, (_float)dTimeDelta / 2.f);
 
-		UI_Delete(May, InputButton_PS_InterActive_HookUFO);
+		UI_Delete(May, InputButton_PS_InterActive);
 
 		////////////////////////////////////////
 
@@ -3454,6 +3460,7 @@ void CMay::Respawn_InBossroom()
 	m_pSubHpBar->Reset();
 	m_pSubHpBar->Set_Active(false);
 
+	m_pActorCom->Set_SceneQuery(true);
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_SubViewBlur(false);
 
@@ -3500,6 +3507,8 @@ void CMay::DeadInBossroom(const _double dTimeDelta)
 			Enforce_IdleState();
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("May_Dead_Burn.wav"), CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
+
+			m_pActorCom->Set_SceneQuery(false);
 			m_bDead_InBossroom = true;
 		}
 

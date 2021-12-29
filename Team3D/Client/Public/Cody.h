@@ -655,6 +655,7 @@ private:
 #pragma region Dead_InBossroom
 public:
 	void Respawn_InBossroom();
+	_bool Get_bDeadInBossroom() { return m_bDead_InBossroom; }
 
 private:
 	void DeadInBossroom(const _double dTimeDelta);
