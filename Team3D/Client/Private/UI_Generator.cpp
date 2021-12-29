@@ -227,12 +227,25 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 	case UI::Portrait_May:
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Portrait_May"), Level::LEVEL_STATIC, pArg);
 		break;
-	case UI::RespawnCircle:
+	case UI::RespawnCircle_Cody:
 		/* 리스폰 서클 게이지 바 */
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_E"), Level::LEVEL_STATIC, pArg);
 		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC, pArg);
 		/* 리스폰 서클 하트 */
+		iOption = 1;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
+		iOption = 0;
+		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::RespawnCircle_May:
+		/* 리스폰 서클 게이지 바 */
+		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_TriAngle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_TriAngle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("ButtonIndicator"), Level::LEVEL_STATIC, pArg);
+		/* 리스폰 서클 하트 */
+		iOption = 1;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("RespawnCircle"), Level::LEVEL_STATIC, &iOption);
 		iOption = 0;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("AlphaScreen"), Level::LEVEL_STATIC, &iOption);
@@ -292,6 +305,13 @@ HRESULT CUI_Generator::Generator_UI(Player::ID ePlayer, UI::TRIGGER eTrigger, vo
 	case UI::Minigame_Title:
 		iOption = 1;
 		SetUp_Clone(ePlayer, eTrigger, TEXT("Minigame_Title"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::InputButton_InterActive_HookUFO:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_F"), Level::LEVEL_STATIC, &iOption);
+		break;
+	case UI::InputButton_PS_InterActive_HookUFO:
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_Frame_PS_Triangle"), Level::LEVEL_STATIC, pArg);
+		SetUp_Clone(ePlayer, eTrigger, TEXT("InputButton_PS_Triangle"), Level::LEVEL_STATIC, pArg);
 		break;
 	case UI::TESTUI:
 		iOption = 8;
@@ -922,6 +942,14 @@ HRESULT CUI_Generator::Add_Prototype_Fixed_UI(CUIObject::UI_DESC* UIDesc)
 	else if (!lstrcmp(UIDesc->szUITag, L"MaySubHpBarFrame"))
 	{
 		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CHpBarFrame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_Frame_TriAngle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton_Frame::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
+	}
+	else if (!lstrcmp(UIDesc->szUITag, L"InputButton_TriAngle"))
+	{
+		FAILED_CHECK_RETURN(pGameInstance->Add_GameObject_Prototype((Level::ID)UIDesc->iLevelIndex, UIDesc->szUITag, CInputButton::Create(m_pDevice, m_pDeviceContext, UIDesc)), E_FAIL);
 	}
 
 

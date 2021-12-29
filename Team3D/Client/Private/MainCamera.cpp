@@ -17,6 +17,8 @@
 #include"AlphaScreen.h"
 #include"Script.h"
 #include "SubCamera.h"
+#include"UFO.h"
+#include"MoonBaboon.h"
 CMainCamera::CMainCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -237,6 +239,19 @@ _bool CMainCamera::LerpToCurSize(CCody::PLAYER_SIZE eSize,_double dTimeDelta)
 	return true;
 }
 
+void CMainCamera::Set_Start_Destroy_BossCore()
+{
+	m_eCurCamMode = CamMode::Cam_Destroy_BossCore;
+	m_dDestroyCoreTime = 0.0;
+}
+
+void CMainCamera::Start_HitRocket_Boss()
+{
+	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	m_dHitRocketTime = 0.0;
+	m_eCurCamMode = CamMode::Cam_Boss_HitRocket;
+}
+
 HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
 {
 	m_pCamHelper->Start_Film(pFilmTag, CFilm::LScreen);
@@ -343,30 +358,35 @@ _int CMainCamera::Tick_Cam_Free_OpenThirdFloor(_double dTimeDelta)
 {
 	m_fOpenThirdFloorTime += (_float)dTimeDelta;
 	_float fDelay = 2.f;
-	if (m_fOpenThirdFloorTime > fDelay *9.f)
+	if (m_fOpenThirdFloorTime > fDelay * 9.f)
 	{
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FollowPlayer;
 		ReSet_Cam_FreeToAuto(true ,false,1.f);
 		UI_Generator->Set_AllActivation(true);
 	}
-	else if (m_fOpenThirdFloorTime > fDelay *8.f)
-		SCRIPT->Render_Script(53, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *7.f)
-		SCRIPT->Render_Script(52, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *6.f)
-		SCRIPT->Render_Script(51, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *5.f)
-		SCRIPT->Render_Script(50, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime >fDelay * 4.f)
-		SCRIPT->Render_Script(49, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay *3.f)
-		SCRIPT->Render_Script(48, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay * 2.f)
-		SCRIPT->Render_Script(47, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > fDelay)
-		SCRIPT->Render_Script(46, CScript::SCREEN::HALF, fDelay);
-	else if (m_fOpenThirdFloorTime > 0.f)
-		SCRIPT->Render_Script(45, CScript::SCREEN::HALF, fDelay);
+	if (false == m_bScriptCheck)
+	{
+		SCRIPT->VoiceFile_No24();
+		m_bScriptCheck = true;
+	}
+	//else if (m_fOpenThirdFloorTime > fDelay *8.f)
+	//	SCRIPT->Render_Script(53, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *7.f)
+	//	SCRIPT->Render_Script(52, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *6.f)
+	//	SCRIPT->Render_Script(51, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *5.f)
+	//	SCRIPT->Render_Script(50, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay * 4.f)
+	//	SCRIPT->Render_Script(49, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay *3.f)
+	//	SCRIPT->Render_Script(48, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay * 2.f)
+	//	SCRIPT->Render_Script(47, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > fDelay)
+	//	SCRIPT->Render_Script(46, CScript::SCREEN::HALF, fDelay);
+	//else if (m_fOpenThirdFloorTime > 0.f)
+	//	SCRIPT->Render_Script(45, CScript::SCREEN::HALF, fDelay);
 
 	_vector vCodyPos = m_pCody->Get_Position();
 	_vector vUpPos = XMVectorSet(65.f, 218.f, 179.f, 1.f);
@@ -1298,8 +1318,61 @@ _int CMainCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
+{
+	//√— 4.7√ 
+	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
+	CTransform* pCodyTransform = m_pCody->Get_Transform();
+	CTransform* pMoonBaboonTransform = pMoonBaboon->Get_Transform();
+	_vector vMoonBaboonPos = pMoonBaboonTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vCodyPos = pCodyTransform->Get_State(CTransform::STATE_POSITION);
+
+	if (m_dDestroyCoreTime == 0.f)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f),2.f);
+		_vector vStartEye = vCodyPos;
+		_vector vDir = XMVector3Normalize(vMoonBaboonPos- vCodyPos);
+		_vector vStartAt = vStartEye + vDir;
+		_vector vLastEye = vMoonBaboonPos - 1.5*vDir;
+		XMStoreFloat3(&m_vStartCodyPos,vStartEye);
+		XMStoreFloat3(&m_vStartCodyLook, vStartAt);
+		XMStoreFloat3(&m_vLastEye, vLastEye);
+		m_vStartCodyLook.y = m_vLastEye.y;
+		Start_CamEffect(TEXT("Cam_Shake_MissileBoom"));
+	}
+	if (m_dDestroyCoreTime >= 4.7)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		ReSet_Cam_FreeToAuto(true,true,1.f);
+	}
+
+	_vector vStartEye =XMVectorSetW(XMLoadFloat3(&m_vStartCodyPos),1.f);
+	_vector vStartAt = XMVectorSetW(XMLoadFloat3(&m_vStartCodyLook),1.f);
+	_vector vLastEye = XMVectorSetW(XMLoadFloat3(&m_vLastEye), 1.f);
+	_float3 vLastAt;
+	XMStoreFloat3(&vLastAt, vMoonBaboonPos);
+
+	_vector vCurEye =XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyPos, m_vLastEye, (_float)m_dDestroyCoreTime));
+	_vector vCurAt = XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyLook, vLastAt, (_float)m_dDestroyCoreTime));
+	
+
+	_matrix matResult = MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vCurEye, vCurAt), (_float)dTimeDelta);
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
+	{
+		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult))
+			matResult = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
+
+	}
+
+	m_pTransformCom->Set_WorldMatrix(matResult);
+
+	m_dDestroyCoreTime += dTimeDelta;
+	return NO_EVENT;
+}
+
 _int CMainCamera::Tick_Cam_Boss_HitRocket(_double dTimeDelta)
 {
+	
 	return NO_EVENT;
 }
 
@@ -1560,8 +1633,8 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	}*/
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
-
+		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
 		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 		return NO_EVENT;
 	}
@@ -1570,9 +1643,8 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
 	}
-
 #endif
-	
+
 	if (m_eCurCamMode != m_ePreCamMode)
 	{
 		switch (m_eCurCamMode)
@@ -1653,7 +1725,12 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CMainCamera::CamMode::Cam_LaserTennis:
 		iResult = Tick_Cam_LaserTennis(dTimeDelta);
 		break;
-
+	case Client::CMainCamera::CamMode::Cam_Destroy_BossCore:
+		iResult = Tick_Cam_Destroy_BossCore(dTimeDelta);
+		break;
+	case Client::CMainCamera::CamMode::Cam_Boss_HitRocket:
+		iResult = Tick_Cam_Boss_HitRocket(dTimeDelta);
+		break;
 	}
 	return iResult;
 }

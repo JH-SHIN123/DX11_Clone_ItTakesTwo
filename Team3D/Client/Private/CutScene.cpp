@@ -364,17 +364,23 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	}
 	else if (m_iCutSceneTake == 7)
 	{
+		if (m_dTime >= 74.0)
+		{
+			
+			pCody->Get_Actor()->Set_Position(XMVectorSet(64.f, 244.4f, 220.6f, 1.f));
+			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f, 244.4f, 220.4f, 1.f));
+
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 8)
+	{
 		if (m_dTime >= 78.5)
 		{
-			pCody->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
-			pMay->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
+			pCody->Get_Transform()->Set_RotateAxis(XMVectorSet(0.f,1.f,0.f,0.f),XMConvertToRadians(180.f));
+			pMay->Get_Transform()->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 			
-			pCody->Get_Actor()->Set_Position(XMVectorSet(64.f,	244.4f,220.6f, 1.f));
-
-			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f,	244.4f,	220.4f, 1.f));
 			m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
-			m_iCutSceneTake++;
-
 		}
 	}
 	//ButtonPress 
@@ -669,6 +675,7 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
+	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
 
@@ -715,6 +722,7 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 {
 	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(67.3511f, 599.567f, 1002.51f, 1.f));
 	((CCody*)DATABASE->GetCody())->Get_Actor()->Set_IsPlayerInUFO(true);
+	((CCody*)DATABASE->GetCody())->Set_PlayerSizeSmall_INUFO();
 	// 우주선 들어가는거
 	CGameInstance::GetInstance()->Set_MainViewFog(true);
 	CGameInstance::GetInstance()->Set_GoalViewportInfo(XMVectorSet(0.0f, 0.f, 0.6f, 1.f), XMVectorSet(0.6f, 0.f, 0.4f, 1.f));
@@ -883,9 +891,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	/* 상태 초기화 */
 	static_cast<CCody*>(DATABASE->GetCody())->Enforce_IdleState();
-	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 	static_cast<CMay*>(DATABASE->GetMay())->Enforce_IdleState();
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	//static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
+	static_cast<CCody*>(DATABASE->GetCody())->Set_Change_Size_After_UmbrellaCutScene();
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 	/* 상태 초기화 */
@@ -894,9 +902,6 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
 	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
 	UI_Generator->Set_AllActivation(true);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Gravity_Normally();
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setStepOffset(0.707f);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Get_Controller()->setSlopeLimit(0.5f);
 
 	((CUFO*)DATABASE->Get_BossUFO())->Set_EndIntroCutScene();
 
@@ -910,13 +915,15 @@ HRESULT CCutScene::End_CutScene_Eject_InUFO()
 
 HRESULT CCutScene::End_CutScene_GotoMoon()
 {
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
-	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pCody->Get_Actor()->Set_ZeroGravity(false, false, false);
+	pMay->Get_Actor()->Set_ZeroGravity(false, false, false);
+	
+	pCody->Set_InJoyStick();
+	pMay->Set_UFO(true);
+
 	return S_OK;
 }
 
@@ -924,13 +931,8 @@ HRESULT CCutScene::End_CutScene_Outro()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true);
-	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true);
-
+	m_pCutScenePlayer->Set_IsEndingCredit(true);
+	
 	return S_OK;
 }
 

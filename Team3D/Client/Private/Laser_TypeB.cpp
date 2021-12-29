@@ -29,14 +29,6 @@ HRESULT CLaser_TypeB::NativeConstruct(void * pArg)
 
 	m_fShootSpeed = 30.f;
 
-#ifdef __TEST_SE
-	m_fShootSpeed = 30.f;
-	m_vStartPoint = _float4(64.f, 1.f, 30.f, 1.f);
-	m_vEndPoint = m_vStartPoint;
-
-	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(XMVectorSet(1.f, 0.f, 0.f, 0.f)));
-#endif
-
 	return S_OK;
 }
 
@@ -75,9 +67,9 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						if (m_dDamagingDelay_Cody <= 0.0)
 						{
 							// 데미지를 주는 함수
-							#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
-							#endif // __PLAYER_INVINCIBLE_BOSSROOM
+#endif // __PLAYER_INVINCIBLE_BOSSROOM
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.5;
 							Hit_Effect(GameID::eCODY);
@@ -85,11 +77,11 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 					}
 					/* 첫 타격 데미지 */
 					else
-					{		
+					{
 						// 데미지를 주는 함수
-						#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
-						#endif // __PLAYER_INVINCIBLE_BOSSROOM
+#endif // __PLAYER_INVINCIBLE_BOSSROOM
 						// 데미지 주기 초기화
 						m_dDamagingDelay_Cody = 0.5;
 						m_isHitCody = true;
@@ -114,10 +106,10 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 						if (m_dDamagingDelay_May <= 0.0)
 						{
 							// 데미지를 주는 함수
-							#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
-							#endif // __PLAYER_INVINCIBLE_BOSSROOM
-							
+#endif // __PLAYER_INVINCIBLE_BOSSROOM
+
 							// 데미지 주기 초기화
 							m_dDamagingDelay_May = 0.5;
 							Hit_Effect(GameID::eMAY);
@@ -127,9 +119,9 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 					else
 					{
 						// 데미지를 주는 함수
-						#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+#ifndef __PLAYER_INVINCIBLE_BOSSROOM
 						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
-						#endif // __PLAYER_INVINCIBLE_BOSSROOM
+#endif // __PLAYER_INVINCIBLE_BOSSROOM
 						// 데미지 주기 초기화
 						m_dDamagingDelay_May = 0.5;
 						m_isHitMay = true;
@@ -192,7 +184,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_N))
 		m_isDead = true;
 #endif
-	
+
 	Adjust_OutsideAlpha(dTimeDelta);
 	Set_LaserMatices();
 
@@ -361,3 +353,190 @@ void CLaser_TypeB::Free()
 {
 	CLaser::Free();
 }
+
+
+//_int CLaser_TypeB::Tick(_double dTimeDelta)
+//{
+//	CLaser::Tick(dTimeDelta);
+//
+//	/* 레이저 생성 시 */
+//	if (!m_isDead)
+//	{
+//		_float fAngle = 0.f;
+//		fAngle += (_float)dTimeDelta * m_fRotateSpeed;
+//
+//		XMStoreFloat4x4(&m_matRotY, XMMatrixRotationY(XMConvertToRadians(fAngle)));
+//
+//		_vector vDir = XMVector3TransformNormal(XMLoadFloat4(&m_vLaserDir), XMLoadFloat4x4(&m_matRotY));
+//		XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(vDir));
+//
+//		if (m_fLaserSizeY > 0)
+//			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+//
+//		_bool isCollided_Player = false;
+//		_uint iEnvHitNumber = 0;
+//		m_isCollided = false;
+//
+//		if (m_RaycastBuffer.getNbAnyHits() > 0)
+//		{
+//			USERDATA* pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(0).actor->userData;
+//
+//			if (nullptr != pUserData)
+//			{
+//				/* 코디 타격 */
+//				if (pUserData->eID == GameID::eCODY && !((CCody*)DATABASE->GetCody())->Get_bDeadInBossroom())
+//				{
+//					m_dDamagingDelay_Cody -= dTimeDelta;
+//
+//					/* 지속 타격 데미지*/
+//					if (m_isHitCody)
+//					{
+//						if (m_dDamagingDelay_Cody <= 0.0)
+//						{
+//							// 데미지를 주는 함수
+//							#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
+//							#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//							// 데미지 주기 초기화
+//							m_dDamagingDelay_Cody = 0.5;
+//							Hit_Effect(GameID::eCODY);
+//						}
+//					}
+//					/* 첫 타격 데미지 */
+//					else
+//					{		
+//						// 데미지를 주는 함수
+//						#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(30);
+//						#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//						// 데미지 주기 초기화
+//						m_dDamagingDelay_Cody = 0.5;
+//						m_isHitCody = true;
+//						Hit_Effect(GameID::eCODY);
+//						Hit_Effect(GameID::eCODY);
+//					}
+//
+//					m_isCollided = true;
+//					isCollided_Player = true;
+//				}
+//				else
+//				{
+//					m_isHitCody = false;
+//					m_dDamagingDelay_Cody = 0.0;
+//				}
+//
+//				/* 메이 타격 */
+//				if (pUserData->eID == GameID::eMAY && !((CMay*)DATABASE->GetMay())->Get_bDeadInBossroom())
+//				{
+//					m_dDamagingDelay_May -= dTimeDelta;
+//
+//					/* 지속 타격 데미지*/
+//					if (m_isHitMay)
+//					{
+//						if (m_dDamagingDelay_May <= 0.0)
+//						{
+//							// 데미지를 주는 함수
+//							#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
+//							#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//							
+//							// 데미지 주기 초기화
+//							m_dDamagingDelay_May = 0.5;
+//							Hit_Effect(GameID::eMAY);
+//						}
+//					}
+//					/* 첫 타격 데미지 */
+//					else
+//					{
+//						// 데미지를 주는 함수
+//						#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(30);
+//						#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//						// 데미지 주기 초기화
+//						m_dDamagingDelay_May = 0.5;
+//						m_isHitMay = true;
+//						Hit_Effect(GameID::eMAY);
+//						Hit_Effect(GameID::eMAY);
+//					}
+//
+//					m_isCollided = true;
+//					isCollided_Player = true;
+//				}
+//				else
+//				{
+//					m_isHitMay = false;
+//					m_dDamagingDelay_May = 0.0;
+//				}
+//			}
+//		}
+//
+//		if (false == isCollided_Player)
+//		{
+//			USERDATA* pUserData = nullptr;
+//
+//			for (_uint i = 0; i < m_RaycastBuffer.getNbAnyHits(); ++i)
+//			{
+//				pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(i).actor->userData;
+//
+//				if (pUserData->eID == GameID::eENVIRONMENT)
+//				{
+//					iEnvHitNumber = i;
+//					m_isCollided = true;
+//					break;
+//				}
+//			}
+//		}
+//
+//		if (m_isCollided)
+//		{
+//			if (isCollided_Player)
+//			{
+//				m_fLaserSizeY = m_RaycastBuffer.getAnyHit(0).distance;
+//				m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
+//			}
+//			else
+//			{
+//				m_fLaserSizeY = m_RaycastBuffer.getAnyHit(iEnvHitNumber).distance;
+//				m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(iEnvHitNumber).position, 1.f);
+//			}
+//
+//			if (m_dCreateEffectDelay <= 0.0)
+//				m_dCreateEffectDelay = m_dCreateEffectCycle;
+//		}
+//		else
+//		{
+//			m_isHitCody = false;
+//			m_dDamagingDelay_Cody = 0.0;
+//			m_isHitMay = false;
+//			m_dDamagingDelay_May = 0.0;
+//
+//			XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
+//			m_fLaserSizeY = m_fLaserMaxY;
+//		}
+//
+//		/* 레이저 크기 */
+//		if (m_fLaserMaxY < 200.f)
+//			m_fLaserMaxY += m_fShootSpeed * (_float)dTimeDelta;
+//		if (m_fLaserSizeX < 3.f)
+//			m_fLaserSizeX += m_fShootSpeed * 0.2f * (_float)dTimeDelta;
+//	}
+//	/* 레이저 종료 시*/
+//	else
+//	{
+//		m_fLaserSizeY -= 30.f * (_float)dTimeDelta;
+//		XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
+//
+//		if (m_fLaserSizeY < 0.f)
+//		{
+//			DATABASE->Set_LaserTypeB_Recovery(true);
+//			return EVENT_DEAD;
+//		}
+//	}
+//
+//	Adjust_OutsideAlpha(dTimeDelta);
+//	Set_LaserMatices();
+//
+//	GoUp(dTimeDelta);
+//
+//	return NO_EVENT;
+//}

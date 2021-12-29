@@ -102,7 +102,6 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 
 	if (360.f <= m_fHeartTime)
 		m_fHeartTime = 0.f;
-	
 
 	Set_Gauge(TimeDelta);
 
@@ -120,6 +119,7 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+	m_pVIBuffer_RectCom->Set_Variable("g_iRespawnOption", &m_iRespawnOption, sizeof(_int));
 
 	if (0 == m_iOption)
 	{
@@ -130,7 +130,6 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 		m_pVIBuffer_RectCom->Set_Variable("g_UV", &m_vUV, sizeof(_float2));
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseSubTexture", m_pSubTexturesCom->Get_ShaderResourceView(0));
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseNoiseTexture", m_pNoiseTextureCom->Get_ShaderResourceView(0));
-
 	}
 
 	m_pVIBuffer_RectCom->Render(m_iPassNum);
@@ -151,12 +150,17 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		return;
 
 #ifdef __CONTROL_MAY_KEYBOARD
-	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Key_Down(DIK_Y)))
+	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Key_Down(DIK_O)))
 #else
 	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Pad_Key_Down(DIP_Y)))
 #endif
 	{
-		m_fTime += (_float)TimeDelta * 2.f;
+		++m_iCount;
+
+		if(1 == m_iCount)
+			m_fTime += (_float)TimeDelta * 7.f;
+		else
+			m_fTime += (_float)TimeDelta * 2.f;
 
 		m_iRespawnOption = 1;
 		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));;
@@ -169,7 +173,10 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		m_fTime -= (_float)TimeDelta * 0.05f;
 
 		if (0.f >= m_fTime)
+		{
 			m_fTime = 0.f;
+			m_iCount = 0;
+		}
 
 		m_fColorChangeTime += (_float)TimeDelta;
 
@@ -179,9 +186,6 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 			m_fColorChangeTime = 0.f;
 		}
 	}
-
-	m_pVIBuffer_RectCom->Set_Variable("g_iRespawnOption", &m_iRespawnOption, sizeof(_int));
-
 }
 
 void CRespawnCircle::Spawn_Effect(_double TimeDelta)
@@ -216,11 +220,11 @@ void CRespawnCircle::Alpha_Effect(_double TimeDelta)
 	{
 		if (m_ePlayerID == Player::Cody)
 		{
-			UI_Delete(Cody, RespawnCircle);
+			UI_Delete(Cody, RespawnCircle_Cody);
 		}
 		else
 		{
-			UI_Delete(May, RespawnCircle);
+			UI_Delete(May, RespawnCircle_May);
 		}
 	}
 }

@@ -246,6 +246,8 @@ public:
 	_bool			 Get_IsEnding() { return m_IsEnding; }
 	_bool			Get_IsDeadInBossroom() { return m_bDead_InBossroom; }
 
+	_bool			 Get_InterActiveUICreate() { return m_IsInterActiveUICreate; }
+
 public:
 	void			 Set_PushingBattery() { m_IsPushingBattery = false; }
 	void			 Set_OnParentRotate(_matrix ParentMatrix);
@@ -260,6 +262,8 @@ public:
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void			 Set_Change_Size_After_UmbrellaCutScene();
+	void			 Set_PlayerSizeSmall_INUFO();
+	void			 Set_InJoyStick();
 
 	/* For. Ending */
 	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -292,7 +296,6 @@ private:
 	class CMainCamera*	m_pCamera = nullptr;
 
 	// UI
-private:
 	class CGauge_Circle*	m_pGauge_Circle = nullptr;
 
 	// 积己 棺 家戈 包访
@@ -538,6 +541,7 @@ private:
 	_bool m_IsHolding_High_UFO = false;
 	_uint m_iKeyDownCount = 0;
 	_bool m_IsCodyEnter = false;
+	_bool m_IsInterActiveUICreate = false;
 
 	/* For.Boss Missile */
 	_bool	m_IsBossMissile_Control = false;
@@ -651,6 +655,7 @@ private:
 #pragma region Dead_InBossroom
 public:
 	void Respawn_InBossroom();
+	_bool Get_bDeadInBossroom() { return m_bDead_InBossroom; }
 
 private:
 	void DeadInBossroom(const _double dTimeDelta);

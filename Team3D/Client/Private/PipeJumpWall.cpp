@@ -42,9 +42,9 @@ HRESULT CPipeJumpWall::NativeConstruct(void * pArg)
 	m_pPhysxTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	_vector vTrans = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	if(PipeJumpWallDesc.iStageNum == ST_GRAVITYPATH)
-		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) + 0.255f, XMVectorGetY(vTrans) + 1.095f, XMVectorGetZ(vTrans) - 0.2f);
+		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) + 0.255f, XMVectorGetY(vTrans) + 1.115f, XMVectorGetZ(vTrans) - 0.2f);
 	else if (PipeJumpWallDesc.iStageNum == ST_PINBALL)
-		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) - 0.245f, XMVectorGetY(vTrans) + 1.095f, XMVectorGetZ(vTrans) - 0.2f);
+		PhysxWorldMatrix = XMMatrixTranslation(XMVectorGetX(vTrans) - 0.245f, XMVectorGetY(vTrans) + 1.115f, XMVectorGetZ(vTrans) - 0.2f);
 
 
 	m_pPhysxTransformCom->Set_WorldMatrix(PhysxWorldMatrix);

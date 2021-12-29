@@ -297,7 +297,10 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
 	if (m_pGameInstance->Key_Down(DIK_F9))
-		UI_CreateOnlyOnce(Cody, RespawnCircle);
+	{
+		m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+	}
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
@@ -2157,6 +2160,10 @@ void CCody::Enforce_IdleState()
 	m_bLaserTennis = false;
 	m_IsEnding = false;
 
+	//
+	/* 보스 인트로 컷씬 이후 초기화*/
+	m_IsPushingControlRoomBattery = false;
+
 
 	m_pActorCom->Set_IsFalling(false);
 	m_pActorCom->Set_ZeroGravity(false, false, false);
@@ -2343,6 +2350,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
 		{
+			m_iAirDashCount = 0;
+			m_iJumpCount = 1;
+			m_bShortJump = true;
+
 			// 최초 1회 OffSet 조정
 			if (m_IsHookUFO == false)
 			{
@@ -2671,17 +2682,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F9) && m_IsInJoyStick == false && m_eCurPlayerSize == SIZE_SMALL)
-	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
-		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
-		_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
-		_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
-
-		m_pActorCom->Set_Position(vOffSetPosition);
-		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
-		m_IsInJoyStick = true;
-	}
+		Set_InJoyStick();
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
@@ -2923,15 +2924,12 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE_MAY_1) == false)
+				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f *//*&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false*/)
 				{
-					SCRIPT->Render_Script(0, CScript::HALF, 2.f);
-					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
-					m_pGameInstance->Play_Sound(TEXT("01.wav"), CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
+					SCRIPT->VoiceFile_No01();
 					m_bGravityPipe_FirstIn = true;
 				}
 			}
-
 			if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
@@ -2948,7 +2946,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_S))
@@ -2962,7 +2960,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 		}
@@ -2997,13 +2995,13 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 			if (true == m_IsHitPlanet_Once)
 			{
 				((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_HANGINGPLANET);
 				m_pGameInstance->Play_Sound(TEXT("HangingPlanet_Push.wav"), CHANNEL_HANGINGPLANET);
 				m_IsHitPlanet_Once = false;
 			}
 		}
-
 		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
 		{
 			if (true == m_IsHitPlanet_Effect)
@@ -3016,8 +3014,6 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 				m_IsHitPlanet_Effect = false;
 			}
 		}
-
-
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
@@ -3587,6 +3583,30 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	m_pActorCom->Set_IsPlayerSizeSmall(false);
 }
+
+void CCody::Set_PlayerSizeSmall_INUFO()
+{
+	m_IsCollide = false;
+	m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 1.f));
+	m_pActorCom->Set_Scale(0.025f, 0.025f);
+	m_pActorCom->Set_IsPlayerSizeSmall(true);
+	m_eCurPlayerSize = SIZE_SMALL;
+	m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
+	m_pActorCom->Get_Controller()->setStepOffset(0.02f);
+}
+
+void CCody::Set_InJoyStick()
+{
+	m_pActorCom->Set_ZeroGravity(true, true, true);
+	m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+	_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
+	_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
+
+	m_pActorCom->Set_Position(vOffSetPosition);
+	m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
+	m_IsInJoyStick = true;
+}
 void CCody::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
@@ -3727,7 +3747,6 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
-		UI_Delete(Cody, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -3956,7 +3975,6 @@ void CCody::ShowRailTargetTriggerUI()
 		m_pGauge_Circle->Set_Active(false);
 		UI_Delete(Cody, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
-
 	}
 }
 #pragma endregion
@@ -4156,6 +4174,10 @@ void CCody::Set_RadiarBlur(_bool bActive)
 void CCody::Respawn_InBossroom()
 {
 	m_pHpBar->Reset();
+	m_pSubHpBar->Reset();
+	m_pSubHpBar->Set_Active(false);
+
+	m_pActorCom->Set_SceneQuery(true);
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_MainViewBlur(false);
 
@@ -4190,7 +4212,7 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 		if (false == m_bDead_InBossroom)
 		{
 			// Create Respawn UI
-			UI_CreateOnlyOnce(Cody, RespawnCircle);
+			UI_CreateOnlyOnce(Cody, RespawnCircle_Cody);
 
 			// Create Effect
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -4203,6 +4225,8 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 			Enforce_IdleState();
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
+
+			m_pActorCom->Set_SceneQuery(false);
 			m_bDead_InBossroom = true;
 		}
 
@@ -4249,7 +4273,8 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		pUFOTransform->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 		m_IsHolding_Low_UFO = true;
-
+		m_IsInterActiveUICreate = true;
+		UI_Delete(Cody, InputButton_InterActive);
 	}
 	else if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_MEDIUM && false == m_IsHolding_Low_UFO)
@@ -4268,6 +4293,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
+			((CMay*)DATABASE->GetMay())->Set_InterActiveUIDisable(false);
 			m_IsHolding_High_UFO = true;
 		}
 	}

@@ -16,6 +16,9 @@
 #include "HpBar.h"
 #include "MoonBaboonCore.h"
 #include "BossDoor.h"
+#include "UI_Generator.h"
+#include "MainCamera.h"
+#include "SubCamera.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -136,14 +139,14 @@ _int CUFO::Tick(_double dTimeDelta)
 	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pBossHpBar->Set_Active(false);
 
-	if (m_pGameInstance->Key_Down(DIK_F11))
-	{
-		CBoss_Missile::tagBossMissile_Desc MissileDesc;
-		MissileDesc.IsTarget_Cody = true;
-		//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-		MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_F11))
+	//{
+	//	CBoss_Missile::tagBossMissile_Desc MissileDesc;
+	//	MissileDesc.IsTarget_Cody = true;
+	//	//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	//	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+	//}
 
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
@@ -582,6 +585,15 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 
 	if (4 == m_iGuidedMissileHitCount)
 	{
+		switch (m_WhoCollide)
+		{
+		case Engine::GameID::eCODY:
+			static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_HitRocket_Boss();
+			break;
+		case Engine::GameID::eMAY:
+			static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_HitRocket_Boss();
+			break;
+		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;
@@ -816,9 +828,10 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 	{
 		if (false == m_IsGroundPoundEffectCreate && 30.f <= m_pModelCom->Get_CurrentTime(UFO_GroundPound))
 		{
-			_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+			//_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
-			UFOWorld.r[3].m128_f32[1] = MayPos.m128_f32[1] + 0.5f;
+			UFOWorld.r[3].m128_f32[1] -= 10.f;
+
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, UFOWorld);
@@ -886,10 +899,18 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 	/* 컷 신 애니메이션이 끝났다면 이제 상호작용 하자 ㅇㅇ */
 	if(true == m_IsInterActive)
 	{
-		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
-		//if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
-		//	GetRidLaserGun();
+		_matrix LaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
+		_matrix matLaserGunWorld = LaserGunRing * m_pTransformCom->Get_WorldMatrix();
 
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::Boss_UFO_LaserGunRing, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
+			50.f, m_IsMayCollide, ((CMay*)DATABASE->GetMay())->Get_InterActiveUIDisable());
+
+		/* 보정 */
+		matLaserGunWorld.r[3].m128_f32[1] += 3.f;
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Boss_UFO, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
+			50.f, m_IsCodyCollide, ((CCody*)DATABASE->GetCody())->Get_InterActiveUICreate());
+
+		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
 		if(100.f <= m_pModelCom->Get_CurrentTime(UFO_LaserRippedOff) && false == m_IsLaserGunRid)
 				GetRidLaserGun();
 
@@ -1025,10 +1046,9 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
-		
 	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
@@ -1158,8 +1178,11 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		if(m_ePhase == CUFO::PHASE_1)
+		if (m_ePhase == CUFO::PHASE_1)
+		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyCollide = true;
+		}
 		else if (m_ePhase == CUFO::PHASE_2 && true == m_IsTriggerActive)
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSENTERUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -1169,17 +1192,22 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-
+		if (m_ePhase == CUFO::PHASE_1)
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyCollide = false;
+		}
 	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
+		m_IsMayCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-
+		/* 여기 SetTriggerID false로 바꾸면 안됨 */
+		m_IsMayCollide = false;
 	}
 }
 

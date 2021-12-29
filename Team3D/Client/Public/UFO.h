@@ -30,6 +30,9 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
+	/*Getter*/
+	_bool			Get_IsRidLaserGun() { return m_IsLaserGunRid; }
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 	HRESULT Add_GameObject_ToRenderGroup();
@@ -85,6 +88,8 @@ private:
 	_bool					m_IsHit = false;
 	_bool					m_IsActive = false;
 	_bool					m_IsFirstAngleSetting = true;
+	_bool					m_IsCodyCollide = false;
+	_bool					m_IsMayCollide = false;
 
 	/* For.PHASE_1 Pattern */
 	_bool					m_IsCoreExplosion = false;

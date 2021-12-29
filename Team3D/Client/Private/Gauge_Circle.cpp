@@ -43,7 +43,7 @@ HRESULT CGauge_Circle::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(Ready_Layer_SwingPoint(TEXT("Layer_ContextIcon_SwingPoint")), E_FAIL);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x, m_UIDesc.vScale.y, 0.f, 0.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(m_UIDesc.vScale.x - 10.f, m_UIDesc.vScale.y - 10.f, 0.f, 0.f));
 
 	m_fAlpha = 0.5f;
 
@@ -78,18 +78,28 @@ _int CGauge_Circle::Late_Tick(_double TimeDelta)
 			m_IsUICreateOn = true;
 	}
 
-	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eCODY)
+	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eCODY && m_iOption == 1)
 	{
 		m_IsActive = false;
 		UI_CreateOnlyOnce(Cody, InputButton_InterActive_Rail);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive_Rail, XMLoadFloat4(&m_vTargetPos));
 	}
+	else if (true == m_IsUICreateOn && m_ePlayerID == GameID::eCODY && m_iOption == 0)
+	{
+		m_IsActive = false;
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive_HookUFO, XMLoadFloat4(&m_vTargetPos));
+	}
 
-	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eMAY)
+	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eMAY && m_iOption == 1)
 	{
 		m_IsActive = false;
 		UI_CreateOnlyOnce(May, InputButton_InterActive_Rail);
 		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive_Rail, XMLoadFloat4(&m_vTargetPos));
+	}
+	else if (true == m_IsUICreateOn && m_ePlayerID == GameID::eMAY && m_iOption == 0)
+	{
+		m_IsActive = false;
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_PS_InterActive_HookUFO, XMLoadFloat4(&m_vTargetPos));
 	}
 
 	if (false == m_IsActive)
@@ -171,8 +181,8 @@ void CGauge_Circle::FindDistanceRatio()
 			_vector vLength = XMVector3Length(vDistancePos);
 			_float fDistance = fabs(XMVectorGetX(vLength));
 
-			fDistance -= 15.f;
-			m_fRange = 25.f;
+			fDistance -= 20.f;
+			m_fRange = 40.f;
 
 			m_fDistance = 1.f - (fDistance / m_fRange);
 		}
@@ -184,8 +194,8 @@ void CGauge_Circle::FindDistanceRatio()
 			_vector vLength = XMVector3Length(vDistancePos);
 			_float fDistance = fabs(XMVectorGetX(vLength));
 
-			fDistance -= 15.f;
-			m_fRange = 25.f;
+			fDistance -= 20.f;
+			m_fRange = 40.f;
 
 			m_fDistance = 1.f - (fDistance / m_fRange);
 		}
