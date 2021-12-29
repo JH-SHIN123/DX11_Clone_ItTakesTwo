@@ -144,10 +144,7 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
 		m_eCurCamMode = CamMode::Cam_LaserTennis;
-#ifdef __TEST_JUN
-	if (m_pGameInstance->Key_Down(DIK_B))
-		m_bOpenThirdFloor = !m_bOpenThirdFloor;
-#endif 
+
 	if (m_bOpenThirdFloor && m_fOpenThirdFloorTime == 0.f)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 	if (m_eCurCamMode == CamMode::Cam_Free)
