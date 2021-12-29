@@ -2157,6 +2157,10 @@ void CCody::Enforce_IdleState()
 	m_bLaserTennis = false;
 	m_IsEnding = false;
 
+	//
+	/* 보스 인트로 컷씬 이후 초기화*/
+	m_IsPushingControlRoomBattery = false;
+
 
 	m_pActorCom->Set_IsFalling(false);
 	m_pActorCom->Set_ZeroGravity(false, false, false);
