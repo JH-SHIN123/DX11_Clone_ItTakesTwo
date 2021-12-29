@@ -35,6 +35,8 @@ public:
 
  private:
 	 _bool							m_bPlayerDead = false;
+	 _bool							m_bPlayerGodTemp = false;
+	 _double						m_dPlayerGodDeltaT = 0.0;
 
 private:
 	STAGE							m_eStage = Stage_End;
@@ -75,6 +77,7 @@ private:
 	 void MayHpBar_Boss(_double TimeDelta);
 	 void CodyHpBar_Minigame(_double TimeDelta);
 	 void MayHpBar_Minigame(_double TimeDelta);
+	 void AdJust_Position_According_CutScene(_double TimeDelta);
 
 public:
 	static CHpBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

@@ -4,6 +4,7 @@
 #include "HpBarFrame.h"
 #include "UI_Generator.h"
 #include "Portrait.h"
+#include "UFO.h"
 
 CHpBar::CHpBar(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CUIObject(pDevice, pDeviceContext)
@@ -61,21 +62,20 @@ _int CHpBar::Tick(_double TimeDelta)
 
 	CUIObject::Tick(TimeDelta);
 
-	D3D11_VIEWPORT MainViewport = m_pGameInstance->Get_ViewportInfo(1);
-	D3D11_VIEWPORT SubViewPort = m_pGameInstance->Get_ViewportInfo(2);
+	AdJust_Position_According_CutScene(TimeDelta);
 
-	if (m_fSaveMainViewPortWidth < MainViewport.Width)
+	if (m_bPlayerGodTemp)
 	{
-		_float fDecreaseWidth = fabs(m_fSaveMainViewPortWidth - MainViewport.Width);
-
-		m_fSaveMainViewPortWidth += (_float)TimeDelta * fDecreaseWidth;
-		m_UIDesc.vPos.x -= (_float)TimeDelta * fDecreaseWidth / 2.f;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
-
-		if(nullptr != m_pPortrait)
-			m_pPortrait->Set_Position((_float)TimeDelta * fDecreaseWidth / 2.f);
-
-		m_pHpBarFrame->Set_Position((_float)TimeDelta * fDecreaseWidth / 2.f);
+		if (m_dPlayerGodDeltaT >= 2.0) // 부활후 플레이어 무적시간 2초
+		{
+			m_dPlayerGodDeltaT = 0.f;
+			m_bPlayerGodTemp = false;
+			m_bPlayerDead = false;
+		}
+		else
+		{
+			m_dPlayerGodDeltaT += TimeDelta;
+		}
 	}
 
 	switch (m_ePlayerID)
@@ -136,7 +136,6 @@ void CHpBar::Reset()
 		m_fDecreaseRateRatio = 0.5f;
 	}
 
-	m_bPlayerDead = false;
 	m_IsHit = false;	
 	if (1 == m_iOption)
 	{
@@ -146,6 +145,9 @@ void CHpBar::Reset()
 	m_fWatingTime = 0.f;
 	m_IsRecovery = false;
 	m_fRecoveryTime = 0.f;
+
+	m_bPlayerGodTemp = true;
+	//m_bPlayerDead = false;
 }
 
 void CHpBar::Set_Active(_bool IsCheck)
@@ -423,6 +425,29 @@ void CHpBar::MayHpBar_Minigame(_double TimeDelta)
 				m_fWatingTime = 0.f;
 				m_IsHit = false;
 			}
+		}
+	}
+}
+
+void CHpBar::AdJust_Position_According_CutScene(_double TimeDelta)
+{
+	if (true == ((CUFO*)DATABASE->Get_BossUFO())->Get_Phase2InterActive())
+	{
+		D3D11_VIEWPORT MainViewport = m_pGameInstance->Get_ViewportInfo(1);
+		D3D11_VIEWPORT SubViewPort = m_pGameInstance->Get_ViewportInfo(2);
+
+		if (m_fSaveMainViewPortWidth < MainViewport.Width)
+		{
+			_float fDecreaseWidth = fabs(m_fSaveMainViewPortWidth - MainViewport.Width);
+
+			m_fSaveMainViewPortWidth += (_float)TimeDelta * fDecreaseWidth;
+			m_UIDesc.vPos.x -= (_float)TimeDelta * fDecreaseWidth / 2.f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_UIDesc.vPos.x, m_UIDesc.vPos.y, 0.f, 1.f));
+
+			if (nullptr != m_pPortrait)
+				m_pPortrait->Set_Position((_float)TimeDelta * fDecreaseWidth / 2.f);
+
+			m_pHpBarFrame->Set_Position((_float)TimeDelta * fDecreaseWidth / 2.f);
 		}
 	}
 }

@@ -119,6 +119,7 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 		return E_FAIL;
 
 	m_pVIBuffer_RectCom->Set_Variable("g_fAlpha", &m_fAlpha, sizeof(_float));
+	m_pVIBuffer_RectCom->Set_Variable("g_iRespawnOption", &m_iRespawnOption, sizeof(_int));
 
 	if (0 == m_iOption)
 	{
@@ -129,7 +130,6 @@ HRESULT CRespawnCircle::Render(RENDER_GROUP::Enum eGroup)
 		m_pVIBuffer_RectCom->Set_Variable("g_UV", &m_vUV, sizeof(_float2));
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseSubTexture", m_pSubTexturesCom->Get_ShaderResourceView(0));
 		m_pVIBuffer_RectCom->Set_ShaderResourceView("g_DiffuseNoiseTexture", m_pNoiseTextureCom->Get_ShaderResourceView(0));
-
 	}
 
 	m_pVIBuffer_RectCom->Render(m_iPassNum);
@@ -158,7 +158,7 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		++m_iCount;
 
 		if(1 == m_iCount)
-			m_fTime += (_float)TimeDelta * 4.f;
+			m_fTime += (_float)TimeDelta * 7.f;
 		else
 			m_fTime += (_float)TimeDelta * 2.f;
 
@@ -173,7 +173,10 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 		m_fTime -= (_float)TimeDelta * 0.05f;
 
 		if (0.f >= m_fTime)
+		{
 			m_fTime = 0.f;
+			m_iCount = 0;
+		}
 
 		m_fColorChangeTime += (_float)TimeDelta;
 
@@ -183,9 +186,6 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 			m_fColorChangeTime = 0.f;
 		}
 	}
-
-	m_pVIBuffer_RectCom->Set_Variable("g_iRespawnOption", &m_iRespawnOption, sizeof(_int));
-
 }
 
 void CRespawnCircle::Spawn_Effect(_double TimeDelta)

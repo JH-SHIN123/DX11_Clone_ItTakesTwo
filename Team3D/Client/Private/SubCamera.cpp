@@ -447,7 +447,7 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 	_vector vLastEye = vMayPos - vDir;
 	_vector vLastAt = vLaserGunPos + vDir;
 
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vLastAt), dTimeDelta));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vLastAt), (_float)dTimeDelta));
 
 	return NO_EVENT;
 }
@@ -470,7 +470,7 @@ _int CSubCamera::Tick_Cam_HitRocket_Boss(_double dTimeDelta)
 	_vector vUfoLook = XMVector3Normalize(matUfo.r[2]);
 	_vector vLastEye = vUfoPos + vUfoRight* 10.f + vUfoUp*6.f - vUfoLook*4.f;
 
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vUfoPos), dTimeDelta));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vUfoPos), (_float)dTimeDelta));
 	return NO_EVENT;
 }
 
