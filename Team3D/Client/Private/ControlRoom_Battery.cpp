@@ -6,6 +6,7 @@
 #include "ControlRoom_Door.h"
 #include "PressureBigPlate.h"
 #include "DataStorage.h"
+#include "Effect_Generator.h"
 
 CControlRoom_Battery::CControlRoom_Battery(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -158,13 +159,14 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 		CCody* pCody = (CCody*)DATABASE->GetCody();
 		NULL_CHECK_RETURN(pCody, EVENT_ERROR);
 
-		if (false == pCody->Get_PushingBattery())
+		if (false == pCody->Get_ControlRoomPushingBattery())
 		{
 			m_fAngle += (_float)TimeDelta * 15.f;
 			m_fRotate += (_float)TimeDelta * 15.f;
 
 			if (25.f <= m_fAngle)
 			{
+				m_IsEffect = false;
 				m_IsBatteryHolding = false;
 				m_IsPlayerInterActive = false;
 				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.659f, 221.12184f, 224.44f, 1.f));
@@ -196,6 +198,11 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 				m_IsBatteryHolding = false;
 			}
 
+			if (false == m_IsEffect)
+			{
+				EFFECT->Add_Effect(Effect_Value::RobotBattery_Spark_ControlRoom, m_pTransformCom->Get_WorldMatrix());
+				m_IsEffect = true;
+			}
 			m_IsPlayerInterActive = false;
 		}
 	}

@@ -911,13 +911,15 @@ HRESULT CCutScene::End_CutScene_Eject_InUFO()
 
 HRESULT CCutScene::End_CutScene_GotoMoon()
 {
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
-	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true, false, 1.f);
+	pCody->Get_Actor()->Set_ZeroGravity(false, false, false);
+	pMay->Get_Actor()->Set_ZeroGravity(false, false, false);
+	
+	pCody->Set_InJoyStick();
+	pMay->Set_UFO(true);
+
 	return S_OK;
 }
 
@@ -925,13 +927,8 @@ HRESULT CCutScene::End_CutScene_Outro()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 
-	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
-	CMainCamera* pMainCam = static_cast<CMainCamera*>(DATABASE->Get_MainCam());
-	pMainCam->ReSet_Cam_FreeToAuto(true);
-	CSubCamera* pSubCam = static_cast<CSubCamera*>(DATABASE->Get_SubCam());
-	pSubCam->ReSet_Cam_FreeToAuto(true);
-
+	m_pCutScenePlayer->Set_IsEndingCredit(true);
+	
 	return S_OK;
 }
 

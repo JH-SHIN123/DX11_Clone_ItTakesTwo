@@ -47,7 +47,7 @@ _int CEffect_EndingRocket_Circle::Tick(_double TimeDelta)
 	if (true == m_IsActivate)
 	{
 		m_dControlTime += TimeDelta;
-		if (1.0 <= m_dControlTime) m_dControlTime = 1.0;
+		if (0.7 <= m_dControlTime) m_dControlTime = 0.70;
 	}
 	else
 	{
@@ -81,7 +81,7 @@ HRESULT CEffect_EndingRocket_Circle::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dControlTime;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
-	_float4 vColor = { 1.000000000f, 0.937254965f, 0.235294187f, 1.000000000f };
+	_float4 vColor = { 1.000000000f, 0.537254965f, 0.235294187f, 1.000000000f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
@@ -112,20 +112,7 @@ void CEffect_EndingRocket_Circle::Check_Instance(_double TimeDelta)
 
 void CEffect_EndingRocket_Circle::Instance_Size(_float TimeDelta, _int iIndex)
 {
-	if (false == m_IsBoosting)
-	{
-		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 2.5f;
-		m_pInstanceBuffer_STT[iIndex].vSize.y -= (_float)TimeDelta * 3.f;
-		if (m_vDefaultSize.x > m_pInstanceBuffer_STT[iIndex].vSize.x) m_pInstanceBuffer_STT[iIndex].vSize.x = m_vDefaultSize.x;
-		if (m_vDefaultSize.y > m_pInstanceBuffer_STT[iIndex].vSize.y) m_pInstanceBuffer_STT[iIndex].vSize.y = m_vDefaultSize.y;
-	}
-	else
-	{
-		m_pInstanceBuffer_STT[iIndex].vSize.x += (_float)TimeDelta * 2.5f;
-		m_pInstanceBuffer_STT[iIndex].vSize.y += (_float)TimeDelta * 3.f;
-		if (m_vBoostingSize.x < m_pInstanceBuffer_STT[iIndex].vSize.x) m_pInstanceBuffer_STT[iIndex].vSize.x = m_vBoostingSize.x;
-		if (m_vBoostingSize.y < m_pInstanceBuffer_STT[iIndex].vSize.y) m_pInstanceBuffer_STT[iIndex].vSize.y = m_vBoostingSize.y;
-	}
+
 }
 
 void CEffect_EndingRocket_Circle::Instance_Pos(_float TimeDelta, _int iIndex)

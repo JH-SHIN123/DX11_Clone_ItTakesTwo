@@ -141,19 +141,20 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
-		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
+		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}
 
 #endif // __FIRST_CUTSCENE_OFF
 #endif // __PLAY_CUTSCENE
 
 	/* For.EndingCredit */
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Key_Down(DIK_END)||CCutScenePlayer::GetInstance()->Get_IsEndingCredit())
 	{
 		m_pGameInstance->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 		m_iLevelStep = 2; 
-		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.8f);
+		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
 		ENDINGCREDIT->Create_Environment();
+		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
@@ -228,22 +229,30 @@ HRESULT CLevel_Stage::Ready_Test()
 	//
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_BOMB", Level::LEVEL_STAGE, TEXT("GameObject_3D_Boss_Gravitational_Bomb")), E_FAIL);
 	//
-	//_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
-	//CDynamic_Env::ARG_DESC Arg;
-	//Arg.iMaterialIndex = 0;
-	//Arg.iOption = 0;
-	//Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	_float4 vPos = { 60.f, 0.f, 20.f, 1.f };
+	CDynamic_Env::ARG_DESC Arg;
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
 	//memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
 	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_SmallOpen_01"));
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricBox", Level::LEVEL_STAGE, TEXT("GameObject_ElectricBox"), &Arg), E_FAIL);
 	//
-	//vPos = { 60.f, 1.f, 25.f, 1.f };
-	//Arg.iMaterialIndex = 0;
-	//Arg.iOption = 0;
-	//Arg.WorldMatrix = MH_XMFloat4x4Identity();
-	//memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
-	//lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
-	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+	vPos = { 60.f, 1.f, 25.f, 1.f };
+	Arg.iMaterialIndex = 0;
+	Arg.iOption = 0;
+	Arg.WorldMatrix = MH_XMFloat4x4Identity();
+	memcpy(&Arg.WorldMatrix.m[3][0], &vPos, sizeof(_float4));
+	lstrcpy(Arg.szModelTag, TEXT("Component_Model_Saucer_InteriorPlatform_Support_01"));
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+
+	vPos = { 60.f, 1.f, 27.f, 1.f };
+	_matrix WorldMatrix = XMMatrixIdentity();
+	WorldMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+	WorldMatrix.r[3] = XMLoadFloat4(&vPos);
+	XMStoreFloat4x4(&Arg.WorldMatrix, WorldMatrix);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_ElectricWall", Level::LEVEL_STAGE, TEXT("GameObject_ElectricWall"), &Arg), E_FAIL);
+
 	//
 	//vPos = { 58.f, 0.21f, 25.f, 1.f };
 	//Arg.iMaterialIndex = 0;
@@ -294,9 +303,9 @@ HRESULT CLevel_Stage::Ready_Test()
 	////MoonBaboonDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"asdl", Level::LEVEL_STAGE, TEXT("GameObject_RunningMoonBaboon"), &MoonBaboonDesc), E_FAIL);
 
-	ROBOTDESC StarDesc;
-	StarDesc.vPosition = { 63.0f, 0.5f, 55.f, 1.f };
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"º°", Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
+	//ROBOTDESC StarDesc;
+	//StarDesc.vPosition = { 63.0f, 0.5f, 55.f, 1.f };
+	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"º°", Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy"), &StarDesc), E_FAIL);
 
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"·¹", Level::LEVEL_STAGE, TEXT("GameObject_MoonBaboon_MainLaser")), E_FAIL);
 
@@ -1015,30 +1024,32 @@ _int CLevel_Stage::Tick_EndingCredit(_double dTimedelta)
 	{
 		++m_iEndingCreditStep;
 
-		ENDINGCREDIT->Create_3DText(0, -792.5f);
-		ENDINGCREDIT->Create_3DText(1, -1080.f);
-		ENDINGCREDIT->Create_3DText(2, -1363.f);
-		ENDINGCREDIT->Create_3DText(3, -1646.f);
-		ENDINGCREDIT->Create_3DText(4, -1930.f);
-		ENDINGCREDIT->Create_3DText(5, -2214.f);
-		ENDINGCREDIT->Create_3DText(6, -2496.f);
-		ENDINGCREDIT->Create_3DText(7, -2781.f);
-		ENDINGCREDIT->Create_3DText(8, -3064.f);
-		ENDINGCREDIT->Create_3DText(9, -3349.f);
-		ENDINGCREDIT->Create_3DText(10, -3632.f);
-		ENDINGCREDIT->Create_3DText(12, -3916.f);
-		ENDINGCREDIT->Create_3DText(11, -4100.f);
-		ENDINGCREDIT->Create_3DText(13, -4270.f);
-		ENDINGCREDIT->Create_3DText(14, -4380.f);
-		ENDINGCREDIT->Create_3DText(15, -4545.f);
-		ENDINGCREDIT->Create_3DText(16, -4707.f);
-		ENDINGCREDIT->Create_3DText(17, -4992.f);
-		ENDINGCREDIT->Create_3DText(18, -5276.f);
-		ENDINGCREDIT->Create_3DText(19, -5558.f);
-		ENDINGCREDIT->Create_3DText(20, -5846.f);
-		ENDINGCREDIT->Create_3DText(21, -6131.f);
-		ENDINGCREDIT->Create_3DText(22, -6415.f);
-		ENDINGCREDIT->Create_3DText(23, -6696.f);
+		_float fSync = 7.f;
+
+		ENDINGCREDIT->Create_3DText(0, -792.5f + fSync);
+		ENDINGCREDIT->Create_3DText(1, -1080.f + fSync);
+		ENDINGCREDIT->Create_3DText(2, -1363.f + fSync);
+		ENDINGCREDIT->Create_3DText(3, -1646.f + fSync);
+		ENDINGCREDIT->Create_3DText(4, -1930.f + fSync);
+		ENDINGCREDIT->Create_3DText(5, -2214.f + fSync);
+		ENDINGCREDIT->Create_3DText(6, -2496.f + fSync);
+		ENDINGCREDIT->Create_3DText(7, -2781.f + fSync);
+		ENDINGCREDIT->Create_3DText(8, -3064.f + fSync);
+		ENDINGCREDIT->Create_3DText(9, -3349.f + fSync);
+		ENDINGCREDIT->Create_3DText(10, -3632.f + fSync);
+		ENDINGCREDIT->Create_3DText(12, -3916.f + fSync);
+		ENDINGCREDIT->Create_3DText(11, -4100.f + fSync);
+		ENDINGCREDIT->Create_3DText(13, -4270.f + fSync);
+		ENDINGCREDIT->Create_3DText(14, -4380.f + fSync);
+		ENDINGCREDIT->Create_3DText(15, -4545.f + fSync);
+		ENDINGCREDIT->Create_3DText(16, -4707.f + fSync);
+		ENDINGCREDIT->Create_3DText(17, -4992.f + fSync);
+		ENDINGCREDIT->Create_3DText(18, -5276.f + fSync);
+		ENDINGCREDIT->Create_3DText(19, -5558.f + fSync);
+		ENDINGCREDIT->Create_3DText(20, -5846.f + fSync);
+		ENDINGCREDIT->Create_3DText(21, -6131.f + fSync);
+		ENDINGCREDIT->Create_3DText(22, -6415.f + fSync);
+		ENDINGCREDIT->Create_3DText(23, -6696.f + fSync);
 	}
 
 	return NO_EVENT;

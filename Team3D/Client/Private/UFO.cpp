@@ -16,6 +16,7 @@
 #include "HpBar.h"
 #include "MoonBaboonCore.h"
 #include "BossDoor.h"
+#include "UI_Generator.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -220,14 +221,32 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	_vector vDir, vTargetPos;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
+	// 죽었을때 다른 타겟 설정
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+	_bool bCodyDead = pCody->Get_IsDeadInBossroom();
+	_bool bMayDead = pMay->Get_IsDeadInBossroom();
+
 	switch (m_eTarget)
 	{
 	case Client::CUFO::TARGET_CODY:
-		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if(false == bCodyDead)
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	case Client::CUFO::TARGET_MAY:
-		vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if (false == bMayDead)
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -318,14 +337,32 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 	_uint iGravitationalBombMaxCount = 8;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
+	// 죽었을때 다른 타겟 설정
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+	_bool bCodyDead = pCody->Get_IsDeadInBossroom();
+	_bool bMayDead = pMay->Get_IsDeadInBossroom();
+
 	switch (m_eTarget)
 	{
 	case Client::CUFO::TARGET_CODY:
-		vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if (false == bCodyDead)
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	case Client::CUFO::TARGET_MAY:
-		vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+	{
+		if (false == bMayDead)
+			vTargetPos = m_pMayTransform->Get_State(CTransform::STATE_POSITION);
+		else
+			vTargetPos = m_pCodyTransform->Get_State(CTransform::STATE_POSITION);
+
 		break;
+	}
 	}
 
 	vDir = vTargetPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -350,10 +387,26 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 			RightLaserHatch *= vUFOWorld;
 
 			EFFECT_DESC_CLONE tEffectDesc;
-			if (m_eTarget == CUFO::TARGET_MAY)
-				tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
+
+			CCody* pCody = (CCody*)DATABASE->GetCody();
+			CMay* pMay = (CMay*)DATABASE->GetMay();
+			_bool bCodyDead = pCody->Get_IsDeadInBossroom();
+			_bool bMayDead = pMay->Get_IsDeadInBossroom();
+
+			if (m_eTarget == CUFO::TARGET_MAY) 
+			{
+				if(bMayDead)
+					tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+				else
+					tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
+			}
 			else
-				tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+			{
+				if (bCodyDead)
+					tEffectDesc.vStartPos = (_float4)&LeftLaserHatch.r[3].m128_f32[0];
+				else
+					tEffectDesc.vStartPos = (_float4)&RightLaserHatch.r[3].m128_f32[0];
+			}
 
 			XMStoreFloat3(&tEffectDesc.vDir, vDir);
 
@@ -764,9 +817,10 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 	{
 		if (false == m_IsGroundPoundEffectCreate && 30.f <= m_pModelCom->Get_CurrentTime(UFO_GroundPound))
 		{
-			_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+			//_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
-			UFOWorld.r[3].m128_f32[1] = MayPos.m128_f32[1] + 0.5f;
+			UFOWorld.r[3].m128_f32[1] -= 10.f;
+
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, UFOWorld);
@@ -834,10 +888,18 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 	/* 컷 신 애니메이션이 끝났다면 이제 상호작용 하자 ㅇㅇ */
 	if(true == m_IsInterActive)
 	{
-		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
-		//if (0.97 <= m_pModelCom->Get_ProgressAnim() && false == m_IsLaserGunRid)
-		//	GetRidLaserGun();
+		_matrix LaserGunRing = m_pModelCom->Get_BoneMatrix("LaserGunRing3");
+		_matrix matLaserGunWorld = LaserGunRing * m_pTransformCom->Get_WorldMatrix();
 
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::May, UI::Boss_UFO_LaserGunRing, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
+			50.f, m_IsMayCollide, ((CMay*)DATABASE->GetMay())->Get_InterActiveUIDisable());
+
+		/* 보정 */
+		matLaserGunWorld.r[3].m128_f32[1] += 3.f;
+		UI_Generator->CreateInterActiveUI_AccordingRange(Player::Cody, UI::Boss_UFO, XMLoadFloat4((_float4*)&matLaserGunWorld.r[3].m128_f32[0]),
+			50.f, m_IsCodyCollide, ((CCody*)DATABASE->GetCody())->Get_InterActiveUICreate());
+
+		/* 레이저 건 안달린 애니메이션이 없다... 직접 없애주자...ㅠㅠ 잘가라 */
 		if(100.f <= m_pModelCom->Get_CurrentTime(UFO_LaserRippedOff) && false == m_IsLaserGunRid)
 				GetRidLaserGun();
 
@@ -973,10 +1035,9 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
-		
 	}
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_EnterUFO_FlyingSaucer))
@@ -1106,8 +1167,11 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 {
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
 	{
-		if(m_ePhase == CUFO::PHASE_1)
+		if (m_ePhase == CUFO::PHASE_1)
+		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyCollide = true;
+		}
 		else if (m_ePhase == CUFO::PHASE_2 && true == m_IsTriggerActive)
 		{
 			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSENTERUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -1117,17 +1181,22 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
 	{
-
+		if (m_ePhase == CUFO::PHASE_1)
+		{
+			((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			m_IsCodyCollide = false;
+		}
 	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
+		m_IsMayCollide = true;
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-
+		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_IsMayCollide = false;
 	}
 }
 

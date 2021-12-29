@@ -132,6 +132,12 @@ void CInputButton_Frame::SetUp_Option()
 		m_fPower = 20.f;
 		m_vFontScale = { 30.f, 40.f };
 	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_TriAngle")))
+	{
+		m_iOption = 2;
+		m_iShaderPassNum = 1;
+		m_fPower = 20.f;
+	}
 	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Left")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Right")))
 	{
 		m_iOption = 3;

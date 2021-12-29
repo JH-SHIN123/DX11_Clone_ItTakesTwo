@@ -35,14 +35,14 @@ HRESULT CEffect_StarBuddy_Explosion_BigBang::NativeConstruct(void * pArg)
 
 _int CEffect_StarBuddy_Explosion_BigBang::Tick(_double TimeDelta)
 {
-	if (3.0 <= m_dLifeTime)
+	if (1.2 <= m_dLifeTime)
 		return EVENT_DEAD;
 
 	m_dLifeTime += TimeDelta;
-	if (0.9 < m_dLifeTime && true == m_IsScaling)
+	if (1.2 < m_dLifeTime && true == m_IsScaling)
 	{
 		EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
-		m_fScalePow = 10.f;
+		//////m_fScalePow = 10.f;
 		m_IsScaling = false;
 	}
  
@@ -51,28 +51,28 @@ _int CEffect_StarBuddy_Explosion_BigBang::Tick(_double TimeDelta)
 		m_fAlphaTime += (_float)TimeDelta * 0.75f;
 		if (1.f < m_fAlphaTime) m_fAlphaTime = 1.f;
 
-		m_fScalePow -= (_float)TimeDelta * 10.f;
-		if (2.f > m_fScalePow)
-			m_fScalePow = 2.f;
+		//////m_fScalePow -= (_float)TimeDelta * 8.f;
+		//////if (0.f > m_fScalePow)
+		//////	m_fScalePow = 0.f;
 
-		m_vScale.x += (_float)TimeDelta * m_fScalePow * m_fScalePow;
+		m_vScale.x += (_float)TimeDelta/* * m_fScalePow * m_fScalePow */* 7.f;
 		m_vScale.y = m_vScale.x;
 		m_vScale.z = m_vScale.x;
 		m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	}
 	else
 	{
-		m_fAlphaTime -= (_float)TimeDelta;
-		if (0.f > m_fAlphaTime) m_fAlphaTime = 0.f;
+		//////m_fAlphaTime -= (_float)TimeDelta;
+		//////if (0.f > m_fAlphaTime) m_fAlphaTime = 0.f;
 
-		m_fScalePow -= (_float)TimeDelta * 15.f;
-		if (2.5f > m_fScalePow)
-			m_fScalePow = 2.5f;
+		//m_fScalePow -= (_float)TimeDelta * 15.f;
+		//if (2.5f > m_fScalePow)
+		//	m_fScalePow = 2.5f;
 
-		m_vScale.x += (_float)TimeDelta * m_fScalePow * m_fScalePow;
-		m_vScale.y = m_vScale.x;
-		m_vScale.z = m_vScale.x;
-		m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
+		//m_vScale.x += (_float)TimeDelta * m_fScalePow * m_fScalePow;
+		//m_vScale.y = m_vScale.x;
+		//m_vScale.z = m_vScale.x;
+		//m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	}
 	//else
 	//{

@@ -183,7 +183,6 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 
 	if (m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land
 		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Falling
-		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Start
 		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_Exit
 		|| m_IsCollision == true && (((CCody*)DATABASE->GetCody())->Get_Model())->Get_CurAnimIndex() == ANI_C_Bhv_GroundPound_Land_MH
 		|| m_IsCollision == true && (((CMay*)DATABASE->GetMay())->Get_Model())->Get_CurAnimIndex() == ANI_M_GroundPound_Land
@@ -286,7 +285,7 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Boss_Intro))
 		{
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Boss_Intro"));
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Boss_Intro,true);
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Boss_Intro,true);
 		}
 #endif	
 		m_IsPowerSupplyActive = true;

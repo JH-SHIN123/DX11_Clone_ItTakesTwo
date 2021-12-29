@@ -1,19 +1,16 @@
 #pragma once
-
-#ifndef __EFFECT_ROBOT_BATTERY_SPARK_H__
-
 #include "InGameEffect.h"
 
 BEGIN(Client)
-class CEffect_Robot_Battery_Spark final : public CInGameEffect
+class CEffect_Robot_Battery_Spark_Rotated final : public CInGameEffect
 {
 private:
-	explicit CEffect_Robot_Battery_Spark(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	explicit CEffect_Robot_Battery_Spark(const CEffect_Robot_Battery_Spark& rhs);
-	virtual ~CEffect_Robot_Battery_Spark() = default; public:
+	explicit CEffect_Robot_Battery_Spark_Rotated(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CEffect_Robot_Battery_Spark_Rotated(const CEffect_Robot_Battery_Spark_Rotated& rhs);
+	virtual ~CEffect_Robot_Battery_Spark_Rotated() = default; public:
 
 public:
-	virtual HRESULT	NativeConstruct_Prototype(void* pArg); 
+	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
 	virtual _int	Tick(_double TimeDelta) override;
 	virtual _int	Late_Tick(_double TimeDelta) override;
@@ -41,10 +38,9 @@ private:
 	_bool	m_IsNoRender = false;
 
 public:
-	static CEffect_Robot_Battery_Spark* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
+	static CEffect_Robot_Battery_Spark_Rotated* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;
 	virtual void Free() override;
 };
+
 END
-#define __EFFECT_ROBOT_BATTERY_SPARK_H__
-#endif // !__EFFECT_ROBOT_BATTERY_SPARK_H__

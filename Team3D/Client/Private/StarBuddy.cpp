@@ -97,7 +97,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 			}	
 			m_pMoveEffect->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 		}
-		if (m_fLifeTime > 3.5f)
+		if (m_fLifeTime > 1.9f)
 		{
 			EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Pillar, m_pTransformCom->Get_WorldMatrix());
 			m_pMoveEffect->Set_Dead();
@@ -196,7 +196,7 @@ void CStarBuddy::Launch_StarBuddy(_double dTimeDelta)
 	}
 
 
-	m_pTransformCom->MoveToDir(m_vMoveDirection, dTimeDelta * 9.f);
+	m_pTransformCom->MoveToDir(m_vMoveDirection, dTimeDelta * 15.f);
 
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_UP), dTimeDelta * 4.f);
 	m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * 4.f);

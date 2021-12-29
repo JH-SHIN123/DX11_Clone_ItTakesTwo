@@ -15,6 +15,7 @@
 #include "HookUFO.h"
 #include "Gauge_Circle.h"
 #include "CutScenePlayer.h"
+#include "PressureBigPlate.h"
 
 /* For. PinBall */
 #include "PinBall.h"
@@ -136,10 +137,8 @@ HRESULT CCody::Ready_Component()
 	//CapsuleControllerDesc.maxJumpHeight = 10.f;
 	//CapsuleControllerDesc.volumeGrowth = 1.5f;
 
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_PlayerActor"), TEXT("Com_Actor"), (CComponent**)&m_pActorCom, &ArgDesc), E_FAIL);
 	m_pActorCom->Set_PlayerType(CPlayerActor::PLAYER_CODY);
-
 
 	//Effect 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Cody_Size"), nullptr, (CGameObject**)&m_pEffect_Size), E_FAIL);
@@ -294,8 +293,11 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_B))
+		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
+
 	if (m_pGameInstance->Key_Down(DIK_F9))
-		UI_CreateOnlyOnce(Cody, RespawnCircle);
+		UI_CreateOnlyOnce(May, RespawnCircle_May);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
@@ -335,6 +337,7 @@ _int CCody::Tick(_double dTimeDelta)
 			Hit_Rocket(dTimeDelta);
 			Activate_RobotLever(dTimeDelta);
 			Push_Battery(dTimeDelta);
+			Push_ControlRoomBattery(dTimeDelta);
 			Rotate_Valve(dTimeDelta);
 			In_GravityPipe(dTimeDelta);
 			Hit_Planet(dTimeDelta);
@@ -434,7 +437,7 @@ _int CCody::Late_Tick(_double dTimeDelta)
 	Clear_TagerRailNodes();
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
-		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer))
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer) || m_bDead_InBossroom || m_IsPinBall || m_bRespawn)
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
@@ -452,6 +455,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 		return S_OK;
 
 	CCharacter::Render(eGroup);
+
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 
@@ -2292,11 +2296,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Push_Battery_MH);
-			m_IsPushingBattery = true;
-			m_IsPipeBattery = true;
-
-			//UI_Delete(Cody, InputButton_InterActive);
-			//((CControlRoom_Battery*)DATABASE->Get_ControlRoom_Battery())->Set_UIDisable(true);
+			m_IsPushingControlRoomBattery = true;
 		}
 		else if (m_eTargetGameID == GameID::eSPACEVALVE && m_pGameInstance->Key_Down(DIK_E) && m_iValvePlayerName == Player::Cody)
 		{
@@ -2671,23 +2671,13 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F9) && m_IsInJoyStick == false && m_eCurPlayerSize == SIZE_SMALL)
-	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
-		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
-		_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
-		_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
-
-		m_pActorCom->Set_Position(vOffSetPosition);
-		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
-		m_IsInJoyStick = true;
-	}
+		Set_InJoyStick();
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
 		|| m_IsHitPlanet || m_IsHookUFO || m_IsWarpNextStage || m_IsWarpDone || m_IsTouchFireDoor || m_IsBossMissile_Control || m_IsDeadLine
 		|| m_bWallAttach || m_bPipeWallAttach || m_IsControlJoystick || m_IsPinBall || m_IsWallLaserTrap_Touch || m_bRespawn || m_bElectricWallAttach || m_IsHolding_UFO
-		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding || m_IsReadyPinball)
+		|| m_bLaserTennis || m_IsInJoyStick || m_IsEnding || m_IsReadyPinball || m_IsPushingControlRoomBattery)
 		return true;
 
 	return false;
@@ -2772,23 +2762,8 @@ void CCody::Activate_RobotLever(const _double dTimeDelta)
 void CCody::Push_Battery(const _double dTimeDelta)
 {
 	// May가 배터리 들어온 상태에서 Lever 치고 컷씬이 등장하면 그때 -> ANI_C_MH
-	if (m_IsPushingBattery == true && true == m_IsPipeBattery)
-	{
-		m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_Fwd);
-		m_IsCollide = false;
 
-		if (m_pGameInstance->Key_Down(DIK_Q))
-		{
-			m_IsPushingBattery = false;
-			m_IsPipeBattery = false;
-			m_pModelCom->Set_Animation(ANI_C_MH);
-			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-		}
-
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd))
-			m_pModelCom->Set_Animation(ANI_C_Bhv_Push_Battery_MH);
-	}
-	else if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
+	if (m_IsPushingBattery == true && DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
 	{
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Bhv_Push_Battery_Fwd)
 		{
@@ -2938,15 +2913,12 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE_MAY_1) == false)
+				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f *//*&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false*/)
 				{
-					SCRIPT->Render_Script(0, CScript::HALF, 2.f);
-					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
-					m_pGameInstance->Play_Sound(TEXT("01.wav"), CHANNEL_VOICE_CODY_1, m_fCody_GravityPipe_Voice_Volume);
+					SCRIPT->VoiceFile_No01();
 					m_bGravityPipe_FirstIn = true;
 				}
 			}
-
 			if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 			{
 				m_pActorCom->Set_ZeroGravity(true, false, false);
@@ -3012,13 +2984,13 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 			if (true == m_IsHitPlanet_Once)
 			{
 				((CHangingPlanet*)(m_pTargetPtr))->Hit_Planet(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
 				/* Sound */
 				m_pGameInstance->Stop_Sound(CHANNEL_HANGINGPLANET);
 				m_pGameInstance->Play_Sound(TEXT("HangingPlanet_Push.wav"), CHANNEL_HANGINGPLANET);
 				m_IsHitPlanet_Once = false;
 			}
 		}
-
 		if (0.38175f <= m_pModelCom->Get_ProgressAnim())
 		{
 			if (true == m_IsHitPlanet_Effect)
@@ -3031,8 +3003,6 @@ void CCody::Hit_Planet(const _double dTimeDelta)
 				m_IsHitPlanet_Effect = false;
 			}
 		}
-
-
 		if (m_pModelCom->Is_AnimFinished(ANI_C_Bhv_ChangeSize_PlanetPush_Large))
 		{
 			m_pModelCom->Set_Animation(ANI_C_MH);
@@ -3614,12 +3584,18 @@ void CCody::Set_PlayerSizeSmall_INUFO()
 	m_pActorCom->Get_Controller()->setStepOffset(0.02f);
 }
 
-void CCody::Set_Player_Instance_Dead()
+void CCody::Set_InJoyStick()
 {
-	m_pHpBar->Set_Hp(0.f);
+	m_pActorCom->Set_ZeroGravity(true, true, true);
+	m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+	_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
+	_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
+
+	m_pActorCom->Set_Position(vOffSetPosition);
+	m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
+	m_IsInJoyStick = true;
 }
-
-
 void CCody::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
@@ -3760,7 +3736,6 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
-		UI_Delete(Cody, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -3989,7 +3964,6 @@ void CCody::ShowRailTargetTriggerUI()
 		m_pGauge_Circle->Set_Active(false);
 		UI_Delete(Cody, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
-
 	}
 }
 #pragma endregion
@@ -4189,6 +4163,9 @@ void CCody::Set_RadiarBlur(_bool bActive)
 void CCody::Respawn_InBossroom()
 {
 	m_pHpBar->Reset();
+	m_pSubHpBar->Reset();
+	m_pSubHpBar->Set_Active(false);
+
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_MainViewBlur(false);
 
@@ -4223,7 +4200,7 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 		if (false == m_bDead_InBossroom)
 		{
 			// Create Respawn UI
-			UI_CreateOnlyOnce(Cody, RespawnCircle);
+			UI_CreateOnlyOnce(Cody, RespawnCircle_Cody);
 
 			// Create Effect
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -4282,7 +4259,8 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		pUFOTransform->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 		m_IsHolding_Low_UFO = true;
-
+		m_IsInterActiveUICreate = true;
+		UI_Delete(Cody, InputButton_InterActive);
 	}
 	else if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_MEDIUM && false == m_IsHolding_Low_UFO)
@@ -4301,7 +4279,34 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
+			((CMay*)DATABASE->GetMay())->Set_InterActiveUIDisable(false);
 			m_IsHolding_High_UFO = true;
+		}
+	}
+}
+
+void CCody::Push_ControlRoomBattery(const _double dTimeDelta)
+{
+	/* Push_Battery에서 함수 따로 뺌 */
+	if (true == m_IsPushingControlRoomBattery)
+	{
+		m_IsCollide = false;
+
+		/* 전력공급 버튼이 활성화 안됬는데 배터리랑 상호작용 했을 때 플레이어 대기 애니메이션으로 돌리고 키인풋 타게 하자*/
+		if (true == m_pModelCom->Is_AnimFinished(ANI_C_Bhv_Push_Battery_Fwd) && 
+			false == ((CPressureBigPlate*)DATABASE->Get_PressureBigPlate())->Get_PowerSupplyAvailable())
+		{
+			m_IsPushingControlRoomBattery = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+		}
+
+		/* 전력공급 버튼이 활성화 됬고 배터리랑 상호작용 했을 때 Q누르면 플레이어 대기 애니메이션으로 돌리고 키인풋 타게 하자*/
+		if (m_pGameInstance->Key_Down(DIK_Q) && true == ((CPressureBigPlate*)DATABASE->Get_PressureBigPlate())->Get_PowerSupplyAvailable())
+		{
+			m_IsPushingControlRoomBattery = false;
+			m_pModelCom->Set_Animation(ANI_C_MH);
+			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		}
 	}
 }

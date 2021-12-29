@@ -26,6 +26,7 @@ public:
 
 public:
 	void Set_Active(_bool IsActive);
+	void Set_Position(_float fTime);
 
 private:
 	_uint							m_iOption = 0;

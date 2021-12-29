@@ -355,19 +355,21 @@ _int CSubCamera::Tick_Cam_WallJump(_double dTimeDelta)
 	_float fMax = fmax(fmax(fAxisX, fAxisY), fAxisZ);
 	_vector vPlayerPos = m_pMay->Get_Position();
 	_vector vEye = matFacetoWall.r[3];
+	_vector vPlayerScale = XMVectorSet(pPlayerTransform->Get_Scale(CTransform::STATE_RIGHT),
+		pPlayerTransform->Get_Scale(CTransform::STATE_UP), pPlayerTransform->Get_Scale(CTransform::STATE_LOOK), 0.f);
 	if (fMax == fAxisY)
 	{
-		vPlayerPos = XMVectorSetY(vTriggerPos, XMVectorGetY(vPlayerPos));
+		vPlayerPos = XMVectorSetY(vTriggerPos, XMVectorGetY(vPlayerPos) + XMVectorGetY(vPlayerScale));
 		vEye = XMVectorSetY(vEye, XMVectorGetY(vPlayerPos));
 	}
 	else if (fMax == fAxisZ)
 	{
-		vEye = XMVectorSetZ(vEye, XMVectorGetZ(vPlayerPos));
+		vEye = XMVectorSetZ(vEye, XMVectorGetZ(vPlayerPos) + XMVectorGetZ(vPlayerScale));
 		vPlayerPos = XMVectorSetZ(vTriggerPos, XMVectorGetZ(vPlayerPos));
 	}
 	else if (fMax == fAxisX)
 	{
-		vEye = XMVectorSetX(vEye, XMVectorGetX(vPlayerPos));
+		vEye = XMVectorSetX(vEye, XMVectorGetX(vPlayerPos) + XMVectorGetX(vPlayerScale));
 		vPlayerPos = XMVectorSetX(vTriggerPos, XMVectorGetX(vPlayerPos));
 	}
 	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vPlayerPos, matFacetoWall.r[1]), (_float)dTimeDelta * 3.f));

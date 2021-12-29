@@ -197,7 +197,8 @@ public: /* Getter */
 	_bool		Get_IsInRocket() { return m_IsBossMissile_Control; }
 	_bool		Get_OnRail() { return m_bOnRail; }
 	_bool		Get_IsLaserTennis() { return m_bLaserTennis; }
-
+	_bool		Get_InterActiveUIDisable() { return m_IsInterActiveUIDisable; }
+	_bool		Get_IsDeadInBossroom() { return m_bDead_InBossroom; }
 
 public:
 	void		Update_Tirgger_Pos(_vector vPos);
@@ -215,6 +216,7 @@ public:
 	void	Set_MinigameHpBarReset();
 	void	Set_MinigameHpBarReduction(_float fDamage);
 	void	Set_Player_Instance_Dead();
+	void	Set_InterActiveUIDisable(_bool IsCheck);
 
 	/* For. Ending */
 	void	Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -421,6 +423,7 @@ private:
 	/* ÁøÇõ */
 	_bool m_IsLaserRippedOff = false;
 	_bool m_IsRippedOffAnimPlaying = false;
+	_bool m_IsInterActiveUIDisable = true;
 
 	/* For.HookUFO */
 	_bool m_IsHookUFO = false;
