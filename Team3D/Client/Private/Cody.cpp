@@ -4198,7 +4198,7 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 	NULL_CHECK(m_pHpBar);
 
 	/* 데드라인과 충돌시 1초후에 리스폰 */
-	_float fHp = m_pHpBar->Get_Hp();
+	_float fHp = m_pHpBar->Get_Hp();;
 	if (fHp <= 0.f)
 	{
 		if (false == m_bDead_InBossroom)
