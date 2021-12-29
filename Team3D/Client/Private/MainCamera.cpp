@@ -1635,7 +1635,6 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
 	}
-
 #endif
 
 	if (m_eCurCamMode != m_ePreCamMode)
