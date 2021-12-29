@@ -89,6 +89,10 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
 		}
 
+		_bool isCollided_Player = false;
+		_uint iEnvHitNumber = 0;
+		m_isCollided = false;
+
 		if (m_RaycastBuffer.getNbAnyHits() > 0)
 		{
 			USERDATA* pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(0).actor->userData;
@@ -96,7 +100,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			if (nullptr != pUserData)
 			{
 				/* 코디 타격 */
-				if (pUserData->eID == GameID::eCODY)
+				if (pUserData->eID == GameID::eCODY && !((CCody*)DATABASE->GetCody())->Get_bDeadInBossroom())
 				{
 					m_dDamagingDelay_Cody -= dTimeDelta;
 
@@ -130,6 +134,9 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 						__super::Player_Hit_Effect();
 						__super::Player_Hit_Effect();
 					}
+
+					m_isCollided = true;
+					isCollided_Player = true;
 				}
 				else
 				{
@@ -138,7 +145,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 				}
 
 				/* 메이 타격 */
-				if (pUserData->eID == GameID::eMAY)
+				if (pUserData->eID == GameID::eMAY && !((CMay*)DATABASE->GetMay())->Get_bDeadInBossroom())
 				{
 					m_dDamagingDelay_May -= dTimeDelta;
 
@@ -170,6 +177,9 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 						__super::Player_Hit_Effect();
 						__super::Player_Hit_Effect();
 					}
+
+					m_isCollided = true;
+					isCollided_Player = true;
 				}
 				else
 				{
@@ -185,37 +195,55 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 					{
 						pBossCoreGlass->Set_Broken();
 					}
+					m_isCollided = true;
+					isCollided_Player = true;
 				}
 			}
+		}
 
-			m_fLaserSizeY = m_RaycastBuffer.getAnyHit(0).distance;
-			m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
-			m_isCollided = true;
+		if (false == isCollided_Player)
+		{
+			USERDATA* pUserData = nullptr;
 
-			/*------충돌 이펙트 -------*/
-			/* 충돌 시 이펙트 생성 */
-			if (m_dCreateEffectDelay <= 0.0)
+			for (_uint i = 0; i < m_RaycastBuffer.getNbAnyHits(); ++i)
 			{
-				//충돌 시 생성할 이펙트
-				//_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				//WorldMatrix.r[3] = XMLoadFloat4(&m_vEndPoint);
-				//EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, WorldMatrix);
+				pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(i).actor->userData;
 
-				//이펙트 생성 주기
-				m_dCreateEffectCycle = 1.0;
+				if (pUserData->eID == GameID::eENVIRONMENT)
+				{
+					iEnvHitNumber = i;
+					m_isCollided = true;
+					break;
+				}
 			}
+		}
+
+		if (m_isCollided)
+		{
+			if (isCollided_Player)
+			{
+				m_fLaserSizeY = m_RaycastBuffer.getAnyHit(0).distance;
+				m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
+			}
+			else
+			{
+				m_fLaserSizeY = m_RaycastBuffer.getAnyHit(iEnvHitNumber).distance;
+				m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(iEnvHitNumber).position, 1.f);
+			}
+
+			if (m_dCreateEffectDelay <= 0.0)
+				m_dCreateEffectCycle = 1.0;
 			else
 				m_dCreateEffectCycle = 0.0;
 
 			if (true == m_IsPaticleCreate && true == m_isCollided)
 			{
 				CGameObject* pGameObject = nullptr;
-				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr , &pGameObject);
+				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr, &pGameObject);
 				m_pLaserSmoke = static_cast<CEffect_Boss_Laser_Smoke*>(pGameObject);
 
 				m_IsPaticleCreate = false;
 			}
-/*------충돌 이펙트 -------*/
 		}
 		else
 		{
@@ -224,7 +252,6 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			m_isHitMay = false;
 			m_dDamagingDelay_May = 0.0;
 
-			m_isCollided = false;
 			XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
 			m_fLaserSizeY = m_fLaserMaxY;
 		}
@@ -333,3 +360,213 @@ void CLaser_TypeA::Free()
 
 	CLaser::Free();
 }
+
+//////_int CLaser_TypeA::Tick(_double dTimeDelta)
+//////{
+//////	CLaser::Tick(dTimeDelta);
+//////
+//////	/* 레이저 생성 시 */
+//////	if (!m_isDead)
+//////	{
+//////		/* 차지 시간 */
+//////		if (m_dChargingTime > 0.0)
+//////		{
+//////			/* 차지 시작 시간, 에너지를 모으는 이펙트 생성 */
+//////			if (m_dChargingTime == 3.0)
+//////			{
+//////				EFFECT->Add_Effect(Effect_Value::BossLaser_Charge, m_pTransformCom->Get_WorldMatrix());
+//////			}
+//////
+//////			m_dChargingTime -= dTimeDelta;
+//////
+//////			/* 차지 시간이 다 채워진 순간 */
+//////			/* 쏘는 순간 터트리는 이펙트 생성 */
+//////			if (m_dChargingTime <= 0.0)
+//////			{
+//////				//EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
+//////			}
+//////
+//////			return NO_EVENT;
+//////		}
+//////
+//////		if (m_fLaserSizeY > 0)
+//////		{
+//////			m_vStartPoint = m_pBossUFO->Get_LaserStartPos();
+//////			m_vLaserDir = m_pBossUFO->Get_LaserDir();
+//////			m_pGameInstance->Raycast(MH_PxVec3(XMLoadFloat4(&m_vStartPoint)), MH_PxVec3(XMLoadFloat4(&m_vLaserDir)), m_fLaserMaxY, m_RaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+//////		}
+//////
+//////		if (m_RaycastBuffer.getNbAnyHits() > 0)
+//////		{
+//////			USERDATA* pUserData = (USERDATA*)m_RaycastBuffer.getAnyHit(0).actor->userData;
+//////
+//////			if (nullptr != pUserData)
+//////			{
+//////				/* 코디 타격 */
+//////				if (pUserData->eID == GameID::eCODY)
+//////				{
+//////					m_dDamagingDelay_Cody -= dTimeDelta;
+//////
+//////					/* 지속 타격 데미지*/
+//////					if (m_isHitCody)
+//////					{
+//////						if (m_dDamagingDelay_Cody <= 0.0)
+//////						{
+//////							// 데미지를 주는 함수
+//////#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//////							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
+//////#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//////
+//////
+//////							// 데미지 주기 초기화
+//////							m_dDamagingDelay_Cody = 0.5;
+//////							__super::Player_Hit_Effect();
+//////						}
+//////					}
+//////					/* 첫 타격 데미지 */
+//////					else
+//////					{
+//////						// 데미지를 주는 함수
+//////#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//////						((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
+//////#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//////
+//////						// 데미지 주기 초기화
+//////						m_dDamagingDelay_Cody = 0.5;
+//////						m_isHitCody = true;
+//////						__super::Player_Hit_Effect();
+//////						__super::Player_Hit_Effect();
+//////					}
+//////				}
+//////				else
+//////				{
+//////					m_isHitCody = false;
+//////					m_dDamagingDelay_Cody = 0.0;
+//////				}
+//////
+//////				/* 메이 타격 */
+//////				if (pUserData->eID == GameID::eMAY)
+//////				{
+//////					m_dDamagingDelay_May -= dTimeDelta;
+//////
+//////					/* 지속 타격 데미지*/
+//////					if (m_isHitMay)
+//////					{
+//////						if (m_dDamagingDelay_May <= 0.0)
+//////						{
+//////							// 데미지를 주는 함수
+//////#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//////							((CMay*)DATABASE->GetMay())->Set_HpBarReduction(10);
+//////#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//////
+//////							// 데미지 주기 초기화
+//////							m_dDamagingDelay_May = 0.5;
+//////							__super::Player_Hit_Effect();
+//////						}
+//////					}
+//////					/* 첫 타격 데미지 */
+//////					else
+//////					{
+//////						// 데미지를 주는 함수
+//////#ifndef __PLAYER_INVINCIBLE_BOSSROOM
+//////						((CMay*)DATABASE->GetMay())->Set_HpBarReduction(10);
+//////#endif // __PLAYER_INVINCIBLE_BOSSROOM
+//////						// 데미지 주기 초기화
+//////						m_dDamagingDelay_May = 0.5;
+//////						m_isHitMay = true;
+//////						__super::Player_Hit_Effect();
+//////						__super::Player_Hit_Effect();
+//////					}
+//////				}
+//////				else
+//////				{
+//////					m_isHitMay = false;
+//////					m_dDamagingDelay_May = 0.0;
+//////				}
+//////
+//////				/* 보스방 코어 타격 */
+//////				if (pUserData->eID == GameID::eBOSSCORE)
+//////				{
+//////					CMoonBaboonCore_Glass* pBossCoreGlass = (CMoonBaboonCore_Glass*)pUserData->pGameObject;
+//////					if (pBossCoreGlass)
+//////					{
+//////						pBossCoreGlass->Set_Broken();
+//////					}
+//////				}
+//////			}
+//////
+//////			m_fLaserSizeY = m_RaycastBuffer.getAnyHit(0).distance;
+//////			m_vEndPoint = MH_XMFloat4(m_RaycastBuffer.getAnyHit(0).position, 1.f);
+//////			m_isCollided = true;
+//////
+//////			/*------충돌 이펙트 -------*/
+//////			/* 충돌 시 이펙트 생성 */
+//////			if (m_dCreateEffectDelay <= 0.0)
+//////			{
+//////				//충돌 시 생성할 이펙트
+//////				//_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+//////				//WorldMatrix.r[3] = XMLoadFloat4(&m_vEndPoint);
+//////				//EFFECT->Add_Effect(Effect_Value::Hit_BossLaser_Particle_Star, WorldMatrix);
+//////
+//////				//이펙트 생성 주기
+//////				m_dCreateEffectCycle = 1.0;
+//////			}
+//////			else
+//////				m_dCreateEffectCycle = 0.0;
+//////
+//////			if (true == m_IsPaticleCreate && true == m_isCollided)
+//////			{
+//////				CGameObject* pGameObject = nullptr;
+//////				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr, &pGameObject);
+//////				m_pLaserSmoke = static_cast<CEffect_Boss_Laser_Smoke*>(pGameObject);
+//////
+//////				m_IsPaticleCreate = false;
+//////			}
+//////			/*------충돌 이펙트 -------*/
+//////		}
+//////		else
+//////		{
+//////			m_isHitCody = false;
+//////			m_dDamagingDelay_Cody = 0.0;
+//////			m_isHitMay = false;
+//////			m_dDamagingDelay_May = 0.0;
+//////
+//////			m_isCollided = false;
+//////			XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
+//////			m_fLaserSizeY = m_fLaserMaxY;
+//////		}
+//////
+//////		/* 레이저 크기 */
+//////		if (m_fLaserMaxY < 200.f)
+//////			m_fLaserMaxY += m_fShootSpeed * (_float)dTimeDelta;
+//////		if (m_fLaserSizeX < 3.f)
+//////			m_fLaserSizeX += m_fShootSpeed * 0.2f * (_float)dTimeDelta;
+//////	}
+//////	/* 레이저 종료 시*/
+//////	else
+//////	{
+//////		m_fLaserSizeX -= 15.f * (_float)dTimeDelta;
+//////
+//////		if (m_fLaserSizeX < 0.f)
+//////		{
+//////			return EVENT_DEAD;
+//////		}
+//////	}
+//////
+//////	if (nullptr != m_pLaserSmoke)
+//////	{
+//////		m_pLaserSmoke->Set_Pos(XMLoadFloat4(&m_vEndPoint));
+//////		if (true == m_isDead)
+//////			m_pLaserSmoke->Set_Dead();
+//////	}
+//////
+//////#ifdef __TEST_SE
+//////	if (m_pGameInstance->Key_Down(DIK_N))
+//////		m_isDead = true;
+//////#endif
+//////
+//////	Adjust_OutsideAlpha(dTimeDelta);
+//////	Set_LaserMatices();
+//////
+//////	return NO_EVENT;
+//////}
