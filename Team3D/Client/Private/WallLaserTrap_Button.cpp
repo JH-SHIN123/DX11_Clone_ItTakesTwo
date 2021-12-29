@@ -68,25 +68,15 @@ HRESULT CWallLaserTrap_Button::Render(RENDER_GROUP::Enum eGroup)
 
 void CWallLaserTrap_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * pGameObject)
 {
-// 	eMAY
-
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY)
-	{
 		m_IsActivate = false;
-	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eCODY)
-	{
 		m_IsActivate = true;
-	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
-	{
 		m_IsActivate = false;
-	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
-	{
 		m_IsActivate = true;
-	}
 }
 
 HRESULT CWallLaserTrap_Button::Render_ShadowDepth()

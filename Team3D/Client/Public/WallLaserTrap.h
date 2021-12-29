@@ -70,6 +70,9 @@ private:
 	const _float2		m_vHalfSize = { 1.8f, 5.f };
 	_float4				m_vPosition_Lamp[4];
 
+private:
+	class CEffect_WallLaser_Trap_Plane* m_pEffect = nullptr;
+
 public:
 	static CWallLaserTrap* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg) override;

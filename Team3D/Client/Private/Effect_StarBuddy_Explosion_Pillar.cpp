@@ -41,11 +41,11 @@ HRESULT CEffect_StarBuddy_Explosion_Pillar::NativeConstruct(void * pArg)
 
 _int CEffect_StarBuddy_Explosion_Pillar::Tick(_double TimeDelta)
 {
-	if (4.0 <= m_dActivateTime)
+	if (6.0 <= m_dActivateTime)
 		return EVENT_DEAD;
 
-	m_dActivateTime += TimeDelta;
-	if (0.75 < m_dActivateTime && false == m_IsEffect)
+	m_dActivateTime += TimeDelta * 2.0;
+	if (0.45 < m_dActivateTime && false == m_IsEffect)
 	{
 		m_IsEffect = true;
 		EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_BigBang, m_pTransformCom->Get_WorldMatrix());

@@ -155,7 +155,12 @@ void CRespawnCircle::Set_Gauge(_double TimeDelta)
 	if ((m_ePlayerID == Player::ID::Cody && m_pGameInstance->Key_Down(DIK_E)) || (m_ePlayerID == Player::ID::May && m_pGameInstance->Pad_Key_Down(DIP_Y)))
 #endif
 	{
-		m_fTime += (_float)TimeDelta * 2.f;
+		++m_iCount;
+
+		if(1 == m_iCount)
+			m_fTime += (_float)TimeDelta * 4.f;
+		else
+			m_fTime += (_float)TimeDelta * 2.f;
 
 		m_iRespawnOption = 1;
 		//UI_Generator->Set_Scale(Player::Cody, UI::RespawnCircle, _float2(30.f, 30.f));;
@@ -215,11 +220,11 @@ void CRespawnCircle::Alpha_Effect(_double TimeDelta)
 	{
 		if (m_ePlayerID == Player::Cody)
 		{
-			UI_Delete(Cody, RespawnCircle);
+			UI_Delete(Cody, RespawnCircle_Cody);
 		}
 		else
 		{
-			UI_Delete(May, RespawnCircle);
+			UI_Delete(May, RespawnCircle_May);
 		}
 	}
 }

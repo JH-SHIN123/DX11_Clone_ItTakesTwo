@@ -13,8 +13,8 @@ class CMainCamera final : public CCamera
 
 
 	enum class CamMode{Cam_Free,Cam_AutoToFree, Cam_WallJump, Cam_Ending, Cam_Warp_WormHole,Cam_PressButton_Bridge,Cam_InJoyStick,Cam_PinBall_Cody,
-						//보스 3페
-		Cam_LaserTennis,Cam_Boss_HitRocket,Cam_End};
+						//보스 마지막 코어	터트림	//보스 3페
+		Cam_LaserTennis,Cam_Destroy_BossCore,		Cam_Boss_HitRocket,Cam_End};
 
 	//O CamFreeMove P FollowPlayer																 
 	enum class CamFreeOption { Cam_Free_FollowPlayer, Cam_Free_FreeMove, Cam_Free_OpenThirdFloor, Cam_Free_OnBossMiniRoom_Cody,
@@ -37,6 +37,7 @@ public:
 	/*Setter*/
 	void		Set_StartPortalMatrix(_fmatrix matWorld) { XMStoreFloat4x4(&m_matStartPortal,matWorld); }
 	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
+	void		Set_Start_Destroy_BossCore();
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	HRESULT Start_CamEffect(const _tchar* pEffectTag);
@@ -56,6 +57,7 @@ private:
 	_int	Tick_Cam_PinBall_Cody(_double dTimeDelta);
 	_int	Tick_Cam_WallJump(_double dTimeDelta);
 	_int	Tick_Cam_LaserTennis(_double dTimeDelta);
+	_int	Tick_Cam_Destroy_BossCore(_double dTimeDelta);		//문바분 마지막 코어 부술때
 	_int	Tick_Cam_Boss_HitRocket(_double dTimeDelta);		//달나라 갈때
 
 	_int	Tick_Cam_Free_FollowPlayer(_double dTimeDelta);		//카메라가 플레이어를쫓아가며 이동(메인 카메라)
@@ -146,7 +148,14 @@ private:
 	_bool	m_bRespawn = false;
 	//For.OpenThirdFloor
 	_bool m_bOpenThirdFloor = false;
+	_bool	m_bScriptCheck = false;
 	_float m_fOpenThirdFloorTime = 0.f;
+	//For.Destory_BossCore
+	_double m_dDestroyCoreTime = 0.f;
+	_float3 m_vStartCodyPos;
+	_float3 m_vStartCodyLook;
+	_float3 m_vLastEye;
+	
 private:
 	CCody*			m_pCody = nullptr;
 	CCam_Helper*	m_pCamHelper = nullptr;

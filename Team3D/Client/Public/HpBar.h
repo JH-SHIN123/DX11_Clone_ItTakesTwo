@@ -50,6 +50,8 @@ private:
 	_uint							m_iOption = 0;
 	_int							m_iShaderOption = 0;
 	_uint							m_iShaderPassNum = 0;
+	_float							m_fSaveMainViewPortWidth = 0.f;
+	_float							m_fSaveSubViewPortWidth = 0.f;
 
 private:
 	class CHpBarFrame*				m_pHpBarFrame = nullptr;

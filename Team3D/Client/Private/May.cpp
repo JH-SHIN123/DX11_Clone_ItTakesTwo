@@ -226,7 +226,7 @@ _int CMay::Tick(_double dTimeDelta)
 	/* UI */
 	UI_Generator->Set_TargetPos(Player::Cody, UI::PlayerMarker, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	/* Script */
-	//Script_Trigger(dTimeDelta);
+	Script_Trigger(dTimeDelta);
 
 	m_pCamera = (CSubCamera*)CDataStorage::GetInstance()->Get_SubCam();
 	if (nullptr == m_pCamera)
@@ -1931,15 +1931,6 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		/* For.PinBall */
 		else if (m_eTargetGameID == GameID::ePINBALLHANDLE && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_IsPinBall)
 		{
-			/* Script */
-			//if (false == m_bPinBallScript_Once[0])
-			//{
-			//	m_pGameInstance->Stop_Sound(CHANNEL_PINBALLVOICE);
-			//	m_pGameInstance->Play_Sound(TEXT("19.wav"), CHANNEL_PINBALLVOICE);
-			//	SCRIPT->Render_Script(37, CScript::HALF, 1.f);
-			//	m_bPinBallScript_Once[0] = true;
-			//}
-
 			/* UI */
 			UI_Delete(May, InputButton_PS_InterActive);
 			((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Set_UICheck(true);
@@ -2148,6 +2139,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
+				m_IsInterActiveUIDisable = true;
 				m_IsRippedOffAnimPlaying = true;
 				m_pModelCom->Set_Animation(ANI_M_SpaceStation_BossFight_LaserRippedOff);
 				m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
@@ -2161,6 +2153,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
+				UI_Delete(May, InputButton_PS_InterActive);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
@@ -2387,11 +2380,9 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_fGrvityPipe_Sound_Delay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false && m_fGrvityPipe_Sound_Delay > 1.f)
+				if (m_bGravityPipe_FirstIn == false/* && m_fGrvityPipe_Sound_Delay > 1.f*/)
 				{
-					SCRIPT->Render_Script(1, CScript::HALF, 2.f);
-					m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_1, m_fMay_GravityPipe_Voice_Volume);
-					m_pGameInstance->Play_Sound(TEXT("02.wav"), CHANNEL_VOICE_MAY_1, m_fMay_GravityPipe_Voice_Volume);
+					SCRIPT->VoiceFile_No02();
 					m_bGravityPipe_FirstIn = true;
 				}
 			}
@@ -2668,6 +2659,10 @@ void CMay::Set_MinigameHpBarReduction(_float fDamage)
 	m_pMinigameSubHpBar->Set_Hp(fDamage);
 }
 
+void CMay::Set_InterActiveUIDisable(_bool IsCheck)
+{
+	m_IsInterActiveUIDisable = IsCheck;
+}
 
 void CMay::LaserTennis(const _double dTimeDelta)
 {
@@ -3492,7 +3487,7 @@ void CMay::DeadInBossroom(const _double dTimeDelta)
 		if (false == m_bDead_InBossroom)
 		{
 			// Create Respawn UI
-			UI_CreateOnlyOnce(May, RespawnCircle);
+			UI_CreateOnlyOnce(May, RespawnCircle_May);
 
 			// Create Effect
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -3520,52 +3515,53 @@ void CMay::Script_Trigger(_double dTimeDelta)
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	if (vPosition.m128_f32[1] > 125.f && m_bSecondFloor_FirstIn == false)
 	{
-		m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
-		m_pGameInstance->Play_Sound(TEXT("03.wav"), CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
+		SCRIPT->VoiceFile_No03();
 		m_bSecondFloor_FirstIn = true;
-		m_IsSecondFloor_Voice_Playing = true;
+		//m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
+		//m_pGameInstance->Play_Sound(TEXT("03.wav"), CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
+		//m_IsSecondFloor_Voice_Playing = true;
 	}
 
-	if (m_IsSecondFloor_Voice_Playing == true)
-	{
-		m_fSecondFloor_Script_DelayTime += (_float)dTimeDelta;
+	//if (m_IsSecondFloor_Voice_Playing == true)
+	//{
+	//	m_fSecondFloor_Script_DelayTime += (_float)dTimeDelta;
 
-		// 02 우주개코원숭이 - "감옥에서 탈출했군. 이 배신자들!"
-		if (m_fSecondFloor_Script_DelayTime > 0.f && m_fSecondFloor_Script_Once[0] == false)
-		{
-			SCRIPT->Render_Script(2, CScript::HALF, 2.f, false);
-			m_fSecondFloor_Script_Once[0] = true;
-		}
-		// 03 우주개코원숭이 - "하지만 기억해라."
-		else if (m_fSecondFloor_Script_DelayTime > 2.1f && m_fSecondFloor_Script_Once[1] == false)
-		{
-			SCRIPT->Render_Script(3, CScript::HALF, 1.4f, false);
-			m_fSecondFloor_Script_Once[1] = true;
-		}
-		// 04 우주개코원숭이 - "절대 살아서 나가진 못한다!"
-		else if (m_fSecondFloor_Script_DelayTime > 3.6f && m_fSecondFloor_Script_Once[2] == false)
-		{
-			SCRIPT->Render_Script(4, CScript::HALF, 1.7f, false);
-			m_fSecondFloor_Script_Once[2] = true;
-		}
-		// 05 코디 	  - "저 친구는 좀 진정해야겠는데."
-		else if (m_fSecondFloor_Script_DelayTime > 5.4f && m_fSecondFloor_Script_Once[3] == false)
-		{
-			SCRIPT->Render_Script(5, CScript::HALF, 1.5f, false);
-			m_fSecondFloor_Script_Once[3] = true;
-		}
-		// 06 메이 	  - "녀석은 무시해! 포털이 있어!"
-		else if (m_fSecondFloor_Script_DelayTime > 7.f && m_fSecondFloor_Script_Once[4] == false)
-		{
-			SCRIPT->Render_Script(6, CScript::HALF, 2.f, false);
-			m_fSecondFloor_Script_Once[4] = true;
-		}
-		// 07 메이 	  - "저걸 이용할 수 있을 거야."
-		else if (m_fSecondFloor_Script_DelayTime > 9.1f && m_fSecondFloor_Script_Once[5] == false)
-		{
-			SCRIPT->Render_Script(7, CScript::HALF, 2.f, false);
-			m_fSecondFloor_Script_Once[5] = true;
-		}
-	}
+	//	// 02 우주개코원숭이 - "감옥에서 탈출했군. 이 배신자들!"
+	//	if (m_fSecondFloor_Script_DelayTime > 0.f && m_fSecondFloor_Script_Once[0] == false)
+	//	{
+	//		SCRIPT->Render_Script(2, CScript::HALF, 2.f, false);
+	//		m_fSecondFloor_Script_Once[0] = true;
+	//	}
+	//	// 03 우주개코원숭이 - "하지만 기억해라."
+	//	else if (m_fSecondFloor_Script_DelayTime > 2.1f && m_fSecondFloor_Script_Once[1] == false)
+	//	{
+	//		SCRIPT->Render_Script(3, CScript::HALF, 1.4f, false);
+	//		m_fSecondFloor_Script_Once[1] = true;
+	//	}
+	//	// 04 우주개코원숭이 - "절대 살아서 나가진 못한다!"
+	//	else if (m_fSecondFloor_Script_DelayTime > 3.6f && m_fSecondFloor_Script_Once[2] == false)
+	//	{
+	//		SCRIPT->Render_Script(4, CScript::HALF, 1.7f, false);
+	//		m_fSecondFloor_Script_Once[2] = true;
+	//	}
+	//	// 05 코디 	  - "저 친구는 좀 진정해야겠는데."
+	//	else if (m_fSecondFloor_Script_DelayTime > 5.4f && m_fSecondFloor_Script_Once[3] == false)
+	//	{
+	//		SCRIPT->Render_Script(5, CScript::HALF, 1.5f, false);
+	//		m_fSecondFloor_Script_Once[3] = true;
+	//	}
+	//	// 06 메이 	  - "녀석은 무시해! 포털이 있어!"
+	//	else if (m_fSecondFloor_Script_DelayTime > 7.f && m_fSecondFloor_Script_Once[4] == false)
+	//	{
+	//		SCRIPT->Render_Script(6, CScript::HALF, 2.f, false);
+	//		m_fSecondFloor_Script_Once[4] = true;
+	//	}
+	//	// 07 메이 	  - "저걸 이용할 수 있을 거야."
+	//	else if (m_fSecondFloor_Script_DelayTime > 9.1f && m_fSecondFloor_Script_Once[5] == false)
+	//	{
+	//		SCRIPT->Render_Script(7, CScript::HALF, 2.f, false);
+	//		m_fSecondFloor_Script_Once[5] = true;
+	//	}
+	//}
 }
 #pragma region
