@@ -3,6 +3,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "PressurePlateLock.h"
+#include"CutScenePlayer.h"
 
 CControlRoom_Door::CControlRoom_Door(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -65,6 +66,16 @@ _int CControlRoom_Door::Tick(_double dTimeDelta)
 		{
 			m_fMove += (_float)dTimeDelta;
 			m_pTransformCom->Go_Right(dTimeDelta * 3.f);
+		}
+		else
+		{
+#ifdef __PLAY_CUTSCENE
+			if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Boss_Intro))
+			{
+				CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Boss_Intro"));
+				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Boss_Intro, true);
+			}
+#endif	
 		}
 	}
 
