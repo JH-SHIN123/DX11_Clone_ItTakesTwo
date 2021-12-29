@@ -1372,7 +1372,22 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 
 _int CMainCamera::Tick_Cam_Boss_HitRocket(_double dTimeDelta)
 {
-	
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	if (pUfo->Get_Model()->Get_CurAnimIndex() == UFO_RocketKnockDown_MH)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		ReSet_Cam_FreeToAuto(false, false, 3.f);
+	}
+	CTransform* pUfoTransform = pUfo->Get_Transform();
+
+	_matrix matUfo = pUfo->Get_Model()->Get_BoneMatrix("Chair") * pUfoTransform->Get_WorldMatrix();
+	_vector vUfoPos = matUfo.r[3];
+	_vector vUfoRight = XMVector3Normalize(matUfo.r[0]);
+	_vector vUfoUp = XMVector3Normalize(matUfo.r[1]);
+	_vector vUfoLook = XMVector3Normalize(matUfo.r[2]);
+	_vector vLastEye = vUfoPos + vUfoRight* 10.f + vUfoUp*6.f - vUfoLook*4.f;
+
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vUfoPos), (_float)dTimeDelta));
 	return NO_EVENT;
 }
 
