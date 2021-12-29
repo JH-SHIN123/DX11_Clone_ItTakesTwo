@@ -1206,6 +1206,7 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
+		/* 여기 SetTriggerID false로 바꾸면 안됨 */
 		m_IsMayCollide = false;
 	}
 }
