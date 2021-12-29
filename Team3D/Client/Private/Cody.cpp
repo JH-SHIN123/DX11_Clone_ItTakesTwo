@@ -4170,6 +4170,7 @@ void CCody::Respawn_InBossroom()
 	m_pSubHpBar->Reset();
 	m_pSubHpBar->Set_Active(false);
 
+	m_pActorCom->Set_SceneQuery(true);
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_MainViewBlur(false);
 
@@ -4217,6 +4218,8 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 			Enforce_IdleState();
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
+
+			m_pActorCom->Set_SceneQuery(false);
 			m_bDead_InBossroom = true;
 		}
 
