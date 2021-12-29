@@ -17,6 +17,8 @@
 #include "MoonBaboonCore.h"
 #include "BossDoor.h"
 #include "UI_Generator.h"
+#include "MainCamera.h"
+#include "SubCamera.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -583,6 +585,15 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 
 	if (4 == m_iGuidedMissileHitCount)
 	{
+		switch (m_WhoCollide)
+		{
+		case Engine::GameID::eCODY:
+			static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_HitRocket_Boss();
+			break;
+		case Engine::GameID::eMAY:
+			static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_HitRocket_Boss();
+			break;
+		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;

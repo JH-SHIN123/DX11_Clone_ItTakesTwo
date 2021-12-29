@@ -364,17 +364,23 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	}
 	else if (m_iCutSceneTake == 7)
 	{
+		if (m_dTime >= 74.0)
+		{
+			
+			pCody->Get_Actor()->Set_Position(XMVectorSet(64.f, 244.4f, 220.6f, 1.f));
+			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f, 244.4f, 220.4f, 1.f));
+
+			m_iCutSceneTake++;
+		}
+	}
+	else if (m_iCutSceneTake == 8)
+	{
 		if (m_dTime >= 78.5)
 		{
-			pCody->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
-			pMay->Get_Transform()->RotateYaw_Angle(XMConvertToRadians(180.f));
+			pCody->Get_Transform()->Set_RotateAxis(XMVectorSet(0.f,1.f,0.f,0.f),XMConvertToRadians(180.f));
+			pMay->Get_Transform()->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 			
-			pCody->Get_Actor()->Set_Position(XMVectorSet(64.f,	244.4f,220.6f, 1.f));
-
-			pMay->Get_Actor()->Set_Position(XMVectorSet(65.5f,	244.4f,	220.4f, 1.f));
 			m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true);
-			m_iCutSceneTake++;
-
 		}
 	}
 	//ButtonPress 
@@ -669,6 +675,7 @@ HRESULT CCutScene::Start_CutScene_Boss_Intro()
 {
 	CGameInstance::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_Boss_Intro");
+	static_cast<CMainCamera*>(CDataStorage::GetInstance()->Get_MainCam())->Start_Film(L"Film_Boss_Intro");
 	m_bIsStartFilm = false;
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f), false);
 

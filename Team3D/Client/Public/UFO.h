@@ -30,6 +30,9 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
+	/*Getter*/
+	_bool			Get_IsRidLaserGun() { return m_IsLaserGunRid; }
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 	HRESULT Add_GameObject_ToRenderGroup();
