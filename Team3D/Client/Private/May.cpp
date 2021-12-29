@@ -3451,6 +3451,9 @@ void CMay::Set_RadiarBlur(_bool bActive)
 void CMay::Respawn_InBossroom()
 {
 	m_pHpBar->Reset();
+	m_pSubHpBar->Reset();
+	m_pSubHpBar->Set_Active(false);
+
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_SubViewBlur(false);
 

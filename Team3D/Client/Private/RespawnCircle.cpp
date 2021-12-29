@@ -102,7 +102,7 @@ _int CRespawnCircle::Late_Tick(_double TimeDelta)
 
 	if (360.f <= m_fHeartTime)
 		m_fHeartTime = 0.f;
-	
+
 	Set_Gauge(TimeDelta);
 
 	m_vUV.x += (_float)TimeDelta * 0.5f;
