@@ -589,9 +589,11 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 		{
 		case Engine::GameID::eCODY:
 			static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_HitRocket_Boss();
+			if (m_pCodyMissile) m_pCodyMissile->Set_MissileDead();
 			break;
 		case Engine::GameID::eMAY:
 			static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_HitRocket_Boss();
+			if (m_pMayMissile) m_pMayMissile->Set_MissileDead();
 			break;
 		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
@@ -1038,6 +1040,13 @@ HRESULT CUFO::TriggerActorReplacement()
 
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
+	//if (m_pCodyMissile) {
+	//	m_pCodyMissile->Set_MissileDead();
+	//}
+	//if (m_pMayMissile) {
+	//	m_pMayMissile->Set_MissileDead();
+	//}
+
 	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
 	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
 	{
