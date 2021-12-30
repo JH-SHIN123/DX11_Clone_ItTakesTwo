@@ -2163,6 +2163,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
 				Set_AllActiveHpBar(false);
 				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
+				UI_Generator->Set_AllActivation(false);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)

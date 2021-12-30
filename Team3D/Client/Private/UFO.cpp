@@ -934,6 +934,7 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 			((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(true);
 			((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(true);
 			Set_HpBarActive(true);
+			UI_Generator->Set_AllActivation(true);
 		}
 	}
 
