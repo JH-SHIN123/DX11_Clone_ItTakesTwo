@@ -107,6 +107,29 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		return EVENT_DEAD;
 	}
+	/* Se - 땅에 방치된 경우 */
+	else if (m_dDroppedTime >= 7.0)
+	{
+		if (m_IsTargetCody)
+		{ 
+			UI_Delete(Cody, InputButton_InterActive); 
+			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::Boss_Missile_Cody);
+		}
+		else 
+		{ 
+			UI_Delete(May, InputButton_PS_InterActive); 
+			UI_Generator->Delete_InterActive_UI(Player::May, UI::Boss_Missile_May);
+		}
+
+		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
+		Explosion_Effect();
+
+		return EVENT_DEAD;
+	}
+
+	if (m_isDropped && !m_bCodyControl && !m_bMayControl)
+		m_dDroppedTime += dTimeDelta;
+	/* ~Se - 땅에 방치된 경우 */
 
 	if (m_IsCrashed == false)
 		m_fAttackTime += (_float)dTimeDelta;
@@ -128,6 +151,8 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
 			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Stop.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
 		}
+		
+		m_isDropped = true; /* Se */
 	}
 
 	if (m_IsCrashed == false)
@@ -136,20 +161,11 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		UI_Delete(May, InputButton_PS_InterActive);
 		m_bMayControl = true;
-
-		m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
-		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
-
 	}
 	else if (m_IsCrashed == true && true == m_IsCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
 		UI_Delete(Cody, InputButton_InterActive);
 		m_bCodyControl = true;
-
-		m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
-		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
 	}
 
 	if (m_IsCrashed == true && false == m_IsTargetCody)
@@ -177,7 +193,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	m_pEffect_Smoke_1->Set_Pos(vPos);
 	m_pEffect_Smoke_2->Set_Pos(vPos);
 
-	return _int();
+	return NO_EVENT;
 }
 
 _int CBoss_Missile::Late_Tick(_double dTimeDelta)
@@ -242,6 +258,12 @@ HRESULT CBoss_Missile::Render_ShadowDepth()
 
 void CBoss_Missile::Set_MissileDead()
 {
+	if (m_dControlLifeDeltaT == 0.0 && m_isDropped == true)
+	{
+		m_dDroppedTime += 7.0;
+		return;
+	}
+
 	if (m_bCodyControl == true && m_bMayControl == false)
 	{
 		((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
@@ -258,9 +280,18 @@ void CBoss_Missile::Set_MissileDead()
 
 void CBoss_Missile::Combat_Move(_double dTimeDelta)
 {
+	CCody*	pCody = (CCody*)DATABASE->GetCody();
+	CMay*	pMay = (CMay*)DATABASE->GetMay();
+	if (nullptr == pCody || nullptr == pMay) return;
+
 	if (m_IsTargetCody == true)
 	{
-		_vector vTargetPos = ((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+		// 코디가 죽어있으면 메이를 향해서
+		if (pCody->Get_bDeadInBossroom())
+			vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
 		vTargetPos = XMVectorSetY(vTargetPos, vTargetPos.m128_f32[1] + 1.5f);
 		_vector vRocketPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
@@ -291,7 +322,12 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 	}
 	else
 	{
-		_vector vTargetPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+		// 메이가 죽어있으면 코디를 향해서
+		if (pMay->Get_bDeadInBossroom())
+			vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
 		vTargetPos = XMVectorSetY(vTargetPos, vTargetPos.m128_f32[1] + 1.5f);
 		_vector vRocketPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
@@ -324,6 +360,13 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 {
+	if (m_dControlLifeDeltaT >= 17.0)
+	{
+		m_IsCollide_Wall_Floor = true;
+		return;
+	}
+	else m_dControlLifeDeltaT += dTimeDelta;
+
 	Set_SmokeEffect(true);
 
 	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
@@ -507,6 +550,14 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 {
+	if (m_dControlLifeDeltaT >= 17.0)
+	{
+		m_IsCollide_Wall_Floor = true;
+		return;
+	}
+	else m_dControlLifeDeltaT += dTimeDelta;
+
+
 	Set_SmokeEffect(true);
 
 	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))

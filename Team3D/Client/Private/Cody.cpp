@@ -3378,6 +3378,10 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, 0.5f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_CODY, 0.5f);
 		}
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Rocket_MH)

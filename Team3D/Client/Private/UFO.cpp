@@ -595,9 +595,11 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 		{
 		case Engine::GameID::eCODY:
 			static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_HitRocket_Boss();
+			if (m_pCodyMissile) m_pCodyMissile->Set_MissileDead();
 			break;
 		case Engine::GameID::eMAY:
 			static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_HitRocket_Boss();
+			if (m_pMayMissile) m_pMayMissile->Set_MissileDead();
 			break;
 		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
@@ -684,8 +686,25 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			_matrix LeftRocketHatch = m_pModelCom->Get_BoneMatrix("LeftFrontRocketHatch");
 			_matrix RightRocketHatch = m_pModelCom->Get_BoneMatrix("RightFrontRocketHatch");
 
-			_vector vCodyDir = XMVector3Normalize(((CCody*)DATABASE->GetCody())->Get_Position() - vPos);
-			_vector vMayDir = XMVector3Normalize(((CCody*)DATABASE->GetMay())->Get_Position() - vPos);
+			CCody* pCody = (CCody*)DATABASE->GetCody();
+			CMay* pMay = (CMay*)DATABASE->GetMay();
+			
+			_vector vCodyDir = XMVectorZero();
+			_vector vMayDir = XMVectorZero();
+
+			if (pCody && pMay)
+			{
+				// 코디가 죽어있다면, 메이를 향해서
+				if (pCody->Get_bDeadInBossroom())
+					vCodyDir = XMVector3Normalize(pMay->Get_Position() - vPos);
+				else
+					vCodyDir = XMVector3Normalize(pCody->Get_Position() - vPos);
+				// 메이가 죽어있다면, 코디를 향해서
+				if (pMay->Get_bDeadInBossroom())
+					vMayDir = XMVector3Normalize(pCody->Get_Position() - vPos);
+				else
+					vMayDir = XMVector3Normalize(pMay->Get_Position() - vPos);
+			}
 
 			LeftRocketHatch = LeftRocketHatch * vUFOWorld;
 			RightRocketHatch = RightRocketHatch * vUFOWorld;
@@ -844,7 +863,7 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		{
 			//_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
-			UFOWorld.r[3].m128_f32[1] -= 10.f;
+			UFOWorld.r[3].m128_f32[1] -= 11.f;
 
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
@@ -969,13 +988,16 @@ HRESULT CUFO::Ready_TriggerActor_Component()
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vUFOPos.m128_f32[1] -= 8.f;
 
+	vUFOPos.m128_f32[0] -= 4.5f;
+	vUFOPos.m128_f32[2] += 3.9f;
+
 	m_pTriggerTransformCom->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 	CTriggerActor::ARG_DESC TriggerArgDesc;
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTriggerTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(5.f);
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(3.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
@@ -1072,6 +1094,13 @@ HRESULT CUFO::Phase1_End_Sound()
 
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
+	//if (m_pCodyMissile) {
+	//	m_pCodyMissile->Set_MissileDead();
+	//}
+	//if (m_pMayMissile) {
+	//	m_pMayMissile->Set_MissileDead();
+	//}
+
 	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
 	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
 	{
