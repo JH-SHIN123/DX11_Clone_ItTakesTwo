@@ -69,6 +69,7 @@ private:
 	_float	m_fUpSpeed = 0.f;
 	_float	m_fDistance = 0.f;
 
+
 private:
 	_float	m_fMoveTime = 1.4f;
 	_float	m_fMoveDelta = 0.f;

@@ -68,7 +68,10 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			if (m_dChargingTime == 3.0)
 			{
 				EFFECT->Add_Effect(Effect_Value::BossLaser_Charge, m_pTransformCom->Get_WorldMatrix());
-			}
+
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fSound);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Charge.wav"), CHANNEL_BOSS_EFFECT, m_fSound, true);
+			} 
 
 			m_dChargingTime -= dTimeDelta;
 
@@ -77,10 +80,16 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			if (m_dChargingTime <= 0.0)
 			{
 				//EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fSound);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Laser_ChargeShot.wav"), CHANNEL_BOSS_EFFECT, m_fSound);
 			}
 
 			return NO_EVENT;
 		}
+
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fSound);
+		m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Chasing.wav"), CHANNEL_BOSS_EFFECT, m_fSound, true);
 
 		if (m_fLaserSizeY > 0)
 		{
@@ -109,7 +118,6 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 #ifndef __PLAYER_INVINCIBLE_BOSSROOM
 							((CCody*)DATABASE->GetCody())->Set_HpBarReduction(10);
 #endif // __PLAYER_INVINCIBLE_BOSSROOM
-
 
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.5;

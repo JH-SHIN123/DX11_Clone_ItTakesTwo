@@ -19,6 +19,7 @@
 #include "UI_Generator.h"
 #include "MainCamera.h"
 #include "SubCamera.h"
+#include "Script.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -107,6 +108,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
 		Set_HpBarActive(true);
+		SCRIPT->VoiceFile_No27();
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -136,17 +138,6 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_ePhase = UFO_PHASE::PHASE_3;
 		m_IsCutScene = true;
 	}
-	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
-		m_pBossHpBar->Set_Active(false);
-
-	//if (m_pGameInstance->Key_Down(DIK_F11))
-	//{
-	//	CBoss_Missile::tagBossMissile_Desc MissileDesc;
-	//	MissileDesc.IsTarget_Cody = true;
-	//	//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-	//	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
-	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
-	//}
 
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
@@ -320,7 +311,7 @@ void CUFO::MoveStartingPoint(_double dTimeDelta)
 	_vector vTargetPos = XMLoadFloat4(&m_vStartUFOPos);
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if(true == ((CBossDoor*)DATABASE->Get_BossDoor01())->Get_Close())
+	if (true == ((CBossDoor*)DATABASE->Get_BossDoor01())->Get_Close())
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_Active(true);
 
 	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
@@ -1112,7 +1103,6 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
 		}
 #endif
-
 		_vector vPosition = { 64.f, 457.8895f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
@@ -1346,6 +1336,7 @@ void CUFO::Set_EndIntroCutScene()
 	((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 	((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
 	m_pBossHpBar->Set_Active(true);
+	SCRIPT->VoiceFile_No27();
 }
 
 void CUFO::Set_MoonBaboonPtr(CMoonBaboon * pMoonBaboon)
