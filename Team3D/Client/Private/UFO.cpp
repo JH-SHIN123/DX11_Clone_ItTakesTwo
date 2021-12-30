@@ -1035,6 +1035,9 @@ HRESULT CUFO::TriggerActorReplacement()
 
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
+	if(m_pCodyMissile) m_pCodyMissile;
+	if (m_pMayMissile) m_pMayMissile;
+
 	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
 	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
 	{
