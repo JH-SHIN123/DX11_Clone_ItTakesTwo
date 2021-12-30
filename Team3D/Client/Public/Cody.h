@@ -254,6 +254,7 @@ public:
 	void			 Set_ControlJoystick(_bool IsCheck);
 	void			 Set_AnimationRotate(_float fAngle);
 	void			 Set_ActiveHpBar(_bool IsCheck);
+	void			 Set_AllActiveHpBar(_bool IsCheck);
 	void			 Set_HpBarReduction(_float fDamage);
 	void			 Set_ActiveMinigameHpBar(_bool IsCheck);
 	void			 Set_MinigameHpBarReduction(_float fDamage);

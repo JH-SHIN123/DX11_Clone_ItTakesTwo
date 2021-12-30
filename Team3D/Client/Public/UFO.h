@@ -52,6 +52,7 @@ public:
 	void Set_MissilePtrReset(_bool IsTargetCheck);
 	void Set_GuidedMissileIncreaseHitCount();
 	void Set_Active(_bool IsActive);
+	void Set_HpBarActive(_bool IsActive);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }

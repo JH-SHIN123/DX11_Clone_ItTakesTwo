@@ -2135,8 +2135,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eBOSSUFO && true == m_IsLaserRippedOff)
 		{
-			if (210.f <= m_pModelCom->Get_CurrentTime(ANI_M_SpaceStation_BossFight_LaserRippedOff) || 
-				true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
+			if (true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
 			{
 				m_IsRippedOffAnimPlaying = false;
 				m_IsLaserRippedOff = false;
@@ -2161,6 +2160,9 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
 				UI_Delete(May, InputButton_PS_InterActive);
+				((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
+				Set_AllActiveHpBar(false);
+				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
@@ -2630,6 +2632,13 @@ void CMay::Set_ActiveHpBar(_bool IsCheck)
 
 	m_pHpBar->Set_Active(IsCheck);
 }
+
+void CMay::Set_AllActiveHpBar(_bool IsCheck)
+{
+	m_pHpBar->Set_Active(IsCheck);
+	m_pSubHpBar->Set_Active(IsCheck);
+}
+
 
 void CMay::Set_HpBarReduction(_float fDamage)
 {

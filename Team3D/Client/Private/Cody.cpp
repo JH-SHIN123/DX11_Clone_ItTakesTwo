@@ -300,7 +300,7 @@ _int CCody::Tick(_double dTimeDelta)
 	{
 		//m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
 		//((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
-
+		
 		m_pActorCom->Set_Position(XMVectorSet(67.1295f, 601.404f, 998.288f, 1.f));
 	}
 	 
@@ -3573,6 +3573,12 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 		return;
 
 	m_pHpBar->Set_Active(IsCheck);
+}
+
+void CCody::Set_AllActiveHpBar(_bool IsCheck)
+{
+	m_pHpBar->Set_Active(IsCheck);
+	m_pSubHpBar->Set_Active(IsCheck);
 }
 
 void CCody::Set_Change_Size_After_UmbrellaCutScene()

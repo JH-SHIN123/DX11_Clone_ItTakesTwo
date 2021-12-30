@@ -1517,6 +1517,10 @@ void CUI_Generator::Set_AllActivation(_bool IsActivation)
 			}
 		}
 	}
+
+	((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(IsActivation);
+
+	
 }
 
 void CUI_Generator::Set_Scale(Player::ID ePlayer, UI::TRIGGER eTrigger, _float2 vScale)
