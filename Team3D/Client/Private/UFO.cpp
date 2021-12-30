@@ -497,6 +497,8 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 		m_IsCutScene = true;
 		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
 		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
+		/* 여기 추가 */
+		m_pMoonBaboon->Set_Animation(CutScene_PowerCoreDestroyed_MoonBaboon, Moon_Ufo_KnockDownMH);
 		Ready_TriggerActor_Component();
 		return;
 	}
@@ -700,8 +702,8 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 				m_fGuidedMissileTime = 0.f;
 
 				m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
-				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fCoreSoundVolume);
-				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Explode.wav"), CHANNEL_BOSSMISSILE_CODY, m_fCoreSoundVolume);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fBossMissileSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Shot.wav"), CHANNEL_BOSSMISSILE_CODY, m_fBossMissileSoundVolume);
 			}
 
 			if (nullptr == m_pMayMissile)
@@ -712,6 +714,10 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
 				m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
 				m_fGuidedMissileTime = 0.f;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fBossMissileSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Shot.wav"), CHANNEL_BOSSMISSILE_MAY, m_fBossMissileSoundVolume);
 			}
 		}
 	}

@@ -22,8 +22,9 @@
 /* For.MoonUFO */
 #include "MoonUFO.h"
 #include "Moon.h"
-/* For.BossUFO */
+/* For.Boss */
 #include "UFO.h"
+#include "Moonbaboon.h"
 
 /* For.UI */
 #include "HpBar.h"
@@ -2154,6 +2155,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+				((CMoonBaboon*)DATABASE->Get_MoonBaboon())->Set_Animation(Moon_LaserRippedOff, Moon_Ufo_MH);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
@@ -2161,8 +2163,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
 				UI_Delete(May, InputButton_PS_InterActive);
 				((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
-				Set_AllActiveHpBar(false);
 				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
+				Set_AllActiveHpBar(false);
 				UI_Generator->Set_AllActivation(false);
 			}
 		}

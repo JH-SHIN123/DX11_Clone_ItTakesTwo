@@ -31,9 +31,9 @@
 /*For.WarpGate*/
 #include "WarpGate.h"
 
-/* For.BossUFO */
+/* For.Boss */
 #include "UFO.h"
-
+#include "MoonBaboon.h"
 #include "Script.h"
 
 /* For. UFORadarSet */
@@ -4279,6 +4279,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Holding_Enter_UFO);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_Low_UFO);
 		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding_Enter, UFO_CodyHolding_low);
+		((CMoonBaboon*)DATABASE->Get_MoonBaboon())->Set_Animation(Moon_Ufo_CodyHolding_Enter, Moon_Ufo_CodyHolding);
 
 		CTransform* pUFOTransform = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform();
 		_vector vUFOPos = XMVectorSet(64.f - 0.4f, 355.0263f + 0.8f, 195.f, 1.f);

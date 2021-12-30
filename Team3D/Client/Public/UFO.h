@@ -144,6 +144,7 @@ private:
 	_float					m_fCoreSoundVolume = 1.f;
 	_float					m_fGravitationalBombSoundVolume = 1.f;
 	_float					m_fGroundPoundSoundVolume = 1.f;
+	_float					m_fBossMissileSoundVolume = 1.f;
 
 	/* CutScene Offset */
 	_vector					m_vChairOffSetPos = {};
