@@ -767,6 +767,9 @@ HRESULT CCutScene::Start_CutScene_GotoMoon()
 
 HRESULT CCutScene::Start_CutScene_Outro()
 {
+	CSound_Manager::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
+	CSound_Manager::GetInstance()->Sound_FadeOut(CHANNEL_BGM2, 0.f, 1.f);
+
 	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene04.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	m_bCodyEjectUFO = false;
 	m_bIsStartFilm = false;
