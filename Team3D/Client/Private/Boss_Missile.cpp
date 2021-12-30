@@ -326,7 +326,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 {
 	Set_SmokeEffect(true);
 
-	if (m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
 	{
 		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
 		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
@@ -509,7 +509,7 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 {
 	Set_SmokeEffect(true);
 
-	if (m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
 	{
 		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
 		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
