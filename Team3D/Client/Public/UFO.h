@@ -219,6 +219,8 @@ private:
 	void Add_LerpInfo_To_Model();
 	HRESULT Ready_Component();
 	HRESULT Ready_UI();
+	HRESULT SetUp_SoundChannel();
+
 
 private:
 	/* For.SubLaser */

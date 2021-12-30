@@ -88,6 +88,8 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pBossLight);
 	//Safe_AddRef(m_pBossLight);
 
+	SetUp_SoundChannel();
+
 	return S_OK;
 }
 
@@ -1354,6 +1356,21 @@ HRESULT CUFO::Ready_UI()
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("BossHpBar"), nullptr, &pGameObject), E_FAIL);
 	m_pBossHpBar = static_cast<CBossHpBar*>(pGameObject);
+
+	return S_OK;
+}
+
+HRESULT CUFO::SetUp_SoundChannel()
+{
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 0.5f);
+	m_pGameInstance->Play_Sound(TEXT("Boss.Boss_Laser_Hit"), CHANNEL_BOSS_UFO, 0.5f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, 0.5f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Hit.wav"), CHANNEL_BOSS_EFFECT, 0.5f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
 
 	return S_OK;
 }

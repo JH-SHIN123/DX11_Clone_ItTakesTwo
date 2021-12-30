@@ -51,6 +51,8 @@ HRESULT CLaser_TypeA::NativeConstruct(void * pArg)
 	XMStoreFloat4(&m_vLaserDir, XMVector3Normalize(XMVectorSet(1.f, -1.f, 0.f, 0.f)));
 #endif
 
+
+
 	return S_OK;
 }
 
@@ -122,6 +124,12 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 							// 데미지 주기 초기화
 							m_dDamagingDelay_Cody = 0.5;
 							__super::Player_Hit_Effect();
+
+							if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSS_EFFECT))
+							{
+								m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, 0.5f);
+								m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Hit.wav"), CHANNEL_BOSS_EFFECT, 0.5f);
+							}
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -163,6 +171,12 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 							// 데미지 주기 초기화
 							m_dDamagingDelay_May = 0.5;
 							__super::Player_Hit_Effect();
+					
+							if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSS_EFFECT))
+							{
+								m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, 0.5f);
+								m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Hit.wav"), CHANNEL_BOSS_EFFECT, 0.5f);
+							}
 						}
 					}
 					/* 첫 타격 데미지 */
@@ -220,6 +234,7 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 				CGameObject* pGameObject = nullptr;
 				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Smoke"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Laser_Smoke"), nullptr, &pGameObject);
 				m_pLaserSmoke = static_cast<CEffect_Boss_Laser_Smoke*>(pGameObject);
+
 
 				m_IsPaticleCreate = false;
 			}

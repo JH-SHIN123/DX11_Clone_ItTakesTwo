@@ -2166,6 +2166,14 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
 				Set_AllActiveHpBar(false);
 				UI_Generator->Set_AllActivation(false);
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 1.f);
+				m_pGameInstance->Play_Sound(TEXT("May_Destroy_LaserGun.wav"), CHANNEL_BOSS_UFO, 1.f);
+
+				m_pGameInstance->Stop_Sound(CHANNEL_VOICE_MAY_1);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_1, 1.f);
+				m_pGameInstance->Play_Sound(TEXT("May_Destroy_LaserGun_Voice.wav"), CHANNEL_VOICE_MAY_1, 1.f);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
