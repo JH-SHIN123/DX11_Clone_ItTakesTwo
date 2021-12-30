@@ -221,14 +221,14 @@ void CEffect_Env_Particle_Field::Check_Culling()
 	_float	fDist_Far_Sub = XMVector3Length(vPos_SubCam - vPos_Far_Sub).m128_f32[0];
 
 	m_IsCulling = false;
-	_int iCull = 0;
+	_int iCullCount = 0;
 
 	if (fDist_Far < fDist_Particle)
-		++iCull;
+		++iCullCount;
 	if (fDist_Far_Sub < fDist_Particle_Sub)
-		++iCull;
+		++iCullCount;
 
-	if (2 < iCull)
+	if (2 < iCullCount)
 		m_IsCulling = true;
 }
 

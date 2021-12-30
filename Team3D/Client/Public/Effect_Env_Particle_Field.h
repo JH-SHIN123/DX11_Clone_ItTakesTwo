@@ -38,7 +38,7 @@ protected:
 	explicit CEffect_Env_Particle_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CEffect_Env_Particle_Field(const CEffect_Env_Particle_Field& rhs);
 	virtual ~CEffect_Env_Particle_Field() = default; public:
-		34
+		
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
