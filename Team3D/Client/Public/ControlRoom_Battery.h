@@ -37,6 +37,7 @@ private:
 	_float										m_fAngle = 0.f;
 	_float										m_fRotate = 0.f;
 	_float4										m_vCodyPos;
+	_float										m_fPipeVolume = 1.f;
 	_bool										m_IsCameRange = false;
 	_bool										m_IsCollision = false;
 	_bool										m_IsPlayerInterActive = false;

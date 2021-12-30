@@ -122,6 +122,10 @@ void CPressurePlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGam
 			pPressurePlateLock->Set_LockActive(false);
 
 		m_pSupportFrame->Set_LockActive(false);
+
+		m_pGameInstance->Stop_Sound(CHANNEL_PIPE);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_PIPE, m_fPipeLockVolume);
+		m_pGameInstance->Play_Sound(TEXT("Pipe_Release.wav"), CHANNEL_PIPE, m_fPipeLockVolume);
 	}
 
 	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY)
@@ -141,6 +145,10 @@ void CPressurePlate::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGam
 			pPressurePlateLock->Set_LockActive(false);
 
 		m_pSupportFrame->Set_LockActive(false);
+
+		m_pGameInstance->Stop_Sound(CHANNEL_PIPEEFFECT);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_PIPEEFFECT, m_fPipeLockVolume);
+		m_pGameInstance->Play_Sound(TEXT("Pipe_Release.wav"), CHANNEL_PIPEEFFECT, m_fPipeLockVolume);
 	}
 
 }

@@ -196,6 +196,10 @@ _int CControlRoom_Battery::InterActive_Battery(_double TimeDelta)
 					pDoor->Set_OpenDoor();
 
 				m_IsBatteryHolding = false;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_PIPE);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_PIPE, m_fPipeVolume);
+				m_pGameInstance->Play_Sound(TEXT("Pipe_Door_Open.wav"), CHANNEL_PIPE, m_fPipeVolume);
 			}
 
 			if (false == m_IsEffect)

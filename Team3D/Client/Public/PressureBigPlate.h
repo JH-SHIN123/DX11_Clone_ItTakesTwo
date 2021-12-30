@@ -52,6 +52,7 @@ private:
 	_float										m_fWaitingTime = 0.f;
 	_float										m_fOpenWaitTime = 0.f;
 	_uint										m_iOption = 0;
+	_float										m_fPipeVolume = 1.f;
 
 
 private:

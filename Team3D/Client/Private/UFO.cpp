@@ -1113,7 +1113,7 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		}
 #endif
 
-		_vector vPosition = { 64.f, 357.5f, 195.f, 1.f };
+		_vector vPosition = { 64.f, 457.8895f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
 		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
