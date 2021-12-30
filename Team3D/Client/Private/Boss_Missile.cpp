@@ -100,7 +100,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 		return EVENT_DEAD;
 	}
 	/* Se - 땅에 방치된 경우 */
-	else if (m_dDroppedTime > 7.0)
+	else if (m_dDroppedTime >= 7.0)
 	{
 		if (m_IsTargetCody)
 		{ 
@@ -130,7 +130,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		m_IsFalling = true;
 		m_fAttackTime = 0.f;
-		m_isDropped = true; /* Se - 땅에 방치된 경우 */
+		m_isDropped = true; /* Se */
 	}
 
 	if (m_IsCrashed == false)
@@ -237,6 +237,12 @@ HRESULT CBoss_Missile::Render_ShadowDepth()
 
 void CBoss_Missile::Set_MissileDead()
 {
+	if (m_dControlLifeDeltaT == 0.0 && m_isDropped == true)
+	{
+		m_dDroppedTime += 7.0;
+		return;
+	}
+
 	if (m_bCodyControl == true && m_bMayControl == false)
 	{
 		((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
