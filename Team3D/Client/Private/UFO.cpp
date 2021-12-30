@@ -106,7 +106,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
-		m_pBossHpBar->Set_Active(true);
+		Set_HpBarActive(true);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -930,6 +930,11 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 			m_ePhase = CUFO::PHASE_2;
 			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
+
+			((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(true);
+			((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(true);
+			Set_HpBarActive(true);
+			UI_Generator->Set_AllActivation(true);
 		}
 	}
 
@@ -1100,6 +1105,14 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (false == m_IsEjection)
 	{
+#ifdef __PLAY_CUTSCENE
+		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
+		{
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon, true);
+			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		}
+#endif
+
 		_vector vPosition = { 64.f, 357.5f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
@@ -1107,6 +1120,12 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
+
+		/* UI OFF */
+		UI_Generator->Set_AllActivation(false);
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(false);
+		Set_HpBarActive(false);
 
 		m_pGameInstance->Set_MainViewFog(false);
 	}
@@ -1435,6 +1454,11 @@ void CUFO::Set_Active(_bool IsActive)
 {
 	m_IsActive = IsActive;
 	m_pMoonBaboon->Set_Active(IsActive);
+}
+
+void CUFO::Set_HpBarActive(_bool IsActive)
+{
+	m_pBossHpBar->Set_Active(IsActive);
 }
 
 HRESULT CUFO::Add_GameObject_ToRenderGroup()
