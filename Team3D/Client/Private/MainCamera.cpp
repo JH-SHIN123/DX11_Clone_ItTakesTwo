@@ -1621,11 +1621,11 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	//외부에서 상태 설정 구간
 #ifdef __TEST_JUN
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
 	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_MissileBoom", CFilm::LScreen);
+		m_pCamHelper->Start_CamEffect(L"Cam_Shake_BuddyBoom", CFilm::LScreen);
 		return NO_EVENT;
-	}*/
+	}
 	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
 	{
 		m_pCamHelper->Start_Film(L"Film_Clear_Umbrella",CFilm::LScreen);

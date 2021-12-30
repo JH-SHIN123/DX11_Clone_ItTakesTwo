@@ -427,27 +427,49 @@ _int CSubCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 {
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
-	if (pUfo->Get_IsRidLaserGun() == true)
-	{
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-		ReSet_Cam_FreeToAuto(false,false,1.f);
-		return NO_EVENT;
-	}
 	CTransform* pMayTransform = m_pMay->Get_Transform();
 	CTransform* pUfoTransform = pUfo->Get_Transform();
-
 	_matrix matLaserGunRing = pUfo->Get_Model()->Get_BoneMatrix("LaserGunRing3") * pUfoTransform->Get_WorldMatrix();
 
 	_vector vMayPos = pMayTransform->Get_State(CTransform::STATE_POSITION);
 	vMayPos = XMVectorSetY(vMayPos, XMVectorGetY(vMayPos) + 1.f);
 	_vector vLaserGunPos = matLaserGunRing.r[3];
 
-	_vector vDir = XMVector3Normalize(vLaserGunPos - vMayPos);
+	if (pUfo->Get_IsRidLaserGun() == true)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		_vector vEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier4(m_vCamRoot_RippedOff[0],
+			m_vCamRoot_RippedOff[1],
+			m_vCamRoot_RippedOff[2],
+			m_vCamRoot_RippedOff[3], m_dRippdeOffTime)), 1.f);
+		m_dRippdeOffTime -= dTimeDelta / 2.f;
+		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMayPos), m_dRippdeOffTime));
+		if (m_dRippdeOffTime <= 0.0)
+		{
+			m_eCurCamMode = CamMode::Cam_Free;
+		//ReSet_Cam_FreeToAuto(true, true, 6.0f);
+		}
+		return NO_EVENT;
+	}
+	else if (m_dRippdeOffTime == 0.0)
+	{
+		_vector vDir = XMVector3Normalize(vLaserGunPos - vMayPos);
 
-	_vector vLastEye = vMayPos - vDir;
-	_vector vLastAt = vLaserGunPos + vDir;
-
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vLastAt), (_float)dTimeDelta));
+		
+		XMStoreFloat3(&m_vCamRoot_RippedOff[0], m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		XMStoreFloat3(&m_vCamRoot_RippedOff[1], m_pTransformCom->Get_State(CTransform::STATE_POSITION) + 
+			m_pTransformCom->Get_State(CTransform::STATE_RIGHT)*6.f);
+		XMStoreFloat3(&m_vCamRoot_RippedOff[2], vMayPos - vDir * 6.f);
+		XMStoreFloat3(&m_vCamRoot_RippedOff[3], vMayPos - vDir * 4.f);
+	}
+	_vector vEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier4(m_vCamRoot_RippedOff[0],
+		m_vCamRoot_RippedOff[1],
+		m_vCamRoot_RippedOff[2],
+		m_vCamRoot_RippedOff[3], m_dRippdeOffTime)),1.f);
+	m_dRippdeOffTime += dTimeDelta / 2.f;
+	_vector vAt = vLaserGunPos;
+	vAt.m128_f32[1] += 1.f;
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vAt), m_dRippdeOffTime));
 
 	return NO_EVENT;
 }
