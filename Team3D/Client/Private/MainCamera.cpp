@@ -1626,37 +1626,13 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		m_pCamHelper->Start_CamEffect(L"Cam_Shake_BuddyBoom", CFilm::LScreen);
 		return NO_EVENT;
 	}
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-	{
-		m_pCamHelper->Start_Film(L"Film_Clear_Umbrella",CFilm::LScreen);
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
-		return NO_EVENT;
-	}*/
-	
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	//{
-	//	CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
-	//	Start_Film(L"Film_Eject_InUFO");
-	//	//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
-	//	return NO_EVENT;
-	//}
 
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-	{
-		CCutScenePlayer::GetInstance()->Stop_CutScene();
-		return NO_EVENT;
-	}*/
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
 		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
 		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
 		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 		return NO_EVENT;
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-	{
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
 	}
 #endif
 

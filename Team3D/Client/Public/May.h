@@ -211,6 +211,7 @@ public:
 	void	Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void	Set_LaserRippedOff(); /* BossUFO */
 	void	Set_ActiveHpBar(_bool IsCheck);
+	void	Set_AllActiveHpBar(_bool IsCheck);
 	void	Set_HpBarReduction(_float fDamage);
 	void	Set_ActiveMinigameHpBar(_bool IsCheck);
 	void	Set_MinigameHpBarReset();

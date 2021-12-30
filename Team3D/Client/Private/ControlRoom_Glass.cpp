@@ -57,12 +57,6 @@ _int CControlRoom_Glass::Late_Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(78.465f, 218.752f, 233.54f, 1.f));
-	
-	if (m_pGameInstance->Key_Down(DIK_L))
-	{
-		_vector vScale = { 1.f, 1.f, 0.9f, 1.f };
-		m_pTransformCom->Set_Scale(vScale);
-	}
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 70.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_ALPHA, this);

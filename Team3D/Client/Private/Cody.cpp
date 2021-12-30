@@ -296,10 +296,12 @@ _int CCody::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_B))
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
-	if (m_pGameInstance->Key_Down(DIK_F9))
+	if (m_pGameInstance->Key_Down(DIK_F8))
 	{
-		m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
-		((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		//((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		
+		m_pActorCom->Set_Position(XMVectorSet(67.1295f, 601.404f, 998.288f, 1.f));
 	}
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
@@ -2498,6 +2500,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			UI_CreateOnlyOnce(Cody, InputButton_Cancle);
 			UI_CreateOnlyOnce(Cody, Arrowkeys_All);
 			UI_Delete(Cody, InputButton_InterActive);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_UMBRELLABEAM);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, 1.f);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Activate.wav"), CHANNEL_UMBRELLABEAM, 1.f);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
@@ -3567,6 +3573,12 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 		return;
 
 	m_pHpBar->Set_Active(IsCheck);
+}
+
+void CCody::Set_AllActiveHpBar(_bool IsCheck)
+{
+	m_pHpBar->Set_Active(IsCheck);
+	m_pSubHpBar->Set_Active(IsCheck);
 }
 
 void CCody::Set_Change_Size_After_UmbrellaCutScene()
