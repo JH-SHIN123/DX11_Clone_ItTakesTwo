@@ -1111,6 +1111,7 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
 
+		/* UI OFF */
 		UI_Generator->Set_AllActivation(false);
 		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
 		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(false);
