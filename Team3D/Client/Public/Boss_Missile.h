@@ -57,6 +57,9 @@ private:
 	void Set_SmokeEffect(_bool IsActivate);
 
 private:
+	_double m_dControlLifeDeltaT = 0.f; // 탔을때부터 시간제한
+
+private:
 	GameID::Enum m_eTarget_GameID;
 
 	_bool m_IsTargetCody = false;

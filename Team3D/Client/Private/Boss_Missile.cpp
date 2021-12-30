@@ -297,6 +297,13 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 {
+	if (m_dControlLifeDeltaT >= 10.0)
+	{
+		m_IsCollide_Wall_Floor = true;
+		return;
+	}
+	else m_dControlLifeDeltaT += dTimeDelta;
+
 	Set_SmokeEffect(true);
 
 	// 각도 제한 걸어야 함
@@ -474,6 +481,14 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 {
+	if (m_dControlLifeDeltaT >= 10.0)
+	{
+		m_IsCollide_Wall_Floor = true;
+		return;
+	}
+	else m_dControlLifeDeltaT += dTimeDelta;
+
+
 	Set_SmokeEffect(true);
 
 	// 각도 제한 걸어야 함
