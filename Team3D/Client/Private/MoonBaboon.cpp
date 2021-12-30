@@ -221,6 +221,19 @@ void CMoonBaboon::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_Laser_HitPod, true);
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_KnockDownMH, true);
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_GroundPound, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, CutScene_PowerCoreDestroyed_MoonBaboon, true);
+
+	m_pModelCom->Add_LerpInfo(CutScene_PowerCoreDestroyed_MoonBaboon, Moon_Ufo_KnockDownMH, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_KnockDownMH, Moon_Ufo_KnockDownMH, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_KnockDownMH, Moon_Ufo_CodyHolding_Enter, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_CodyHolding_Enter, Moon_Ufo_CodyHolding, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_CodyHolding, Moon_Ufo_CodyHolding, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_CodyHolding, Moon_LaserRippedOff, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_LaserRippedOff, Moon_Ufo_MH, true);
 
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_Programming, Moon_Ufo_MH, true);
 }
