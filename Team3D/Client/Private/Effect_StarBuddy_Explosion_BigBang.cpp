@@ -42,6 +42,7 @@ _int CEffect_StarBuddy_Explosion_BigBang::Tick(_double TimeDelta)
 	if (1.2 < m_dLifeTime && true == m_IsScaling)
 	{
 		EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
+		EFFECT->Add_Effect(Effect_Value::StarBuddy_Ring, m_pTransformCom->Get_WorldMatrix());
 		//////m_fScalePow = 10.f;
 		m_IsScaling = false;
 	}

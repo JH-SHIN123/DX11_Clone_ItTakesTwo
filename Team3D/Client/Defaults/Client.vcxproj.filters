@@ -1197,6 +1197,9 @@
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring">
+      <UniqueIdentifier>{f0d53117-db8a-4f40-b48c-6b82785abc49}</UniqueIdentifier>
+    </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Header-->
@@ -2219,6 +2222,9 @@
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Ring.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring</Filter>
+    </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
   <!--Codes-->
@@ -3213,6 +3219,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Ring.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

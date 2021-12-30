@@ -22,7 +22,7 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct_Prototype(void * pArg)
 
 HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 {
-	m_EffectDesc_Prototype.fLifeTime = 2.f;
+	m_EffectDesc_Prototype.fLifeTime = 5.f;
 	m_EffectDesc_Prototype.vSize = { 0.0625f, 0.0625f,0.f };
 
 	__super::Ready_Component(pArg);
@@ -43,6 +43,9 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 	//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody_Effect"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	// 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Texture_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
+
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"), TEXT("Com_Texture_Particle_Diss"), (CComponent**)&m_pTexturesCom_Particle_Diss), E_FAIL);
+	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Twirl"), TEXT("Com_Texture_Particle_Flow"), (CComponent**)&m_pTexturesCom_Particle_Flow), E_FAIL);
 
 	//	m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 	//	m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
@@ -69,7 +72,7 @@ _int CEffect_Player_Dead_Particle::Tick(_double TimeDelta)
 
 	//m_pModelCom->Update_Animation(TimeDelta);
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
-	m_fMoveTime += (_float)TimeDelta * 0.1f;
+	m_fMoveTime += (_float)TimeDelta * 0.75f;
 	// 	m_pInstanceBuffer[0].vTextureUV = Check_UV((_float)TimeDelta, 0, false);
 	// 
 	// 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
@@ -100,24 +103,32 @@ _int CEffect_Player_Dead_Particle::Late_Tick(_double TimeDelta)
 
 HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
-	//SetUp_Shader_Data();
-	//
-	//_float4 vUV = { 0.f,0.f,1.f,1.f };
-	//m_pPointInstanceCom->Set_Variable("g_vColorRamp_UV", &vUV, sizeof(_float4));
-	//m_pPointInstanceCom->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom_Particle->Get_ShaderResourceView(0));
-	//
-	//m_pPointInstanceCom->Render(4, m_pInstanceBuffer, m_EffectDesc_Prototype.iInstanceCount);
+	/*
+	g_DissolveTexture
+	g_FlowTexture
+	g_fTime
+	g_fDissolveTime
+	g_fRadius
+	g_vTextureSize
+	*/
+	XMINT2 vTexSize = {1024, 1024};
 	_float4 vTextureUV_LTRB = { 0.f,0.f,1.f,1.f };
-
+	_float fRadius = 0.2f;
 	m_pModelCom->Set_Variable("g_vPos", &m_vTargetPos, sizeof(_float4));
-
 	m_pModelCom->Set_Variable("g_fTime", &m_fMoveTime, sizeof(_float));
 	m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
-	m_pModelCom->Set_Variable("g_vTextureUV_LTRB", &_float4(0.f, 0.f, 1.f, 1.f), sizeof(_float4));
+	m_pModelCom->Set_Variable("g_fRadius", &fRadius, sizeof(_float));
+	m_pModelCom->Set_Variable("g_fDissolveTime", &m_fMoveTime, sizeof(_float));
+	m_pModelCom->Set_Variable("g_vTextureSize", &vTexSize, sizeof(XMINT2));
+	vTexSize = { 512, 512 };
+	m_pModelCom->Set_Variable("g_vTextureSize_2", &vTexSize, sizeof(XMINT2));
 
-	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
+	m_pModelCom->Set_ShaderResourceView("g_DissolveTexture", m_pTexturesCom_Particle_Diss->Get_ShaderResourceView(1));
+	m_pModelCom->Set_ShaderResourceView("g_FlowTexture",	 m_pTexturesCom_Particle_Flow->Get_ShaderResourceView(0));
+	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture",  m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
+
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Render_Model_VERTEX(11);
+	m_pModelCom->Render_Model(11);
 
 	return S_OK;
 }
@@ -313,8 +324,9 @@ CGameObject * CEffect_Player_Dead_Particle::Clone_GameObject(void * pArg)
 
 void CEffect_Player_Dead_Particle::Free()
 {
-	Safe_Release(m_pTexturesCom_Particle);
 	Safe_Release(m_pTexturesCom_Particle_Mask);
+	Safe_Release(m_pTexturesCom_Particle_Diss);
+	Safe_Release(m_pTexturesCom_Particle_Flow);
 
 	__super::Free();
 }

@@ -51,11 +51,15 @@ _int CWarpGate_Star::Late_Tick(_double TimeDelta)
 HRESULT CWarpGate_Star::Render(RENDER_GROUP::Enum eGroup)
 {
 	_int iShaderPass = 27;
+	_float4 vColor = { 1.000000000f, 0.980392218f, 0.203921640f, 0.500000000f };
 	if(false == m_IsActivate)
 		iShaderPass = 18;
+	if (true == m_IsMiniGame)
+		vColor = { 1.000000000f, 0.30392218f, 0.003921640f, 0.7500000000f };
 
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	m_pModelCom->Set_Variable("g_vColor", &vColor, sizeof(_float4));
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Render_Model(iShaderPass);
@@ -77,8 +81,12 @@ void CWarpGate_Star::Set_WorldMatrix(_fmatrix WorldMatrix, _fvector vOffSetPos)
 void CWarpGate_Star::Set_Activate(_bool IsActivate)
 {
 	if (false == m_IsActivate && true == IsActivate)
-	{		
-		EFFECT->Add_Effect(Effect_Value::WarpGate_Clear, m_pTransformCom->Get_WorldMatrix());
+	{	
+		if(false == m_IsMiniGame)
+			EFFECT->Add_Effect(Effect_Value::WarpGate_Clear, m_pTransformCom->Get_WorldMatrix());
+		else
+			EFFECT->Add_Effect(Effect_Value::WarpGate_Clear_MiniGame, m_pTransformCom->Get_WorldMatrix());
+
 		m_IsActivate = true;
 	}
 }

@@ -45,6 +45,8 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 	m_pGameInstance->Play_Sound(TEXT("Gate.wav"), CHANNEL_GATE, 0.f);
 	m_pGameInstance->Play_Sound(TEXT("GateStar.wav"), CHANNEL_GATE_STAR, 0.f);
 
+
+
 	return S_OK;
 }
 
@@ -220,6 +222,24 @@ HRESULT CWarpGate::Check_WarpGate_Star()
 	m_pWarpGate_Star_4->Set_Scale(XMVectorSet(0.8f, 0.8f, 0.8f, 0.f));
 	m_pWarpGate_Star_5->Set_Scale(XMVectorSet(1.17f, 1.17f, 1.17f, 0.f));
 
+	if (MAIN_TENNIS == m_WarpGate_Desc.eStageValue || STAGE_TENNIS == m_WarpGate_Desc.eStageValue)
+	{
+		m_pWarpGate_Star_1->MiniGame_Warp(true);
+		m_pWarpGate_Star_2->MiniGame_Warp(true);
+		m_pWarpGate_Star_3->MiniGame_Warp(true);
+		m_pWarpGate_Star_4->MiniGame_Warp(true);
+		m_pWarpGate_Star_5->MiniGame_Warp(true);
+	}
+
+	if (STAGE_TENNIS == m_WarpGate_Desc.eStageValue)
+	{
+		m_pWarpGate_Star_1->Set_Activate(true);
+		m_pWarpGate_Star_2->Set_Activate(true);
+		m_pWarpGate_Star_3->Set_Activate(true);
+		m_pWarpGate_Star_4->Set_Activate(true);
+		m_pWarpGate_Star_5->Set_Activate(true);
+	}
+
 	return S_OK;
 }
 
@@ -306,7 +326,7 @@ void CWarpGate::Check_Tennis_Found()
 			for(_int i = 0; i < 3 ; ++i)
 				vDir.m128_f32[i] = fabs(vDir.m128_f32[i]);
 
-			if (0.45f > vDir.m128_f32[0] &&
+			if (1.45f > vDir.m128_f32[0] &&
 				0.25f > vDir.m128_f32[1] &&
 				15.8f > vDir.m128_f32[2])
 				m_bClearEffect = true;
@@ -320,12 +340,12 @@ void CWarpGate::Check_Tennis_Found()
 			for (_int i = 0; i < 3; ++i)
 				vDir.m128_f32[i] = fabs(vDir.m128_f32[i]);
 
-			if (0.45f > vDir.m128_f32[0] &&
+			if (1.45f > vDir.m128_f32[0] &&
 				0.25f > vDir.m128_f32[1] &&
 				15.8f > vDir.m128_f32[2])
 				m_bClearEffect = true;
 		}
-	}
+	}	
 
 	return;
 }

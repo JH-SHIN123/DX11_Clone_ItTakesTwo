@@ -13,7 +13,7 @@
 /**
 * 보스방 무적
 */
-#define __PLAYER_INVINCIBLE_BOSSROOM
+//#define __PLAYER_INVINCIBLE_BOSSROOM
 
 /************************************************************************/
   
@@ -35,7 +35,7 @@
 * 사용할 스레드 
 */
 #ifdef _DEBUG
-#define __THREAD_NUM 8
+#define __THREAD_NUM 4
 #else
 #define __THREAD_NUM 4
 #endif
@@ -45,7 +45,7 @@
 /**
 * 맵 로딩 하려면 주석 처리.
 */
-//#define __MAPLOADING_OFF
+#define __MAPLOADING_OFF
   
 /**
 * 우주선 내부 맵만 제거
@@ -66,7 +66,7 @@
 * 각자 테스트용 디파인
 */
 //#define __TEST_SE
-//#define __TEST_JUNG
+#define __TEST_JUNG
 //#define __TEST_HYE
 //#define __TEST_TAEK
 //#define __TEST_YOON
