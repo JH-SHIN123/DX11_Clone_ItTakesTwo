@@ -79,7 +79,7 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 			if (m_dBrokenWaitingDeltaT >= 1.0)
 			{
 				m_bBrokenStart = true;
-				m_dBrokenWaitingDeltaT = 0.0;
+				m_dBrokenWaitingDeltaT = 0.0;;
 			}
 			else
 			{
