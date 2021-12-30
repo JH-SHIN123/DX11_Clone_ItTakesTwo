@@ -296,10 +296,12 @@ _int CCody::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_B))
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
-	if (m_pGameInstance->Key_Down(DIK_F9))
+	if (m_pGameInstance->Key_Down(DIK_F8))
 	{
-		m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
-		((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		//m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		//((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+
+		m_pActorCom->Set_Position(XMVectorSet(67.1295f, 601.404f, 998.288f, 1.f));
 	}
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
