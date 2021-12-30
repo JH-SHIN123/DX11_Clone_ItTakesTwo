@@ -43,6 +43,7 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 	EFFECT->Add_Effect(Effect_Value::Gate_Smoke, SmokeWorldMatrix);
 
 	m_pGameInstance->Play_Sound(TEXT("Gate.wav"), CHANNEL_GATE, 0.f);
+	m_pGameInstance->Play_Sound(TEXT("GateStar.wav"), CHANNEL_GATE_STAR, 0.f);
 
 	return S_OK;
 }
@@ -227,7 +228,7 @@ void CWarpGate::Check_ClearEffect(_double TimeDelta)
 	if (false == m_bClearEffect)
 		return;
 
-	_double dTerm = 0.5 * (_double)m_iClearEffect_Count;
+	_double dTerm = 0.495 * (_double)m_iClearEffect_Count;
 	m_dClearEffect_Time += TimeDelta;
 
 	switch (m_iClearEffect_Count)
@@ -235,6 +236,7 @@ void CWarpGate::Check_ClearEffect(_double TimeDelta)
 	case 0:
 		if (m_WarpGate_Desc.dClearEffect_Term < m_dClearEffect_Time)
 		{
+			m_pGameInstance->Play_Sound(TEXT("GateStar.wav"), CHANNEL_GATE_STAR);
 			m_pWarpGate_Star_1->Set_Activate(true);
 			++m_iClearEffect_Count;
 		}
@@ -242,7 +244,6 @@ void CWarpGate::Check_ClearEffect(_double TimeDelta)
 	case 1:
 		if (m_WarpGate_Desc.dClearEffect_Term + dTerm < m_dClearEffect_Time)
 		{
-			m_pRespawnTunnel_Portal->Set_AlphaTime(0.0);
 			m_pWarpGate_Star_2->Set_Activate(true);
 			++m_iClearEffect_Count;
 		}
@@ -284,6 +285,9 @@ void CWarpGate::Check_StageClear()
 
 	else if (MAIN_PLANET == m_WarpGate_Desc.eStageValue || STAGE_PLANET == m_WarpGate_Desc.eStageValue)
 		m_bClearEffect = DATABASE->Get_RailStageClear();
+
+	if (m_pGameInstance->Key_Down(DIK_V))
+		m_bClearEffect = true;
 
 	Check_Tennis_Found();
 }

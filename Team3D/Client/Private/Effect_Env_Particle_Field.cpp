@@ -57,15 +57,19 @@ _int CEffect_Env_Particle_Field::Late_Tick(_double TimeDelta)
 
 HRESULT CEffect_Env_Particle_Field::Render(RENDER_GROUP::Enum eGroup)
 {
+	_float fPower = 1.f;
+	if (1 == m_Particle_Desc.iTexIndex)
+		fPower = 2.f;
 	_float fAlpha = (_float)m_dControl_Time;
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
-	m_pPointInstanceCom_STT->Set_DefaultVariables();
 
+	m_pPointInstanceCom_STT->Set_DefaultVariables();
+	m_pPointInstanceCom_STT->Set_Variable("g_fAlpha", &fPower, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_Particle_Desc.iTexIndex));
-	m_pPointInstanceCom_STT->Render(2, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(26, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 	return S_OK;
 }
 
@@ -217,7 +221,14 @@ void CEffect_Env_Particle_Field::Check_Culling()
 	_float	fDist_Far_Sub = XMVector3Length(vPos_SubCam - vPos_Far_Sub).m128_f32[0];
 
 	m_IsCulling = false;
-	if (fDist_Far < fDist_Particle && fDist_Far_Sub < fDist_Particle_Sub)
+	_int iCull = 0;
+
+	if (fDist_Far < fDist_Particle)
+		++iCull;
+	if (fDist_Far_Sub < fDist_Particle_Sub)
+		++iCull;
+
+	if (2 < iCull)
 		m_IsCulling = true;
 }
 
@@ -270,6 +281,7 @@ _float2 CEffect_Env_Particle_Field::Get_Rand_Size(_float2 vDefaultSize, _float v
 HRESULT CEffect_Env_Particle_Field::Reset_Instance(_int iIndex, _fvector vWorldPos)
 {
 	_vector vPos = vWorldPos + XMLoadFloat4(&Get_Rand_Pos());
+
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 
 	m_pInstanceBuffer_STT[iIndex].vSize = Get_Rand_Size(m_Particle_Desc.vDefaultSize, m_Particle_Desc.fReSize);
@@ -381,11 +393,36 @@ void CEffect_Env_Particle_Field::Initialize_Instance_Goruping(_int* iIndex, _int
 
 _vector CEffect_Env_Particle_Field::Set_RandPos_Default()
 {
-	_vector vDir = XMLoadFloat3(&Get_Dir_Rand(m_Particle_Desc.vRandPower));
+	_vector vDir = XMVectorZero();
 
-	vDir.m128_f32[0] *= m_vParticleRadius.x / _float(rand() % 5 + 1);
-	vDir.m128_f32[1] *= m_vParticleRadius.y;
-	vDir.m128_f32[2] *= m_vParticleRadius.z / _float(rand() % 5 + 1);
+	if (false == m_Particle_Desc.IsPillar && false == m_Particle_Desc.IsMoon)
+	{
+		vDir = XMLoadFloat3(&Get_Dir_Rand(m_Particle_Desc.vRandPower));
+
+		vDir.m128_f32[0] *= m_vParticleRadius.x / _float(rand() % 5 + 1);
+		vDir.m128_f32[1] *= m_vParticleRadius.y;
+		vDir.m128_f32[2] *= m_vParticleRadius.z / _float(rand() % 5 + 1);
+	}
+	else if (true == m_Particle_Desc.IsPillar)
+	{
+		// 기둥모양이 되자
+		vDir = XMLoadFloat3(&Get_Dir_Rand(m_Particle_Desc.vRandPower));
+		vDir.m128_f32[1] = 0.f;
+
+		vDir.m128_f32[0] *= _float(rand() % 100) / 100.f * m_vParticleRadius.x;
+		vDir.m128_f32[1] =	_float(rand() % 100) / 100.f * m_vParticleRadius.y;
+		vDir.m128_f32[2] *= _float(rand() % 100) / 100.f * m_vParticleRadius.z;
+	}
+	else if (true == m_Particle_Desc.IsMoon)
+	{
+		vDir = XMLoadFloat3(&Get_Dir_Rand(m_Particle_Desc.vRandPower));
+
+		vDir.m128_f32[0] *= _float(rand() % 100) / 100.f * m_vParticleRadius.x;
+		vDir.m128_f32[1] *= _float(rand() % 100) / 100.f * m_vParticleRadius.y;
+		vDir.m128_f32[2] *= _float(rand() % 100) / 100.f * m_vParticleRadius.z;
+
+		vDir *= 500.f;
+	}
 
 	return vDir;
 }

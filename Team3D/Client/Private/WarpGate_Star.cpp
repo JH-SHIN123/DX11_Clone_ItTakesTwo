@@ -40,7 +40,7 @@ _int CWarpGate_Star::Late_Tick(_double TimeDelta)
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
 	{
 		if(false == m_IsActivate)
-			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT_PRE_CUSTOM_BLUR, this);
 		else
 			m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 	}
@@ -52,7 +52,7 @@ HRESULT CWarpGate_Star::Render(RENDER_GROUP::Enum eGroup)
 {
 	_int iShaderPass = 27;
 	if(false == m_IsActivate)
-		iShaderPass = 1;
+		iShaderPass = 18;
 
 	CGameObject::Render(eGroup);
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -77,7 +77,7 @@ void CWarpGate_Star::Set_WorldMatrix(_fmatrix WorldMatrix, _fvector vOffSetPos)
 void CWarpGate_Star::Set_Activate(_bool IsActivate)
 {
 	if (false == m_IsActivate && true == IsActivate)
-	{
+	{		
 		EFFECT->Add_Effect(Effect_Value::WarpGate_Clear, m_pTransformCom->Get_WorldMatrix());
 		m_IsActivate = true;
 	}
