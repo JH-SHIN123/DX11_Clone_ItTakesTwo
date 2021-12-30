@@ -59,7 +59,7 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 	m_iBrokenCheck = 0;
 
 	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, 1.f);
-	m_pGameInstance->Play_Sound(TEXT("Boss_Moonbaboon_Holding.wav"), CHANNEL_BOSSCORE, 1.f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, 1.f);
 
 	m_pGameInstance->Stop_Sound(CHANNEL_BOSSCORE);
 
@@ -215,7 +215,7 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
 			{
 				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
-				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume, true);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume);
 			}
 		}
 		else
@@ -234,7 +234,7 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
 			{
 				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
-				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume, true);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume);
 			}
 		}
 	}
