@@ -99,6 +99,29 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		return EVENT_DEAD;
 	}
+	/* Se - 땅에 방치된 경우 */
+	else if (m_dDroppedTime > 7.0)
+	{
+		if (m_IsTargetCody)
+		{ 
+			UI_Delete(Cody, InputButton_InterActive); 
+			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::Boss_Missile_Cody);
+		}
+		else 
+		{ 
+			UI_Delete(May, InputButton_PS_InterActive); 
+			UI_Generator->Delete_InterActive_UI(Player::May, UI::Boss_Missile_May);
+		}
+
+		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
+		Explosion_Effect();
+
+		return EVENT_DEAD;
+	}
+
+	if (m_isDropped && !m_bCodyControl && !m_bMayControl)
+		m_dDroppedTime += dTimeDelta;
+	/* ~Se - 땅에 방치된 경우 */
 
 	if (m_IsCrashed == false)
 		m_fAttackTime += (_float)dTimeDelta;
@@ -107,6 +130,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		m_IsFalling = true;
 		m_fAttackTime = 0.f;
+		m_isDropped = true; /* Se - 땅에 방치된 경우 */
 	}
 
 	if (m_IsCrashed == false)
@@ -148,7 +172,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	m_pEffect_Smoke_1->Set_Pos(vPos);
 	m_pEffect_Smoke_2->Set_Pos(vPos);
 
-	return _int();
+	return NO_EVENT;
 }
 
 _int CBoss_Missile::Late_Tick(_double dTimeDelta)
@@ -297,7 +321,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 {
-	if (m_dControlLifeDeltaT >= 10.0)
+	if (m_dControlLifeDeltaT >= 17.0)
 	{
 		m_IsCollide_Wall_Floor = true;
 		return;
@@ -481,7 +505,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 {
-	if (m_dControlLifeDeltaT >= 10.0)
+	if (m_dControlLifeDeltaT >= 17.0)
 	{
 		m_IsCollide_Wall_Floor = true;
 		return;

@@ -57,7 +57,11 @@ private:
 	void Set_SmokeEffect(_bool IsActivate);
 
 private:
-	_double m_dControlLifeDeltaT = 0.f; // 탔을때부터 시간제한
+	_double m_dControlLifeDeltaT = 0.0; // 탔을때부터 시간제한
+	/* Se - 땅에 방치된 경우 */
+	_bool	m_isDropped = false;
+	_double m_dDroppedTime = 0.0;		
+
 
 private:
 	GameID::Enum m_eTarget_GameID;
