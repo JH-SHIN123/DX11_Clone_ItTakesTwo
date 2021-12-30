@@ -691,6 +691,8 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			CGameObject* pGameObject = nullptr;
 			CBoss_Missile::tagBossMissile_Desc tMissileDesc;
 
+			m_pMoonBaboon->Set_Animation(Moon_Ufo_FireRocket, Moon_Ufo_MH);
+
 			/* 유도 미사일 발사!!!!!!!!!!!!!!!!! */
 			if (nullptr == m_pCodyMissile)
 			{
