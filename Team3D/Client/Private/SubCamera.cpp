@@ -443,7 +443,7 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 			m_vCamRoot_RippedOff[2],
 			m_vCamRoot_RippedOff[3], m_dRippdeOffTime)), 1.f);
 		m_dRippdeOffTime -= dTimeDelta / 2.f;
-		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMayPos), m_dRippdeOffTime));
+		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMayPos), (_float)m_dRippdeOffTime));
 		if (m_dRippdeOffTime <= 0.0)
 		{
 			m_eCurCamMode = CamMode::Cam_Free;
@@ -469,7 +469,7 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 	m_dRippdeOffTime += dTimeDelta / 2.f;
 	_vector vAt = vLaserGunPos;
 	vAt.m128_f32[1] += 1.f;
-	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vAt), m_dRippdeOffTime));
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vAt), (_float)m_dRippdeOffTime));
 
 	return NO_EVENT;
 }
