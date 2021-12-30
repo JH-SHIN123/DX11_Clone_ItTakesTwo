@@ -444,10 +444,10 @@ _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 	if (m_dTime > 7.6)
 	{
 		_matrix matUfo = 
-			XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(90.f))*
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(270.f))*
 			XMMatrixScaling(100.f, 100.f, 100.f)* pUfo->Get_Model()->Get_BoneMatrix("Align")
 			*pUfo->Get_Transform()->Get_WorldMatrix() ;
-		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3]) + 2.f);
+		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3]));
 		pMay->Get_Transform()->Set_WorldMatrix(matUfo);
 	}
 	if (m_dTime > 24.31)
@@ -750,12 +750,12 @@ HRESULT CCutScene::Start_CutScene_GotoMoon()
 
 	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
 	pMay->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 64.f,345.f,195.f}, { 1.f,1.f,1.f }, {90.f,0.f,0.f}));
-	pMay->Get_Actor()->Set_Position(XMVectorSet(64.f, 345.f, 195.f, 1.f));
+	pMay->Get_Actor()->Set_Position(XMVectorSet(64.f, 345.f+ 98.3895f, 195.f, 1.f));
 	pMay->Get_Model()->Set_Animation(ANI_M_CutScene_SpaceStation_BossFight_Eject);
 
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
 	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(
-		_float3(64.f, 357.5f, 195.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
+		_float3(64.f, 357.5f + 98.3895f, 195.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
 	pUfo->Get_Model()->Set_Animation(CutScene_Eject_FlyingSaucer);
 	pUfo->Set_Active(true);
 
