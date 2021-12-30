@@ -829,7 +829,7 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		m_fGroundPoundTime += (_float)dTimeDelta;
 
 	/* GroundPound가 시작됬을 때 메이의 포스 저장 */
-	if (4.f <= m_fGroundPoundTime && false == m_IsGroundPound)
+	if (3.f <= m_fGroundPoundTime && false == m_IsGroundPound)
 	{
 		XMStoreFloat4(&m_vGroundPoundTargetPos, m_pMayTransform->Get_State(CTransform::STATE_POSITION));
 		m_IsGroundPound = true;
@@ -847,10 +847,6 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, UFOWorld);
-
-			m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
-			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fGroundPoundSoundVolume);
-			m_pGameInstance->Play_Sound(TEXT("Boss_UFO_GroundPound.wav"), CHANNEL_BOSS_EFFECT, m_fGroundPoundSoundVolume);
 
 			m_IsGroundPoundEffectCreate = true;
 		}
@@ -882,8 +878,13 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(UFO_GroundPound);
 			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+			m_pMoonBaboon->Set_Animation(Moon_Ufo_GroundPound, Moon_Ufo_MH);
 			m_fGroundPoundTime = 0.f;
 			m_IsGroundPound = false;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_UFO_GroundPound.wav"), CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
 		}
 	}
 }
@@ -906,6 +907,8 @@ void CUFO::DependingTimeSubLaserOperation(_double dTimeDelta)
 
 HRESULT CUFO::Phase1_End(_double dTimeDelta)
 {
+	Phase1_End_Sound();
+
 	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
 	{
 		m_pTriggerActorCom->Update_TriggerActor();
@@ -1028,6 +1031,39 @@ HRESULT CUFO::TriggerActorReplacement()
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_EnterTrigger"), (CComponent**)&m_pTriggerActorCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
+
+	return S_OK;
+}
+
+HRESULT CUFO::Phase1_End_Sound()
+{
+	/* 보스 UFO 떨어졌을 때 사운드 */
+	if (94.f <= m_pMoonBaboon->Get_Model()->Get_CurrentTime(CutScene_PowerCoreDestroyed_MoonBaboon) && true == m_IsSoundPlayOnce)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_UFO_Fall1.wav"), CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_IsSoundPlayOnce = false;
+	}
+	else if (true == m_pMoonBaboon->Get_Model()->Is_AnimFinished(CutScene_PowerCoreDestroyed_MoonBaboon))
+		m_IsSoundPlayOnce = true;
+
+	if (Moon_Ufo_CodyHolding == m_pMoonBaboon->Get_Model()->Get_CurAnimIndex() && false == m_pGameInstance->IsPlaying(CHANNEL_BOSS_MOONBABOON))
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_MOONBABOON, m_fGroundPoundSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_Moonbaboon_Holding.wav"), CHANNEL_BOSS_MOONBABOON, m_fGroundPoundSoundVolume);
+	}
+
+	if (180.f <= m_pModelCom->Get_CurrentTime(UFO_LaserRippedOff) && true == m_IsSoundPlayOnce)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_MOONBABOON);
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_UFO_BackStep.wav"), CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_IsSoundPlayOnce = false;
+	}
+	else if (true == m_pModelCom->Is_AnimFinished(Moon_Ufo_CodyHolding))
+		m_IsSoundPlayOnce = true;
 
 	return S_OK;
 }
@@ -1277,6 +1313,7 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_MH, true);
 
 	m_pModelCom->Add_LerpInfo(UFO_Left, CutScene_RocketPhaseFinished_FlyingSaucer, true);
+	m_pModelCom->Add_LerpInfo(UFO_Left, UFO_HitReaction_Fwd, true);
 
 	m_pModelCom->Add_LerpInfo(CutScene_RocketPhaseFinished_FlyingSaucer, UFO_RocketKnockDown_MH, true);
 
@@ -1287,6 +1324,8 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_Fwd, false);
 
 	m_pModelCom->Add_LerpInfo(UFO_GroundPound, UFO_MH, true, 1.f);
+
+	m_pModelCom->Add_LerpInfo(UFO_HitReaction_Fwd, UFO_Left, true);
 }
 
 HRESULT CUFO::Ready_Component()

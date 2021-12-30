@@ -145,6 +145,7 @@ private:
 	_float					m_fGravitationalBombSoundVolume = 1.f;
 	_float					m_fGroundPoundSoundVolume = 1.f;
 	_float					m_fBossMissileSoundVolume = 1.f;
+	_bool					m_IsSoundPlayOnce = true;
 
 	/* CutScene Offset */
 	_vector					m_vChairOffSetPos = {};
@@ -204,6 +205,7 @@ private:
 	HRESULT Ready_TriggerActor_Component();
 	HRESULT Ready_StaticActor_Component();
 	HRESULT TriggerActorReplacement();
+	HRESULT Phase1_End_Sound();
 
 	/* For.PHASE_2 End */
 	HRESULT Phase2_End(_double dTimeDelta);

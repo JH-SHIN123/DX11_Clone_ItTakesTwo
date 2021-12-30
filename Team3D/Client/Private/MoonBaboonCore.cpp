@@ -58,6 +58,11 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	m_iBrokenCheck = 0;
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, 1.f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Moonbaboon_Holding.wav"), CHANNEL_BOSSCORE, 1.f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSSCORE);
+
     return S_OK;
 }
 
