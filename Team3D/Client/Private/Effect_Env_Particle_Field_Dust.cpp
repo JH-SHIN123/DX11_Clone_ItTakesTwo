@@ -26,6 +26,7 @@ _int CEffect_Env_Particle_Field_Dust::Tick(_double TimeDelta)
 {
 	Check_Culling();
 	Check_State(TimeDelta);
+	Check_BossFloor(TimeDelta);
 
 	return NO_EVENT;
 }
@@ -42,7 +43,7 @@ HRESULT CEffect_Env_Particle_Field_Dust::Render(RENDER_GROUP::Enum eGroup)
 
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fAlpha, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_DiffuseTexture", m_pTexturesCom->Get_ShaderResourceView(0));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(6));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_ColorTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_Particle_Desc.iTexIndex));
 	m_pPointInstanceCom_STT->Render(14, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;

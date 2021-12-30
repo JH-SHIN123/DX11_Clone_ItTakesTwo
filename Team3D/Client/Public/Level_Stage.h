@@ -36,7 +36,12 @@ private:
 	HRESULT Ready_Layer_Wormhole(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_WallLaserTrap(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_GravityPipe(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_Env_Particles(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles_Main(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles_PinBall(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles_Rail(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles_Controll_Room(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles_Moon(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles_Boss(const _tchar* pLayerTag);
 	/* Hye */
 	HRESULT Ready_Layer_Planet(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Script(const _tchar* pLayerTag);
@@ -85,6 +90,7 @@ private:
 private:
 	_double	m_dEndingCreditAccTime = 0.0;
 	_uint	m_iEndingCreditStep = 0;
+	_bool	m_IsBossStage = false;
 private: 
 	_int	Tick_EndingCredit(_double dTimedelta);
 #pragma endregion

@@ -12,16 +12,20 @@ public:
 		_float4 vPosition;
 
 		_float		fSpeedPerSec = 0.125f;
-		_float		fReSizing_Power = 0.033f;
-		_float		fReSize = 0.02f;
+		_float		fReSizing_Power = 0.05f;
+		_float		fReSize = 0.05f;
 		_float		fResetPosTime = 3.5f;
 		XMINT2		vTextureUV = { 4, 2 };
-		_float2		vDefaultSize = { 0.1f, 0.1f };
+		_float2		vDefaultSize = { 0.175f, 0.175f };
 		_int3		vRandPower = { 100, 100, 100 };
 
 		_float		fInitialize_UpdatePos_Term = 1.f;
 		_int		iGrouping_Count = 1;
+		_int		iTexIndex = 0;
 		_bool		IsGrouping = false;
+		_bool		IsBossFloor = false;
+		_bool		IsPillar = false;
+		_bool		IsMoon = false;
 // 		_bool		IsGrouping_Dir = false;
 // 		_bool		IsGrouping_Pos = false;
 
@@ -34,7 +38,7 @@ protected:
 	explicit CEffect_Env_Particle_Field(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CEffect_Env_Particle_Field(const CEffect_Env_Particle_Field& rhs);
 	virtual ~CEffect_Env_Particle_Field() = default; public:
-
+		
 public:
 	virtual HRESULT	NativeConstruct_Prototype(void* pArg);
 	virtual HRESULT	NativeConstruct(void* pArg) override;
@@ -55,6 +59,7 @@ protected:
 	void State_Start(_double TimeDelta);
 	void State_Disappear(_double TimeDelta);
 	void Check_Culling();
+	void Check_BossFloor(_double TimeDelta);
 
 protected:
 	_float4 Get_Rand_Pos();
