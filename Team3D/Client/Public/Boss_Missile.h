@@ -81,6 +81,8 @@ private:
 	_float m_fCollideTime = 0.f;
 	_float m_fTestDegree = 0.f;
 
+	_float m_fMissileSoundVolume = 1.f;
+
 	UI::INTERACTIVE_ID m_eInterActiveID = UI::INTERACTIVE_ID_END;
 	PxRaycastBuffer	m_MissileRaycastBuffer;
 
