@@ -8,6 +8,7 @@
 #include "Effect_Umbrella_Pipe.h"
 #include "UI_Generator.h"
 
+
 CUmbrellaBeam::CUmbrellaBeam(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -63,7 +64,7 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	m_fVerticalAngle = 0.f;
 
 	DATABASE->Set_UmbrellaBeam(this);
-
+	
 	m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
 	m_pGameInstance->Play_Sound(TEXT("Umbrella_Activate.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
 
