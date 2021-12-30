@@ -678,8 +678,25 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			_matrix LeftRocketHatch = m_pModelCom->Get_BoneMatrix("LeftFrontRocketHatch");
 			_matrix RightRocketHatch = m_pModelCom->Get_BoneMatrix("RightFrontRocketHatch");
 
-			_vector vCodyDir = XMVector3Normalize(((CCody*)DATABASE->GetCody())->Get_Position() - vPos);
-			_vector vMayDir = XMVector3Normalize(((CCody*)DATABASE->GetMay())->Get_Position() - vPos);
+			CCody* pCody = (CCody*)DATABASE->GetCody();
+			CMay* pMay = (CMay*)DATABASE->GetMay();
+			
+			_vector vCodyDir = XMVectorZero();
+			_vector vMayDir = XMVectorZero();
+
+			if (pCody && pMay)
+			{
+				// 코디가 죽어있다면, 메이를 향해서
+				if (pCody->Get_bDeadInBossroom())
+					vCodyDir = XMVector3Normalize(pMay->Get_Position() - vPos);
+				else
+					vCodyDir = XMVector3Normalize(pCody->Get_Position() - vPos);
+				// 메이가 죽어있다면, 코디를 향해서
+				if (pMay->Get_bDeadInBossroom())
+					vMayDir = XMVector3Normalize(pCody->Get_Position() - vPos);
+				else
+					vMayDir = XMVector3Normalize(pMay->Get_Position() - vPos);
+			}
 
 			LeftRocketHatch = LeftRocketHatch * vUFOWorld;
 			RightRocketHatch = RightRocketHatch * vUFOWorld;
