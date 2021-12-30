@@ -108,7 +108,6 @@ _int CUFO::Tick(_double dTimeDelta)
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
 		Set_HpBarActive(true);
-		SCRIPT->VoiceFile_No27();
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -303,6 +302,10 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 
 		/* 레이저 패턴 3번 나오면 2페이즈로 바뀐다. */
 		++m_iPhaseChangeCount;
+
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, m_fLaserSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Charge.wav"), CHANNEL_BOSSLASER, m_fLaserSoundVolume);
 	}
 }
  
@@ -414,6 +417,10 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 
 			m_fGravitationalBombLanchTime = 0.f;
 			++m_iGravitationalBombCount;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fGravitationalBombSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Shot.wav"), CHANNEL_BOSS_EFFECT, m_fGravitationalBombSoundVolume);
 		}
 	}
 	else
@@ -445,6 +452,10 @@ void CUFO::Core_Destroyed()
 			{
 				Set_BossHpBarReduction(110);
 				m_IsHit = true;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Explode.wav"), CHANNEL_BOSS_EFFECT, m_fCoreSoundVolume);
 			}
 
 			/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
@@ -687,6 +698,10 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
 				m_pCodyMissile = static_cast<CBoss_Missile*>(pGameObject);
 				m_fGuidedMissileTime = 0.f;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Explode.wav"), CHANNEL_BOSSMISSILE_CODY, m_fCoreSoundVolume);
 			}
 
 			if (nullptr == m_pMayMissile)
@@ -783,10 +798,8 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 	_float vDistance = XMVectorGetX(XMVector3Length(vComparePos));
 	m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 
-	vDir.m128_f32[1] = 0.f;
-
 	if (1.f <= vDistance)
-		m_pTransformCom->MoveToDir(XMVector3Normalize(vDir), dTimeDelta * 5.f);
+		m_pTransformCom->MoveToDir(XMVector3Normalize(vComparePos), dTimeDelta * 5.f);
 	else
 	{
 		m_IsStartingPointMove = false;
@@ -826,6 +839,11 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, UFOWorld);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fGroundPoundSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_UFO_GroundPound.wav"), CHANNEL_BOSS_EFFECT, m_fGroundPoundSoundVolume);
+
 			m_IsGroundPoundEffectCreate = true;
 		}
 
@@ -882,7 +900,6 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 {
 	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
 	{
-
 		m_pTriggerActorCom->Update_TriggerActor();
 		m_IsInterActive = true;
 	}
@@ -1096,13 +1113,6 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (false == m_IsEjection)
 	{
-#ifdef __PLAY_CUTSCENE
-		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
-		{
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon, true);
-			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
-		}
-#endif
 		_vector vPosition = { 64.f, 457.8895f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
@@ -1110,6 +1120,14 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
+
+#ifdef __PLAY_CUTSCENE
+		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
+		{
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon, true);
+			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		}
+#endif
 
 		/* UI OFF */
 		UI_Generator->Set_AllActivation(false);

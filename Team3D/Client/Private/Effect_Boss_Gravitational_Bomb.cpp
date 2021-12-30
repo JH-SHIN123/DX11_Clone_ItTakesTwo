@@ -102,6 +102,10 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 			EFFECT->Add_Effect(Effect_Value::BossBomb_Pillar, m_pTransformCom->Get_WorldMatrix());
 			EFFECT->Add_Effect(Effect_Value::BossBomb_Explosion, m_pTransformCom->Get_WorldMatrix());
 			m_IsParticleCreate = false;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, 1.f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_GravityBullet.wav"), CHANNEL_BOSS_EFFECT, 1.f);
 		}
 	}
 	else

@@ -139,8 +139,14 @@ private:
 	/* For. UI */
 	class CBossHpBar*		m_pBossHpBar = nullptr;
 
+	/* For. Sound */		
+	_float					m_fLaserSoundVolume = 0.7f;
+	_float					m_fCoreSoundVolume = 1.f;
+	_float					m_fGravitationalBombSoundVolume = 1.f;
+	_float					m_fGroundPoundSoundVolume = 1.f;
+
 	/* CutScene Offset */
-	_vector     m_vChairOffSetPos = {};
+	_vector					m_vChairOffSetPos = {};
 
 private:
 	/* For.Component */

@@ -68,7 +68,7 @@ private:
 	_float	m_fMaxY = 0.f;
 	_float	m_fUpSpeed = 0.f;
 	_float	m_fDistance = 0.f;
-
+	_float  m_fCoreSoundVolume = 1.f;
 
 private:
 	_float	m_fMoveTime = 1.4f;

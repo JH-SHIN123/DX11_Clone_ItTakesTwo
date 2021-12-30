@@ -68,9 +68,6 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			if (m_dChargingTime == 3.0)
 			{
 				EFFECT->Add_Effect(Effect_Value::BossLaser_Charge, m_pTransformCom->Get_WorldMatrix());
-
-				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fSound);
-				m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Charge.wav"), CHANNEL_BOSS_EFFECT, m_fSound, true);
 			} 
 
 			m_dChargingTime -= dTimeDelta;
@@ -79,17 +76,20 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 			/* 쏘는 순간 터트리는 이펙트 생성 */
 			if (m_dChargingTime <= 0.0)
 			{
-				//EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
-				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
-				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fSound);
-				m_pGameInstance->Play_Sound(TEXT("Boss_Laser_ChargeShot.wav"), CHANNEL_BOSS_EFFECT, m_fSound);
+				EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, m_fSound);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Laser_ChargeShot.wav"), CHANNEL_BOSSLASER, m_fSound);
 			}
 
 			return NO_EVENT;
 		}
 
-		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fSound);
-		m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Chasing.wav"), CHANNEL_BOSS_EFFECT, m_fSound, true);
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, 0.5f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Chasing.wav"), CHANNEL_BOSSLASER, 0.5f);
+		}
 
 		if (m_fLaserSizeY > 0)
 		{

@@ -206,6 +206,12 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_fMoveDelta += (_float)TimeDelta;
 			m_bMove = true;
+
+			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume, true);
+			}
 		}
 		else
 			m_bArrived = true;
@@ -219,6 +225,12 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_fMoveDelta -= (_float)TimeDelta;
 			m_bMove = true;
+
+			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume, true);
+			}
 		}
 	}
 	else
