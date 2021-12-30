@@ -25,6 +25,7 @@ _int CEffect_Env_Particle_Field_Star::Tick(_double TimeDelta)
 {
 	Check_Culling();
 	Check_State(TimeDelta);
+	Check_BossFloor(TimeDelta);
 
 	return NO_EVENT;
 }
