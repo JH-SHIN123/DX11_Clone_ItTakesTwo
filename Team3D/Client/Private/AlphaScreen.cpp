@@ -160,16 +160,16 @@ void CAlphaScreen::Option_Setting()
 	}
 	else if (6 == m_iOption)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 320.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 75.f, 0.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 330.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 100.f, 0.f, 0.f));
 		m_fSortOrder = 0.f;
 		m_iShaderPassNum = 17;
 		m_fAlpha = 1.f;
 	}
 	else if (5 == m_iOption)
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -320.f, 0.f, 1.f));
-		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 75.f, 0.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -330.f, 0.f, 1.f));
+		m_pTransformCom->Set_Scale(XMVectorSet(1280.f, 100.f, 0.f, 0.f));
 		m_fSortOrder = 0.f;
 		m_iShaderPassNum = 17;
 		m_fAlpha = 1.f;
