@@ -14,7 +14,7 @@ enum class Effect_Value
 {
 	Walking_Smoke, Landing_Smoke, 
 	Dash,
-	Cody_Dead, Cody_Dead_Fire,
+	Cody_Dead, Cody_Dead_Fire, Cody_Dead_Test,
 	Cody_Revive,
 	Cody_Rail,
 	Cody_PinBall_Move, Cody_PinBall_Explosion, Cody_PinBall_Explosion_Particle, 
@@ -78,6 +78,7 @@ enum class Effect_Value
 	Hit_BossLaser_Particle_Star,
 
 	WarpGate_Clear,
+	WarpGate_Clear_MiniGame,
 
 	MoonBaboon_Shield,
 	MoonBaboon_Booster,
@@ -85,6 +86,7 @@ enum class Effect_Value
 	StarBuddy_Explosion_Pillar,
 	StarBuddy_Explosion_BigBang,
 	StarBuddy_Explosion_Particle,
+	StarBuddy_Ring,
 
 	PipeLocker_Connected,
 	PipeLocker_Ball,

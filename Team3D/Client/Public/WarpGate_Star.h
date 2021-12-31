@@ -18,6 +18,7 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
+	void MiniGame_Warp(_bool IsMiniGame) { m_IsMiniGame = IsMiniGame; }
 	void Set_Scale(_vector vScale) { m_pTransformCom-> Set_Scale(vScale); }
 	void Set_WorldMatrix(_fmatrix WorldMatrix, _fvector vOffSetPos);
 	void Set_Activate(_bool IsActivate);
@@ -27,6 +28,7 @@ private:
 
 private:
 	_bool m_IsActivate = false;
+	_bool m_IsMiniGame = false;
 
 private:
 	CTransform*		m_pTransformCom		= nullptr;
