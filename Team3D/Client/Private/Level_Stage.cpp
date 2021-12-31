@@ -171,7 +171,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		m_IsEndingFadeOut = true;
 	}
 
-	/* Fade Out */
+	/* BlackScreen FadeOut */
 	if (true == m_IsEndingFadeOut)
 	{
 		m_dEndingFadeOutWaitTime += dTimedelta;
@@ -179,7 +179,8 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		if (3.f <= m_dEndingFadeOutWaitTime)
 		{
 			UI_Generator->Set_FadeOut(Player::Default, UI::BlackScreenFadeInOut);
-			UI_Generator->Set_FadeOutSpeed(Player::Default, UI::BlackScreenFadeInOut, 1.5f);
+			/* FadeOut 속도 조절*/
+			UI_Generator->Set_FadeOutSpeed(Player::Default, UI::BlackScreenFadeInOut, 0.5f);
 			m_IsEndingFadeOut = false;
 		}
 	}
