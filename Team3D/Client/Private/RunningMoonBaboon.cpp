@@ -125,11 +125,13 @@ HRESULT CRunningMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
 HRESULT CRunningMoonBaboon::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+	if (((CPixelBaboon*)DATABASE->Get_PixelBaboon())->Get_LifeCount() > 0)
+	{
+		m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
-	m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
-
-	// Skinned: 2 / Normal: 3
-	m_pModelCom->Render_Model(2, 0, true);
+		// Skinned: 2 / Normal: 3
+		m_pModelCom->Render_Model(2, 0, true);
+	}
 	return S_OK;
 }
 
