@@ -99,7 +99,6 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	/* For. Script && Sound */
 	Script(dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
@@ -1202,9 +1201,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
-			m_pGameInstance->Play_Sound(TEXT("InUFO.wav"), CHANNEL_IN_UFO_BGM, 0.f, true);
-			m_pGameInstance->Sound_FadeIn(CHANNEL_IN_UFO_BGM, 0.7f, 2.f);
-
 			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
@@ -1561,7 +1557,7 @@ void CUFO::GoUp(_double dTimeDelta)
 		DATABASE->Set_BossFloorUp(false);
 		return;
 	}
-
+	//
 	m_pTransformCom->Go_Up(dTimeDelta);
 }
 
@@ -1571,34 +1567,35 @@ void CUFO::Script(_double dTimeDelta)
 		return;
 
 	m_fScriptDelay += (_float)dTimeDelta;
-	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
+	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1 ||
+		m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_2)
 	{
-		switch (iRandomScript)
+		switch (m_iRandomScript)
 		{
 		case 0:
 			SCRIPT->VoiceFile_No39();
 			break;
 		case 1:
+			SCRIPT->VoiceFile_No41();
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No42();
+			break;
+		case 3:
 			if (m_ePhase == CUFO::PHASE_2)
 			{
 				SCRIPT->VoiceFile_No40();
 			}
 			break;
-		case 2:
-			SCRIPT->VoiceFile_No41();
-			break;
-		case 3:
-			SCRIPT->VoiceFile_No42();
-			break;
-		case 4:
-			SCRIPT->VoiceFile_No46();
-			break;
 		default:
 			break;
 		}
-		++iRandomScript;
-		if (iRandomScript == 5)
-			iRandomScript = 0;
+		++m_iRandomScript;
+
+		if (m_ePhase == CUFO::PHASE_1 && 3 == m_iRandomScript)
+			m_iRandomScript = 0;
+		else if (m_iRandomScript == 4)
+			m_iRandomScript = 0;
 
 		m_fScriptDelay = 0.f;
 	}
