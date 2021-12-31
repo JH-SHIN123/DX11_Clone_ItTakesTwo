@@ -438,25 +438,24 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 
 	if (pUfo->Get_IsRidLaserGun() == true)
 	{
-		_vector vCodyPos = pCodyTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 5.f, 0.f, 0.f);
+		
 		_matrix matChair = pUfo->Get_Model()->Get_BoneMatrix("Chair") * pUfoTransform->Get_WorldMatrix();
-		_vector vDir = XMVector3Normalize(matChair.r[3] - vCodyPos);
-		XMStoreFloat3(&m_vCamRoot_RippedOff[0], vCodyPos - vDir * 3.f);
 		
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-		_vector vEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier4(m_vCamRoot_RippedOff[0],
+		_vector vEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier4(m_dRippdeOffTime > 0.5f ? m_vCamRoot_RippedOff[0] : m_vCamRoot_CodyBack,
 			m_vCamRoot_RippedOff[1],
 			m_vCamRoot_RippedOff[2],
 			m_vCamRoot_RippedOff[3], m_dRippdeOffTime)), 1.f);
+		_vector vAt = XMVectorLerp(vMayPos, matChair.r[3], m_fEyeChangeTime);
+		
+		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), 
+			MakeViewMatrixByUp(vEye, vAt), (_float)m_dRippdeOffTime));
+		
 		m_dRippdeOffTime -= dTimeDelta / 2.f;
-		if(m_dRippdeOffTime < 0.5f)
-			m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), 
-				MakeViewMatrixByUp(vEye, vMayPos), (_float)m_dRippdeOffTime));
-		else
-			m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), 
-				MakeViewMatrixByUp(vEye,matChair.r[3]), (_float)m_dRippdeOffTime));
+		if (m_fEyeChangeTime < 1.0f)
+			m_fEyeChangeTime += dTimeDelta;
 
-		if (m_dRippdeOffTime <= 0.0)
+		if (m_dRippdeOffTime <= -1.0)
 		{
 			//m_eCurCamMode = CamMode::Cam_Free;
 			ReSet_Cam_FreeToAuto(true, true, 6.0f);
@@ -465,6 +464,13 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 	}
 	else if (m_dRippdeOffTime == 0.0)
 	{
+		_vector vCodyPos = pCodyTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 5.f, 0.f, 0.f);
+		_matrix matChair = pUfo->Get_Model()->Get_BoneMatrix("Chair") * pUfoTransform->Get_WorldMatrix();
+		_vector vCodyBack = XMVector3Normalize(matChair.r[3] - vCodyPos);
+
+		XMStoreFloat3(&m_vCamRoot_CodyBack, vCodyPos - vCodyBack * 9.f + XMVectorSet(0.f,7.f,0.f,0.f));
+		
+		
 		_vector vDir = XMVector3Normalize(vLaserGunPos - vMayPos);
 
 		
@@ -479,7 +485,9 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 		m_vCamRoot_RippedOff[1],
 		m_vCamRoot_RippedOff[2],
 		m_vCamRoot_RippedOff[3], m_dRippdeOffTime)),1.f);
-	m_dRippdeOffTime += dTimeDelta / 2.f;
+	if(m_dRippdeOffTime < 1.0)
+		m_dRippdeOffTime += dTimeDelta / 2.f;
+	
 	_vector vAt = vLaserGunPos;
 	vAt.m128_f32[1] += 1.f;
 
@@ -826,6 +834,8 @@ _fmatrix CSubCamera::MakeViewMatrixByQuaternion(_fvector vEye, _fvector vAt, _fv
 
 _fmatrix CSubCamera::MakeLerpMatrix(_fmatrix matDst, _fmatrix matSour, _float fTime)
 {
+	if (fTime < 0.f)
+		return matDst;
 	if (fTime >= 1.f)
 		return matSour;
 	_vector	  vPreRight = matDst.r[0], vNextRight = matSour.r[0]
