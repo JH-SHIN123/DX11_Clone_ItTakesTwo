@@ -82,7 +82,7 @@ void CWarpGate_Star::Set_Activate(_bool IsActivate)
 {
 	if (false == m_IsActivate && true == IsActivate)
 	{	
-		if(false == m_IsMiniGame)
+		if(true == m_IsMiniGame)
 			EFFECT->Add_Effect(Effect_Value::WarpGate_Clear, m_pTransformCom->Get_WorldMatrix());
 		else
 			EFFECT->Add_Effect(Effect_Value::WarpGate_Clear_MiniGame, m_pTransformCom->Get_WorldMatrix());
