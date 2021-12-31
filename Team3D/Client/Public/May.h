@@ -499,7 +499,10 @@ private:
 	void Hook_UFO(const _double dTimeDelta);
 	void Wall_Jump(const _double dTimeDelta);
 	void BossMissile_Control(const _double dTimeDelta);
-	void Ride_Ending_Rocket(const _double dTimeDelta);
+
+	public:
+		void Ride_Ending_Rocket(const _double dTimeDelta);
+	private:
 
 	//Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);

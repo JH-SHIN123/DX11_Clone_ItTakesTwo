@@ -3252,7 +3252,7 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
-	if (false == m_bElectricWallAttach)//
+	if (false == m_bElectricWallAttach)
 		return;
 
 	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)
@@ -4338,6 +4338,14 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_E))
 			++m_iKeyDownCount;
 
+		UI_CreateOnlyOnce(Cody, InputButton_BossHolding);
+
+		_matrix UFOBone = ((CUFO*)DATABASE->Get_BossUFO())->Get_Model()->Get_BoneMatrix("Base");
+		_matrix UFOBoneWorld = UFOBone * ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_WorldMatrix();
+		_vector UFOBonePos = UFOBoneWorld.r[3];
+
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_BossHolding, UFOBonePos);
+
 		if (10 <= m_iKeyDownCount)
 		{
 			if (SCRIPT->Get_Script_Played(34) == false)
@@ -4351,6 +4359,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
 			((CMay*)DATABASE->GetMay())->Set_InterActiveUIDisable(false);
+			UI_Delete(Cody, InputButton_BossHolding);
 			m_IsHolding_High_UFO = true;
 		}
 	}
@@ -4432,15 +4441,23 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
-	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
+	++m_iDeadCount;
+	// 핀볼 실패 후 리스폰 할 때.
+	if (m_iDeadCount == 1)
 	{
-		/* Sound */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			SCRIPT->VoiceFile_No22();
-		/* 코디가 잘못했을 때 */
-		else
+		if (SCRIPT->Get_Script_Played(21) == false)
+		{
 			SCRIPT->VoiceFile_No21();
+			SCRIPT->Set_Script_Played(21, true);
+		}
+	}
+	else if (m_iDeadCount == 2)
+	{
+		if (SCRIPT->Get_Script_Played(22) == false)
+		{
+			SCRIPT->VoiceFile_No22();
+			SCRIPT->Set_Script_Played(22, true);
+		}
 	}
 
 	m_IsPinBall = false;

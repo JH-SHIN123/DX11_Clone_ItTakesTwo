@@ -21,6 +21,7 @@ private:
 	virtual ~CMoonBaboonCore_Button() = default;
 
 public:
+	void Release_Button();
 	void Set_WorldMatrix();
 	void Set_RenderPass(STATE eBtnState) { m_iRenderPass = (_uint)eBtnState; };
 

@@ -53,6 +53,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&UFODesc, (ROBOTDESC*)pArg, sizeof(ROBOTDESC));
 
+	UFODesc.vPosition.m128_f32[1] += 2.f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, UFODesc.vPosition);
 
 	m_pModelCom->Set_Animation(UFO_Fwd);
@@ -66,7 +67,7 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 
 	/* 컷 신 끝나고 기본 위치로 이동해야되는 포지션 세팅 */
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPos.m128_f32[1] += 6.f;
+	vPos.m128_f32[1] += 4.f;
 	XMStoreFloat4(&m_vStartUFOPos, vPos);
 	m_IsStartingPointMove = true;
 
@@ -640,10 +641,14 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
+		m_pMoonBaboon->Set_Animation(CutScene_RocketPhaseFinished_MoonBaboon, Moon_Ufo_KnockDownMH);
 
 		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
 		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 1.f);
 		m_pGameInstance->Play_Sound(TEXT("Boss_UFO_Fall2.wav"), CHANNEL_BOSS_UFO, 1.f);
+
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(false);
 
 		m_IsCutScene = true;
 	}
@@ -1170,6 +1175,9 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 		TriggerActorReplacement();
 		m_IsTriggerActive = true;
 		m_IsPhase2InterActive = true;
+
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(true);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(true);
 	}
 
 	if (true == m_IsCodyEnter)
@@ -1181,21 +1189,12 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 			SCRIPT->Set_Script_Played(45, true);
 		}
 
+		m_IsAdJustPosition = true;
+
 		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer, 30.f);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
+		m_pMoonBaboon->Set_Animation(CutScene_EnterUFO_MoonBaboon, Moon_Ufo_MH);
 		m_IsCodyEnter = false;
-
-		if (m_pModelCom->Is_AnimFinished(UFO_CodyHolding_low))
-		{
-			m_pModelCom->Set_Animation(UFO_CodyHolding);
-			m_pModelCom->Set_NextAnimIndex(UFO_CodyHolding);
-		}
-
-		if (m_pGameInstance->Key_Down(DIK_NUMPAD4))
-		{
-			m_pModelCom->Set_Animation(UFO_LaserRippedOff);
-			m_pModelCom->Set_NextAnimIndex(UFO_Left);
-		}
 	}
 
 	if (89.f <= m_pModelCom->Get_CurrentTime(CutScene_EnterUFO_FlyingSaucer) && false == m_IsCodySetPos)
@@ -1251,7 +1250,8 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_Eject_FlyingSaucer) == true)
 	{
-		((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_CutSceneEnd(true);
+		//((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_CutSceneEnd(true);
+		((CMay*)DATABASE->GetMay())->Set_UFO(true);
 	}
 
 	if (false == m_IsEjection)
@@ -1564,38 +1564,43 @@ void CUFO::GoUp(_double dTimeDelta)
 
 void CUFO::Script(_double dTimeDelta)
 {
-	//m_fScriptDelay += (_float)dTimeDelta;
-	//if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
-	//{
-	//	switch (iRandomScript)
-	//	{
-	//	case 0:
-	//		SCRIPT->VoiceFile_No39();
-	//		break;
-	//	case 1:
-	//		if (m_ePhase == CUFO::PHASE_2)
-	//		{
-	//			SCRIPT->VoiceFile_No40();
-	//		}
-	//		break;
-	//	case 2:
-	//		SCRIPT->VoiceFile_No41();
-	//		break;
-	//	case 3:
-	//		SCRIPT->VoiceFile_No42();
-	//		break;
-	//	case 4:
-	//		SCRIPT->VoiceFile_No46();
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//	++iRandomScript;
-	//	if (iRandomScript == 5)
-	//		iRandomScript = 0;
+	if (true == m_IsCutScene)
+		return;
 
-	//	m_fScriptDelay = 0.f;
-	//}
+	/* 수정 */
+	m_fScriptDelay += (_float)dTimeDelta;
+	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1 ||
+		m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_2)
+	{
+		switch (m_iRandomScript)
+		{
+		case 0:
+			SCRIPT->VoiceFile_No39();
+			break;
+		case 1:
+			SCRIPT->VoiceFile_No41();
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No42();
+			break;
+		case 3:
+			if (m_ePhase == CUFO::PHASE_2)
+			{
+				SCRIPT->VoiceFile_No40();
+			}
+			break;
+		default:
+			break;
+		}
+		++m_iRandomScript;
+
+		if (m_ePhase == CUFO::PHASE_1 && 3 == m_iRandomScript)
+			m_iRandomScript = 0;
+		else if (m_iRandomScript == 4)
+			m_iRandomScript = 0;
+
+		m_fScriptDelay = 0.f;
+	}
 }
 
 
