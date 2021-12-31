@@ -11,7 +11,7 @@
 /**
 * 보스방 무적
 */
-#define __PLAYER_INVINCIBLE_BOSSROOM
+//#define __PLAYER_INVINCIBLE_BOSSROOM
  
 /************************************************************************/
   

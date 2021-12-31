@@ -370,7 +370,7 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 			m_pModelCom->Set_DefaultVariables_Shadow();
 			m_pModelCom->Render_Model(0);
 		}
-		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && false == m_bPhantomRenderOff)
 		{
 			m_pModelCom->Render_Model(30);
 			m_pModelCom->Render_Model(31);

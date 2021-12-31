@@ -655,13 +655,16 @@ private:
 
 #pragma region Dead_InBossroom
 public:
-	void Respawn_InBossroom();
-	_bool Get_bDeadInBossroom() { return m_bDead_InBossroom; }
+	void	Respawn_InBossroom();
+	_bool	Get_bDeadInBossroom() { return m_bDead_InBossroom; }
+	_bool	Get_bPhantomRenderOff() { return m_bPhantomRenderOff; }
+	void	Set_bPhantomRenderOff(_bool bSwitch) { m_bPhantomRenderOff = bSwitch; }
 
 private:
 	void DeadInBossroom(const _double dTimeDelta);
 
 private:
+	_bool m_bPhantomRenderOff = false;
 	_bool m_bDead_InBossroom = false;
 #pragma endregion
 

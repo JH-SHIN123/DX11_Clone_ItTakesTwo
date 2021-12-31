@@ -268,8 +268,12 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		_vector vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 
 		// 코디가 죽어있으면 메이를 향해서
+		_bool bTargetChange = false;
 		if (pCody->Get_bDeadInBossroom())
+		{
+			bTargetChange = true;
 			vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		}
 
 		vTargetPos = XMVectorSetY(vTargetPos, vTargetPos.m128_f32[1] + 1.5f);
 		_vector vRocketPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -283,7 +287,10 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		{
 			m_bPlayerExplosion = true;
 #ifndef __PLAYER_INVINCIBLE_BOSSROOM
-			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(120);
+			if (bTargetChange)
+				((CMay*)DATABASE->GetMay())->Set_HpBarReduction(120);
+			else
+				((CCody*)DATABASE->GetCody())->Set_HpBarReduction(120);
 #endif //__PLAYER_INVINCIBLE_BOSSROOM
 			
 		}
@@ -298,8 +305,12 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		_vector vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 
 		// 메이가 죽어있으면 코디를 향해서
+		_bool bTargetChange = false;
 		if (pMay->Get_bDeadInBossroom())
+		{
+			bTargetChange = true;
 			vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		}
 
 		vTargetPos = XMVectorSetY(vTargetPos, vTargetPos.m128_f32[1] + 1.5f);
 		_vector vRocketPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -313,7 +324,10 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		{
 			m_bPlayerExplosion = true;
 #ifndef __PLAYER_INVINCIBLE_BOSSROOM
-			((CMay*)DATABASE->GetMay())->Set_HpBarReduction(120);
+			if (bTargetChange)
+				((CCody*)DATABASE->GetCody())->Set_HpBarReduction(120);
+			else
+				((CMay*)DATABASE->GetMay())->Set_HpBarReduction(120);
 #endif //__PLAYER_INVINCIBLE_BOSSROOM
 		}
 		else
