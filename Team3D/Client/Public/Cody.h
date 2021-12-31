@@ -435,6 +435,7 @@ private:
 	_bool	 m_IsPinBall = false;
 	_bool	 m_IsReadyPinball = false;
 	_bool	 m_bPinBallScript = false;
+	_uint	 m_iDeadCount = 0;
 	/* Hye::For.Tube*/
 	_bool	 m_IsTube = false;
 	/* Hye::For.SpaceShip */
