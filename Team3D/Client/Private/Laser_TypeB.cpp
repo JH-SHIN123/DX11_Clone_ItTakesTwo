@@ -242,19 +242,19 @@ void CLaser_TypeB::Set_LaserDir(_float4 vLaserDir)
 void CLaser_TypeB::SetUp_MainLaserDirection(_uint iOption)
 {
 	if (0 == iOption)
-		m_vLaserDir = { 0.f, 0.f, 1.f, 0.f };
+		m_vLaserDir = { 0.f, 0.f, 0.5f, 0.f };
 	else if (1 == iOption)
 		m_vLaserDir = { 0.5f, 0.f, 0.5f, 0.f };
 	else if (2 == iOption)
-		m_vLaserDir = { 1.f, 0.f, 0.f, 0.f };
+		m_vLaserDir = { 0.5f, 0.f, 0.f, 0.f };
 	else if (3 == iOption)
 		m_vLaserDir = { 0.5f, 0.f, -0.5f, 0.f };
 	else if (4 == iOption)
-		m_vLaserDir = { 0.f, 0.f, -1.f, 0.f };
+		m_vLaserDir = { 0.f, 0.f, -0.5f, 0.f };
 	else if (5 == iOption)
 		m_vLaserDir = { -0.5f, 0.f, -0.5f, 0.f };
 	else if (6 == iOption)
-		m_vLaserDir = { -1.f, 0.f, 0.f, 0.f };
+		m_vLaserDir = { -0.5f, 0.f, 0.f, 0.f };
 	else if (7 == iOption)
 		m_vLaserDir = { -0.5f, 0.f, 0.5f, 0.f };
 }

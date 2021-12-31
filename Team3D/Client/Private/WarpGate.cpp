@@ -9,6 +9,7 @@
 #include "Effect_Env_Particle.h"
 #include "Effect_RespawnTunnel.h"
 #include "Effect_RespawnTunnel_Portal.h"
+#include "Script.h"
 
 CWarpGate::CWarpGate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -44,6 +45,8 @@ HRESULT CWarpGate::NativeConstruct(void * pArg)
 
 	m_pGameInstance->Play_Sound(TEXT("Gate.wav"), CHANNEL_GATE, 0.f);
 	m_pGameInstance->Play_Sound(TEXT("GateStar.wav"), CHANNEL_GATE_STAR, 0.f);
+
+
 
 	return S_OK;
 }
@@ -220,6 +223,24 @@ HRESULT CWarpGate::Check_WarpGate_Star()
 	m_pWarpGate_Star_4->Set_Scale(XMVectorSet(0.8f, 0.8f, 0.8f, 0.f));
 	m_pWarpGate_Star_5->Set_Scale(XMVectorSet(1.17f, 1.17f, 1.17f, 0.f));
 
+	if (MAIN_TENNIS == m_WarpGate_Desc.eStageValue || STAGE_TENNIS == m_WarpGate_Desc.eStageValue)
+	{
+		m_pWarpGate_Star_1->MiniGame_Warp(true);
+		m_pWarpGate_Star_2->MiniGame_Warp(true);
+		m_pWarpGate_Star_3->MiniGame_Warp(true);
+		m_pWarpGate_Star_4->MiniGame_Warp(true);
+		m_pWarpGate_Star_5->MiniGame_Warp(true);
+	}
+
+	if (STAGE_TENNIS == m_WarpGate_Desc.eStageValue)
+	{
+		m_pWarpGate_Star_1->Set_Activate(true);
+		m_pWarpGate_Star_2->Set_Activate(true);
+		m_pWarpGate_Star_3->Set_Activate(true);
+		m_pWarpGate_Star_4->Set_Activate(true);
+		m_pWarpGate_Star_5->Set_Activate(true);
+	}
+
 	return S_OK;
 }
 
@@ -306,7 +327,7 @@ void CWarpGate::Check_Tennis_Found()
 			for(_int i = 0; i < 3 ; ++i)
 				vDir.m128_f32[i] = fabs(vDir.m128_f32[i]);
 
-			if (0.45f > vDir.m128_f32[0] &&
+			if (1.45f > vDir.m128_f32[0] &&
 				0.25f > vDir.m128_f32[1] &&
 				15.8f > vDir.m128_f32[2])
 				m_bClearEffect = true;
@@ -320,12 +341,12 @@ void CWarpGate::Check_Tennis_Found()
 			for (_int i = 0; i < 3; ++i)
 				vDir.m128_f32[i] = fabs(vDir.m128_f32[i]);
 
-			if (0.45f > vDir.m128_f32[0] &&
+			if (1.45f > vDir.m128_f32[0] &&
 				0.25f > vDir.m128_f32[1] &&
 				15.8f > vDir.m128_f32[2])
 				m_bClearEffect = true;
 		}
-	}
+	}	
 
 	return;
 }
@@ -376,6 +397,14 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	case CWarpGate::MAIN_UMBRELLA:
 		vPos = XMVectorSet(-617.f, 755.f, 196.f, 1.f);
 		fDegree = -90.f;
+		if (DATABASE->Get_RailStageClear() || DATABASE->Get_PinBallStageClear())
+		{
+			if (DATABASE->Get_May_Stage() == ST_GRAVITYPATH && SCRIPT->Get_Script_Played(8) == true && SCRIPT->Get_Script_Played(9) == false)
+			{
+				SCRIPT->VoiceFile_No09();
+				SCRIPT->Set_Script_Played(9, true);
+			}
+		}
 		DATABASE->Set_May_Stage(ST_PINBALL);
 		DATABASE->Set_Cody_Stage(ST_PINBALL);
 
@@ -389,6 +418,14 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	case CWarpGate::MAIN_PLANET:
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
+		if (DATABASE->Get_RailStageClear() || DATABASE->Get_PinBallStageClear())
+		{
+			if (DATABASE->Get_May_Stage() == ST_GRAVITYPATH && SCRIPT->Get_Script_Played(8) == true && SCRIPT->Get_Script_Played(9) == false)
+			{
+				SCRIPT->VoiceFile_No09();
+				SCRIPT->Set_Script_Played(9, true);
+			}
+		}
 		DATABASE->Set_May_Stage(ST_RAIL);
 		DATABASE->Set_Cody_Stage(ST_RAIL);
 		break;

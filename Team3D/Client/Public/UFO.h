@@ -12,10 +12,6 @@ private:
 	virtual ~CUFO() = default;
 
 public:
-	enum UFO_STATE {
-		UFO_END
-	};
-
 	enum UFO_TARGET { TARGET_CODY, TARGET_MAY, TARGET_END };
 	enum UFO_PHASE { PHASE_1, PHASE_2, PHASE_3, PHASE_END };
 	enum UFO_PATTERN { INTERACTION, LASER, GRAVITATIONALBOMB, GUIDEDMISSILE, GROUNDPOUND, PATTERN_END };
@@ -139,8 +135,16 @@ private:
 	/* For. UI */
 	class CBossHpBar*		m_pBossHpBar = nullptr;
 
+	/* For. Sound */		
+	_float					m_fLaserSoundVolume = 0.7f;
+	_float					m_fCoreSoundVolume = 1.f;
+	_float					m_fGravitationalBombSoundVolume = 1.f;
+	_float					m_fGroundPoundSoundVolume = 1.f;
+	_float					m_fBossMissileSoundVolume = 1.f;
+	_bool					m_IsSoundPlayOnce = true;
+
 	/* CutScene Offset */
-	_vector     m_vChairOffSetPos = {};
+	_vector					m_vChairOffSetPos = {};
 
 private:
 	/* For.Component */
@@ -165,9 +169,15 @@ private:
 	/* For. MoonBaboon */
 	class CMoonBaboon*		m_pMoonBaboon = nullptr;
 
+	/* For. Random Script */
+	_uint iRandomScript = 0;
+	_float m_fScriptDelay = 0.f;
+	_uint m_iGroundPoundCount = 0;
+
 private:
 	/* For.AllPHASE */
 	void GoUp(_double dTimeDelta);
+	void Script(_double dTimeDelta);
 
 	/* For.PHASE_1 Pattern */
 	void Phase1_Pattern(_double dTimeDelta);
@@ -197,6 +207,7 @@ private:
 	HRESULT Ready_TriggerActor_Component();
 	HRESULT Ready_StaticActor_Component();
 	HRESULT TriggerActorReplacement();
+	HRESULT Phase1_End_Sound();
 
 	/* For.PHASE_2 End */
 	HRESULT Phase2_End(_double dTimeDelta);
@@ -210,6 +221,8 @@ private:
 	void Add_LerpInfo_To_Model();
 	HRESULT Ready_Component();
 	HRESULT Ready_UI();
+	HRESULT SetUp_SoundChannel();
+
 
 private:
 	/* For.SubLaser */

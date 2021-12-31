@@ -23,7 +23,7 @@ HRESULT CSky::NativeConstruct(void * pArg)
 	CGameObject::NativeConstruct(pArg);
 
 	NULL_CHECK_RETURN(pArg, E_FAIL);
-	m_iViewportIndex = *(_uint*)pArg;
+	m_iViewportIndex = *(_uint*)pArg;;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Sky_Space"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom), E_FAIL);

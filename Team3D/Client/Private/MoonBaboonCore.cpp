@@ -9,6 +9,7 @@
 #include "UFO.h"
 #include"MainCamera.h"
 #include"SubCamera.h"
+#include "Script.h"
 
 _uint CMoonBaboonCore::m_iBrokenCheck = 0;
 
@@ -58,6 +59,11 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 		m_bPatternOn = true;
 
 	m_iBrokenCheck = 0;
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, 1.f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, 1.f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSSCORE);
 
     return S_OK;
 }
@@ -207,6 +213,12 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_fMoveDelta += (_float)TimeDelta;
 			m_bMove = true;
+
+			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+			}
 		}
 		else
 			m_bArrived = true;
@@ -220,6 +232,12 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_fMoveDelta -= (_float)TimeDelta;
 			m_bMove = true;
+
+			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+			}
 		}
 	}
 	else
@@ -270,6 +288,19 @@ void CMoonBaboonCore::Set_Broken()
 		m_pEffectBossCore = nullptr;
 	}
 
+	// 0 - 2 - 1 순으로 깨지는거 맞겠지?
+	// SOUND && SCRIPT
+	if (m_tDesc.iIndex == 2)
+	{
+		if (SCRIPT->Get_Script_Played(30) == false)
+		{
+			SCRIPT->VoiceFile_No30();
+			SCRIPT->Set_Script_Played(30, true);
+		}
+	}
+
+	//////////////////
+
 	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어 아니면
 	{
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"));
@@ -277,7 +308,6 @@ void CMoonBaboonCore::Set_Broken()
 	}
 	else
 	{
-		_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Set_Start_Destroy_BossCore();
 	}
 

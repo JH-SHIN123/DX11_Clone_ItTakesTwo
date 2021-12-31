@@ -16,19 +16,71 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 {
 	__super::NativeConstruct_Prototype();
 #pragma region CAM_SHAKE_BASIC	
-	CCamEffect* pCam_Shake_BuddyBoom = CCamEffect::Create(TEXT("Cam_Shake_BuddyBoom"));
+	CCamEffect* pCam_Shake_ShootLaser_Cody = CCamEffect::Create(TEXT("Cam_Shake_ShootLaser_Cody"));
 	{
-		_double dDuration = 2.0;
-		pCam_Shake_BuddyBoom->Set_Duration(dDuration);
+		_double dDuration = 0.25;
+		pCam_Shake_ShootLaser_Cody->Set_Duration(dDuration);
 		for (_double i = 0.0; i <= dDuration; i += 0.0625)
 		{
 			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
 			pCycleDesc->dStartTime = i;
 			pCycleDesc->dMiddleTime = i + 0.0325;
 			pCycleDesc->dFinishTime = i + 0.0625;
-			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 0.2 / (i + 1);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -0.2 / (i + 1);
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMaxForce = 0.02 / (i + 1);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -0.02 / (i + 1);
+
+			pCam_Shake_ShootLaser_Cody->Add_CamShakeCycleDesc(pCycleDesc);
+		}
+	}
+	Add_CamEffect(TEXT("Cam_Shake_ShootLaser_Cody"), pCam_Shake_ShootLaser_Cody);
+	CCamEffect* pCam_Shake_ShootLaser = CCamEffect::Create(TEXT("Cam_Shake_ShootLaser"));
+	{
+		_double dDuration = 0.25;
+		pCam_Shake_ShootLaser->Set_Duration(dDuration);
+		for (_double i = 0.0; i <= dDuration; i += 0.0625)
+		{
+			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+			pCycleDesc->dStartTime = i;
+			pCycleDesc->dMiddleTime = i + 0.0325;
+			pCycleDesc->dFinishTime = i + 0.0625;
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMaxForce = 0.2 / (i + 1);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -0.2 / (i + 1);
+
+			pCam_Shake_ShootLaser->Add_CamShakeCycleDesc(pCycleDesc);
+		}
+	}
+	Add_CamEffect(TEXT("Cam_Shake_ShootLaser"), pCam_Shake_ShootLaser);
+
+	CCamEffect* pCam_Shake_BuddyBoom = CCamEffect::Create(TEXT("Cam_Shake_BuddyBoom"));
+	{
+		_double dDuration = 3.75;
+		pCam_Shake_BuddyBoom->Set_Duration(dDuration);
+		for (_double i = 0.0; i <= dDuration; i += 0.75)
+		{
+			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+			pCycleDesc->dStartTime = i;
+			pCycleDesc->dMiddleTime = i + 0.375;
+			pCycleDesc->dFinishTime = i + 0.75;
+
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = (_double)XMConvertToRadians(20.f	/ (_float)pCycleDesc->dFinishTime);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = (_double)-XMConvertToRadians(20.f / (_float)pCycleDesc->dFinishTime);
+
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMaxForce = (_double)XMConvertToRadians(10.f / (_float)pCycleDesc->dFinishTime);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMinForce = (_double)-XMConvertToRadians(10.f / (_float)pCycleDesc->dFinishTime);
+
+
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMaxForce = -2.0 / pCycleDesc->dFinishTime;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = 2.0 / pCycleDesc->dFinishTime;
+
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMaxForce = 1.0 / pCycleDesc->dFinishTime;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Look].dMinForce = -2.0 / pCycleDesc->dFinishTime;
+
 
 			pCam_Shake_BuddyBoom->Add_CamShakeCycleDesc(pCycleDesc);
 		}
@@ -638,8 +690,8 @@ HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath, _bool bMakeUpNodesTimeB
 			auto& iter = pLoadFilm->Get_CamNodes()->begin();
 			for (_uint i = 0; i < 12; i++,iter++)
 			{
-				(*iter)->vEye.y += 98.3895f;
-				(*iter)->vAt.y += 98.3895f;
+				(*iter)->vEye.y += 100.f;
+				(*iter)->vAt.y += 100.f;
 			}
 		}
 	return S_OK;

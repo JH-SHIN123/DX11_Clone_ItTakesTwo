@@ -7,6 +7,7 @@
 #include "PixelCrossHair.h"
 #include "PixelUFO.h"
 #include "RunningMoonBaboon.h"
+#include "Script.h"
 
 CMoonUFO::CMoonUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -162,6 +163,15 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 44000*/)
 	{
+		/* SCRIPT && SOUND */
+		_bool IsMayUFO = ((CMay*)DATABASE->GetMay())->Get_IsInUFO();
+		_bool IsCodyUFO = ((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick();
+		if (SCRIPT->Get_Script_Played(51) == false && IsMayUFO == true && IsCodyUFO == true)
+		{
+			SCRIPT->VoiceFile_No51();
+			SCRIPT->Set_Script_Played(51, true);
+		}
+
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
 		//m_bRotateRight = true;
 	}

@@ -157,6 +157,7 @@ void CMoonBaboonCore_Button::OnPressed(_double TimeDelta)
 		{
 			m_fMoveDeltaValue -= (_float)TimeDelta * fTriggerSpeed;
 			m_vLocalPosition.y += (_float)TimeDelta * fTriggerSpeed;
+
 		}
 	}
 

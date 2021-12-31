@@ -55,6 +55,10 @@ private:
 	_float4x4			m_ResetWorld;
 
 	_bool				m_bDeadType = false;
+
+	/* Sound && Script */
+	_uint				m_iDeadCount = 0;
+
 private:
 	void MoveMent(_double dTimaDelta);
 

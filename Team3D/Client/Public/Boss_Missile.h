@@ -58,8 +58,11 @@ private:
 
 private:
 	_double m_dControlLifeDeltaT = 0.0; // 탔을때부터 시간제한
-	_bool	m_isDropped = false;	/* Se */
-	_double m_dDroppedTime = 0.0;	/* Se */	
+	_bool	m_isDropped = false;				/* Se */
+	_double m_dDroppedTime = 0.0;				/* Se */
+	_bool	m_bSetAngle_PlayerControl = false;	/* Se */
+	_float	m_fAngle_PlayerControl = 0.f;		/* Se */
+	_double m_dWaitTime_PlayerControl = 0.0;	/* Se */
 
 private:
 	GameID::Enum m_eTarget_GameID;
@@ -85,6 +88,8 @@ private:
 	_float m_fMoveAcceleration = 0.f;
 	_float m_fCollideTime = 0.f;
 	_float m_fTestDegree = 0.f;
+
+	_float m_fMissileSoundVolume = 0.5f;
 
 	UI::INTERACTIVE_ID m_eInterActiveID = UI::INTERACTIVE_ID_END;
 	PxRaycastBuffer	m_MissileRaycastBuffer;

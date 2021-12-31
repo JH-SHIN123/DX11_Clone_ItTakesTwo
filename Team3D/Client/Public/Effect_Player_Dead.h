@@ -28,7 +28,7 @@ private:
 	_float4 Set_particleUV(_int iIndex, _int U, _int V);
 
 private:
-	_double m_dAlphaTime = 1.5;
+	_double m_dAlphaTime = 0.5;
 	_bool	m_IsDisapear = false;
 	CTextures* m_pTexturesCom_Particle = nullptr;
 	CTextures* m_pTexturesCom_Particle_Mask = nullptr;

@@ -126,8 +126,10 @@ void CPressurePlateLock::LockActive(_double TimeDelta)
 			{
 				_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 				matWorld.r[3].m128_f32[1] -= fMaxScale;
-				//EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, matWorld);
 				EFFECT->Add_Effect(Effect_Value::PipeLocker_Connected, XMMatrixTranslation(XMVectorGetX(matWorld.r[3]), XMVectorGetY(matWorld.r[3]), XMVectorGetZ(matWorld.r[3])));
+				m_pGameInstance->Stop_Sound(CHANNEL_PIPEEFFECT);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_PIPEEFFECT, m_fPipeLockVolume);
+				m_pGameInstance->Play_Sound(TEXT("Pipe_Hold.wav"), CHANNEL_PIPEEFFECT, m_fPipeLockVolume);
 				m_bConnectEffectOnce = true;
 			}
 			return;
