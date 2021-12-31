@@ -1125,7 +1125,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 			m_pModelCom->Set_Animation(UFO_LaserRippedOff);
 			m_pModelCom->Set_NextAnimIndex(UFO_Left);
 		}
-
 	}
 
 	if (89.f <= m_pModelCom->Get_CurrentTime(CutScene_EnterUFO_FlyingSaucer) && false == m_IsCodySetPos)
