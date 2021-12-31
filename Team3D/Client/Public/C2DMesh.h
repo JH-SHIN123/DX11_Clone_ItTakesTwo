@@ -26,11 +26,7 @@ private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 
-	CModel*				m_pModelCom_UFO = nullptr;
-	CModel*				m_pModelCom_Ailen = nullptr;
-	CModel*				m_pModelCom_Robot = nullptr;
-	CModel*				m_pModelCom_Star = nullptr;
-	CModel*				m_pModelCom_Umbrella = nullptr;
+	CModel*				m_pModelCom = nullptr;
 
 	CDynamicActor*		m_pDynamicActorCom = nullptr;
 	CTriggerActor*		m_pTriggerActorCom = nullptr;
@@ -38,8 +34,8 @@ private:
 	CTransform*			m_pCodyTransformCom = nullptr;
 
 	/* 초기 생성스케일, 최대 스케일 */
-	_float				m_fScale = 0.1f;
-	_float				m_fMaxScale = 3.f;
+	_float				m_fScale = 1.5f;
+	_float				m_fMaxScale = 5.f;
 
 	_float				m_fRandomAngle = 0.f;
 	_uint				m_iColorIndex = 0;

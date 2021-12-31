@@ -30,11 +30,14 @@ private:
 	_double			m_dAngle = 0.0;
 	_uint			m_iRandom = 0;
 
+	_bool			m_bSoundCheck = false;
+
 private:
 	void Movement(_double dTimeDelta);
 	void Rotate_Angle(_double dMaxAngle, _double dSpeed, _double dTimeDelta);
 	void Rotate_Random(_double dSpeed, _double dTimeDelta);
 	void Rotate_Fix();
+	void PlaySound_by_PlayerDistance();
 
 private:
 	HRESULT Ready_Component(void* pArg);

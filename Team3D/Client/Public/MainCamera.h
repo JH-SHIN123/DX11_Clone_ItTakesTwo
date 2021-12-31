@@ -51,7 +51,9 @@ private:
 	//For Free.
 	_int	Tick_Cam_Free(_double dTimeDelta);					//자유이동
 	_int	Tick_Cam_AutoToFree(_double dTimeDelta);			//연출 카메라 -> 자유이동시 보간
+public:
 	_int	Tick_Cam_Ending(_double dTimeDelta);
+private:
 	_int	Tick_Cam_Warp_WormHole(_double dTimeDelta);			//웜홀
 	_int	Tick_Cam_PressButton_Bridge(_double dTimeDelta);	//다리앞의 버튼
 	_int	Tick_Cam_InJoystick(_double dTimeDelta);			//달나라 우주선 레이져

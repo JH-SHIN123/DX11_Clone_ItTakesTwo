@@ -30,6 +30,7 @@
 #include "UFORadarSet.h"
 #include "Boss_Missile.h"
 /* Jin */
+#include "UI_Generator.h"
 /* Jun */
 #include "Camera.h"
 #include"CutScenePlayer.h"
@@ -160,7 +161,25 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
 		ENDINGCREDIT->Create_Environment();
 		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
+
+		UI_Create(Default, BlackScreenFadeInOut);
+		UI_Generator->Set_FadeInSpeed(Player::Default, UI::BlackScreenFadeInOut, 1000.f);
+		m_IsEndingFadeOut = true;
 	}
+
+	/* Fade Out */
+	if (true == m_IsEndingFadeOut)
+	{
+		m_dEndingFadeOutWaitTime += dTimedelta;
+
+		if (3.f <= m_dEndingFadeOutWaitTime)
+		{
+			UI_Generator->Set_FadeOut(Player::Default, UI::BlackScreenFadeInOut);
+			UI_Generator->Set_FadeOutSpeed(Player::Default, UI::BlackScreenFadeInOut, 1.5f);
+			m_IsEndingFadeOut = false;
+		}
+	}
+
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
 	if (m_iLevelStep == 3)

@@ -94,7 +94,7 @@ void CLaserPowerCoord::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CG
 {
 	CDynamic_Env::Trigger(eStatus, eID, pGameObject);
 
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && m_tDynamic_Env_Desc.iOption == 0)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eCODY && m_tDynamic_Env_Desc.iOption == 0 && false == m_bUICheck_Cody)
 	{
 		((CCody*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_bCollision_Cody = true;
@@ -105,7 +105,7 @@ void CLaserPowerCoord::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CG
 		m_bCollision_Cody = false;
 	}
 
-	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && m_tDynamic_Env_Desc.iOption == 1)
+	if (eStatus == TriggerStatus::eFOUND && eID == GameID::Enum::eMAY && m_tDynamic_Env_Desc.iOption == 1 && false == m_bUICheck_May)
 	{
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eLASERTENNISPOWERCOORD, true, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_bCollision_May = true;

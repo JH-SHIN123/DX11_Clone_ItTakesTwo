@@ -7,6 +7,9 @@ BEGIN(Client)
 class CMoonBaboonCore final : public CGameObject
 {
 public:
+	enum WHOISON { ON_CODY, ON_MAY, ON_NONE };
+
+public:
 	typedef struct tagMoonBaboonCoreDesc
 	{
 		_float4x4	WorldMatrix = MH_XMFloat4x4Identity();
@@ -23,7 +26,7 @@ public:
 
 public:
 	void Set_Broken();
-	void Set_ActiveCore(_int iActive) { m_iActiveCore = iActive; }
+	void Set_ActiveCore(_int iActive, WHOISON eOn);
 	void Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed);
 
 public:
@@ -53,6 +56,7 @@ private:
 private:
 	static	_uint	m_iBrokenCheck;
 	_bool			m_bPatternOn = false;
+	WHOISON			m_eWhoIsOn = WHOISON::ON_NONE;
 
 private:
 	_bool	m_b2Floor = false;

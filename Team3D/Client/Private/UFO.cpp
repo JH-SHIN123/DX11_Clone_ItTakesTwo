@@ -1250,7 +1250,8 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_Eject_FlyingSaucer) == true)
 	{
-		((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_CutSceneEnd(true);
+		//((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_CutSceneEnd(true);
+		((CMay*)DATABASE->GetMay())->Set_UFO(true);
 	}
 
 	if (false == m_IsEjection)
@@ -1563,6 +1564,7 @@ void CUFO::GoUp(_double dTimeDelta)
 
 void CUFO::Script(_double dTimeDelta)
 {
+	/* ¼öÁ¤ */
 	m_fScriptDelay += (_float)dTimeDelta;
 	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1)
 	{
