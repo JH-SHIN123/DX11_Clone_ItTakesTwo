@@ -2166,6 +2166,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
 				Set_AllActiveHpBar(false);
 				UI_Generator->Set_AllActivation(false);
+				UI_Generator->Delete_InterActive_UI(Player::May, UI::Boss_UFO_LaserGunRing);
 
 				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
 				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 1.f);

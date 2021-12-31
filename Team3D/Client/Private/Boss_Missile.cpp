@@ -161,11 +161,19 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		UI_Delete(May, InputButton_PS_InterActive);
 		m_bMayControl = true;
+
+		//m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+		//m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, 0.5f);
+		//m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_MAY, 0.5f);
 	}
 	else if (m_IsCrashed == true && true == m_IsCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
 		UI_Delete(Cody, InputButton_InterActive);
 		m_bCodyControl = true;
+
+		//m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+		//m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, 0.5f);
+		//m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_CODY, 0.5f);
 	}
 
 	if (m_IsCrashed == true && false == m_IsTargetCody)
@@ -369,11 +377,11 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	Set_SmokeEffect(true);
 
-	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
-	{
-		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
-	}
+	//if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
+	//{
+	//	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+	//	m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+	//}
 
 	// 각도 제한 걸어야 함
 #ifdef __CONTROL_MAY_KEYBOARD

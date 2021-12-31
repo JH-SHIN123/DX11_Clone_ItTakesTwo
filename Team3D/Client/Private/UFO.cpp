@@ -499,9 +499,12 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 		m_IsCutScene = true;
 		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
 		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
-		/* 여기 추가 */
 		m_pMoonBaboon->Set_Animation(CutScene_PowerCoreDestroyed_MoonBaboon, Moon_Ufo_KnockDownMH);
 		Ready_TriggerActor_Component();
+
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(false);
+
 		return;
 	}
 
@@ -604,6 +607,11 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
+
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 1.f);
+		m_pGameInstance->Play_Sound(TEXT("Boss_UFO_Fall2.wav"), CHANNEL_BOSS_UFO, 1.f);
+
 		m_IsCutScene = true;
 	}
 
@@ -813,7 +821,6 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 		GroundPound_Pattern(dTimeDelta);
 		break;
 	}
-
 }
 
 void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
@@ -863,7 +870,7 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		{
 			//_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
-			UFOWorld.r[3].m128_f32[1] -= 11.f;
+			UFOWorld.r[3].m128_f32[1] -= 11.5f;
 
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
@@ -933,6 +940,8 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
 	{
 		m_pTriggerActorCom->Update_TriggerActor();
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(true);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(true);
 		m_IsInterActive = true;
 	}
 
@@ -1009,14 +1018,10 @@ HRESULT CUFO::Ready_StaticActor_Component()
 {
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
 
-	m_pStaticTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
-
 	_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Root");
 	_matrix matTrans = XMMatrixScaling(100.f, 100.f, 100.f);
-	BaseBone = matTrans * BaseBone * m_pTransformCom->Get_WorldMatrix();
-
 	_matrix matRotY = XMMatrixRotationZ(XMConvertToRadians(180.f));
-	BaseBone = matRotY * BaseBone;
+	BaseBone = matRotY * matTrans * BaseBone * m_pTransformCom->Get_WorldMatrix();
 
 	BaseBone.r[3].m128_f32[1] += 0.05f;
 	m_pStaticTransformCom->Set_WorldMatrix(BaseBone);
@@ -1062,7 +1067,7 @@ HRESULT CUFO::TriggerActorReplacement()
 HRESULT CUFO::Phase1_End_Sound()
 {
 	/* 보스 UFO 떨어졌을 때 사운드 */
-	if (94.f <= m_pMoonBaboon->Get_Model()->Get_CurrentTime(CutScene_PowerCoreDestroyed_MoonBaboon) && true == m_IsSoundPlayOnce)
+	if (60.f <= m_pMoonBaboon->Get_Model()->Get_CurrentTime(CutScene_PowerCoreDestroyed_MoonBaboon) && true == m_IsSoundPlayOnce)
 	{
 		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
 		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
@@ -1094,13 +1099,6 @@ HRESULT CUFO::Phase1_End_Sound()
 
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
-	//if (m_pCodyMissile) {
-	//	m_pCodyMissile->Set_MissileDead();
-	//}
-	//if (m_pMayMissile) {
-	//	m_pMayMissile->Set_MissileDead();
-	//}
-
 	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
 	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
 	{
@@ -1448,7 +1446,6 @@ void CUFO::Set_EndIntroCutScene()
 	((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 	((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
 	m_pBossHpBar->Set_Active(true);
-	SCRIPT->VoiceFile_No27();
 }
 
 void CUFO::Set_MoonBaboonPtr(CMoonBaboon * pMoonBaboon)
