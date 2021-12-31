@@ -338,7 +338,7 @@ void CScript::VoiceFile_No38()
 void CScript::VoiceFile_No39()
 {
 	m_pGameInstance->Play_Sound(TEXT("39.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(83, 2.f, BOSS));
+	m_queueScriptInfo.emplace(SCRIPTINFO(83, 2.f));
 }
 
 void CScript::VoiceFile_No40()
@@ -350,13 +350,13 @@ void CScript::VoiceFile_No40()
 void CScript::VoiceFile_No41()
 {
 	m_pGameInstance->Play_Sound(TEXT("41.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(85, 3.f, BOSS));
+	m_queueScriptInfo.emplace(SCRIPTINFO(85, 3.f));
 }
 
 void CScript::VoiceFile_No42()
 {
 	m_pGameInstance->Play_Sound(TEXT("42.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(86, 3.f, BOSS));
+	m_queueScriptInfo.emplace(SCRIPTINFO(86, 3.f));
 }
 
 void CScript::VoiceFile_No43()
@@ -458,6 +458,22 @@ void CScript::VoiceFile_No55()
 	m_pGameInstance->Play_Sound(TEXT("55.wav"), CHANNEL_VOICE);
 	m_queueScriptInfo.emplace(SCRIPTINFO(121, 2.f));
 	m_queueScriptInfo.emplace(SCRIPTINFO(122, 3.f));
+}
+
+void CScript::VoiceFile_No56()
+{
+	m_pGameInstance->Play_Sound(TEXT("39.wav"), CHANNEL_VOICE);
+	m_queueScriptInfo.emplace(SCRIPTINFO(83, 2.f, BOSS));
+}
+void CScript::VoiceFile_No57()
+{
+	m_pGameInstance->Play_Sound(TEXT("41.wav"), CHANNEL_VOICE);
+	m_queueScriptInfo.emplace(SCRIPTINFO(85, 3.f, BOSS));
+}
+void CScript::VoiceFile_No58()
+{
+	m_pGameInstance->Play_Sound(TEXT("42.wav"), CHANNEL_VOICE);
+	m_queueScriptInfo.emplace(SCRIPTINFO(86, 3.f, BOSS));
 }
 #pragma endregion
 

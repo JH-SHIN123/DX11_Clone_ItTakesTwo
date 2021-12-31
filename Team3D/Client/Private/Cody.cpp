@@ -4436,6 +4436,25 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
+	++m_iDeadCount;
+	// 핀볼 실패 후 리스폰 할 때.
+	if (m_iDeadCount == 1)
+	{
+		if (SCRIPT->Get_Script_Played(21) == false)
+		{
+			SCRIPT->VoiceFile_No21();
+			SCRIPT->Set_Script_Played(21, true);
+		}
+	}
+	else if (m_iDeadCount == 2)
+	{
+		if (SCRIPT->Get_Script_Played(22) == false)
+		{
+			SCRIPT->VoiceFile_No22();
+			SCRIPT->Set_Script_Played(22, true);
+		}
+	}
+
 	m_IsPinBall = false;
 	m_IsCollide = false;
 }
