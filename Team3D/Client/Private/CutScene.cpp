@@ -961,8 +961,12 @@ HRESULT CCutScene::End_CutScene_GotoMoon()
 
 HRESULT CCutScene::End_CutScene_Outro()
 {
+	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	pCody->Set_Ending_Ready();
+	pMay->Set_Ending_Ready();
 	m_pCutScenePlayer->Set_IsEndingCredit(true);
-	
 	return S_OK;
 }
 

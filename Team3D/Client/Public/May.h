@@ -218,6 +218,7 @@ public:
 	void	Set_MinigameHpBarReduction(_float fDamage);
 	void	Set_Player_Instance_Dead();
 	void	Set_InterActiveUIDisable(_bool IsCheck);
+	void	Set_Ending_Ready();
 
 	/* For. Ending */
 	void	Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }

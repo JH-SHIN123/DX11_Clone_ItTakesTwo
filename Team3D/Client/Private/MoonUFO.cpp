@@ -175,7 +175,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	_vector vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
 
-	if (m_pGameInstance->Key_Pressing(DIK_RIGHT) /*|| m_pGameInstance->Get_Pad_LStickX() > 44000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -208,7 +208,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		//m_bRotateRight = false;
 
 
-	if (m_pGameInstance->Key_Pressing(DIK_LEFT) /*|| m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -229,7 +229,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	} 
 	//else
 		//m_bRotateLeft = false;
-
+	//
 	if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
 	{
 		/* SCRIPT && SOUND */

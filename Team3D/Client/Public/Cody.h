@@ -265,6 +265,7 @@ public:
 	void			 Set_Change_Size_After_UmbrellaCutScene();
 	void			 Set_PlayerSizeSmall_INUFO();
 	void			 Set_InJoyStick();
+	void			 Set_Ending_Ready();
 
 	/* For. Ending */
 	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
