@@ -39,6 +39,7 @@ public:
 	void		Set_OpenThridFloor(_bool bSet) { m_bOpenThirdFloor = bSet; }
 	void		Set_Start_Destroy_BossCore();
 	void		Start_HitRocket_Boss();
+	void		Start_EndingCredit();
 
 	HRESULT Start_Film(const _tchar* pFilmTag);
 	HRESULT Start_CamEffect(const _tchar* pEffectTag);

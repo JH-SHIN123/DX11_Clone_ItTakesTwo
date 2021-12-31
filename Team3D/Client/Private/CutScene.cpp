@@ -962,8 +962,6 @@ HRESULT CCutScene::End_CutScene_GotoMoon()
 
 HRESULT CCutScene::End_CutScene_Outro()
 {
-	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
-
 	m_pCutScenePlayer->Set_IsEndingCredit(true);
 	
 	return S_OK;
@@ -1015,7 +1013,7 @@ HRESULT CCutScene::Ready_CutScene_GotoMoon()
 
 HRESULT CCutScene::Ready_CutScene_Outro()
 {
-	m_dDuration = 62.89;
+	m_dDuration = 62.9;
 	return S_OK;
 }
 

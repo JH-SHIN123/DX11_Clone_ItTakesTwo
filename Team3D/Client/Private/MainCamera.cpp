@@ -208,7 +208,7 @@ _int CMainCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_LaserTennis;
 	}
 
-	if (m_pCody->Get_IsEnding())
+	if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Outro))
 		m_eCurCamMode = CamMode::Cam_Ending;
 	
 	return NO_EVENT;
@@ -250,6 +250,12 @@ void CMainCamera::Start_HitRocket_Boss()
 	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 	m_dHitRocketTime = 0.0;
 	m_eCurCamMode = CamMode::Cam_Boss_HitRocket;
+}
+
+void CMainCamera::Start_EndingCredit()
+{
+	m_eCurCamMode = CamMode::Cam_Ending;
+	m_pGameInstance->Set_ViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
 }
 
 HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
@@ -1632,8 +1638,8 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
-		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
+		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
 		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 		return NO_EVENT;
 	}
