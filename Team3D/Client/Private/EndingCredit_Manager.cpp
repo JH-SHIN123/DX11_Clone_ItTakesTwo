@@ -69,7 +69,7 @@ HRESULT CEndingCredit_Manager::Create_Environment()
 	FAILED_CHECK_RETURN(Create_Rocks(50), E_FAIL);
 
 	/* 2DMesh »ý¼º */
-	FAILED_CHECK_RETURN(Create_2DMesh(10), E_FAIL);
+	FAILED_CHECK_RETURN(Create_2DMesh(20), E_FAIL);
 
 	return S_OK;
 }

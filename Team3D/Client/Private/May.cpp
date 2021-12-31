@@ -2619,9 +2619,9 @@ void CMay::InUFO(const _double dTimeDelta)
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.8f;
-	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.8f;
-	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.8f;
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.7f;
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.7f;
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.7f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
@@ -2721,6 +2721,7 @@ void CMay::Set_UFO(_bool bCheck)
 	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(bCheck);
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_CutSceneEnd(bCheck);
 }
 
 void CMay::Warp_Wormhole(const _double dTimeDelta)

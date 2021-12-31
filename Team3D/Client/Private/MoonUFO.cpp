@@ -72,7 +72,7 @@ _int CMoonUFO::Late_Tick(_double dTimeDelta)
 
 HRESULT CMoonUFO::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (false == m_IsMayInUFO)
+	if (false == m_IsMayInUFO || false == m_IsCutSceneEnd)
 		return S_OK;
 
 	CGameObject::Render(eGroup);
@@ -160,7 +160,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	_vector vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
 	_vector vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
-	if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
+	if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 44000*/)
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
 		//m_bRotateRight = true;
@@ -168,7 +168,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	//else
 		//m_bRotateRight = false;
 
-	if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
+	if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 	{
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -UFOFORCE, XMVectorGetY(vRight)  * -UFOFORCE, XMVectorGetZ(vRight) * -UFOFORCE));
 		//m_bRotateLeft = true;
@@ -176,10 +176,10 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	//else
 		//m_bRotateLeft = false;
 
-	if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
+	if (m_pGameInstance->Key_Pressing(DIK_UP)/* || m_pGameInstance->Get_Pad_LStickY() < 20000*/)
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
 
-	if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 44000)
+	if (m_pGameInstance->Key_Pressing(DIK_DOWN)/* || m_pGameInstance->Get_Pad_LStickY() > 44000*/)
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -UFOFORCE, XMVectorGetY(vLook) * -UFOFORCE, XMVectorGetZ(vLook) * -UFOFORCE));
 
 	/* For.LaserGun */
