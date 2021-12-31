@@ -59,26 +59,7 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 		Laser_Down(TimeDelta);
 
 	if (true == m_IsLaserUp)
-	{
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-		_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
-
-		_float fCodyDistance = fabs(XMVectorGetX(XMVector3Length(vPos - vCodyPos)));
-		_float fMayDistance = fabs(XMVectorGetX(XMVector3Length(vPos - vMayPos)));
-
-		_float fDistance = min(fCodyDistance, fMayDistance);
-
-		/* 메인 레이저로부터 벽까지의 거리 */
-		_float fMaxDistance = 59.f;
-		_float fSoundRatio = 1.f - fDistance / fMaxDistance;
-
-		if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
-		{
-			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, fSoundRatio);
-			m_pGameInstance->Play_Sound(TEXT("Boss_LaserTurret_Laser.wav"), CHANNEL_BOSSLASER, fSoundRatio);
-		}
-	}
+		SoundVolumeRatio_ProportionalDistance();
 
 	GoUp(TimeDelta);
 
@@ -226,6 +207,28 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 		/* 다음에도 또 올라와야하기 때문에 초기화 해주자 ㅇㅇ */
 		m_dPatternDeltaT = 0.0;
 		m_iPatternState = 0;
+	}
+}
+
+void CMoonBaboon_MainLaser::SoundVolumeRatio_ProportionalDistance()
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+	_float fCodyDistance = fabs(XMVectorGetX(XMVector3Length(vPos - vCodyPos)));
+	_float fMayDistance = fabs(XMVectorGetX(XMVector3Length(vPos - vMayPos)));
+
+	_float fDistance = min(fCodyDistance, fMayDistance);
+
+	/* 메인 레이저로부터 벽까지의 총 거리 */
+	_float fMaxDistance = 59.f;
+	_float fSoundVolumeRatio = 1.f - fDistance / fMaxDistance;
+
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, fSoundVolumeRatio);
+		m_pGameInstance->Play_Sound(TEXT("Boss_LaserTurret_Laser.wav"), CHANNEL_BOSSLASER, fSoundVolumeRatio);
 	}
 }
 

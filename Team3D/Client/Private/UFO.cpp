@@ -17,6 +17,7 @@
 #include "MoonBaboonCore.h"
 #include "BossDoor.h"
 #include "UI_Generator.h"
+#include "Script.h"
 #include "MainCamera.h"
 #include "SubCamera.h"
 #include "Script.h"
@@ -97,6 +98,9 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
+	/* For. Script && Sound */
+	Script(dTimeDelta);
+
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
 		m_IsActive = true;
@@ -139,6 +143,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_ePhase = UFO_PHASE::PHASE_3;
 		m_IsCutScene = true;
 	}
+
 
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
@@ -211,7 +216,7 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 {
 	if (nullptr == m_pCodyTransform || nullptr == m_pMayTransform)
 		return;
-
+	
 	_vector vDir, vTargetPos;
 
 	/* 지정된 타겟에 따라 포지션 세팅 */
@@ -220,6 +225,12 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 	CMay* pMay = (CMay*)DATABASE->GetMay();
 	_bool bCodyDead = pCody->Get_IsDeadInBossroom();
 	_bool bMayDead = pMay->Get_IsDeadInBossroom();
+
+	if (SCRIPT->Get_Script_Played(27) == false)
+	{
+		SCRIPT->VoiceFile_No27();
+		SCRIPT->Set_Script_Played(27, true);
+	}
 
 	switch (m_eTarget)
 	{
@@ -446,6 +457,16 @@ void CUFO::Core_Destroyed()
 		_bool IsBroken = ((CMoonBaboonCore*)DATABASE->Get_MoonBaboonCore(i))->Get_Broken();
 		_int iActive = ((CMoonBaboonCore*)DATABASE->Get_MoonBaboonCore(i))->Get_ActiveCore();
 
+		// Sound && Script
+		if (true == IsBroken && 1 == iActive)
+		{
+			if (SCRIPT->Get_Script_Played(28) == false)
+			{
+				SCRIPT->VoiceFile_No28();
+				SCRIPT->Set_Script_Played(28, true);
+			}
+		}
+
 		if (true == IsBroken && 1 == iActive)
 		{
 			m_ePattern = UFO_PATTERN::INTERACTION;
@@ -496,6 +517,13 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 	/* 레이저 패턴이 3번 진행됬고 코어가 터졌다면 2페로 넘어갈 컷 신을 진행하자 */
 	if (3 == m_iPhaseChangeCount)
 	{
+		/* Sound && Script*/
+		if (SCRIPT->Get_Script_Played(31) == false)
+		{
+			SCRIPT->VoiceFile_No31();
+			SCRIPT->Set_Script_Played(31, true);
+		}
+
 		m_IsCutScene = true;
 		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
 		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
@@ -536,6 +564,12 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 	if (true == m_pModelCom->Is_AnimFinished(UFO_MH))
 	{
 		m_fWaitingTime += (_float)dTimeDelta;
+
+		if (SCRIPT->Get_Script_Played(29) == false)
+		{
+			SCRIPT->VoiceFile_No29();
+			SCRIPT->Set_Script_Played(29, true);
+		}
 
 		/* 1초 대기했다가 레이저 패턴으로 바꿔라 */
 		if (1.f <= m_fWaitingTime)
@@ -725,6 +759,13 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			/* 유도 미사일 발사!!!!!!!!!!!!!!!!! */
 			if (nullptr == m_pCodyMissile)
 			{
+				/* Sound && Script*/
+				if (SCRIPT->Get_Script_Played(36) == false)
+				{
+					SCRIPT->VoiceFile_No36();
+					SCRIPT->Set_Script_Played(36, true);
+				}
+
 				/* true면 Cody */
 				tMissileDesc.IsTarget_Cody = true;
 				tMissileDesc.vPosition = (_float4)&LeftRocketHatch.r[3].m128_f32[0];
@@ -861,6 +902,17 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 	{
 		XMStoreFloat4(&m_vGroundPoundTargetPos, m_pMayTransform->Get_State(CTransform::STATE_POSITION));
 		m_IsGroundPound = true;
+		m_iGroundPoundCount += 1;
+	}
+
+	/* Script && Sound */
+	if (m_iGroundPoundCount >= 7)
+	{
+		if (SCRIPT->Get_Script_Played(47) == false)
+		{
+			SCRIPT->VoiceFile_No47();
+			SCRIPT->Set_Script_Played(47, true);
+		}
 	}
 
 	/* UFO가 찍기 애니메이션을 진행중이다 밑에서 쓸데없이 연산하지말고 걍 나가자 ㅇㅇ */
@@ -939,6 +991,12 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
 	{
+		if (SCRIPT->Get_Script_Played(31) == true && SCRIPT->Get_Script_Played(32) == false)
+		{
+			SCRIPT->VoiceFile_No32();
+			SCRIPT->Set_Script_Played(32, true);
+		}
+
 		m_pTriggerActorCom->Update_TriggerActor();
 		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(true);
@@ -1102,6 +1160,13 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
 	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
 	{
+		// 2페 끝난후?
+		if (SCRIPT->Get_Script_Played(43) == false)
+		{
+			SCRIPT->VoiceFile_No43();
+			SCRIPT->Set_Script_Played(43, true);
+		}
+
 		Ready_StaticActor_Component();
 		TriggerActorReplacement();
 		m_IsTriggerActive = true;
@@ -1110,6 +1175,13 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 
 	if (true == m_IsCodyEnter)
 	{
+		// 코디 들어간후?
+		if (SCRIPT->Get_Script_Played(45) == false)
+		{
+			SCRIPT->VoiceFile_No45();
+			SCRIPT->Set_Script_Played(45, true);
+		}
+
 		m_pModelCom->Set_Animation(CutScene_EnterUFO_FlyingSaucer, 30.f);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsCodyEnter = false;
@@ -1131,6 +1203,9 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
+			m_pGameInstance->Play_Sound(TEXT("InUFO.wav"), CHANNEL_IN_UFO_BGM, 0.f, true);
+			m_pGameInstance->Sound_FadeIn(CHANNEL_IN_UFO_BGM, 0.7f, 2.f);
+
 			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
@@ -1489,6 +1564,42 @@ void CUFO::GoUp(_double dTimeDelta)
 	}
 
 	m_pTransformCom->Go_Up(dTimeDelta);
+}
+
+void CUFO::Script(_double dTimeDelta)
+{
+	m_fScriptDelay += (_float)dTimeDelta;
+	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
+	{
+		switch (iRandomScript)
+		{
+		case 0:
+			SCRIPT->VoiceFile_No39();
+			break;
+		case 1:
+			if (m_ePhase == CUFO::PHASE_2)
+			{
+				SCRIPT->VoiceFile_No40();
+			}
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No41();
+			break;
+		case 3:
+			SCRIPT->VoiceFile_No42();
+			break;
+		case 4:
+			SCRIPT->VoiceFile_No46();
+			break;
+		default:
+			break;
+		}
+		++iRandomScript;
+		if (iRandomScript == 5)
+			iRandomScript = 0;
+
+		m_fScriptDelay = 0.f;
+	}
 }
 
 

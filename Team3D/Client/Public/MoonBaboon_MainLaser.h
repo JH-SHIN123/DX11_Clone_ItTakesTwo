@@ -44,6 +44,7 @@ public:
 private:
 	void Laser_AttackPattern(_double TimeDelta);
 	void Laser_Down(_double TimeDelta);
+	void SoundVolumeRatio_ProportionalDistance();
 
 
 private:
@@ -60,8 +61,6 @@ private:
 	_float m_fUpSpeed = 0.f;
 	_float m_fDistance = 0.f;
 	_bool m_IsArrivalLastFloor = false;
-
-	_float m_fTest = 0.f;
 
 private:
 	vector<class CLaser_TypeB*>				m_vecLaser_TypeB;

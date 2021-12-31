@@ -32,6 +32,12 @@ public:
 	/* 두줄이상출력시 사용 *Only FullScreen */
 	HRESULT Render_Script_DoubleLine(_uint iIndexFirst, _uint iIndexSecond, _float fDeadTime, _bool bBackGround = true);
 
+public: /* Getter */
+	_bool Get_Script_Played(_uint iIndex) { return m_bScriptPlayed[iIndex]; }
+
+public: /* Setter */
+	void Set_Script_Played(_uint iIndex, _bool bPlayed) { m_bScriptPlayed[iIndex] = bPlayed; }
+
 public:
 	/* Voice 파일 재생과 사운드에 맞춰 스크립트가 자동생성 */
 #pragma region Voice
@@ -122,6 +128,9 @@ private:
 	_float				m_fChangeTimeCheck = 0.f;
 	_double				m_dChangeTime = 0.0;
 	queue<SCRIPTINFO>	m_queueScriptInfo;
+
+	// 한번재생용
+	_bool m_bScriptPlayed[55] = { false };
 
 private:
 	_tchar* Find_Script(_uint iIndex);

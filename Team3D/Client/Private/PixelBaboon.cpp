@@ -11,6 +11,7 @@
 #include "MoonUFO.h"
 #include "PixelCrossHair.h"
 #include"CutScenePlayer.h"
+#include "Script.h"
 
 CPixelBaboon::CPixelBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)	
 	: CGameObject(pDevice, pDeviceContext)
@@ -92,9 +93,23 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 		m_iLifeCount -= 1;
 
 		if (m_iLifeCount == 2)
+		{
 			m_pPixelHeart[2]->Set_LifeCountRenderOff(true);
+			if (SCRIPT->Get_Script_Played(52) == false)
+			{
+				SCRIPT->VoiceFile_No52();
+				SCRIPT->Set_Script_Played(52, true);
+			}
+		}
 		else if (m_iLifeCount == 1)
+		{
 			m_pPixelHeart[1]->Set_LifeCountRenderOff(true);
+			if (SCRIPT->Get_Script_Played(53) == false)
+			{
+				SCRIPT->VoiceFile_No53();
+				SCRIPT->Set_Script_Played(53, true);
+			}
+		}
 		else if (m_iLifeCount == 0)
 		{
 #ifdef __PLAY_CUTSCENE
@@ -241,6 +256,15 @@ void CPixelBaboon::Check_Distance_From_UFO(_double dTimeDelta)
 	
 	if (vDist > 0.35f)
 	{
+		/* SCRIPT && SOUND */
+		_bool IsMayUFO = ((CMay*)DATABASE->GetMay())->Get_IsInUFO();
+		_bool IsCodyUFO = ((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick();
+		if (SCRIPT->Get_Script_Played(50) == false && IsMayUFO == true && IsCodyUFO == true)
+		{
+			SCRIPT->VoiceFile_No50();
+			SCRIPT->Set_Script_Played(50, true);
+		}
+
 		m_pPixelHeart[0]->Set_Render_Off(true);
 		m_pPixelHeart[1]->Set_Render_Off(true);
 		m_pPixelHeart[2]->Set_Render_Off(true);

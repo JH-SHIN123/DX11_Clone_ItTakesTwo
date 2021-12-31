@@ -7,6 +7,7 @@
 #include "UmbrellaBeam_Joystick.h"
 #include "Effect_Umbrella_Pipe.h"
 #include "UI_Generator.h"
+#include "Script.h"
 
 
 CUmbrellaBeam::CUmbrellaBeam(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -259,6 +260,11 @@ void CUmbrellaBeam::PutGravitationalField()
 	if (true == m_IsPutGravitationalField)
 	{
 		//pMay->Get_Transform()->Set_WorldMatrix(matWorld);
+		if (SCRIPT->Get_Script_Played(23) == false)
+		{
+			SCRIPT->VoiceFile_No23();
+			SCRIPT->Set_Script_Played(23, true);
+		}
 		pMay->Get_Model()->Set_Animation(ANI_M_ZeroGravity_MH);
 		pMay->Set_ActorPosition(vOffSetPos);
 		pMay->Set_ActorGravity(true, false, true);
