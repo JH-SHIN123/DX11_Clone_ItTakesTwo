@@ -69,7 +69,9 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		SetUp_IntroOffset(dTimeDelta);
+		if(CCutScenePlayer::GetInstance()->Get_CurCutScene() == CCutScene::CutSceneOption::CutScene_Boss_Intro
+			 || CCutScenePlayer::GetInstance()->Get_CurCutScene() == CCutScene::CutSceneOption::CutScene_Eject_InUFO)
+			SetUp_IntroOffset(dTimeDelta);
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return S_OK;
 	}
