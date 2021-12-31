@@ -828,11 +828,6 @@ void CModel::Update_CombinedTransformations()
 
 		if (0 <= iParentNodeIndex)
 			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_PivotTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedTransformations[iParentNodeIndex]));
-		//else if (m_iCurAnimIndex == 548 || m_iCurAnimIndex == 549 || m_iCurAnimIndex == 550)
-		//{
-		//	_matrix RotationMatrix = XMMatrixRotationY(XMConvertToRadians(293.f));
-		//	XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_PivotTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * RotationMatrix * XMLoadFloat4x4(&m_CombinedPivotMatrix));
-		//}
 		else
 			XMStoreFloat4x4(&m_CombinedTransformations[pNode->Get_NodeIndex()], XMLoadFloat4x4(&m_PivotTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_AnimTransformations[pNode->Get_NodeIndex()]) * XMLoadFloat4x4(&m_CombinedPivotMatrix));
 	}
