@@ -9,6 +9,7 @@
 #include "Effect_Env_Particle.h"
 #include "Effect_RespawnTunnel.h"
 #include "Effect_RespawnTunnel_Portal.h"
+#include "Script.h"
 
 CWarpGate::CWarpGate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -372,6 +373,14 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	case CWarpGate::MAIN_UMBRELLA:
 		vPos = XMVectorSet(-617.f, 755.f, 196.f, 1.f);
 		fDegree = -90.f;
+		if (DATABASE->Get_RailStageClear() || DATABASE->Get_PinBallStageClear())
+		{
+			if (DATABASE->Get_May_Stage() == ST_GRAVITYPATH && SCRIPT->Get_Script_Played(8) == true && SCRIPT->Get_Script_Played(9) == false)
+			{
+				SCRIPT->VoiceFile_No09();
+				SCRIPT->Set_Script_Played(9, true);
+			}
+		}
 		DATABASE->Set_May_Stage(ST_PINBALL);
 		DATABASE->Set_Cody_Stage(ST_PINBALL);
 
@@ -385,6 +394,14 @@ _fmatrix CWarpGate::Get_NextPortal_Matrix()
 	case CWarpGate::MAIN_PLANET:
 		vPos = XMVectorSet(617.f, 755.f, 196.2f, 1.f);
 		fDegree = 90.f;
+		if (DATABASE->Get_RailStageClear() || DATABASE->Get_PinBallStageClear())
+		{
+			if (DATABASE->Get_May_Stage() == ST_GRAVITYPATH && SCRIPT->Get_Script_Played(8) == true && SCRIPT->Get_Script_Played(9) == false)
+			{
+				SCRIPT->VoiceFile_No09();
+				SCRIPT->Set_Script_Played(9, true);
+			}
+		}
 		DATABASE->Set_May_Stage(ST_RAIL);
 		DATABASE->Set_Cody_Stage(ST_RAIL);
 		break;

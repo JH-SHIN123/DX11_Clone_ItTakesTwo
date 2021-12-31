@@ -760,5 +760,7 @@ private: /* For. Ending */
 	_float m_fFootStepDelay = 0.f;
 #pragma endregion
 
+	/* For. Script */
+	void Script_Trigger(_double dTimeDelta);
 };
 END

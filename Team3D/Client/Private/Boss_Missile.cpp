@@ -8,6 +8,7 @@
 #include "Effect_Generator.h"
 #include "Effect_Boss_Missile_Smoke_Black.h"
 #include "Effect_Boss_Missile_Smoke_Color.h"
+#include "Script.h"
 
 CBoss_Missile::CBoss_Missile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -115,12 +116,22 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		UI_Delete(May, InputButton_PS_InterActive);
 		m_bMayControl = true;
+		if (SCRIPT->Get_Script_Played(37) == false)
+		{
+			SCRIPT->VoiceFile_No37();
+			SCRIPT->Set_Script_Played(37, true);
+		}
 
 	}
 	else if (m_IsCrashed == true && true == m_IsCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
 		UI_Delete(Cody, InputButton_InterActive);
 		m_bCodyControl = true;
+		if (SCRIPT->Get_Script_Played(38) == false)
+		{
+			SCRIPT->VoiceFile_No38();
+			SCRIPT->Set_Script_Played(38, true);
+		}
 	}
 
 	if (m_IsCrashed == true && false == m_IsTargetCody)

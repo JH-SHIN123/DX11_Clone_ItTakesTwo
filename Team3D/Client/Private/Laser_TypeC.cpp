@@ -4,6 +4,7 @@
 #include "DataStorage.h"
 #include "Effect_MoonUFO_Laser_ColorSmoke.h"
 #include "RunningMoonBaboon.h"
+#include "Script.h"
 
 CLaser_TypeC::CLaser_TypeC(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CLaser(pDevice, pDeviceContext)
@@ -91,6 +92,19 @@ _int CLaser_TypeC::Tick(_double dTimeDelta)
 				if (pUserData->eID == GameID::eRUNNINGMOONBABOON)
 				{
 					((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Set_LaserHit(true);
+				}
+				else
+				{
+					if (SCRIPT->Get_Script_Played(54) == false)
+					{
+						SCRIPT->VoiceFile_No54();
+						SCRIPT->Set_Script_Played(54, true);
+					}
+					else if (SCRIPT->Get_Script_Played(55) == false)
+					{
+						SCRIPT->VoiceFile_No55();
+						SCRIPT->Set_Script_Played(55, true);
+					}
 				}
 			}
 

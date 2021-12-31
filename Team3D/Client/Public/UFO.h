@@ -161,6 +161,11 @@ private:
 	/* For. MoonBaboon */
 	class CMoonBaboon*		m_pMoonBaboon = nullptr;
 
+	/* For. Random Script */
+	_uint iRandomScript = 0;
+	_float m_fScriptDelay = 0.f;
+	_uint m_iGroundPoundCount = 0;
+
 private:
 	/* For.AllPHASE */
 	void GoUp(_double dTimeDelta);

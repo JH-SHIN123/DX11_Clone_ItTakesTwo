@@ -9,6 +9,7 @@
 #include "UFO.h"
 #include"MainCamera.h"
 #include"SubCamera.h"
+#include "Script.h"
 
 _uint CMoonBaboonCore::m_iBrokenCheck = 0;
 
@@ -269,6 +270,19 @@ void CMoonBaboonCore::Set_Broken()
 		Safe_Release(m_pEffectBossCore);
 		m_pEffectBossCore = nullptr;
 	}
+
+	// 0 - 2 - 1 순으로 깨지는거 맞겠지?
+	// SOUND && SCRIPT
+	if (m_tDesc.iIndex == 2)
+	{
+		if (SCRIPT->Get_Script_Played(30) == false)
+		{
+			SCRIPT->VoiceFile_No30();
+			SCRIPT->Set_Script_Played(30, true);
+		}
+	}
+
+	//////////////////
 
 	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어 아니면
 	{
