@@ -35,6 +35,7 @@ private:
 	_float										m_fVerticalAngle = 0.f;
 	_float										m_fHorizontalAngle = 0.f;
 	_float										m_fUmbrellaSoundVolume = 1.f;
+	_float										m_fUmbrellaEffectSoundVolume = 0.5f;
 	_bool										m_IsBeamActivate = false;
 	_bool										m_IsPutGravitationalField = false;
 
