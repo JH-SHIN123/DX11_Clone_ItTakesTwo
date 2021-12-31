@@ -150,6 +150,12 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 	CUmbrellaBeam_Joystick* pJoystick = (CUmbrellaBeam_Joystick*)DATABASE->Get_Umbrella_JoystickPtr();
 	CCody* pCody = (CCody*)DATABASE->GetCody();
 
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAMEFFECT))
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAMEFFECT, m_fUmbrellaEffectSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Umbrella_Idle_NoMay.wav"), CHANNEL_UMBRELLABEAMEFFECT, m_fUmbrellaEffectSoundVolume);
+	}
+
 	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
@@ -160,8 +166,8 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 
 		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
 		{
-			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
-			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, 0.2f);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, 0.2f);
 		}
 	}
 
@@ -172,8 +178,8 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 
 		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
 		{
-			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
-			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, 0.2f);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, 0.2f);
 		}
 	}
 
@@ -184,8 +190,8 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 
 		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
 		{
-			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
-			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, 0.2f);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, 0.2f);
 		}
 	}
 
@@ -196,8 +202,8 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 
 		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
 		{
-			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
-			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, 0.2f);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, 0.2f);
 		}
 	}
 

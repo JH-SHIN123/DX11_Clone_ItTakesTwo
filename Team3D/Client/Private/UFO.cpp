@@ -20,6 +20,7 @@
 #include "Script.h"
 #include "MainCamera.h"
 #include "SubCamera.h"
+#include "Script.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -88,6 +89,8 @@ HRESULT CUFO::NativeConstruct(void * pArg)
 	m_pGameInstance->Add_Light(LightStatus::eDYNAMIC, m_pBossLight);
 	//Safe_AddRef(m_pBossLight);
 
+	SetUp_SoundChannel();
+
 	return S_OK;
 }
 
@@ -96,39 +99,7 @@ _int CUFO::Tick(_double dTimeDelta)
 	CGameObject::Tick(dTimeDelta);
 
 	/* For. Script && Sound */
-	m_fScriptDelay += (_float)dTimeDelta;
-	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
-	{
-		switch (iRandomScript)
-		{
-		case 0:
-			SCRIPT->VoiceFile_No39();
-			break;
-		case 1:
-			if (m_ePhase == CUFO::PHASE_2)
-			{
-				SCRIPT->VoiceFile_No40();
-			}
-			break;
-		case 2:
-			SCRIPT->VoiceFile_No41();
-			break;
-		case 3:
-			SCRIPT->VoiceFile_No42();
-			break;
-		case 4:
-			SCRIPT->VoiceFile_No46();
-			break;
-		default:
-			break;
-		}
-		++iRandomScript;
-		if (iRandomScript == 5)
-			iRandomScript = 0;
-
-		m_fScriptDelay = 0.f;
-	}
-	//////////////////////////////////////////
+	Script(dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
@@ -172,18 +143,8 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_ePhase = UFO_PHASE::PHASE_3;
 		m_IsCutScene = true;
 	}
-	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
-		m_pBossHpBar->Set_Active(false);
 
-	//if (m_pGameInstance->Key_Down(DIK_F11))
-	//{
-	//	CBoss_Missile::tagBossMissile_Desc MissileDesc;
-	//	MissileDesc.IsTarget_Cody = true;
-	//	//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-	//	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
-	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
-	//}
-
+	/* 지우면 안됨 */
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
 
@@ -354,6 +315,10 @@ void CUFO::Laser_Pattern(_double dTimeDelta)
 
 		/* 레이저 패턴 3번 나오면 2페이즈로 바뀐다. */
 		++m_iPhaseChangeCount;
+
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, m_fLaserSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Charge.wav"), CHANNEL_BOSSLASER, m_fLaserSoundVolume);
 	}
 }
  
@@ -362,7 +327,7 @@ void CUFO::MoveStartingPoint(_double dTimeDelta)
 	_vector vTargetPos = XMLoadFloat4(&m_vStartUFOPos);
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if(true == ((CBossDoor*)DATABASE->Get_BossDoor01())->Get_Close())
+	if (true == ((CBossDoor*)DATABASE->Get_BossDoor01())->Get_Close())
 		((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Set_Active(true);
 
 	/* 처음에 저장해둔 타겟 포스의 Y위치까지 천천히 위로 이동해라. */
@@ -465,6 +430,10 @@ void CUFO::GravitationalBomb_Pattern(_double dTimeDelta)
 
 			m_fGravitationalBombLanchTime = 0.f;
 			++m_iGravitationalBombCount;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fGravitationalBombSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Shot.wav"), CHANNEL_BOSS_EFFECT, m_fGravitationalBombSoundVolume);
 		}
 	}
 	else
@@ -506,6 +475,10 @@ void CUFO::Core_Destroyed()
 			{
 				Set_BossHpBarReduction(110);
 				m_IsHit = true;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Explode.wav"), CHANNEL_BOSS_EFFECT, m_fCoreSoundVolume);
 			}
 
 			/* 페이즈가 바꼇다면 HitPod 애니메이션이 아니라 바로 CutScene_PowerCoresDestroyed_UFO로 바꿔줘야함 */
@@ -554,7 +527,12 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 		m_IsCutScene = true;
 		m_pModelCom->Set_Animation(CutScene_PowerCoresDestroyed_UFO);
 		m_pModelCom->Set_NextAnimIndex(UFO_KnockDownMH);
+		m_pMoonBaboon->Set_Animation(CutScene_PowerCoreDestroyed_MoonBaboon, Moon_Ufo_KnockDownMH);
 		Ready_TriggerActor_Component();
+
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(false);
+
 		return;
 	}
 
@@ -663,6 +641,11 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
+
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 1.f);
+		m_pGameInstance->Play_Sound(TEXT("Boss_UFO_Fall2.wav"), CHANNEL_BOSS_UFO, 1.f);
+
 		m_IsCutScene = true;
 	}
 
@@ -771,6 +754,8 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			CGameObject* pGameObject = nullptr;
 			CBoss_Missile::tagBossMissile_Desc tMissileDesc;
 
+			m_pMoonBaboon->Set_Animation(Moon_Ufo_FireRocket, Moon_Ufo_MH);
+
 			/* 유도 미사일 발사!!!!!!!!!!!!!!!!! */
 			if (nullptr == m_pCodyMissile)
 			{
@@ -787,6 +772,10 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
 				m_pCodyMissile = static_cast<CBoss_Missile*>(pGameObject);
 				m_fGuidedMissileTime = 0.f;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fBossMissileSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Shot.wav"), CHANNEL_BOSSMISSILE_CODY, m_fBossMissileSoundVolume);
 			}
 
 			if (nullptr == m_pMayMissile)
@@ -797,6 +786,10 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 				m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_GuiedMissile"), Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &tMissileDesc, &pGameObject);
 				m_pMayMissile = static_cast<CBoss_Missile*>(pGameObject);
 				m_fGuidedMissileTime = 0.f;
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fBossMissileSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Shot.wav"), CHANNEL_BOSSMISSILE_MAY, m_fBossMissileSoundVolume);
 			}
 		}
 	}
@@ -869,7 +862,6 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 		GroundPound_Pattern(dTimeDelta);
 		break;
 	}
-
 }
 
 void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
@@ -883,10 +875,8 @@ void CUFO::Phase3_MoveStartingPoint(_double dTimeDelta)
 	_float vDistance = XMVectorGetX(XMVector3Length(vComparePos));
 	m_pTransformCom->RotateYawDirectionOnLand(vDir, dTimeDelta);
 
-	vDir.m128_f32[1] = 0.f;
-
 	if (1.f <= vDistance)
-		m_pTransformCom->MoveToDir(XMVector3Normalize(vDir), dTimeDelta * 5.f);
+		m_pTransformCom->MoveToDir(XMVector3Normalize(vComparePos), dTimeDelta * 5.f);
 	else
 	{
 		m_IsStartingPointMove = false;
@@ -908,7 +898,7 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		m_fGroundPoundTime += (_float)dTimeDelta;
 
 	/* GroundPound가 시작됬을 때 메이의 포스 저장 */
-	if (4.f <= m_fGroundPoundTime && false == m_IsGroundPound)
+	if (3.f <= m_fGroundPoundTime && false == m_IsGroundPound)
 	{
 		XMStoreFloat4(&m_vGroundPoundTargetPos, m_pMayTransform->Get_State(CTransform::STATE_POSITION));
 		m_IsGroundPound = true;
@@ -932,11 +922,12 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		{
 			//_vector MayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 			_matrix UFOWorld = m_pTransformCom->Get_WorldMatrix();
-			UFOWorld.r[3].m128_f32[1] -= 10.f;
+			UFOWorld.r[3].m128_f32[1] -= 11.5f;
 
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Ring, UFOWorld);
 			EFFECT->Add_Effect(Effect_Value::BossGroundPound_Smoke, UFOWorld);
+
 			m_IsGroundPoundEffectCreate = true;
 		}
 
@@ -967,8 +958,13 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(UFO_GroundPound);
 			m_pModelCom->Set_NextAnimIndex(UFO_MH);
+			m_pMoonBaboon->Set_Animation(Moon_Ufo_GroundPound, Moon_Ufo_MH);
 			m_fGroundPoundTime = 0.f;
 			m_IsGroundPound = false;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_UFO_GroundPound.wav"), CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
 		}
 	}
 }
@@ -991,6 +987,8 @@ void CUFO::DependingTimeSubLaserOperation(_double dTimeDelta)
 
 HRESULT CUFO::Phase1_End(_double dTimeDelta)
 {
+	Phase1_End_Sound();
+
 	if (m_pModelCom->Is_AnimFinished(CutScene_PowerCoresDestroyed_UFO))
 	{
 		if (SCRIPT->Get_Script_Played(31) == true && SCRIPT->Get_Script_Played(32) == false)
@@ -998,7 +996,10 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 			SCRIPT->VoiceFile_No32();
 			SCRIPT->Set_Script_Played(32, true);
 		}
+
 		m_pTriggerActorCom->Update_TriggerActor();
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(true);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(true);
 		m_IsInterActive = true;
 	}
 
@@ -1075,14 +1076,10 @@ HRESULT CUFO::Ready_StaticActor_Component()
 {
 	m_UserData = USERDATA(GameID::eBOSSUFO, this);
 
-	m_pStaticTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
-
 	_matrix BaseBone = m_pModelCom->Get_BoneMatrix("Root");
 	_matrix matTrans = XMMatrixScaling(100.f, 100.f, 100.f);
-	BaseBone = matTrans * BaseBone * m_pTransformCom->Get_WorldMatrix();
-
 	_matrix matRotY = XMMatrixRotationZ(XMConvertToRadians(180.f));
-	BaseBone = matRotY * BaseBone;
+	BaseBone = matRotY * matTrans * BaseBone * m_pTransformCom->Get_WorldMatrix();
 
 	BaseBone.r[3].m128_f32[1] += 0.05f;
 	m_pStaticTransformCom->Set_WorldMatrix(BaseBone);
@@ -1125,15 +1122,41 @@ HRESULT CUFO::TriggerActorReplacement()
 	return S_OK;
 }
 
+HRESULT CUFO::Phase1_End_Sound()
+{
+	/* 보스 UFO 떨어졌을 때 사운드 */
+	if (60.f <= m_pMoonBaboon->Get_Model()->Get_CurrentTime(CutScene_PowerCoreDestroyed_MoonBaboon) && true == m_IsSoundPlayOnce)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_UFO_Fall1.wav"), CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_IsSoundPlayOnce = false;
+	}
+	else if (true == m_pMoonBaboon->Get_Model()->Is_AnimFinished(CutScene_PowerCoreDestroyed_MoonBaboon))
+		m_IsSoundPlayOnce = true;
+
+	if (Moon_Ufo_CodyHolding == m_pMoonBaboon->Get_Model()->Get_CurAnimIndex() && false == m_pGameInstance->IsPlaying(CHANNEL_BOSS_MOONBABOON))
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_MOONBABOON, m_fGroundPoundSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_Moonbaboon_Holding.wav"), CHANNEL_BOSS_MOONBABOON, m_fGroundPoundSoundVolume);
+	}
+
+	if (180.f <= m_pModelCom->Get_CurrentTime(UFO_LaserRippedOff) && true == m_IsSoundPlayOnce)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_MOONBABOON);
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_UFO_BackStep.wav"), CHANNEL_BOSS_UFO, m_fGroundPoundSoundVolume);
+		m_IsSoundPlayOnce = false;
+	}
+	else if (true == m_pModelCom->Is_AnimFinished(Moon_Ufo_CodyHolding))
+		m_IsSoundPlayOnce = true;
+
+	return S_OK;
+}
+
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
-	//if (m_pCodyMissile) {
-	//	m_pCodyMissile->Set_MissileDead();
-	//}
-	//if (m_pMayMissile) {
-	//	m_pMayMissile->Set_MissileDead();
-	//}
-
 	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
 	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
 	{
@@ -1174,7 +1197,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 			m_pModelCom->Set_Animation(UFO_LaserRippedOff);
 			m_pModelCom->Set_NextAnimIndex(UFO_Left);
 		}
-
 	}
 
 	if (89.f <= m_pModelCom->Get_CurrentTime(CutScene_EnterUFO_FlyingSaucer) && false == m_IsCodySetPos)
@@ -1238,8 +1260,7 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (false == m_IsEjection)
 	{
-
-		_vector vPosition = { 64.f, 357.5f, 195.f, 1.f };
+		_vector vPosition = { 64.f, 457.8895f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
 		m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
@@ -1254,6 +1275,7 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
 		}
 #endif
+
 		/* UI OFF */
 		UI_Generator->Set_AllActivation(false);
 		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
@@ -1394,6 +1416,7 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(UFO_LaserRippedOff, UFO_MH, true);
 
 	m_pModelCom->Add_LerpInfo(UFO_Left, CutScene_RocketPhaseFinished_FlyingSaucer, true);
+	m_pModelCom->Add_LerpInfo(UFO_Left, UFO_HitReaction_Fwd, true);
 
 	m_pModelCom->Add_LerpInfo(CutScene_RocketPhaseFinished_FlyingSaucer, UFO_RocketKnockDown_MH, true);
 
@@ -1404,6 +1427,8 @@ void CUFO::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(CutScene_EnterUFO_FlyingSaucer, UFO_Fwd, false);
 
 	m_pModelCom->Add_LerpInfo(UFO_GroundPound, UFO_MH, true, 1.f);
+
+	m_pModelCom->Add_LerpInfo(UFO_HitReaction_Fwd, UFO_Left, true);
 }
 
 HRESULT CUFO::Ready_Component()
@@ -1432,6 +1457,21 @@ HRESULT CUFO::Ready_UI()
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STATIC, TEXT("Layer_UI"), Level::LEVEL_STATIC, TEXT("BossHpBar"), nullptr, &pGameObject), E_FAIL);
 	m_pBossHpBar = static_cast<CBossHpBar*>(pGameObject);
+
+	return S_OK;
+}
+
+HRESULT CUFO::SetUp_SoundChannel()
+{
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 0.5f);
+	m_pGameInstance->Play_Sound(TEXT("Boss.Boss_Laser_Hit"), CHANNEL_BOSS_UFO, 0.5f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, 0.5f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Hit.wav"), CHANNEL_BOSS_EFFECT, 0.5f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
 
 	return S_OK;
 }
@@ -1524,6 +1564,42 @@ void CUFO::GoUp(_double dTimeDelta)
 	}
 
 	m_pTransformCom->Go_Up(dTimeDelta);
+}
+
+void CUFO::Script(_double dTimeDelta)
+{
+	m_fScriptDelay += (_float)dTimeDelta;
+	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
+	{
+		switch (iRandomScript)
+		{
+		case 0:
+			SCRIPT->VoiceFile_No39();
+			break;
+		case 1:
+			if (m_ePhase == CUFO::PHASE_2)
+			{
+				SCRIPT->VoiceFile_No40();
+			}
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No41();
+			break;
+		case 3:
+			SCRIPT->VoiceFile_No42();
+			break;
+		case 4:
+			SCRIPT->VoiceFile_No46();
+			break;
+		default:
+			break;
+		}
+		++iRandomScript;
+		if (iRandomScript == 5)
+			iRandomScript = 0;
+
+		m_fScriptDelay = 0.f;
+	}
 }
 
 

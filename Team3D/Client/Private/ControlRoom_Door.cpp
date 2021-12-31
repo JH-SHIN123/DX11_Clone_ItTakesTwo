@@ -111,6 +111,7 @@ void CControlRoom_Door::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, C
 void CControlRoom_Door::Set_OpenDoor()
 {
 	m_IsOpenDoor = true;
+
 }
 
 

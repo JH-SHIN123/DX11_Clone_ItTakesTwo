@@ -44,6 +44,7 @@ public:
 private:
 	void Laser_AttackPattern(_double TimeDelta);
 	void Laser_Down(_double TimeDelta);
+	void SoundVolumeRatio_ProportionalDistance();
 
 
 private:

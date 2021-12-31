@@ -22,8 +22,9 @@
 /* For.MoonUFO */
 #include "MoonUFO.h"
 #include "Moon.h"
-/* For.BossUFO */
+/* For.Boss */
 #include "UFO.h"
+#include "Moonbaboon.h"
 
 /* For.UI */
 #include "HpBar.h"
@@ -2159,6 +2160,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+				((CMoonBaboon*)DATABASE->Get_MoonBaboon())->Set_Animation(Moon_LaserRippedOff, Moon_Ufo_MH);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
@@ -2166,9 +2168,18 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
 				UI_Delete(May, InputButton_PS_InterActive);
 				((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
-				Set_AllActiveHpBar(false);
 				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
+				Set_AllActiveHpBar(false);
 				UI_Generator->Set_AllActivation(false);
+				UI_Generator->Delete_InterActive_UI(Player::May, UI::Boss_UFO_LaserGunRing);
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 1.f);
+				m_pGameInstance->Play_Sound(TEXT("May_Destroy_LaserGun.wav"), CHANNEL_BOSS_UFO, 1.f);
+
+				m_pGameInstance->Stop_Sound(CHANNEL_VOICE_MAY_1);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_1, 1.f);
+				m_pGameInstance->Play_Sound(TEXT("May_Destroy_LaserGun_Voice.wav"), CHANNEL_VOICE_MAY_1, 1.f);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
@@ -2884,6 +2895,10 @@ void CMay::BossMissile_Control(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Rocket_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Rocket_MH);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, 0.5f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_MAY, 0.5f);
 		}
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)

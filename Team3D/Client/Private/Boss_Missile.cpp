@@ -49,6 +49,14 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 	else
 		m_eInterActiveID = UI::Boss_Missile_May;
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, 0.5f);
+	m_pGameInstance->Play_Sound(TEXT("Boss.Boss_Laser_Hit"), CHANNEL_BOSSMISSILE_CODY, 0.5f);
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, 0.5f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Laser_Hit.wav"), CHANNEL_BOSSMISSILE_MAY, 0.5f);
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+
 	return S_OK;
 }
 
@@ -132,6 +140,20 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		m_IsFalling = true;
 		m_fAttackTime = 0.f;
+
+		if (true == m_IsTargetCody)
+		{
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Stop.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+		}
+		else
+		{
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Stop.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+		}
+		
 		m_isDropped = true; /* Se */
 	}
 
@@ -147,6 +169,9 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 			SCRIPT->Set_Script_Played(37, true);
 		}
 
+		//m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+		//m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, 0.5f);
+		//m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_MAY, 0.5f);
 	}
 	else if (m_IsCrashed == true && true == m_IsCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
@@ -311,6 +336,12 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 			m_pTransformCom->Rotate_ToTarget(vTargetPos);
 			m_pTransformCom->Move_ToTargetNoRotation(vTargetPos, dTimeDelta * fDist / 2.f);
 		}
+
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+		}
 	}
 	else
 	{
@@ -347,6 +378,12 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 			m_pTransformCom->Rotate_ToTarget(vTargetPos);
 			m_pTransformCom->Move_ToTargetNoRotation(vTargetPos, dTimeDelta * fDist / 2.f);
 		}
+
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+		}
 	}
 
 }
@@ -361,6 +398,12 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	else m_dControlLifeDeltaT += dTimeDelta;
 
 	Set_SmokeEffect(true);
+
+	//if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
+	//{
+	//	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+	//	m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
+	//}
 
 	// 각도 제한 걸어야 함
 #ifdef __CONTROL_MAY_KEYBOARD
@@ -581,6 +624,12 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 
 	Set_SmokeEffect(true);
 
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+	}
+
 	// 각도 제한 걸어야 함
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 	_vector vMissilePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -767,6 +816,10 @@ void CBoss_Missile::Explosion_Effect()
 
 	m_pEffect_Smoke_1->Set_Dead();
 	m_pEffect_Smoke_2->Set_Dead();
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSS_EFFECT);
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_EFFECT, 1.f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Bomb.wav"), CHANNEL_BOSS_EFFECT, 1.f);
 }
 
 void CBoss_Missile::Set_SmokeEffect(_bool IsActivate)
