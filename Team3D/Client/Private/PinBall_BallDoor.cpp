@@ -2,6 +2,7 @@
 #include "..\Public\PinBall_BallDoor.h"
 #include "PinBall_Handle.h"
 #include "PinBall.h"
+#include "Script.h"
 
 CPinBall_BallDoor::CPinBall_BallDoor(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CDynamic_Env(pDevice, pDeviceContext)
@@ -108,6 +109,13 @@ void CPinBall_BallDoor::MoveMent(_double dTimeDelta)
 	/* Close */
 	else
 	{
+		// 코디가 핀볼에 처음 탑승했을 때.
+		if (SCRIPT->Get_Script_Played(19) == false)
+		{
+			SCRIPT->VoiceFile_No19();
+			SCRIPT->Set_Script_Played(19, true);
+		}
+
 		_float	fAngle = 100.f * -(_float)dTimeDelta;
 		m_fAngle += fAngle;
 

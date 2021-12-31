@@ -35,6 +35,7 @@ _int CRotationBox::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
+	PlaySound_by_PlayerDistance();
 	Movement(dTimeDelta);
 
 	return NO_EVENT;
@@ -99,6 +100,7 @@ void CRotationBox::Rotate_Angle(_double fMaxAngle, _double dSpeed, _double dTime
 		else
 			m_pTransformCom->RotatePitch_Angle((fMaxAngle * 0.5) - m_dAngle);
 
+		m_bSoundCheck = true;
 		m_bRotate_Random = true;
 		m_dCoolTime = 0.0;
 		m_dAngle = 0.0;
@@ -193,6 +195,27 @@ void CRotationBox::Rotate_Fix()
 		m_pTransformCom->Set_State(CTransform::STATE_UP, vTempUp);
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vTempLook);
 	}
+}
+
+void CRotationBox::PlaySound_by_PlayerDistance()
+{
+	if (false == m_bSoundCheck)
+		return;
+
+	_vector vPosition = ((CCody*)(DATABASE->GetCody()))->Get_Position();
+
+	if (0.7f <= XMVectorGetY(vPosition) - XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+		return;
+
+	_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPosition));
+
+	_float fVolum = 1.5f - vDistance;
+	if (0 >= fVolum)
+		fVolum = 0.f;
+
+	m_pGameInstance->Play_Sound(TEXT("InUFO_RotateBox.wav"), CHANNEL_INUFO_ROTATEBOX, fVolum * 1.5f);
+
+	m_bSoundCheck = false;
 }
 
 HRESULT CRotationBox::Ready_Component(void * pArg)

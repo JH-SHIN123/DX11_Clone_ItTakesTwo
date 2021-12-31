@@ -37,6 +37,7 @@ _int CPedal::Tick(_double dTimeDelta)
 {
 	CDynamic_Env::Tick(dTimeDelta);
 
+	PlaySound_by_PlayerDistance();
 	Movement(dTimeDelta);
 
 	return NO_EVENT;
@@ -98,19 +99,53 @@ void CPedal::Movement(_double dTimeDelta)
 	float fAngle = 0.f;
 	float fRotateAngle = 0.f;
 
-	if (0.1f >= m_fProgressAnim)
+	if (0.05f >= m_fProgressAnim)
 	{
+		m_bSoundOnePlay = false;
 		m_fAddAngle = 0.f;
 		m_pTransformCom->RotateRoll_Angle((dTimeDelta * 30.f));
 	}
+	else if (0.1f >= m_fProgressAnim)
+	{
+		if (false == m_bSoundOnePlay)
+		{
+			m_bSoundCheck = false;
+			m_bSoundOnePlay = true;
+		}
+	}
 	else if (0.5f >= m_fProgressAnim)
+	{
 		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_matResetWorld));
+	}
 	else
 	{
 		fAngle = ((m_fProgressAnim - 0.5f) * 2.f * 30.f);
 		fRotateAngle = fAngle - m_fAddAngle;
 		m_fAddAngle = fAngle;
 		m_pTransformCom->RotateRoll_Angle(-fRotateAngle);
+	}
+}
+
+void CPedal::PlaySound_by_PlayerDistance()
+{
+	if (true == m_bSoundCheck)
+		return;
+
+	_vector vPosition = ((CCody*)(DATABASE->GetCody()))->Get_Position();
+
+	if (0.7f <= XMVectorGetY(vPosition) - XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+		return;
+
+	_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPosition));
+
+	_float fVolum = 1.5f - vDistance;
+	if (0 >= fVolum)
+		fVolum = 0.f;
+
+	if (false == m_bSoundCheck)
+	{
+		m_pGameInstance->Play_Sound(TEXT("InUFO_MoonBaboonStep.wav"), CHANNEL_INUFO_PEDAL, fVolum * 1.5f);
+		m_bSoundCheck = true;
 	}
 }
 

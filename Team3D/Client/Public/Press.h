@@ -27,6 +27,7 @@ private:
 
 	_bool			m_bEffect = false;
 	_bool			m_bSmash = true;
+
 	_float			m_fOpenPos = 0.f;
 	_float			m_fClosePos = 0.f;
 
@@ -36,11 +37,14 @@ private:
 	_double			m_dDistance = 0.f;
 	_double			m_dCoolTime = 0.0;
 
+	_bool			m_bSoundCheck = false;
+
 private:
 	void Movement(_double dTimeDelta);
 	void Open_Press(_double dTimeDelta);
 	void Close_Press(_double dTimeDelta);
 	void Press_Effect();
+	void PlaySound_by_PlayerDistance();
 
 private:
 	HRESULT Ready_Component(void* pArg);

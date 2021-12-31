@@ -47,6 +47,8 @@ _int CPress::Tick(_double dTimeDelta)
 	CDynamic_Env::Tick(dTimeDelta);
 
 	Movement(dTimeDelta);
+	PlaySound_by_PlayerDistance();
+
 	return NO_EVENT;
 }
 
@@ -120,6 +122,7 @@ void CPress::Open_Press(_double dTimeDelta)
 		m_dDistance = 0.0;
 		m_dCoolTime = 0.0;
 		m_bSmash = true;
+		m_bSoundCheck = true;
 		return;
 	}
 
@@ -173,17 +176,6 @@ void CPress::Press_Effect()
 	if (true == m_bEffect)
 		return;
 
-	/*
-			EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Smoke, WorldMatrix);
-
-		WorldMatrix.r[3] += XMVector3Normalize(WorldMatrix.r[2]) * 0.75f;
-		EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Smoke, WorldMatrix);
-
-		WorldMatrix.r[3] -= XMVector3Normalize(WorldMatrix.r[2]) * 1.5f;
-		EFFECT->Add_Effect(Effect_Value::UFO_Inside_PressWall_Smoke, WorldMatrix);
-
-	*/
-
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	WorldMatrix.r[3] += XMVector3Normalize(WorldMatrix.r[1]) * 0.1f;
 	WorldMatrix.r[3] += XMVector3Normalize(WorldMatrix.r[2]) * 0.75f;
@@ -195,6 +187,27 @@ void CPress::Press_Effect()
 	}	
 
 	m_bEffect = true;
+}
+
+void CPress::PlaySound_by_PlayerDistance()
+{
+	if (false == m_bSoundCheck)
+		return;
+
+	_vector vPosition = ((CCody*)(DATABASE->GetCody()))->Get_Position();
+
+	if (0.7f <= XMVectorGetY(vPosition) - XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)))
+		return;
+
+	_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPosition));
+
+	_float fVolum = 1.5f - vDistance;
+	if (0 >= fVolum)
+		fVolum = 0.f;
+
+	m_pGameInstance->Play_Sound(TEXT("InUFO_WallPress.wav"), CHANNEL_INUFO_WALLPRESS, fVolum * 1.5f);
+
+	m_bSoundCheck = false;
 }
 
 HRESULT CPress::Ready_Component(void * pArg)
