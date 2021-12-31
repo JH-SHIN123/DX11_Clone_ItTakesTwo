@@ -828,6 +828,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle">
       <UniqueIdentifier>{5bfb0833-cc63-4158-a256-924e223c5331}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring">
+      <UniqueIdentifier>{f0d53117-db8a-4f40-b48c-6b82785abc49}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket">
       <UniqueIdentifier>{c1b38c7f-ec18-420b-b312-0bb3b47ff4aa}</UniqueIdentifier>
     </Filter>
@@ -1196,9 +1199,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring">
-      <UniqueIdentifier>{f0d53117-db8a-4f40-b48c-6b82785abc49}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1922,6 +1922,9 @@
     <ClInclude Include="..\public\Effect_StarBuddy_Move_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_StarBuddy_Ring.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_Rocket_Smoke.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket</Filter>
     </ClInclude>
@@ -2221,9 +2224,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_StarBuddy_Ring.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2944,6 +2944,9 @@
     <ClCompile Include="..\private\Effect_StarBuddy_Move_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Move\00.Particle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_StarBuddy_Ring.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Effect_Rocket_Smoke.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\05.Rocket</Filter>
     </ClCompile>
@@ -3219,9 +3222,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_StarBuddy_Ring.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Object\04.StarBuddy\Ring</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
