@@ -77,7 +77,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 	{
 		m_bLaunch = true;
 		UI_Delete(May, InputButton_PS_InterActive);
-		UI_Delete(Cody, InputButton_InterActive);
+		UI_Delete(Cody, InputButton_InterActive); 
 	}
 
 	else if (m_bLaunch == true)

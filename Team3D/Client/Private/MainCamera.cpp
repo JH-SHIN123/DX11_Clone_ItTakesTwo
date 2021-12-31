@@ -244,6 +244,13 @@ void CMainCamera::Set_Start_Destroy_BossCore()
 	m_dDestroyCoreTime = 0.0;
 }
 
+void CMainCamera::Start_HitRocket_Boss()
+{
+	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	m_dHitRocketTime = 0.0;
+	m_eCurCamMode = CamMode::Cam_Boss_HitRocket;
+}
+
 HRESULT CMainCamera::Start_Film(const _tchar * pFilmTag)
 {
 	m_pCamHelper->Start_Film(pFilmTag, CFilm::LScreen);
@@ -735,7 +742,7 @@ _int CMainCamera::Tick_Cam_Free_OnBossMiniRoom_Cody(_double dTimeDelta)
 	else if (m_iNodeIdx[0] < 39)	//올라가는 구간
 	{
 		_float fCurNodeY = m_CamNodes[m_iNodeIdx[0]]->vEye.y;
-		_float fNextNodeY = m_CamNodes[m_iNodeIdx[1]]->vEye.y;
+		_float fNextNodeY = m_CamNodes[m_iNodeIdx[1]]->vEye.y - 0.5f;
 		_float fPlayerY = XMVectorGetY(m_pCody->Get_Position());
 
 		_bool bIsStart = fCurNodeY > fPlayerY;
@@ -1366,6 +1373,22 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 
 _int CMainCamera::Tick_Cam_Boss_HitRocket(_double dTimeDelta)
 {
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	if (pUfo->Get_Model()->Get_CurAnimIndex() == UFO_RocketKnockDown_MH)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		ReSet_Cam_FreeToAuto(false, false, 3.f);
+	}
+	CTransform* pUfoTransform = pUfo->Get_Transform();
+
+	_matrix matUfo = pUfo->Get_Model()->Get_BoneMatrix("Chair") * pUfoTransform->Get_WorldMatrix();
+	_vector vUfoPos = matUfo.r[3];
+	_vector vUfoRight = XMVector3Normalize(matUfo.r[0]);
+	_vector vUfoUp = XMVector3Normalize(matUfo.r[1]);
+	_vector vUfoLook = XMVector3Normalize(matUfo.r[2]);
+	_vector vLastEye = vUfoPos + vUfoRight* 10.f + vUfoUp*6.f - vUfoLook*4.f;
+
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vUfoPos), (_float)dTimeDelta));
 	return NO_EVENT;
 }
 
@@ -1599,31 +1622,12 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	//외부에서 상태 설정 구간
 #ifdef __TEST_JUN
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD3))
 	{
-		m_pCamHelper->Start_CamEffect(L"Cam_Shake_MissileBoom", CFilm::LScreen);
+		m_pCamHelper->Start_CamEffect(L"Cam_Shake_BuddyBoom", CFilm::LScreen);
 		return NO_EVENT;
-	}*/
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-	{
-		m_pCamHelper->Start_Film(L"Film_Clear_Umbrella",CFilm::LScreen);
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
-		return NO_EVENT;
-	}*/
-	
-	//if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
-	//{
-	//	CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
-	//	Start_Film(L"Film_Eject_InUFO");
-	//	//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
-	//	return NO_EVENT;
-	//}
+	}
 
-	/*if (m_pGameInstance->Key_Down(DIK_NUMPAD1))
-	{
-		CCutScenePlayer::GetInstance()->Stop_CutScene();
-		return NO_EVENT;
-	}*/
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
 		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
@@ -1631,14 +1635,8 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 		return NO_EVENT;
 	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-	{
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f));
-		m_eCurCamFreeOption = CamFreeOption::Cam_Free_FreeMove;
-	}
-
 #endif
-	
+
 	if (m_eCurCamMode != m_ePreCamMode)
 	{
 		switch (m_eCurCamMode)
@@ -1722,7 +1720,9 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 	case Client::CMainCamera::CamMode::Cam_Destroy_BossCore:
 		iResult = Tick_Cam_Destroy_BossCore(dTimeDelta);
 		break;
-
+	case Client::CMainCamera::CamMode::Cam_Boss_HitRocket:
+		iResult = Tick_Cam_Boss_HitRocket(dTimeDelta);
+		break;
 	}
 	return iResult;
 }

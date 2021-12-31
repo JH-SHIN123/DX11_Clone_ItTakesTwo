@@ -533,7 +533,6 @@ void CGameInstance::Release_Engine()
 	CSSAO::GetInstance()->Clear_Buffer();
 	CBlur::GetInstance()->Clear_Buffer();
 	CRenderTarget_Manager::GetInstance()->Clear_Buffers();
-#endif
 
 	CGameInstance::GetInstance()->DestroyInstance();
 	//if (CGameInstance::GetInstance()->DestroyInstance())
@@ -572,6 +571,46 @@ void CGameInstance::Release_Engine()
 		MSG_BOX("Failed to Release CInput_Device.");
 	if (CGraphic_Device::DestroyInstance())
 		MSG_BOX("Failed to Release CGraphic_Device.");
+#else
+	while (CGameInstance::DestroyInstance() > 0) {}
+
+	CLevel_Manager::DestroyInstance();
+	CGameObject_Manager::DestroyInstance();
+	CComponent_Manager::DestroyInstance();
+	CShadow_Manager::DestroyInstance();
+	CLight_Manager::DestroyInstance();
+	CShaderCompiler::DestroyInstance();
+	CSSAO::DestroyInstance();
+	CPostFX::DestroyInstance();
+	CBlur::DestroyInstance();
+	CPhysX::DestroyInstance();
+	CRenderTarget_Manager::DestroyInstance();
+	CFrustum::DestroyInstance();
+	CPipeline::DestroyInstance();
+	CSound_Manager::DestroyInstance();
+	CTimer_Manager::DestroyInstance();
+	CInput_Device::DestroyInstance();
+	CGraphic_Device::DestroyInstance();
+
+	//while (CLevel_Manager::DestroyInstance() > 0) {}
+	//while (CGameObject_Manager::DestroyInstance() > 0) {}
+	//while (CComponent_Manager::DestroyInstance() > 0) {}
+	//while (CShadow_Manager::DestroyInstance() > 0) {}
+	//while (CLight_Manager::DestroyInstance() > 0) {}
+	//while (CShaderCompiler::DestroyInstance() > 0) {}
+	//while (CSSAO::DestroyInstance() > 0) {}
+	//while (CPostFX::DestroyInstance() > 0) {}
+	//while (CBlur::DestroyInstance() > 0) {}
+	//while (CPhysX::DestroyInstance() > 0) {}
+	//while (CRenderTarget_Manager::DestroyInstance() > 0) {}
+	//while (CFrustum::DestroyInstance() > 0) {}
+	//while (CPipeline::DestroyInstance() > 0) {}
+	//while (CSound_Manager::DestroyInstance() > 0) {}
+	//while (CTimer_Manager::DestroyInstance() > 0) {}
+	//while (CInput_Device::DestroyInstance() > 0) {}
+	//while (CGraphic_Device::DestroyInstance() > 0) {}
+#endif
+
 }
 
 void CGameInstance::Free()

@@ -16,6 +16,24 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 {
 	__super::NativeConstruct_Prototype();
 #pragma region CAM_SHAKE_BASIC	
+	CCamEffect* pCam_Shake_BuddyBoom = CCamEffect::Create(TEXT("Cam_Shake_BuddyBoom"));
+	{
+		_double dDuration = 2.0;
+		pCam_Shake_BuddyBoom->Set_Duration(dDuration);
+		for (_double i = 0.0; i <= dDuration; i += 0.0625)
+		{
+			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+			pCycleDesc->dStartTime = i;
+			pCycleDesc->dMiddleTime = i + 0.0325;
+			pCycleDesc->dFinishTime = i + 0.0625;
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMaxForce = 0.2 / (i + 1);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Up].dMinForce = -0.2 / (i + 1);
+
+			pCam_Shake_BuddyBoom->Add_CamShakeCycleDesc(pCycleDesc);
+		}
+	}
+	Add_CamEffect(TEXT("Cam_Shake_BuddyBoom"), pCam_Shake_BuddyBoom);
 	CCamEffect* pCam_Shake_MissileBoom = CCamEffect::Create(TEXT("Cam_Shake_MissileBoom"));
 	{
 		_double dDuration = 2.f;
@@ -178,7 +196,27 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 		}
 	}
 	Add_CamEffect(TEXT("Cam_Shake_Destroy_Boss_Cylinder"), pShake_Destroy_Boss_Cylinder);
+	CCamEffect* pShake = CCamEffect::Create(TEXT("Cam_Shake_Boss_InUFO"));
+	{
+		_double dDuration = 2.0;
+		pShake->Set_Duration(dDuration);
+		for (_double i = 0.0; i <= dDuration; i += 0.5)
+		{
+			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+			pCycleDesc->dStartTime = i;
+			pCycleDesc->dMiddleTime = i + 0.25;
+			pCycleDesc->dFinishTime = i + 0.5;
 
+			
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = 0.02 / (i + 1.0);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -0.02 / (i + 1.0);
+
+
+			pShake->Add_CamShakeCycleDesc(pCycleDesc);
+		}
+	}
+	Add_CamEffect(TEXT("Cam_Shake_Boss_InUFO"), pShake);
 
 #pragma endregion
 
@@ -200,7 +238,6 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 		return E_FAIL;
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_GotoMoon.dat"))))
 		return E_FAIL;
-
 	if (FAILED(Load_Film(TEXT("../Bin/Resources/Data/FilmData/Film_Outro.dat"))))
 		return E_FAIL;
 
@@ -454,9 +491,7 @@ _float3 CCam_Helper::MakeBezier3(_float3 & v1, _float3 & v2, _float3 & v3, _doub
 		(_float)(pow((1.0 - dTime),2)*v1.y + 2 * dTime*(1.0 - dTime)*v2.y + pow(dTime,2)*v3.y),
 		(_float)(pow((1.0 - dTime),2)*v1.z + 2 * dTime*(1.0 - dTime)*v2.z + pow(dTime,2)*v3.z)
 	};
-	/*v3.x *pow(fTime, 2) + v2.x *(2 * fTime *(1 - fTime)) + v1.x * pow((1 - fTime),2),
-	v3.y *pow(fTime, 2) + v2.y *(2 * fTime *(1 - fTime)) + v1.y * pow((1 - fTime),2),
-	v3.z *pow(fTime, 2) + v2.z *(2 * fTime *(1 - fTime)) + v1.z * pow((1 - fTime),2)*/
+
 	return vResult;
 }
 
@@ -583,9 +618,8 @@ HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath, _bool bMakeUpNodesTimeB
 			if (0 == dwByte)
 				break;
 
-		
-
 			pLoadFilm->Add_Node(new CFilm::CamNode(tDesc));
+
 		}
 		if (FAILED(Add_Film(pLoadFilm->Get_Name(),pLoadFilm,pLoadFilm->Get_Duration())))
 		{
@@ -598,7 +632,16 @@ HRESULT CCam_Helper::Load_Film(const _tchar * pDataPath, _bool bMakeUpNodesTimeB
 			MakeUpNodesTimeByFar(pLoadFilm);
 		}
 		CloseHandle(hFile);
-	
+		
+		if (lstrcmp(pLoadFilm->Get_Name(), L"Film_GotoMoon")==false)
+		{
+			auto& iter = pLoadFilm->Get_CamNodes()->begin();
+			for (_uint i = 0; i < 12; i++,iter++)
+			{
+				(*iter)->vEye.y += 98.3895f;
+				(*iter)->vAt.y += 98.3895f;
+			}
+		}
 	return S_OK;
 }
 

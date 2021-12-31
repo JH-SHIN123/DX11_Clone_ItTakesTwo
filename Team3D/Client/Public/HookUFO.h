@@ -43,7 +43,6 @@ public: /* Setter */
 private:
 	void InterActive_UI(_vector vTargetPos, GameID::Enum eID, _bool IsDisable = false);
 	HRESULT Ready_Layer_CodyGauge_Circle(const _tchar * pLayerTag);
-	void Launch_HookUFO(_double dTimeDelta);
 
 private:
 	_float		m_fUpAcceleration = 0.f;
@@ -54,10 +53,6 @@ private:
 	_bool		m_IsCodyUIDisable = false;
 	_bool		m_IsMayUIDisalbe = false;
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
-
-private:
-	class CGauge_Circle*		m_pCodyGauge_Circle = nullptr;
-	class CGauge_Circle*		m_pMayGauge_Circle = nullptr;
 
 private:
 	CRenderer*			m_pRendererCom = nullptr;

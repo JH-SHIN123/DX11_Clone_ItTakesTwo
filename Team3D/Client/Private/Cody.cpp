@@ -296,8 +296,13 @@ _int CCody::Tick(_double dTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_B))
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
-	if (m_pGameInstance->Key_Down(DIK_F9))
-		UI_CreateOnlyOnce(May, RespawnCircle_May);
+	if (m_pGameInstance->Key_Down(DIK_F8))
+	{
+		//m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		//((CMay*)DATABASE->GetMay())->Set_ActorPosition(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));
+		
+		m_pActorCom->Set_Position(XMVectorSet(67.1295f, 601.404f, 998.288f, 1.f));
+	}
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
@@ -2157,6 +2162,10 @@ void CCody::Enforce_IdleState()
 	m_bLaserTennis = false;
 	m_IsEnding = false;
 
+	//
+	/* 보스 인트로 컷씬 이후 초기화*/
+	m_IsPushingControlRoomBattery = false;
+
 
 	m_pActorCom->Set_IsFalling(false);
 	m_pActorCom->Set_ZeroGravity(false, false, false);
@@ -2343,6 +2352,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eHOOKUFO && m_pGameInstance->Key_Down(DIK_F) && m_IsHookUFO == false)
 		{
+			m_iAirDashCount = 0;
+			m_iJumpCount = 1;
+			m_bShortJump = true;
+
 			// 최초 1회 OffSet 조정
 			if (m_IsHookUFO == false)
 			{
@@ -2487,6 +2500,10 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			UI_CreateOnlyOnce(Cody, InputButton_Cancle);
 			UI_CreateOnlyOnce(Cody, Arrowkeys_All);
 			UI_Delete(Cody, InputButton_InterActive);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_UMBRELLABEAM);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, 1.f);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Activate.wav"), CHANNEL_UMBRELLABEAM, 1.f);
 		}
 		else if (m_eTargetGameID == GameID::eWALLLASERTRAP && false == m_IsWallLaserTrap_Touch)
 		{
@@ -2935,7 +2952,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT) * -1.f, 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 			if (m_pGameInstance->Key_Pressing(DIK_S))
@@ -2949,7 +2966,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 			{
 				_vector vDir = XMVector3Normalize(XMVectorSetY(m_pCamera->Get_Transform()->Get_State(CTransform::STATE_RIGHT), 0.f));
 				m_pTransformCom->MoveDirectionOnLand(vDir, dTimeDelta / 2.f);
-				m_pActorCom->Move(vDir / 20.f, dTimeDelta);
+				m_pActorCom->Move(vDir / 15.f, dTimeDelta);
 				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_LOOK), dTimeDelta / 4.f);
 			}
 		}
@@ -3558,6 +3575,12 @@ void CCody::Set_ActiveHpBar(_bool IsCheck)
 	m_pHpBar->Set_Active(IsCheck);
 }
 
+void CCody::Set_AllActiveHpBar(_bool IsCheck)
+{
+	m_pHpBar->Set_Active(IsCheck);
+	m_pSubHpBar->Set_Active(IsCheck);
+}
+
 void CCody::Set_Change_Size_After_UmbrellaCutScene()
 {
 	m_IsPipeBattery = false;
@@ -3572,6 +3595,18 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	m_pActorCom->Set_IsPlayerSizeSmall(false);
 }
+
+void CCody::Set_PlayerSizeSmall_INUFO()
+{
+	m_IsCollide = false;
+	m_pTransformCom->Set_Scale(XMVectorSet(0.1f, 0.1f, 0.1f, 1.f));
+	m_pActorCom->Set_Scale(0.025f, 0.025f);
+	m_pActorCom->Set_IsPlayerSizeSmall(true);
+	m_eCurPlayerSize = SIZE_SMALL;
+	m_pActorCom->Get_Controller()->setSlopeLimit(0.02f);
+	m_pActorCom->Get_Controller()->setStepOffset(0.02f);
+}
+
 void CCody::Set_InJoyStick()
 {
 	m_pActorCom->Set_ZeroGravity(true, true, true);
@@ -4154,6 +4189,7 @@ void CCody::Respawn_InBossroom()
 	m_pSubHpBar->Reset();
 	m_pSubHpBar->Set_Active(false);
 
+	m_pActorCom->Set_SceneQuery(true);
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_MainViewBlur(false);
 
@@ -4201,6 +4237,8 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 			Enforce_IdleState();
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
+
+			m_pActorCom->Set_SceneQuery(false);
 			m_bDead_InBossroom = true;
 		}
 

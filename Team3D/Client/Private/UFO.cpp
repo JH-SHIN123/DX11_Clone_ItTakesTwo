@@ -17,6 +17,8 @@
 #include "MoonBaboonCore.h"
 #include "BossDoor.h"
 #include "UI_Generator.h"
+#include "MainCamera.h"
+#include "SubCamera.h"
 
 CUFO::CUFO(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -104,7 +106,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_pMoonBaboon->Set_Animation(Moon_Ufo_Programming, Moon_Ufo_MH);
 		((CCody*)DATABASE->GetCody())->Set_ActiveHpBar(true);
 		((CMay*)DATABASE->GetMay())->Set_ActiveHpBar(true);
-		m_pBossHpBar->Set_Active(true);
+		Set_HpBarActive(true);
 	}
 	else if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
 	{
@@ -137,14 +139,14 @@ _int CUFO::Tick(_double dTimeDelta)
 	else if(m_pGameInstance->Key_Down(DIK_NUMPAD6))
 		m_pBossHpBar->Set_Active(false);
 
-	if (m_pGameInstance->Key_Down(DIK_F11))
-	{
-		CBoss_Missile::tagBossMissile_Desc MissileDesc;
-		MissileDesc.IsTarget_Cody = true;
-		//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
-		MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
-		FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_F11))
+	//{
+	//	CBoss_Missile::tagBossMissile_Desc MissileDesc;
+	//	MissileDesc.IsTarget_Cody = true;
+	//	//MissileDesc.vPosition = { 0.f, 0.f, 0.f, 1.f };
+	//	MissileDesc.vPosition = { 75.f, 265.f, 207.f, 1.f };
+	//	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Boss_Missile", Level::LEVEL_STAGE, TEXT("GameObject_Boss_Missile"), &MissileDesc), E_FAIL);
+	//}
 
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
@@ -583,6 +585,17 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 
 	if (4 == m_iGuidedMissileHitCount)
 	{
+		switch (m_WhoCollide)
+		{
+		case Engine::GameID::eCODY:
+			static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_HitRocket_Boss();
+			if (m_pCodyMissile) m_pCodyMissile->Set_MissileDead();
+			break;
+		case Engine::GameID::eMAY:
+			static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_HitRocket_Boss();
+			if (m_pMayMissile) m_pMayMissile->Set_MissileDead();
+			break;
+		}
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_IsCutScene = true;
@@ -667,8 +680,25 @@ void CUFO::GuidedMissile_Pattern(_double dTimeDelta)
 			_matrix LeftRocketHatch = m_pModelCom->Get_BoneMatrix("LeftFrontRocketHatch");
 			_matrix RightRocketHatch = m_pModelCom->Get_BoneMatrix("RightFrontRocketHatch");
 
-			_vector vCodyDir = XMVector3Normalize(((CCody*)DATABASE->GetCody())->Get_Position() - vPos);
-			_vector vMayDir = XMVector3Normalize(((CCody*)DATABASE->GetMay())->Get_Position() - vPos);
+			CCody* pCody = (CCody*)DATABASE->GetCody();
+			CMay* pMay = (CMay*)DATABASE->GetMay();
+			
+			_vector vCodyDir = XMVectorZero();
+			_vector vMayDir = XMVectorZero();
+
+			if (pCody && pMay)
+			{
+				// 코디가 죽어있다면, 메이를 향해서
+				if (pCody->Get_bDeadInBossroom())
+					vCodyDir = XMVector3Normalize(pMay->Get_Position() - vPos);
+				else
+					vCodyDir = XMVector3Normalize(pCody->Get_Position() - vPos);
+				// 메이가 죽어있다면, 코디를 향해서
+				if (pMay->Get_bDeadInBossroom())
+					vMayDir = XMVector3Normalize(pCody->Get_Position() - vPos);
+				else
+					vMayDir = XMVector3Normalize(pMay->Get_Position() - vPos);
+			}
 
 			LeftRocketHatch = LeftRocketHatch * vUFOWorld;
 			RightRocketHatch = RightRocketHatch * vUFOWorld;
@@ -919,6 +949,11 @@ HRESULT CUFO::Phase1_End(_double dTimeDelta)
 			m_ePhase = CUFO::PHASE_2;
 			m_ePattern = CUFO::GUIDEDMISSILE;
 			m_IsCutScene = false;
+
+			((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(true);
+			((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(true);
+			Set_HpBarActive(true);
+			UI_Generator->Set_AllActivation(true);
 		}
 	}
 
@@ -932,13 +967,16 @@ HRESULT CUFO::Ready_TriggerActor_Component()
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vUFOPos.m128_f32[1] -= 8.f;
 
+	vUFOPos.m128_f32[0] -= 4.5f;
+	vUFOPos.m128_f32[2] += 3.9f;
+
 	m_pTriggerTransformCom->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 	CTriggerActor::ARG_DESC TriggerArgDesc;
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTriggerTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(5.f);
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(3.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
@@ -1002,6 +1040,13 @@ HRESULT CUFO::TriggerActorReplacement()
 
 HRESULT CUFO::Phase2_End(_double dTimeDelta)
 {
+	//if (m_pCodyMissile) {
+	//	m_pCodyMissile->Set_MissileDead();
+	//}
+	//if (m_pMayMissile) {
+	//	m_pMayMissile->Set_MissileDead();
+	//}
+
 	/* UFO 다운 상태일 때 스태틱 액터 생성 트리거 액터 교체 */
 	if (UFO_RocketKnockDown_MH == m_pModelCom->Get_CurAnimIndex() && true == m_IsActorCreate)
 	{
@@ -1089,6 +1134,14 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (false == m_IsEjection)
 	{
+#ifdef __PLAY_CUTSCENE
+		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
+		{
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon, true);
+			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		}
+#endif
+
 		_vector vPosition = { 64.f, 357.5f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vStartUFOPos));
@@ -1096,6 +1149,12 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
+
+		/* UI OFF */
+		UI_Generator->Set_AllActivation(false);
+		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
+		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(false);
+		Set_HpBarActive(false);
 
 		m_pGameInstance->Set_MainViewFog(false);
 	}
@@ -1195,7 +1254,7 @@ void CUFO::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject * 
 	}
 	else if (eStatus == TriggerStatus::eLOST && eID == GameID::Enum::eMAY)
 	{
-		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSUFO, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		/* 여기 SetTriggerID false로 바꾸면 안됨 */
 		m_IsMayCollide = false;
 	}
 }
@@ -1424,6 +1483,11 @@ void CUFO::Set_Active(_bool IsActive)
 {
 	m_IsActive = IsActive;
 	m_pMoonBaboon->Set_Active(IsActive);
+}
+
+void CUFO::Set_HpBarActive(_bool IsActive)
+{
+	m_pBossHpBar->Set_Active(IsActive);
 }
 
 HRESULT CUFO::Add_GameObject_ToRenderGroup()

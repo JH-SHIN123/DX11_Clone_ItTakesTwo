@@ -254,6 +254,7 @@ public:
 	void			 Set_ControlJoystick(_bool IsCheck);
 	void			 Set_AnimationRotate(_float fAngle);
 	void			 Set_ActiveHpBar(_bool IsCheck);
+	void			 Set_AllActiveHpBar(_bool IsCheck);
 	void			 Set_HpBarReduction(_float fDamage);
 	void			 Set_ActiveMinigameHpBar(_bool IsCheck);
 	void			 Set_MinigameHpBarReduction(_float fDamage);
@@ -262,6 +263,7 @@ public:
 	void			 Set_RocketMatrix(_matrix matRocket) { m_matRocketMatrix = matRocket; }
 	void			 Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void			 Set_Change_Size_After_UmbrellaCutScene();
+	void			 Set_PlayerSizeSmall_INUFO();
 	void			 Set_InJoyStick();
 
 	/* For. Ending */
@@ -295,7 +297,6 @@ private:
 	class CMainCamera*	m_pCamera = nullptr;
 
 	// UI
-private:
 	class CGauge_Circle*	m_pGauge_Circle = nullptr;
 
 	// 积己 棺 家戈 包访
@@ -657,6 +658,7 @@ private:
 #pragma region Dead_InBossroom
 public:
 	void Respawn_InBossroom();
+	_bool Get_bDeadInBossroom() { return m_bDead_InBossroom; }
 
 private:
 	void DeadInBossroom(const _double dTimeDelta);

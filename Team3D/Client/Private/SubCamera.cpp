@@ -14,6 +14,7 @@
 #include"AlphaScreen.h"
 #include"MoonUFO.h"
 #include "MainCamera.h"
+#include"UFO.h"
 CSubCamera::CSubCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
 {
@@ -89,6 +90,7 @@ _int CSubCamera::Tick(_double dTimeDelta)
 
 	_int iResult = NO_EVENT;
 	
+
 	if (iResult = Check_Player(dTimeDelta))
 		return iResult;
 
@@ -142,10 +144,7 @@ _int CSubCamera::Check_Player(_double dTimeDelta)
 		m_eCurCamMode = CamMode::Cam_WallJump;
 	if (CLaserTennis_Manager::GetInstance()->Get_StartGame() && m_eCurCamMode != CamMode::Cam_LaserTennis)
 		m_eCurCamMode = CamMode::Cam_LaserTennis;
-#ifdef __TEST_JUN
-	if (m_pGameInstance->Key_Down(DIK_B))
-		m_bOpenThirdFloor = !m_bOpenThirdFloor;
-#endif 
+
 	if (m_bOpenThirdFloor && m_fOpenThirdFloorTime == 0.f)
 		m_eCurCamFreeOption = CamFreeOption::Cam_Free_OpenThirdFloor;
 	if (m_eCurCamMode == CamMode::Cam_Free)
@@ -183,6 +182,19 @@ void CSubCamera::Set_Zoom(_float4 vEye, _float4 vAt, _float fZoomVal, _double dT
 }
 
 
+
+void CSubCamera::Start_RippedOff_BossLaser()
+{
+	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	m_eCurCamMode = CamMode::Cam_RippedOffBossLaser;
+}
+
+void CSubCamera::Start_HitRocket_Boss()
+{
+	m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	m_dHitRocketTime = 0.0;
+	m_eCurCamMode = CamMode::Cam_Boss_HitRocket;
+}
 
 HRESULT CSubCamera::Start_Film(const _tchar * pFilmTag)
 {
@@ -412,6 +424,78 @@ _int CSubCamera::Tick_Cam_LaserTennis(_double dTimeDelta)
 	return NO_EVENT;
 }
 
+_int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
+{
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	CTransform* pMayTransform = m_pMay->Get_Transform();
+	CTransform* pUfoTransform = pUfo->Get_Transform();
+	_matrix matLaserGunRing = pUfo->Get_Model()->Get_BoneMatrix("LaserGunRing3") * pUfoTransform->Get_WorldMatrix();
+
+	_vector vMayPos = pMayTransform->Get_State(CTransform::STATE_POSITION);
+	vMayPos = XMVectorSetY(vMayPos, XMVectorGetY(vMayPos) + 1.f);
+	_vector vLaserGunPos = matLaserGunRing.r[3];
+
+	if (pUfo->Get_IsRidLaserGun() == true)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		_vector vEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier4(m_vCamRoot_RippedOff[0],
+			m_vCamRoot_RippedOff[1],
+			m_vCamRoot_RippedOff[2],
+			m_vCamRoot_RippedOff[3], m_dRippdeOffTime)), 1.f);
+		m_dRippdeOffTime -= dTimeDelta / 2.f;
+		m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vMayPos), (_float)m_dRippdeOffTime));
+		if (m_dRippdeOffTime <= 0.0)
+		{
+			m_eCurCamMode = CamMode::Cam_Free;
+		//ReSet_Cam_FreeToAuto(true, true, 6.0f);
+		}
+		return NO_EVENT;
+	}
+	else if (m_dRippdeOffTime == 0.0)
+	{
+		_vector vDir = XMVector3Normalize(vLaserGunPos - vMayPos);
+
+		
+		XMStoreFloat3(&m_vCamRoot_RippedOff[0], m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		XMStoreFloat3(&m_vCamRoot_RippedOff[1], m_pTransformCom->Get_State(CTransform::STATE_POSITION) + 
+			m_pTransformCom->Get_State(CTransform::STATE_RIGHT)*6.f);
+		XMStoreFloat3(&m_vCamRoot_RippedOff[2], vMayPos - vDir * 6.f);
+		XMStoreFloat3(&m_vCamRoot_RippedOff[3], vMayPos - vDir * 4.f);
+	}
+	_vector vEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier4(m_vCamRoot_RippedOff[0],
+		m_vCamRoot_RippedOff[1],
+		m_vCamRoot_RippedOff[2],
+		m_vCamRoot_RippedOff[3], m_dRippdeOffTime)),1.f);
+	m_dRippdeOffTime += dTimeDelta / 2.f;
+	_vector vAt = vLaserGunPos;
+	vAt.m128_f32[1] += 1.f;
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vEye, vAt), (_float)m_dRippdeOffTime));
+
+	return NO_EVENT;
+}
+
+_int CSubCamera::Tick_Cam_HitRocket_Boss(_double dTimeDelta)
+{
+
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	if (pUfo->Get_Model()->Get_CurAnimIndex() == UFO_RocketKnockDown_MH)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		ReSet_Cam_FreeToAuto(false, false, 3.f);
+	}
+	CTransform* pUfoTransform = pUfo->Get_Transform();
+
+	_matrix matUfo = pUfo->Get_Model()->Get_BoneMatrix("Chair") * pUfoTransform->Get_WorldMatrix();
+	_vector vUfoPos = matUfo.r[3];
+	_vector vUfoRight = XMVector3Normalize(matUfo.r[0]);
+	_vector vUfoUp = XMVector3Normalize(matUfo.r[1]);
+	_vector vUfoLook = XMVector3Normalize(matUfo.r[2]);
+	_vector vLastEye = vUfoPos + vUfoRight* 10.f + vUfoUp*6.f - vUfoLook*4.f;
+
+	m_pTransformCom->Set_WorldMatrix(MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vLastEye, vUfoPos), (_float)dTimeDelta));
+	return NO_EVENT;
+}
+
 
 _int CSubCamera::Tick_Cam_Free_FollowPlayer(_double dTimeDelta)
 {
@@ -566,6 +650,12 @@ _int CSubCamera::Tick_CamHelperNone(_double dTimeDelta)
 		break;
 	case Client::CSubCamera::CamMode::Cam_LaserTennis:
 		iResult = Tick_Cam_LaserTennis(dTimeDelta);
+		break;
+	case Client::CSubCamera::CamMode::Cam_RippedOffBossLaser:
+		iResult = Tick_Cam_RippedOff_BossLaser(dTimeDelta);
+		break;
+	case Client::CSubCamera::CamMode::Cam_Boss_HitRocket:
+		iResult = Tick_Cam_HitRocket_Boss(dTimeDelta);
 		break;
 	}
 	return iResult;
