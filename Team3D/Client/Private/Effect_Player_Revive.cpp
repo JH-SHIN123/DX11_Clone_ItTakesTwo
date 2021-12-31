@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Player_Revive.h"
+#include "Cody.h"
+#include "May.h"
+#include "DataStorage.h"
 
 CEffect_Player_Revive::CEffect_Player_Revive(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -22,13 +25,12 @@ HRESULT CEffect_Player_Revive::NativeConstruct_Prototype(void * pArg)
 
 HRESULT CEffect_Player_Revive::NativeConstruct(void * pArg)
 {
-	m_EffectDesc_Prototype.fLifeTime = 2.f;
+	m_EffectDesc_Prototype.fLifeTime = 1.25f;
 	m_EffectDesc_Prototype.vSize = { 0.0625f, 0.0625f,0.f };
 
 	__super::Ready_Component(pArg);
 
-	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
-	Safe_AddRef(m_pModelCom);
+	Ready_TargetModel();
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
 
@@ -48,7 +50,24 @@ HRESULT CEffect_Player_Revive::NativeConstruct(void * pArg)
 _int CEffect_Player_Revive::Tick(_double TimeDelta)
 {
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
+	{
+		if (EFFECT_DESC_CLONE::PV_CODY <= m_EffectDesc_Clone.iPlayerValue)
+			DATABASE->Set_Cody_ReviveEffect(false);
+		else
+			DATABASE->Set_May_ReviveEffect(false);
+	}
+
+	if (-0.01f >= m_EffectDesc_Prototype.fLifeTime)
+	{
+		if (EFFECT_DESC_CLONE::PV_CODY <= m_EffectDesc_Clone.iPlayerValue)
+			DATABASE->Set_Cody_ReviveEffect_PhantomSecond(false);
+		else
+			DATABASE->Set_May_ReviveEffect_PhantomSecond(false);
+
 		return EVENT_DEAD;
+	}
+
+	TargetMatrix_Check();
 
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	m_fMoveTime -= (_float)TimeDelta * 0.75f;
@@ -74,10 +93,12 @@ _int CEffect_Player_Revive::Tick(_double TimeDelta)
 
 _int CEffect_Player_Revive::Late_Tick(_double TimeDelta)
 {
-	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
-		return NO_EVENT;
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+	{
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	}
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	return NO_EVENT;
 }
 
 HRESULT CEffect_Player_Revive::Render(RENDER_GROUP::Enum eGroup)
@@ -92,7 +113,7 @@ HRESULT CEffect_Player_Revive::Render(RENDER_GROUP::Enum eGroup)
 	*/
 	XMINT2 vTexSize = { 1024, 1024 };
 	_float fFlowPower = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
-	_float fRadius = 0.055f * fFlowPower;
+	_float fRadius = 0.03f * fFlowPower;
 	m_pModelCom->Set_Variable("g_vPos", &m_vTargetPos, sizeof(_float4));
 	m_pModelCom->Set_Variable("g_fTime", &m_fMoveTime, sizeof(_float));
 	m_pModelCom->Set_Variable("g_fRadius", &fRadius, sizeof(_float));
@@ -105,6 +126,7 @@ HRESULT CEffect_Player_Revive::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_ShaderResourceView("g_DissolveTexture", m_pTexturesCom_Particle_Diss->Get_ShaderResourceView(1));
 	m_pModelCom->Set_ShaderResourceView("g_FlowTexture", m_pTexturesCom_Particle_Flow->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture", m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
+	m_pModelCom->Set_DefaultVariables_Shadow();
 
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(12);
@@ -140,6 +162,43 @@ void CEffect_Player_Revive::Instance_UV(_float TimeDelta, _int iIndex)
 
 HRESULT CEffect_Player_Revive::Ready_Instance()
 {
+	return S_OK;
+}
+
+HRESULT CEffect_Player_Revive::Ready_TargetModel()
+{
+	_int iAnimIndex = 0;
+	_double dAnimTime = 0;
+	if (EFFECT_DESC_CLONE::PV_CODY <= m_EffectDesc_Clone.iPlayerValue)
+	{
+		m_pModelCom = static_cast<CCody*>(DATABASE->GetCody())->Get_Model();
+		Safe_AddRef(m_pModelCom);
+		DATABASE->Set_Cody_ReviveEffect(true);
+		DATABASE->Set_Cody_ReviveEffect_PhantomSecond(true);
+		//CModel* pModel = static_cast<CCody*>(DATABASE->GetCody())->Get_Model();
+		//iAnimIndex = pModel->Get_CurAnimIndex();
+		//dAnimTime = pModel->Get_CurrentTime(iAnimIndex);
+		//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+		//m_pModelCom->Set_Animation(ANI_C_MH);
+		//m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
+	}
+	else
+	{
+		m_pModelCom = static_cast<CMay*>(DATABASE->GetMay())->Get_Model();
+		Safe_AddRef(m_pModelCom);
+		DATABASE->Set_May_ReviveEffect(true);
+		DATABASE->Set_May_ReviveEffect_PhantomSecond(true);
+		//CModel* pModel = static_cast<CMay*>(DATABASE->GetMay())->Get_Model();
+		//iAnimIndex = pModel->Get_CurAnimIndex();
+		//dAnimTime = pModel->Get_CurrentTime(iAnimIndex);
+		//FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_May"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+		//m_pModelCom->Set_Animation(ANI_M_MH);
+		//m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
+	}
+
+	//m_pModelCom->Set_Animation(iAnimIndex, dAnimTime);
+	//m_pModelCom->Update_Animation(0.016);
+
 	return S_OK;
 }
 
@@ -201,6 +260,19 @@ void CEffect_Player_Revive::SetUp_Rand_Dir()
 	// 		_vector vDir = XMLoadFloat3(&m_vDir_Array[i]) /** (_float(rand() % 100) * 0.0025f)*/;
 	// 		XMStoreFloat3(&m_vDir_Array[i], vDir);
 	// 	}
+}
+
+void CEffect_Player_Revive::TargetMatrix_Check()
+{
+	_matrix WorldMatrix = XMMatrixIdentity();
+	if (EFFECT_DESC_CLONE::PV_CODY <= m_EffectDesc_Clone.iPlayerValue)
+		WorldMatrix = static_cast<CCody*>(DATABASE->GetCody())->Get_Transform()->Get_WorldMatrix();
+	else
+		WorldMatrix = static_cast<CMay*>(DATABASE->GetMay())->Get_Transform()->Get_WorldMatrix();
+
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+
+	return;
 }
 
 CEffect_Player_Revive * CEffect_Player_Revive::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

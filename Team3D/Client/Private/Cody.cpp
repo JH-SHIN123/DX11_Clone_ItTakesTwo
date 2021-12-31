@@ -293,6 +293,13 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_C))
+		EFFECT->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_V))
+		EFFECT->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
+	if (m_pGameInstance->Key_Down(DIK_B))
+		EFFECT->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix());
+
 	Script_Trigger(dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_F8))
@@ -458,6 +465,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 	if (true == m_IsDeadLine || m_IsPinBall || m_bRespawn || m_bDead_InBossroom)
 		return S_OK;
 
+
 	CCharacter::Render(eGroup);
 
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
@@ -470,12 +478,13 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 	}
 	else
 	{
-		if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+		if (eGroup == RENDER_GROUP::RENDER_NONALPHA && false == DATABASE->Get_CodyReviveEffect())
 		{
 			m_pModelCom->Set_DefaultVariables_Shadow();
 			m_pModelCom->Render_Model(0);
 		}
-		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && (false == m_IsHolding_Low_UFO || false == m_IsHolding_UFO) && false == m_bPhantomRenderOff)
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && (false == m_IsHolding_Low_UFO || false == m_IsHolding_UFO) && false == m_bPhantomRenderOff
+			 && false == DATABASE->Get_CodyReviveEffect())
 		{
 			m_pModelCom->Render_Model(30);
 			m_pModelCom->Render_Model(32);
@@ -2415,9 +2424,9 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-			m_pActorCom->Set_ZeroGravity(true, false, true);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 			Enforce_IdleState();
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsTouchFireDoor = true;
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
@@ -2439,11 +2448,11 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (m_eTargetGameID == GameID::eDEADLINE && false == m_IsDeadLine)
 		{
 			/* 데드라인 */
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix());
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_Death_Fall_MH);
 
 			m_pActorCom->Set_ZeroGravity(true, true, true);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 			m_bRespawnCheck = false;
 			m_IsDeadLine = true;
 
@@ -2511,7 +2520,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 
 			m_pModelCom->Set_Animation(ANI_C_Bhv_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsWallLaserTrap_Touch = true;
@@ -2579,7 +2588,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Fall.wav"), CHANNEL_CODYM_DEAD_FALL, m_fCodyM_Dead_Fall_Volume);
 
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix());
 			m_pActorCom->Update(dTimeDelta);
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bRespawnCheck = false;
@@ -2587,7 +2596,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		}
 		else if ((m_eTargetGameID == GameID::eROTATIONFAN) && false == m_bRespawn)
 		{
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 
 			/* Savpoint 이동 */
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_vSavePoint), 1.f));
@@ -2608,7 +2617,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 				m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 
-				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
 				m_bRespawnCheck = false;
@@ -2623,7 +2632,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 				m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 				m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 
-				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+				CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 				m_pActorCom->Update(dTimeDelta);
 				m_pActorCom->Set_ZeroGravity(true, false, true);
 				m_bRespawnCheck = false;
@@ -3260,7 +3269,7 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 		m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 		m_pGameInstance->Play_Sound(TEXT("Character_Dead_ElectricShock.wav"), CHANNEL_CHARACTER_DEAD_ELECTRICSHOCK, m_fCodyM_Dead_Electric_Shock);
 
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 		m_pActorCom->Update(dTimeDelta);
 		m_pActorCom->Set_ZeroGravity(true, false, true);
 		m_bRespawnCheck = false;
@@ -3541,13 +3550,10 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 		_float fTriggerPosZ = m_vTriggerTargetPos.z;
 
 		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		//if (fTriggerPosZ < fMyPosZ)
-		//{
-		//	vSavePosition.m128_f32[1] += 0.7f;
-		//	vSavePosition = XMVectorSetW(vSavePosition, 1.f);
-		//}
-		//else
-			vSavePosition = XMVectorSet(64.f, 0.9f, 25.f, 1.f);
+		if (fTriggerPosZ < fMyPosZ)
+			vSavePosition = XMVectorSet(64.f, 0.4f, 64.f, 1.f);
+		else
+			vSavePosition = XMVectorSet(64.f, 0.2f, 25.f, 1.f);
 	
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
@@ -3560,7 +3566,7 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 	}
 	else if (m_dDeadTime >= 2.75f)
 	{
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix());
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 		m_dDeadTime = 0.f;
@@ -3701,13 +3707,13 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 		_float fMyPosY = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
 		_float fTriggerY = m_vTriggerTargetPos.y;
 
-		_vector vRespawnPos = XMVectorSet(-803.f, 768.f, 193.f, 1.f);
+		_vector vRespawnPos = XMVectorSet(-803.f, 767.f, 193.f, 1.f);
 		if(fMyPosY > fTriggerY)
 			vRespawnPos = XMVectorSet(-805.f, 792.f, 198.f, 1.f);
 
 		m_pActorCom->Set_Position(vRespawnPos);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vRespawnPos);
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix());
 		m_pModelCom->Set_Animation(ANI_C_MH);
 		m_dDeadTime = 0.f;
 		m_IsCollide = false;
@@ -3769,7 +3775,7 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 			m_bRespawnCheck = true;
 
 			/* Effect */
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			EFFECT->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix());
 		}
 		else
 		{
@@ -4243,7 +4249,7 @@ void CCody::Respawn_InBossroom()
 	m_bRespawnCheck = true;
 
 	/* Effect */
-	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix());
 }
 void CCody::DeadInBossroom(const _double dTimeDelta)
 {
@@ -4259,7 +4265,7 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 			UI_CreateOnlyOnce(Cody, RespawnCircle_Cody);
 
 			// Create Effect
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 
 			// Set Blur
 			m_pGameInstance->Set_MainViewBlur(true);
@@ -4436,7 +4442,7 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 	m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 	m_pGameInstance->Play_Sound(TEXT("CodyM_Resurrection.wav"), CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
 
-	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix());
 	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
@@ -4490,7 +4496,7 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		m_dRespawnTime = 0.0;
 
 		/* Effect */
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix());
 	}
 }
 

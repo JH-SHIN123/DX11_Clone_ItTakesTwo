@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Dead_Particle_Fire.h"
+#include "Cody.h"
+#include "May.h"
+#include "DataStorage.h"
 
 CEffect_Player_Dead_Particle_Fire::CEffect_Player_Dead_Particle_Fire(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -26,17 +29,23 @@ HRESULT CEffect_Player_Dead_Particle_Fire::NativeConstruct(void * pArg)
 
 	__super::Ready_Component(pArg);
 
+	_float fScale = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+	m_EffectDesc_Prototype.vSize.x *= fScale;
+	m_EffectDesc_Prototype.vSize.y *= fScale;
+	m_vSize.x *= fScale;
+	m_vSize.y *= fScale;
+
 	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 500; // 500 100
+		m_EffectDesc_Prototype.iInstanceCount = 2000; // 500 100
 	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 30; // 100 20
+		m_EffectDesc_Prototype.iInstanceCount = 120; // 100 20
 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
-		m_EffectDesc_Prototype.iInstanceCount = 2000; // 2500 500
+		m_EffectDesc_Prototype.iInstanceCount = 8000; // 2500 500
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_TargetModel(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Instance(),	 E_FAIL);
-	//FAILED_CHECK_RETURN(Ready_Point(),		 E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Point_Small(), E_FAIL);
 
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION)
@@ -79,7 +88,10 @@ _int CEffect_Player_Dead_Particle_Fire::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CEffect_Player_Dead_Particle_Fire::Render(RENDER_GROUP::Enum eGroup)
@@ -155,8 +167,6 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Instance()
 
 	_int iInstanceCount = m_EffectDesc_Prototype.iInstanceCount;
 
-	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
-	Safe_AddRef(m_pModelCom);
 	VTXMESH* pVtx	= m_pModelCom->Get_Vertices();
 	_uint iVtxCount = m_pModelCom->Get_VertexCount();
 	_uint iRandVtx	= rand() % iInstanceCount;
@@ -243,6 +253,31 @@ HRESULT CEffect_Player_Dead_Particle_Fire::Ready_Point_Small()
 		m_pPointBuffer_Smoke_Small[iIndex].vTextureUV	= Get_TexUV_Rand(2, 2);
 		m_vPointBuffer_Small_Dir[iIndex]				= Get_Dir_Random(_int3(10, 10, 10), WorldMatrix);
 	}
+
+	return S_OK;
+}
+
+HRESULT CEffect_Player_Dead_Particle_Fire::Ready_TargetModel()
+{
+	_int iAnimIndex = 0;
+	_double dAnimTime = 0;
+	if (EFFECT_DESC_CLONE::PV_CODY <= m_EffectDesc_Clone.iPlayerValue)
+	{
+		CModel* pModel = static_cast<CCody*>(DATABASE->GetCody())->Get_Model();
+		iAnimIndex = pModel->Get_CurAnimIndex();
+		dAnimTime = pModel->Get_CurrentTime(iAnimIndex);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	}
+	else
+	{
+		CModel* pModel = static_cast<CMay*>(DATABASE->GetMay())->Get_Model();
+		iAnimIndex = pModel->Get_CurAnimIndex();
+		dAnimTime = pModel->Get_CurrentTime(iAnimIndex);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_May"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	}
+
+	m_pModelCom->Set_Animation(iAnimIndex, dAnimTime);
+	m_pModelCom->Update_Animation(0.016);
 
 	return S_OK;
 }

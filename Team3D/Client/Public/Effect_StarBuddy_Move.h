@@ -21,6 +21,7 @@ public:
 public:
 	void Set_WorldMatrix(_fmatrix WorldMatrix);
 	void Set_Launch(_bool IsLaunch = true);
+	void Set_ColorIndex(_int iColorIndex);
 
 private:
 	void Set_Particle_Matrix();

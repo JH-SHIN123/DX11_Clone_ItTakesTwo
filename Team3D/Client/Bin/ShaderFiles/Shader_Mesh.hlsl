@@ -442,6 +442,7 @@ struct GS_OUT_DOUBLE_UV
 	float2 vTexUV_2			: TEXCOORD1;
 	float4 vProjPosition	: TEXCOORD2;
 	float4 vWorldPosition	: TEXCOORD3;
+	uint	iNotParticle	: TEXCOORD4;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 
 	/*
@@ -503,7 +504,7 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 	modf(fAvg_UV.y * g_vTextureSize_2.y, vTexPos.y);
 	float4 vTextureDir = g_FlowTexture.Load(vTexPos) * g_fFlowPower;
 	float3 vDir = (normalize(g_WorldMatrix._31_32_33) * vTextureDir.r * -1.f)
-		+ (normalize(g_WorldMatrix._21_22_23) * vTextureDir.g * 2.f);
+		+ (normalize(g_WorldMatrix._21_22_23) * vTextureDir.g * 2.f)
 		+ (vDir_Right * ((vTextureDir.g + vTextureDir.r) * 0.75f));
 
 	float4 vPseudoRandomPos = (fAvg_Pos) /*+ g_vDirection*/;
@@ -542,6 +543,7 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 			Out[2].vTexUV_2 = float2(1.f, 1.f);
 			Out[3].vTexUV_2 = float2(0.f, 1.f);
 
+			[unroll]
 			for (uint l = 0; l < 4; ++l)
 			{
 				Out[l].vWorldPosition	= Out[l].vPosition;
@@ -552,6 +554,7 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 				Out[l].vTangent = fAvg_Tangent;
 				Out[l].vBiNormal = fAvg_BiNormal;
 				Out[l].iViewportIndex = 1;
+				Out[l].iNotParticle	= 1;
 			}
 
 			TriStream.Append(Out[0]);
@@ -562,6 +565,27 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 			TriStream.Append(Out[0]);
 			TriStream.Append(Out[2]);
 			TriStream.Append(Out[3]);
+			TriStream.RestartStrip();
+		}
+		else
+		{
+			[unroll]
+			for (uint n = 0; n < 3; n++)
+			{
+				matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+				Out[n].vPosition = mul(In[n].vPosition, matVP);
+				Out[n].vNormal = In[n].vNormal;
+				Out[n].vTangent = In[n].vTangent;
+				Out[n].vBiNormal = In[n].vBiNormal;
+				Out[n].vTexUV = In[n].vTexUV;
+				Out[n].vProjPosition = Out[n].vPosition;
+				Out[n].vWorldPosition = In[n].vPosition;
+				Out[n].iViewportIndex = 1;
+				Out[n].iNotParticle = 0;
+
+				TriStream.Append(Out[n]);
+			}
 			TriStream.RestartStrip();
 		}
 	}
@@ -596,6 +620,7 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 			Out[6].vTexUV_2 = float2(1.f, 1.f);
 			Out[7].vTexUV_2 = float2(0.f, 1.f);
 
+			[unroll]
 			for (uint m = 4; m < 8; ++m)
 			{
 				Out[m].vWorldPosition = Out[m].vPosition;
@@ -606,6 +631,7 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 				Out[m].vTangent = fAvg_Tangent;
 				Out[m].vBiNormal = fAvg_BiNormal;
 				Out[m].iViewportIndex = 2;
+				Out[m].iNotParticle = 1;
 			}
 
 			TriStream.Append(Out[4]);
@@ -616,6 +642,27 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 			TriStream.Append(Out[4]);
 			TriStream.Append(Out[6]);
 			TriStream.Append(Out[7]);
+		}
+		else
+		{
+			[unroll]
+			for (uint o = 0; o < 3; o++)
+			{
+				matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+				Out[o].vPosition = mul(In[o].vPosition, matVP);
+				Out[o].vNormal = In[o].vNormal;
+				Out[o].vTangent = In[o].vTangent;
+				Out[o].vBiNormal = In[o].vBiNormal;
+				Out[o].vTexUV = In[o].vTexUV;
+				Out[o].vProjPosition = Out[o].vPosition;
+				Out[o].vWorldPosition = In[o].vPosition;
+				Out[o].iViewportIndex = 2;
+				Out[o].iNotParticle = 0;
+
+				TriStream.Append(Out[o]);
+			}
+			TriStream.RestartStrip();
 		}
 	}
 }
@@ -670,8 +717,8 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 	modf(fAvg_UV.y * g_vTextureSize_2.y, vTexPos.y);
 	float4 vTextureDir = g_FlowTexture.Load(vTexPos) * g_fFlowPower;
 	float3 vDir = (normalize(g_WorldMatrix._31_32_33) * vTextureDir.r * -1.f)
-		+ (normalize(g_WorldMatrix._21_22_23) * vTextureDir.g * 2.f);
-	+(vDir_Right * ((vTextureDir.g + vTextureDir.r) * 0.75f));
+		+ (normalize(g_WorldMatrix._21_22_23) * vTextureDir.g * 2.f)
+		+ (vDir_Right * ((vTextureDir.g + vTextureDir.r) * 0.75f));
 
 	float3 vDir_Tan = normalize(fAvg_Tangent * 0.5f + vDir);
 	vDir = lerp(vDir_Tan, vDir, fDissolve_Weight); // º¸°£v
@@ -685,7 +732,7 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 
 	if (g_iViewportDrawInfo & 1)
 	{
-		if (fDissolve_Weight > 0)
+		if (fDissolve_Weight > fDissolve_Value)
 		{
 			float3		vLook = normalize(g_vMainCamPosition - vPos).xyz;
 			float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
@@ -713,6 +760,7 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 			Out[2].vTexUV_2 = float2(1.f, 1.f);
 			Out[3].vTexUV_2 = float2(0.f, 1.f);
 
+			[unroll]
 			for (uint l = 0; l < 4; ++l)
 			{
 				Out[l].vWorldPosition = Out[l].vPosition;
@@ -723,6 +771,7 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 				Out[l].vTangent = fAvg_Tangent;
 				Out[l].vBiNormal = fAvg_BiNormal;
 				Out[l].iViewportIndex = 1;
+				Out[l].iNotParticle = 1;
 			}
 
 			TriStream.Append(Out[0]);
@@ -735,11 +784,32 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 			TriStream.Append(Out[3]);
 			TriStream.RestartStrip();
 		}
+		else
+		{
+			[unroll]
+			for (uint n = 0; n < 3; n++)
+			{
+				matrix matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+				Out[n].vPosition = mul(In[n].vPosition, matVP);
+				Out[n].vNormal = In[n].vNormal;
+				Out[n].vTangent = In[n].vTangent;
+				Out[n].vBiNormal = In[n].vBiNormal;
+				Out[n].vTexUV = In[n].vTexUV;
+				Out[n].vProjPosition = Out[n].vPosition;
+				Out[n].vWorldPosition = In[n].vPosition;
+				Out[n].iViewportIndex = 1;
+				Out[n].iNotParticle = 0;
+
+				TriStream.Append(Out[n]);
+			}
+			TriStream.RestartStrip();
+		}
 	}
 
 	if (g_iViewportDrawInfo & 2)
 	{
-		if (fDissolve_Weight > 0)
+		if (fDissolve_Weight > fDissolve_Value)
 		{
 			float3		vLook = normalize(g_vSubCamPosition - vPos).xyz;
 			float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
@@ -767,6 +837,7 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 			Out[6].vTexUV_2 = float2(1.f, 1.f);
 			Out[7].vTexUV_2 = float2(0.f, 1.f);
 
+			[unroll]
 			for (uint m = 4; m < 8; ++m)
 			{
 				Out[m].vWorldPosition = Out[m].vPosition;
@@ -777,6 +848,7 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 				Out[m].vTangent = fAvg_Tangent;
 				Out[m].vBiNormal = fAvg_BiNormal;
 				Out[m].iViewportIndex = 2;
+				Out[m].iNotParticle = 1;
 			}
 
 			TriStream.Append(Out[4]);
@@ -787,6 +859,27 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 			TriStream.Append(Out[4]);
 			TriStream.Append(Out[6]);
 			TriStream.Append(Out[7]);
+		}
+		else
+		{
+			[unroll]
+			for (uint o = 0; o < 3; o++)
+			{
+				matrix matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+	
+				Out[o].vPosition = mul(In[o].vPosition, matVP);
+				Out[o].vNormal = In[o].vNormal;
+				Out[o].vTangent = In[o].vTangent;
+				Out[o].vBiNormal = In[o].vBiNormal;
+				Out[o].vTexUV = In[o].vTexUV;
+				Out[o].vProjPosition = Out[o].vPosition;
+				Out[o].vWorldPosition = In[o].vPosition;
+				Out[o].iViewportIndex = 2;
+				Out[o].iNotParticle = 0;
+
+				TriStream.Append(Out[o]);
+			}
+			TriStream.RestartStrip();
 		}
 	}
 }
@@ -1449,6 +1542,7 @@ struct PS_IN_DOUBLE_UV
 	float2 vTexUV_2			: TEXCOORD1;
 	float4 vProjPosition	: TEXCOORD2;
 	float4 vWorldPosition	: TEXCOORD3;
+	uint   iNotParticle		: TEXCOORD4;
 	uint   iViewportIndex	: SV_VIEWPORTARRAYINDEX;
 };
 PS_OUT	PS_EFFECT_MASKING(PS_IN_DOUBLE_UV In)
@@ -1456,13 +1550,19 @@ PS_OUT	PS_EFFECT_MASKING(PS_IN_DOUBLE_UV In)
 	PS_OUT Out = (PS_OUT)0;
 
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
-	vector vMaskingTexture = g_MaskingTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV_2);
-
-	if (0.01f > vMaskingTexture.r)
-		discard;
 
 	Out.vDiffuse.rgb = vMtrlDiffuse.rgb;
-	Out.vDiffuse.a = vMaskingTexture.r;
+	Out.vDiffuse.a = 1.f;
+
+	if (0 < In.iNotParticle)
+	{
+		vector vMaskingTexture = g_MaskingTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV_2);
+		
+		if (0.01f > vMaskingTexture.r)
+			discard;
+		Out.vDiffuse.a = vMaskingTexture.r;
+	}
+
 	Out.vDepth = vector(In.vProjPosition.w / g_fMainCamFar, In.vProjPosition.z / In.vProjPosition.w, In.vProjPosition.x / In.vProjPosition.w, In.vProjPosition.y / In.vProjPosition.w);
 
 	// Calculate Normal
@@ -1714,7 +1814,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_EFFECT();
 		GeometryShader = compile gs_5_0 GS_MAIN_ASH_DISSOLVE();
 		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
@@ -1724,7 +1824,7 @@ technique11 DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BlendState_None, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN_EFFECT();
 		GeometryShader = compile gs_5_0 GS_MAIN_ASH_DISSOLVE_NORMAL();
 		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();

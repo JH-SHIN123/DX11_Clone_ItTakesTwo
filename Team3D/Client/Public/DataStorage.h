@@ -228,6 +228,16 @@ public:
 	void Set_ControlRoomMonitor(CGameObject* pControlRoomScreen) { m_pControlRoomMonitor = pControlRoomScreen; }
 	CGameObject* Get_ControlRoomMonitor() { return m_pControlRoomMonitor; }
 
+
+	void Set_Cody_ReviveEffect(_bool IsRevive) { m_IsCody_ReviveEffect = IsRevive; }
+	void Set_May_ReviveEffect(_bool IsRevive) { m_IsMay_ReviveEffect = IsRevive; }
+	_bool Get_CodyReviveEffect() { return m_IsCody_ReviveEffect;}
+	_bool Get_MayReviveEffect() { return  m_IsMay_ReviveEffect; }
+	void Set_Cody_ReviveEffect_PhantomSecond(_bool IsRevive) { m_IsCody_ReviveEffect_PhantomSecond = IsRevive; }
+	void Set_May_ReviveEffect_PhantomSecond(_bool IsRevive) { m_IsMay_ReviveEffect_PhantomSecond = IsRevive; }
+	_bool Get_CodyReviveEffect_PhantomSecond() { return m_IsCody_ReviveEffect_PhantomSecond; }
+	_bool Get_MayReviveEffect_PhantomSecond() { return  m_IsMay_ReviveEffect_PhantomSecond; }
+
 private:
 	CGameObject* m_pCody = nullptr;
 	CGameObject* m_pMay = nullptr;
@@ -344,6 +354,12 @@ private:
 	_uint m_iCodyStageNum = 0;
 	_uint m_iCodyMinigameWinCount = 0;
 	_uint m_iMayMinigameWinCount = 0;
+
+private:
+	_bool m_IsCody_ReviveEffect = false;
+	_bool m_IsMay_ReviveEffect = false;
+	_bool m_IsCody_ReviveEffect_PhantomSecond = false;
+	_bool m_IsMay_ReviveEffect_PhantomSecond = false;
 
 public:
 	virtual void Free() override;

@@ -210,12 +210,12 @@ void CRocket::Effect_Explosion()
 
 	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
 	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, m_pTransformCom->Get_WorldMatrix());
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Ring, m_pTransformCom->Get_WorldMatrix());
 
 	_int iRand = rand() % 3 + 3;
 	for (_int i = 0; i < iRand; ++i)
 		EFFECT->Add_Effect(Effect_Value::BossMissile_Particle, m_pTransformCom->Get_WorldMatrix());
 }
-
 
 CRocket * CRocket::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

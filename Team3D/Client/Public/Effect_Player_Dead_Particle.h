@@ -25,6 +25,7 @@ public:
 
 private:
 	HRESULT Ready_Instance();
+	HRESULT Ready_TargetModel();
 	_float4 Set_particleUV(_int iIndex, _int U, _int V);
 	void	Set_VtxColor(_int iIndex, _uint iVtxIndex);
 	void	SetUp_Rand_Dir();

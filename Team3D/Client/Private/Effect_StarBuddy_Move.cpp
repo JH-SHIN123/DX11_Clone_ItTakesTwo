@@ -116,6 +116,15 @@ void CEffect_StarBuddy_Move::Set_Launch(_bool IsLaunch)
 	Set_Particle_Matrix();
 }
 
+void CEffect_StarBuddy_Move::Set_ColorIndex(_int iColorIndex)
+{
+	m_pParticle_1->Set_ColorIndex(iColorIndex);
+	m_pParticle_2->Set_ColorIndex(iColorIndex);
+	m_pParticle_3->Set_ColorIndex(iColorIndex);
+	m_pParticle_4->Set_ColorIndex(iColorIndex);
+	m_pParticle_5->Set_ColorIndex(iColorIndex);
+}
+
 CEffect_StarBuddy_Move * CEffect_StarBuddy_Move::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CEffect_StarBuddy_Move* pInstance = new CEffect_StarBuddy_Move(pDevice, pDeviceContext);

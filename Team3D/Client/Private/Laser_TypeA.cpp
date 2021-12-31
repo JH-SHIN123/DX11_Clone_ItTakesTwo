@@ -76,8 +76,9 @@ _int CLaser_TypeA::Tick(_double dTimeDelta)
 
 			/* 차지 시간이 다 채워진 순간 */
 			/* 쏘는 순간 터트리는 이펙트 생성 */
-			if (m_dChargingTime <= 0.0)
+			if (m_dChargingTime <= 0.0 && false == m_IsLaserFire)
 			{
+				m_IsLaserFire = true;
 				EFFECT->Add_Effect(Effect_Value::BossLaser_Explosion, m_pTransformCom->Get_WorldMatrix());
 				m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
 				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, m_fSound);

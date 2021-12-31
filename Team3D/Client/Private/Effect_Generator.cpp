@@ -55,6 +55,7 @@
 #include "Effect_Boss_Missile_Smoke_Color.h"	
 #include "Effect_Boss_Missile_Explosion.h"
 #include "Effect_Boss_Missile_Particle.h"
+#include "Effect_Boss_Missile_Ring.h"
 #include "Effect_Boss_UFO_Flying.h"
 #include "Effect_Boss_UFO_Flying_Particle.h"
 #include "Effect_Boss_UFO_Flying_Particle_Flow.h"
@@ -277,6 +278,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		Clone_Data.fSizePower = -1.10f;
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
 		Clone_Data.fSizePower = -1.45f;
+		break;
+	case Effect_Value::BossMissile_Ring:
+		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Ring");
 		break;
 	case Effect_Value::Boss_UFO_Flying_Particle:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_UFO_Flying_Particle");
@@ -596,7 +600,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Explosion", CEffect_Boss_Missile_Explosion::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Boss_Missile_Particle"))
+	{
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Particle", CEffect_Boss_Missile_Particle::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Boss_Missile_Ring", CEffect_Boss_Missile_Ring::Create(pDevice, pDeviceContext, pData));
+	}
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_Player_Dead_Explosion"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_Player_Dead_Explosion", CEffect_Player_Dead_Explosion::Create(pDevice, pDeviceContext, pData));

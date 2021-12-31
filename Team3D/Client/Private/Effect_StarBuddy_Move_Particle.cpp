@@ -68,13 +68,18 @@ _int CEffect_StarBuddy_Move_Particle::Late_Tick(_double TimeDelta)
 HRESULT CEffect_StarBuddy_Move_Particle::Render(RENDER_GROUP::Enum eGroup)
 {
 	_float fTime = (_float)m_dControlTime;
+
+	_int iShaderPass = 12;
+	if (2 == m_iColorIndex)
+		iShaderPass = 27;
+
 	_float4 vUV = { 0.f, 0.f, 1.f, 1.f };
 	m_pPointInstanceCom_STT->Set_DefaultVariables();
 	m_pPointInstanceCom_STT->Set_Variable("g_fTime", &fTime, sizeof(_float));
 	m_pPointInstanceCom_STT->Set_Variable("g_vUV", &vUV, sizeof(_float4));
-	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(9));
+	m_pPointInstanceCom_STT->Set_ShaderResourceView("g_SecondTexture", m_pTexturesCom_Second->Get_ShaderResourceView(m_iColorIndex));
 
-	m_pPointInstanceCom_STT->Render(12, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
+	m_pPointInstanceCom_STT->Render(iShaderPass, m_pInstanceBuffer_STT, m_EffectDesc_Prototype.iInstanceCount);
 
 	return S_OK;
 }
