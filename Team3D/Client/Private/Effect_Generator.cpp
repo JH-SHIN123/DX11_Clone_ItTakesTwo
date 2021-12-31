@@ -86,6 +86,7 @@
 #include "Effect_StarBuddy_Explosion_Pillar.h"
 #include "Effect_StarBuddy_Explosion_BigBang.h"
 #include "Effect_StarBuddy_Explosion_Particle.h"
+#include "Effect_StarBuddy_Ring.h"
 #include "Effect_StarBuddy_Move_Particle.h"
 #include "Effect_PipeLocker_Ball.h"
 #include "Effect_PipeLocker_Particle.h"
@@ -263,11 +264,6 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), &Clone_Data);
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke_Color");
 		break;
-		//case Effect_Value::BossMissile_Smoke_Test:
-		//	Clone_Data.iPlayerValue = EFFECT_DESC_CLONE::PV_MAY;
-		//	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Missile_Smoke_Black"), &Clone_Data);
-		//	lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Smoke_Color");
-		//	break;
 	case Effect_Value::BossMissile_Explosion:
 		lstrcpy(szPrototype, L"GameObject_2D_Boss_Missile_Explosion");
 		break;
@@ -328,6 +324,11 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		lstrcpy(szPrototype, L"GameObject_2D_Hit_Boss_Laser_Particle_Star");
 		break;
 	case Effect_Value::WarpGate_Clear:
+		Clone_Data.iOption = 7;
+		lstrcpy(szPrototype, L"GameObject_2D_WarpGate_Clear");
+		break;
+	case Effect_Value::WarpGate_Clear_MiniGame:
+		Clone_Data.iOption = 3;
 		lstrcpy(szPrototype, L"GameObject_2D_WarpGate_Clear");
 		break;
 	case Effect_Value::MoonBaboon_Shield:
@@ -360,6 +361,9 @@ HRESULT CEffect_Generator::Add_Effect(Effect_Value eEffect, _fmatrix WorldMatrix
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
 		m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, szLayer, Level::LEVEL_STAGE, szPrototype, &Clone_Data);
 		Clone_Data.fSizePower = 3.f;
+		break;
+	case Effect_Value::StarBuddy_Ring:
+		lstrcpy(szPrototype, L"GameObject_2D_StarBuddy_Ring");
 		break;
 	case Effect_Value::PipeLocker_Connected:
 		lstrcpy(szPrototype, L"GameObject_Effect_PipeLocker_Connected");
@@ -676,7 +680,10 @@ HRESULT CEffect_Generator::Create_Prototype(_uint iLevelIndex, const _tchar * pP
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Explosion_Particle", CEffect_StarBuddy_Explosion_Particle::Create(pDevice, pDeviceContext, pData));
 
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_StarBuddy_Move_Particle"))
+	{
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Move_Particle", CEffect_StarBuddy_Move_Particle::Create(pDevice, pDeviceContext, pData));
+		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_StarBuddy_Ring", CEffect_StarBuddy_Ring::Create(pDevice, pDeviceContext, pData));
+	}
 	
 	else if (0 == lstrcmp(pPrototypeName, L"GameObject_2D_WarpGate_Clear"))
 		m_pGameInstance->Add_GameObject_Prototype(iLevelIndex, L"GameObject_2D_WarpGate_Clear", CEffect_WarpGate_Clear::Create(pDevice, pDeviceContext, pData));
@@ -812,6 +819,7 @@ HRESULT CEffect_Generator::Create_Prototype_Resource_Stage1(ID3D11Device * pDevi
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Star"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Star.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Zoom"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/Mask_Texture/Zoom_01.png"))), E_FAIL);
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_WarpGates_Cable"),		CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/WarpGates_Cable.png"))), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Component_Prototype(Level::LEVEL_STAGE, TEXT("Component_Texture_Twirl"),				CTextures::Create(pDevice, pDeviceContext, CTextures::TYPE_WIC, TEXT("../Bin/Resources/Effect/2D/twirl.png"))), E_FAIL);
 
 	//
 	

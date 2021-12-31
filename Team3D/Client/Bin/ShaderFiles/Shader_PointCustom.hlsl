@@ -1443,6 +1443,21 @@ PS_OUT  PS_MAIN_COLOR_NOALPHATEX(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_STARBUDDY_RING(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiff = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
+	float2 vUV = (float2)0.f;
+	vUV.x = vDiff.r * 1.5f;
+	
+	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vUV);
+	Out.vColor = vDiff * vColor;
+	Out.vColor.a = vDiff.r * g_fAlpha * 1.5f;
+
+	return Out;
+}
+
 PS_OUT  PS_UFO_ELECTRICBOX(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1509,7 +1524,6 @@ PS_OUT  PS_LASERPISTON_SMOKE(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DiffuseSampler, In.vTexUV);
-	Out.vColor *=
 	Out.vColor.a *= g_fTime;
 	return Out;
 }
@@ -2115,5 +2129,15 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_MAIN_DIST();
 		PixelShader = compile ps_5_0  PS_DISTORTION_COLOR_TIME();
+	}
+
+	pass StarBuddy_Ring // 27
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_STARBUDDY_RING();
 	}
 };
