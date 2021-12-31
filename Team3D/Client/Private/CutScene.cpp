@@ -735,6 +735,7 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 
 HRESULT CCutScene::Start_CutScene_GotoMoon()
 {
+	CSound_Manager::GetInstance()->Stop_Sound(CHANNEL_IN_UFO_BGM);
 	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene03.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_GotoMoon");
 	
