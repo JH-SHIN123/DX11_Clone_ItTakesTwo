@@ -443,7 +443,7 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 		
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
 		_vector vEye = XMVectorSetW(XMLoadFloat3(&m_pCamHelper->MakeBezier4(m_dRippdeOffTime > 0.5f ? m_vCamRoot_RippedOff[0] : m_vCamRoot_CodyBack,
-			m_vCamRoot_RippedOff[1],
+			m_dRippdeOffTime > 0.5f ? m_vCamRoot_RippedOff[1] : m_vCamRoot_CodyRight,
 			m_vCamRoot_RippedOff[2],
 			m_vCamRoot_RippedOff[3], m_dRippdeOffTime)), 1.f);
 		_vector vAt = XMVectorLerp(vMayPos, matChair.r[3], m_fEyeChangeTime);
@@ -470,7 +470,7 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 		_vector vCodyBack = XMVector3Normalize(matChair.r[3] - vCodyPos);
 
 		XMStoreFloat3(&m_vCamRoot_CodyBack, vCodyPos - vCodyBack * 9.f + XMVectorSet(0.f,7.f,0.f,0.f));
-		
+		XMStoreFloat3(&m_vCamRoot_CodyRight, vCodyPos - vCodyBack * 9.f + XMVectorSet(5.f, 7.f, 0.f, 0.f));
 		
 		_vector vDir = XMVector3Normalize(vLaserGunPos - vMayPos);
 

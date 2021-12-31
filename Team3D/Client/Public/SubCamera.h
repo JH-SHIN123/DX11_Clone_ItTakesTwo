@@ -126,6 +126,7 @@ private:
 	//For.RippedOffBossLaser
 	_float3	m_vCamRoot_RippedOff[4];
 	_float3 m_vCamRoot_CodyBack;
+	_float3 m_vCamRoot_CodyRight;
 	_double	m_dRippdeOffTime = 0.0;
 	_float m_fEyeChangeTime = 0.f;
 public:
