@@ -9,7 +9,9 @@ BEGIN(Client)
 class CScript final : public CGameObject
 {
 public:
-	enum SCREEN	 { FULL, HALF, SCREEN_END };
+	enum SCREEN {
+		FULL, HALF, ASYMMETRY,SCREEN_END
+	};
 
 	typedef struct tagScriptInfo
 	{

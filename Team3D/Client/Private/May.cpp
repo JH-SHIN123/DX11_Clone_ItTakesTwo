@@ -2631,7 +2631,7 @@ void CMay::InUFO(const _double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vChairPos));
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vRight = pUFOTransform->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 

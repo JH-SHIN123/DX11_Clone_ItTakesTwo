@@ -1308,7 +1308,7 @@ PS_OUT_CUSTOMBLUR	PS_3DTEXT(PS_IN In)
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vDiffuse.w = 1.f;
 
-	Out.vBlurValue = 0.2f;
+	Out.vBlurValue = 0.5f;
 
 	return Out;
 }

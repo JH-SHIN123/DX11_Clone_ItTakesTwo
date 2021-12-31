@@ -126,13 +126,6 @@ void CPinBall_Door::Movement(_double dTimeDelta)
 	/* Open */
 	if (false == m_bDoorState)
 	{
-		// 코디가 핀볼에 처음 탑승했을 때.
-		if (SCRIPT->Get_Script_Played(19) == false)
-		{
-			SCRIPT->VoiceFile_No19();
-			SCRIPT->Set_Script_Played(19, true);
-		}
-
 		/* UI */
 		m_bUICheck = true;
 		UI_Delete(Cody, InputButton_InterActive);
