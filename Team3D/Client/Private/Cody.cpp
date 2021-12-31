@@ -2932,7 +2932,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f *//*&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false*/)
+				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
 				{
 					SCRIPT->VoiceFile_No01();
 					m_bGravityPipe_FirstIn = true;
@@ -3255,7 +3255,7 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
-	if (false == m_bElectricWallAttach)
+	if (false == m_bElectricWallAttach)//
 		return;
 
 	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)

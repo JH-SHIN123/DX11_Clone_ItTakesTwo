@@ -32,6 +32,9 @@ private:
  private:
 	 _float m_fGauge = 0.f;
 
+	 /* Sounds */
+	 _float m_fLaserVolume = 1.f;
+
 
 public:
 	static CPixelChargeBarGauge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
