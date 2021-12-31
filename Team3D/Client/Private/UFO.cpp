@@ -144,7 +144,7 @@ _int CUFO::Tick(_double dTimeDelta)
 		m_IsCutScene = true;
 	}
 
-
+	/* Áö¿ì¸é ¾ÈµÊ */
 	if (true == m_pModelCom->Is_AnimFinished(CutScene_UFO_Boss_Intro))
 		Set_EndIntroCutScene();
 
