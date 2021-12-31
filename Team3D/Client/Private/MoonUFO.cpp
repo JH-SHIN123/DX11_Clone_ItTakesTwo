@@ -174,7 +174,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	_vector vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
 	_vector vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
-	if (m_pGameInstance->Key_Pressing(DIK_RIGHT) /*|| m_pGameInstance->Get_Pad_LStickX() > 44000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -206,7 +206,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	//else
 		//m_bRotateRight = false;
 
-	if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -228,7 +228,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	//else
 		//m_bRotateLeft = false;
 
-	if (m_pGameInstance->Key_Pressing(DIK_UP)/* || m_pGameInstance->Get_Pad_LStickY() < 20000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -246,7 +246,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		}
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
 	}
-	if (m_pGameInstance->Key_Pressing(DIK_DOWN)/* || m_pGameInstance->Get_Pad_LStickY() > 44000*/)
+	if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 44000)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -264,6 +264,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		}
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -UFOFORCE, XMVectorGetY(vLook) * -UFOFORCE, XMVectorGetZ(vLook) * -UFOFORCE));
 	}
+#ifdef __CONTROL_MAY_KEYBOARD
 	if ((m_pGameInstance->Key_Up(DIK_UP) && !m_pGameInstance->Key_Pressing(DIK_DOWN) && !m_pGameInstance->Key_Pressing(DIK_RIGHT) && !m_pGameInstance->Key_Pressing(DIK_LEFT))
 		|| (m_pGameInstance->Key_Up(DIK_DOWN) && !m_pGameInstance->Key_Pressing(DIK_UP) && !m_pGameInstance->Key_Pressing(DIK_RIGHT) && !m_pGameInstance->Key_Pressing(DIK_LEFT))
 		|| (m_pGameInstance->Key_Up(DIK_LEFT) && !m_pGameInstance->Key_Pressing(DIK_UP) && !m_pGameInstance->Key_Pressing(DIK_DOWN) && !m_pGameInstance->Key_Pressing(DIK_RIGHT))
@@ -274,6 +275,15 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE);
 		m_pGameInstance->Play_Sound(L"UFO_Move_End.wav", CHANNEL_MOONUFO_MOVE_END, m_fMove_End_Volume);
 	}
+#else
+	if ((m_pGameInstance->Get_Pad_LStickY() > 20000 && m_pGameInstance->Get_Pad_LStickY() < 40000) && (m_pGameInstance->Get_Pad_LStickX() > 20000 && m_pGameInstance->Get_Pad_LStickX() < 40000) )
+	{
+		m_bMoving = false;
+		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE_START);
+		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE);
+		m_pGameInstance->Play_Sound(L"UFO_Move_End.wav", CHANNEL_MOONUFO_MOVE_END, m_fMove_End_Volume);
+	}
+#endif
 
 	/* For.LaserGun */
 
