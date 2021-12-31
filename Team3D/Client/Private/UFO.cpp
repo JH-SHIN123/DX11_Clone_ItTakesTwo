@@ -967,13 +967,16 @@ HRESULT CUFO::Ready_TriggerActor_Component()
 	_vector vUFOPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vUFOPos.m128_f32[1] -= 8.f;
 
+	vUFOPos.m128_f32[0] -= 4.5f;
+	vUFOPos.m128_f32[2] += 3.9f;
+
 	m_pTriggerTransformCom->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 	CTriggerActor::ARG_DESC TriggerArgDesc;
 
 	TriggerArgDesc.pUserData = &m_UserData;
 	TriggerArgDesc.pTransform = m_pTriggerTransformCom;
-	TriggerArgDesc.pGeometry = new PxSphereGeometry(5.f);
+	TriggerArgDesc.pGeometry = new PxSphereGeometry(3.f);
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_Trigger"), (CComponent**)&m_pTriggerActorCom, &TriggerArgDesc), E_FAIL);
 	Safe_Delete(TriggerArgDesc.pGeometry);
