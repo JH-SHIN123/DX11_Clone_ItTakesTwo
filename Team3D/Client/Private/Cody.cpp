@@ -3252,7 +3252,7 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
-	if (false == m_bElectricWallAttach)//
+	if (false == m_bElectricWallAttach)
 		return;
 
 	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)
@@ -4426,17 +4426,6 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 	m_pActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
-
-	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
-	{
-		/* Sound */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			SCRIPT->VoiceFile_No22();
-		/* 코디가 잘못했을 때 */
-		else
-			SCRIPT->VoiceFile_No21();
-	}
 
 	m_IsPinBall = false;
 	m_IsCollide = false;

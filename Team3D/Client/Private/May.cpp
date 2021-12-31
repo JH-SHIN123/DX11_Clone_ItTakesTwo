@@ -2635,9 +2635,9 @@ void CMay::InUFO(const _double dTimeDelta)
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.7f;
-	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.7f;
-	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.7f;
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.5f;
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.5f;
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.5f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);

@@ -27,10 +27,15 @@ HRESULT CScript::Render_Script(_uint iScriptIndex, SCREEN eScreenMode, _float fD
 		m_pBackGround_First->Set_Position(XMVectorSet(-320.f, -312.f, 0.f, 1.f));
 		m_pBackGround_Sub->Set_Position(XMVectorSet(320.f, -312.f, 0.f, 1.f));
 	}
+	else if (BOSS == m_eScreenMode)
+	{
+		m_pBackGround_First->Set_Position(XMVectorSet(-320.f + 64.f, -312.f, 0.f, 1.f));
+		m_pBackGround_Sub->Set_Position(XMVectorSet(320.f + 64.f, -312.f, 0.f, 1.f));
+	}
 	else if (ASYMMETRY == m_eScreenMode)
 	{
-		m_pBackGround_First->Set_Position(XMVectorSet(-320.f + 100.f, -312.f, 0.f, 1.f));
-		m_pBackGround_Sub->Set_Position(XMVectorSet(320.f + 100.f, -312.f, 0.f, 1.f));
+		m_pBackGround_First->Set_Position(XMVectorSet(-320.f + 96.f, -312.f, 0.f, 1.f));
+		m_pBackGround_Sub->Set_Position(XMVectorSet(320.f + 96.f, -312.f, 0.f, 1.f));
 	}
 	else
 	{
@@ -333,7 +338,7 @@ void CScript::VoiceFile_No38()
 void CScript::VoiceFile_No39()
 {
 	m_pGameInstance->Play_Sound(TEXT("39.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(83, 2.f, ASYMMETRY));
+	m_queueScriptInfo.emplace(SCRIPTINFO(83, 2.f, BOSS));
 }
 
 void CScript::VoiceFile_No40()
@@ -345,13 +350,13 @@ void CScript::VoiceFile_No40()
 void CScript::VoiceFile_No41()
 {
 	m_pGameInstance->Play_Sound(TEXT("41.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(85, 3.f, ASYMMETRY));
+	m_queueScriptInfo.emplace(SCRIPTINFO(85, 3.f, BOSS));
 }
 
 void CScript::VoiceFile_No42()
 {
 	m_pGameInstance->Play_Sound(TEXT("42.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(86, 3.f, ASYMMETRY));
+	m_queueScriptInfo.emplace(SCRIPTINFO(86, 3.f, BOSS));
 }
 
 void CScript::VoiceFile_No43()
@@ -384,7 +389,7 @@ void CScript::VoiceFile_No45()
 void CScript::VoiceFile_No46()
 {
 	m_pGameInstance->Play_Sound(TEXT("46.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(99, 3.f));
+	m_queueScriptInfo.emplace(SCRIPTINFO(99, 3.f, BOSS));
 }
 
 void CScript::VoiceFile_No47()
@@ -541,7 +546,18 @@ HRESULT CScript::Render(RENDER_GROUP::Enum eGroup)
 			m_pFontCom_First->Render_Font(Find_Script(m_iIndexFirst), _float2(320.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
 			m_pFontCom_Second->Render_Font(Find_Script(m_iIndexFirst), _float2(960.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
 		}
-		/* 6:4 */
+		/* 0.6 */
+		else if (BOSS == m_eScreenMode)
+		{
+			if (true == m_bBackGround)
+			{
+				m_pBackGround_First->Render(eGroup, _float2(fLength, 1.f));
+				m_pBackGround_Sub->Render(eGroup, _float2(fLength, 1.f));
+			}
+			m_pFontCom_First->Render_Font(Find_Script(m_iIndexFirst), _float2(320.f + 64.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
+			m_pFontCom_Second->Render_Font(Find_Script(m_iIndexFirst), _float2(960.f + 64.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
+		}
+		/* 0.65 */
 		else if (ASYMMETRY == m_eScreenMode)
 		{
 			if (true == m_bBackGround)
@@ -549,8 +565,8 @@ HRESULT CScript::Render(RENDER_GROUP::Enum eGroup)
 				m_pBackGround_First->Render(eGroup, _float2(fLength, 1.f));
 				m_pBackGround_Sub->Render(eGroup, _float2(fLength, 1.f));
 			}
-			m_pFontCom_First->Render_Font(Find_Script(m_iIndexFirst), _float2(320.f + 100.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
-			m_pFontCom_Second->Render_Font(Find_Script(m_iIndexFirst), _float2(960.f + 100.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
+			m_pFontCom_First->Render_Font(Find_Script(m_iIndexFirst), _float2(320.f + 96.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
+			m_pFontCom_Second->Render_Font(Find_Script(m_iIndexFirst), _float2(960.f + 96.f, 670.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.23f);
 		}
 		/* 풀스크린 */
 		else
