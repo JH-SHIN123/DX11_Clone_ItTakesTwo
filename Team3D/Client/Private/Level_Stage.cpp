@@ -30,6 +30,7 @@
 #include "UFORadarSet.h"
 #include "Boss_Missile.h"
 /* Jin */
+#include "UI_Generator.h"
 /* Jun */
 #include "Camera.h"
 #include"CutScenePlayer.h"
@@ -164,7 +165,27 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		ENDINGCREDIT->Create_Environment();
 		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_EndingCredit();
+
+		UI_Create(Default, BlackScreenFadeInOut);
+		UI_Generator->Set_FadeInSpeed(Player::Default, UI::BlackScreenFadeInOut, 1000.f);
+		m_IsEndingFadeOut = true;
 	}
+
+	/* BlackScreen FadeOut */
+	if (true == m_IsEndingFadeOut)
+	{
+		m_dEndingFadeOutWaitTime += dTimedelta;
+
+		/*  BlackScreen 대기시간 조절 */
+		if (3.f <= m_dEndingFadeOutWaitTime)
+		{
+			UI_Generator->Set_FadeOut(Player::Default, UI::BlackScreenFadeInOut);
+			/* FadeOut 속도 조절*/
+			UI_Generator->Set_FadeOutSpeed(Player::Default, UI::BlackScreenFadeInOut, 0.5f);
+			m_IsEndingFadeOut = false;
+		}
+	}
+
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
 	if (m_iLevelStep == 3)
