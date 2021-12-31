@@ -176,6 +176,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	{
 		m_dEndingFadeOutWaitTime += dTimedelta;
 
+		/*  BlackScreen 대기시간 조절 */
 		if (3.f <= m_dEndingFadeOutWaitTime)
 		{
 			UI_Generator->Set_FadeOut(Player::Default, UI::BlackScreenFadeInOut);
