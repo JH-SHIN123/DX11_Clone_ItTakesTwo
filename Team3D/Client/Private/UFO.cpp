@@ -1566,6 +1566,7 @@ void CUFO::Script(_double dTimeDelta)
 	if (true == m_IsCutScene)
 		return;
 
+	/* ¼öÁ¤ */
 	m_fScriptDelay += (_float)dTimeDelta;
 	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1 ||
 		m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_2)
