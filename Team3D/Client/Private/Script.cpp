@@ -113,9 +113,9 @@ void CScript::VoiceFile_No07()
 
 void CScript::VoiceFile_No08()
 {
-	m_pGameInstance->Play_Sound(TEXT("08.wav"), CHANNEL_VOICE);
-	m_queueScriptInfo.emplace(SCRIPTINFO(14, 3.f));
-	m_queueScriptInfo.emplace(SCRIPTINFO(15, 2.f));
+	//m_pGameInstance->Play_Sound(TEXT("08.wav"), CHANNEL_VOICE);
+	//m_queueScriptInfo.emplace(SCRIPTINFO(14, 3.f));
+	//m_queueScriptInfo.emplace(SCRIPTINFO(15, 2.f));
 }
 
 void CScript::VoiceFile_No09()

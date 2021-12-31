@@ -10,6 +10,8 @@
 #include"MainCamera.h"
 #include"SubCamera.h"
 #include "Script.h"
+#include "Cody.h"
+#include "May.h"
 
 _uint CMoonBaboonCore::m_iBrokenCheck = 0;
 
@@ -141,26 +143,6 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
     return _int();
 }
 
-//void CMoonBaboonCore::Reset()
-//{
-//	if (m_bResetOnce) return;
-//	if (nullptr != m_pEffectBossCore) return;
-//
-//	if (nullptr == m_pEffectBossCore)
-//	{
-//		FAILED_CHECK(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"), nullptr, (CGameObject**)&m_pEffectBossCore));
-//	}
-//
-//	m_bBroken = false;
-//	m_bBrokenStart = false;
-//	m_dBrokenWaitingDeltaT = 0.f;
-//	m_iActiveCore = 0;
-//
-//	m_pCoreGlass->Reset();
-//
-//	m_bResetOnce = true;
-//}
-
 void CMoonBaboonCore::GoUp(_double dTimeDelta)
 {
 	if (false == m_IsGoUp)
@@ -203,6 +185,24 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 		if (CUFO::LASER != pUFO->Get_BossPatern()) {
 			m_pCoreButton->Set_RenderPass(CMoonBaboonCore_Button::STATE_NONEACT);
 			return;
+		}
+	}
+
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+
+	// 죽었으면은 활성화 변경
+	if (m_iActiveCore == 1)
+	{
+		if (ON_CODY == m_eWhoIsOn && pCody->Get_bDeadInBossroom())
+		{
+			m_iActiveCore = -1;
+			if(m_pCoreButton) m_pCoreButton->Release_Button();
+		}
+		if (ON_MAY == m_eWhoIsOn && pMay->Get_bDeadInBossroom())
+		{
+			m_iActiveCore = -1;
+			if (m_pCoreButton) m_pCoreButton->Release_Button();
 		}
 	}
 
@@ -311,6 +311,12 @@ void CMoonBaboonCore::Set_Broken()
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Set_Start_Destroy_BossCore();
 	}
 
+}
+
+void CMoonBaboonCore::Set_ActiveCore(_int iActive, WHOISON eOn)
+{
+	m_iActiveCore = iActive;
+	m_eWhoIsOn = eOn;
 }
 
 void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)

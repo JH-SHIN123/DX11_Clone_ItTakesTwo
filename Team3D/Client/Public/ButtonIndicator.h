@@ -27,6 +27,7 @@ public:
 private:
 	_double							m_Time = 0.0;
 	_uint							m_iScaleChangeCount = 0;
+	_uint							m_iOption = 0;
 
 private:
 	CVIBuffer_Rect*					m_pVIBuffer_RectCom = nullptr;

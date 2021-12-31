@@ -306,7 +306,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 		// 코디가 죽어있으면 메이를 향해서
 		_bool bTargetChange = false;
-		if (pCody->Get_bDeadInBossroom() && false == m_bCodyControl)
+		if (pCody->Get_bDeadInBossroom())
 		{
 			bTargetChange = true;
 			vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
@@ -349,7 +349,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 		// 메이가 죽어있으면 코디를 향해서
 		_bool bTargetChange = false;
-		if (pMay->Get_bDeadInBossroom() && false == m_bMayControl)
+		if (pMay->Get_bDeadInBossroom())
 		{
 			bTargetChange = true;
 			vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
