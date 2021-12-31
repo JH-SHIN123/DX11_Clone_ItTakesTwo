@@ -31,6 +31,10 @@ HRESULT CButtonIndicator::NativeConstruct(void * pArg)
 {
 	CUIObject::NativeConstruct(pArg);
 
+	/* iOpiton 0 : RespawnCircle 버튼 / iOption 1 : 보스 1페 상호작용 때 쓰는 버튼 */
+	if (nullptr != pArg)
+		memcpy(&m_iOption, pArg, sizeof(_uint));
+
 	if (FAILED(Ready_Component()))
 		return E_FAIL;
 
@@ -66,8 +70,16 @@ HRESULT CButtonIndicator::Render(RENDER_GROUP::Enum eGroup)
 {
 	CUIObject::Render(eGroup);
 
-	if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
-		return E_FAIL;
+	if (0 == m_iOption)
+	{
+		if (FAILED(CUIObject::Set_UIVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+	}
+	else if (1 == m_iOption)
+	{
+		if (FAILED(CUIObject::Set_InterActiveVariables_Perspective(m_pVIBuffer_RectCom)))
+			return E_FAIL;
+	}
 
 	m_pVIBuffer_RectCom->Render(0);
 

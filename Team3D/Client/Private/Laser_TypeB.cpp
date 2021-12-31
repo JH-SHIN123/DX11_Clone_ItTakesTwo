@@ -175,6 +175,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 
 		if (m_fLaserSizeY < 0.f)
 		{
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
 			DATABASE->Set_LaserTypeB_Recovery(true);
 			return EVENT_DEAD;
 		}
