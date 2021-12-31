@@ -28,8 +28,12 @@ HRESULT CEffect_Player_Dead::NativeConstruct(void * pArg)
 	__super::Ready_Component(pArg);
 	Ready_Instance();
 
-	m_pInstanceBuffer[0].vSize = { 7.f, 7.f };
-	m_pInstanceBuffer[0].vPosition.y += 1.f;
+	_float fScale = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+	m_pInstanceBuffer[0].vSize = { 5.f, 5.f };
+	m_pInstanceBuffer[0].vSize.x *= fScale;
+	m_pInstanceBuffer[0].vSize.y = m_pInstanceBuffer[0].vSize.x;
+
+	m_pInstanceBuffer[0].vPosition.y += fScale;
 	m_EffectDesc_Clone.UVTime = 0.01;
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Dead_Cells"), TEXT("Com_Texture_Particle"), (CComponent**)&m_pTexturesCom_Particle), E_FAIL);

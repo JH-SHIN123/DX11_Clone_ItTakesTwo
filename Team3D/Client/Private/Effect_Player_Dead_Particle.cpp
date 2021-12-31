@@ -58,9 +58,9 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 	XMStoreFloat4(&m_vTargetPos, vPos);
 
 
-	m_fSizePower = XMVector3Length(WorldMatrix.r[0]).m128_f32[0];
-	m_vSize.x *= m_fSizePower;
-	m_vSize.y *= m_fSizePower;
+// 	m_fSizePower = XMVector3Length(WorldMatrix.r[0]).m128_f32[0];
+// 	m_vSize.x *= m_fSizePower;
+// 	m_vSize.y *= m_fSizePower;
 
 	return S_OK;
 }
@@ -70,25 +70,16 @@ _int CEffect_Player_Dead_Particle::Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return EVENT_DEAD;
 
-	//m_pModelCom->Update_Animation(TimeDelta);
 	m_EffectDesc_Prototype.fLifeTime -= (_float)TimeDelta;
 	m_fMoveTime += (_float)TimeDelta * 0.75f;
-	// 	m_pInstanceBuffer[0].vTextureUV = Check_UV((_float)TimeDelta, 0, false);
-	// 
-	// 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
-	// 	{
-	// 		Instance_Pos((_float)TimeDelta, iIndex);
-	// 		Instance_Size((_float)TimeDelta, iIndex);
-	// 	}
-	// 좀 더 다이나믹한 움직임을 줄 수는 없을까............
 
-	m_vSize.x -= (_float)TimeDelta * 0.01f * m_fSizePower;
-	m_vSize.y -= (_float)TimeDelta * 0.01f * m_fSizePower;
-	if (0.f >= m_vSize.x)
-	{
-		m_vSize.x = 0.f;
-		m_vSize.y = 0.f;
-	}
+// 	m_vSize.x -= (_float)TimeDelta * 0.01f * m_fSizePower;
+// 	m_vSize.y -= (_float)TimeDelta * 0.01f * m_fSizePower;
+// 	if (0.f >= m_vSize.x)
+// 	{
+// 		m_vSize.x = 0.f;
+// 		m_vSize.y = 0.f;
+// 	}
 
 	return _int();
 }
@@ -112,16 +103,16 @@ HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 	g_vTextureSize
 	*/
 	XMINT2 vTexSize = {1024, 1024};
-	_float4 vTextureUV_LTRB = { 0.f,0.f,1.f,1.f };
-	_float fRadius = 0.2f;
+	_float fFlowPower = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+	_float fRadius = 0.1f * fFlowPower;
 	m_pModelCom->Set_Variable("g_vPos", &m_vTargetPos, sizeof(_float4));
 	m_pModelCom->Set_Variable("g_fTime", &m_fMoveTime, sizeof(_float));
-	m_pModelCom->Set_Variable("g_vParticleSize", &m_vSize, sizeof(_float2));
 	m_pModelCom->Set_Variable("g_fRadius", &fRadius, sizeof(_float));
 	m_pModelCom->Set_Variable("g_fDissolveTime", &m_fMoveTime, sizeof(_float));
 	m_pModelCom->Set_Variable("g_vTextureSize", &vTexSize, sizeof(XMINT2));
 	vTexSize = { 512, 512 };
 	m_pModelCom->Set_Variable("g_vTextureSize_2", &vTexSize, sizeof(XMINT2));
+	m_pModelCom->Set_Variable("g_fFlowPower", &fFlowPower, sizeof(_float));
 
 	m_pModelCom->Set_ShaderResourceView("g_DissolveTexture", m_pTexturesCom_Particle_Diss->Get_ShaderResourceView(1));
 	m_pModelCom->Set_ShaderResourceView("g_FlowTexture",	 m_pTexturesCom_Particle_Flow->Get_ShaderResourceView(0));
@@ -292,12 +283,12 @@ void CEffect_Player_Dead_Particle::Set_VtxColor(_int iIndex, _uint iVtxIndex)
 
 void CEffect_Player_Dead_Particle::SetUp_Rand_Dir()
 {
-	for (_int i = 0; i < 256; ++i)
-	{
-		m_vDir_Array[i] = Get_Dir_Rand(_int3(100, 100, 100));
-		_vector vDir = XMLoadFloat3(&m_vDir_Array[i]) /** (_float(rand() % 100) * 0.0025f)*/;
-		XMStoreFloat3(&m_vDir_Array[i], vDir);
-	}
+// 	for (_int i = 0; i < 256; ++i)
+// 	{
+// 		m_vDir_Array[i] = Get_Dir_Rand(_int3(100, 100, 100));
+// 		_vector vDir = XMLoadFloat3(&m_vDir_Array[i]) /** (_float(rand() % 100) * 0.0025f)*/;
+// 		XMStoreFloat3(&m_vDir_Array[i], vDir);
+// 	}
 }
 
 CEffect_Player_Dead_Particle * CEffect_Player_Dead_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, void * pArg)

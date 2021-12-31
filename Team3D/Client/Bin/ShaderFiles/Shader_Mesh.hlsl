@@ -29,6 +29,7 @@ cbuffer Mesh_EffectDesc
 	float			g_fAlpha;
 	float			g_fRadius; // 시작 사이즈
 	float			g_fDissolveTime; // 0~1
+	float			g_fFlowPower;
 	float2			g_vParticleSize;
 	float3			g_vDir;
 	float4			g_vPos;
@@ -601,14 +602,20 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 	modf(fAvg_UV.x * g_vTextureSize.x, vTexPos.x);
 	modf(fAvg_UV.y * g_vTextureSize.y, vTexPos.y);
 	float fDissolve_Value = g_DissolveTexture.Load(vTexPos).r;
-	float fDissolve_Weight = clamp(g_fDissolveTime * 0.75f - fDissolve_Value, 0, 1);
+	float fDissolve_Weight = clamp(g_fDissolveTime * 2.f - fDissolve_Value, 0, 1);
+
+	float3 vWorldPos = g_WorldMatrix._41_42_43 + g_WorldMatrix._21_22_23;
+	float3 vDir_Right = normalize(fAvg_Pos - vWorldPos);
 
 	modf(fAvg_UV.x * g_vTextureSize_2.x, vTexPos.x);
 	modf(fAvg_UV.y * g_vTextureSize_2.y, vTexPos.y);
-	float4 vTextureDir = g_FlowTexture.Load(vTexPos);
+	float4 vTextureDir = g_FlowTexture.Load(vTexPos) * g_fFlowPower;
+	float3 vDir = (normalize(g_WorldMatrix._31_32_33) * vTextureDir.r * -1.f)
+		+ (normalize(g_WorldMatrix._21_22_23) * vTextureDir.g * 2.f);
+		+ (vDir_Right * ((vTextureDir.g + vTextureDir.r) * 0.75f));
 
 	float4 vPseudoRandomPos = (fAvg_Pos) /*+ g_vDirection*/;
-	vPseudoRandomPos.xyz += (vTextureDir.xyz * g_fTime); // 확장 가중치
+	vPseudoRandomPos.xyz += (vDir.xyz * g_fTime); // 확장 가중치
 
 	float4 vPos = lerp(fAvg_Pos, vPseudoRandomPos, fDissolve_Weight); // 보간
 	float fSize = lerp(g_fRadius, 0, fDissolve_Weight); // 각자의 사이즈를 보간

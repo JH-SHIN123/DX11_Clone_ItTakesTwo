@@ -2948,7 +2948,7 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 	if (m_IsDeadLine == true)
 	{
 		m_fDeadTime += (_float)dTimeDelta;
-		if (m_fDeadTime >= 1.f)
+		if (m_fDeadTime >= 1.75f)
 		{
 			/* Sound */
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);

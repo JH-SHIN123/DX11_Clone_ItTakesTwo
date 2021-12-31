@@ -36,10 +36,7 @@ private:
 	CTextures* m_pTexturesCom_Particle_Flow = nullptr;
 
 	CTextures* m_pTexturesCom_Particle_Mask = nullptr;
-	_float m_fMoveTime = 0.f;
-	_float3 m_vDir_Array[256];
-	_float2 m_vSize = { 0.02f, 0.02f };
-	_float m_fSizePower = 1.f;
+	_float m_fMoveTime = 0.f;// 3.75f
 	_float4 m_vTargetPos;
 
 public:

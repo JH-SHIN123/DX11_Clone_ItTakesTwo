@@ -3705,7 +3705,7 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 	if (m_IsDeadLine == true)
 	{
 		m_dDeadTime += dTimeDelta;
-		if (m_dDeadTime >= 1.f)
+		if (m_dDeadTime >= 1.75f)
 		{
 			/* Sound */
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
