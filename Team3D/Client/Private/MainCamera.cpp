@@ -1140,6 +1140,11 @@ _int CMainCamera::Tick_Cam_InJoystick(_double dTimeDelta)
 	_vector vEye = vRaderScreenPos - vRaderScreenLook * 2.2f + XMVectorSet(0.f,0.2f,-0.8f,0.f);
 
 	_matrix matResult = MakeViewMatrixByUp(vEye, vRaderScreenPos);
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
+	{
+		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult))
+			matResult = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
+	}
 	m_pTransformCom->Set_WorldMatrix(matResult);
 
 	m_CameraDesc.fFovY = XMConvertToRadians(30.f);
@@ -1326,7 +1331,11 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 	CTransform* pMoonBaboonTransform = pMoonBaboon->Get_Transform();
 	_vector vMoonBaboonPos = pMoonBaboonTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vCodyPos = pCodyTransform->Get_State(CTransform::STATE_POSITION);
-
+	if (m_dDestroyCoreTime >= 4.7)
+	{
+		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
+		ReSet_Cam_FreeToAuto(true, true, 1.f);
+	}
 	if (m_dDestroyCoreTime == 0.f)
 	{
 		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 1.f, 1.f), XMVectorSet(1.f, 0.f, 1.f, 1.f),2.f);
@@ -1340,11 +1349,7 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 		m_vStartCodyLook.y = m_vLastEye.y;
 		Start_CamEffect(TEXT("Cam_Shake_MissileBoom"));
 	}
-	if (m_dDestroyCoreTime >= 4.7)
-	{
-		m_pGameInstance->Set_GoalViewportInfo(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f));
-		ReSet_Cam_FreeToAuto(true,true,1.f);
-	}
+	
 
 	_vector vStartEye =XMVectorSetW(XMLoadFloat3(&m_vStartCodyPos),1.f);
 	_vector vStartAt = XMVectorSetW(XMLoadFloat3(&m_vStartCodyLook),1.f);
@@ -1353,9 +1358,8 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 	XMStoreFloat3(&vLastAt, vMoonBaboonPos);
 
 	_vector vCurEye =XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyPos, m_vLastEye, (_float)m_dDestroyCoreTime));
-	_vector vCurAt = XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyLook, vLastAt, (_float)m_dDestroyCoreTime));
+	_vector vCurAt = XMVectorSetW(XMLoadFloat3(&vLastAt),1.f);//XMLoadFloat3(&m_pCamHelper->VectorLerp(m_vStartCodyLook, vLastAt, (_float)m_dDestroyCoreTime));
 	
-
 	_matrix matResult = MakeLerpMatrix(m_pTransformCom->Get_WorldMatrix(), MakeViewMatrixByUp(vCurEye, vCurAt), (_float)dTimeDelta);
 	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
 	{
@@ -1363,7 +1367,6 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 			matResult = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
 
 	}
-
 	m_pTransformCom->Set_WorldMatrix(matResult);
 
 	m_dDestroyCoreTime += dTimeDelta;
@@ -1629,7 +1632,7 @@ _int CMainCamera::Tick_CamHelperNone(_double dTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_NUMPAD0))
 	{
-		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
 		//CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
 		//CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Boss_Intro");
 		return NO_EVENT;
