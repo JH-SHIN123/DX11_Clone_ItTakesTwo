@@ -237,7 +237,7 @@ _int CMay::Tick(_double dTimeDelta)
 	DeadInBossroom(dTimeDelta);
 	_bool Test = m_pActorCom->Get_IsOnGravityPath();
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO && false == m_bDead_InBossroom)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO && false == m_bDead_InBossroom && false == m_IsEnding)
 	{
 		LaserTennis(dTimeDelta);
 		Wall_Jump(dTimeDelta);
@@ -2695,6 +2695,12 @@ void CMay::Set_MinigameHpBarReduction(_float fDamage)
 void CMay::Set_InterActiveUIDisable(_bool IsCheck)
 {
 	m_IsInterActiveUIDisable = IsCheck;
+}
+
+void CMay::Set_Ending_Ready()
+{
+	m_IsInUFO = false;
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(false);
 }
 
 void CMay::LaserTennis(const _double dTimeDelta)

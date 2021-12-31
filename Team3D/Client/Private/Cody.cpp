@@ -328,7 +328,7 @@ _int CCody::Tick(_double dTimeDelta)
 	KeyInput_Rail(dTimeDelta);
 	DeadInBossroom(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit && false == m_bDead_InBossroom)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit && false == m_bDead_InBossroom && false == m_IsEnding)
 	{
 		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
@@ -3414,7 +3414,7 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 
 void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 {
-	if (m_IsEnding == true)
+	if (m_IsEnding == true || m_bEndingCredit == true)
 	{
 		/* 3초후 시작 */
 		m_dStartTime += dTimeDelta;
@@ -3645,6 +3645,11 @@ void CCody::Set_InJoyStick()
 	m_pActorCom->Set_Position(vOffSetPosition);
 	m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
 	m_IsInJoyStick = true;
+}
+void CCody::Set_Ending_Ready()
+{
+	m_IsInJoyStick = false;
+	m_pActorCom->Set_IsPlayerInUFO(false);
 }
 void CCody::Set_HpBarReduction(_float fDamage)
 {

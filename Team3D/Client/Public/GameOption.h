@@ -13,7 +13,7 @@
 /**
 * 보스방 무적
 */
-//#define __PLAYER_INVINCIBLE_BOSSROOM
+#define __PLAYER_INVINCIBLE_BOSSROOM
  
 /************************************************************************/
   
@@ -58,7 +58,7 @@
 /**
 * 메이 키보드로 컨트롤하려면 주석 해제.
 */
-//#define __CONTROL_MAY_KEYBOARD
+#define __CONTROL_MAY_KEYBOARD
 
 /************************************************************************/
 
