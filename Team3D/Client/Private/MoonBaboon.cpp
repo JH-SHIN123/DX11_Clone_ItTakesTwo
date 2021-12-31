@@ -53,6 +53,11 @@ HRESULT CMoonBaboon::NativeConstruct(void * pArg)
 	m_pModelCom->Set_Animation(Moon_Ufo_MH);
 	m_pModelCom->Set_NextAnimIndex(Moon_Ufo_MH);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_MOONBABOON , 1.f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Moonbaboon_Holding.wav"), CHANNEL_BOSS_MOONBABOON, 1.f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSS_MOONBABOON);
+
 	((CUFO*)DATABASE->Get_BossUFO())->Set_MoonBaboonPtr(this);
 
 	return S_OK;
@@ -64,7 +69,9 @@ _int CMoonBaboon::Tick(_double dTimeDelta)
 
 	if (true == CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
-		SetUp_IntroOffset(dTimeDelta);
+		if(CCutScenePlayer::GetInstance()->Get_CurCutScene() == CCutScene::CutSceneOption::CutScene_Boss_Intro
+			 || CCutScenePlayer::GetInstance()->Get_CurCutScene() == CCutScene::CutSceneOption::CutScene_Eject_InUFO)
+			SetUp_IntroOffset(dTimeDelta);
 		m_pModelCom->Update_Animation(dTimeDelta);
 		return S_OK;
 	}
@@ -221,8 +228,26 @@ void CMoonBaboon::Add_LerpInfo_To_Model()
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_Laser_HitPod, true);
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_KnockDownMH, true);
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_GroundPound, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, CutScene_PowerCoreDestroyed_MoonBaboon, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_MH, Moon_Ufo_FireRocket, true);
+
+	m_pModelCom->Add_LerpInfo(CutScene_PowerCoreDestroyed_MoonBaboon, Moon_Ufo_KnockDownMH, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_KnockDownMH, Moon_Ufo_KnockDownMH, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_KnockDownMH, Moon_Ufo_CodyHolding_Enter, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_CodyHolding_Enter, Moon_Ufo_CodyHolding, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_CodyHolding, Moon_Ufo_CodyHolding, true);
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_CodyHolding, Moon_LaserRippedOff, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_LaserRippedOff, Moon_Ufo_MH, true);
 
 	m_pModelCom->Add_LerpInfo(Moon_Ufo_Programming, Moon_Ufo_MH, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_FireRocket, Moon_Ufo_MH, true);
+
+	m_pModelCom->Add_LerpInfo(Moon_Ufo_GroundPound, Moon_Ufo_MH, true);
 }
 
 HRESULT CMoonBaboon::Ready_Component()

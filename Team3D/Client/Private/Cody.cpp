@@ -31,9 +31,9 @@
 /*For.WarpGate*/
 #include "WarpGate.h"
 
-/* For.BossUFO */
+/* For.Boss */
 #include "UFO.h"
-
+#include "MoonBaboon.h"
 #include "Script.h"
 
 /* For. UFORadarSet */
@@ -294,9 +294,6 @@ _int CCody::Tick(_double dTimeDelta)
 	CCharacter::Tick(dTimeDelta);
 
 	Script_Trigger(dTimeDelta);
-
-	if (m_pGameInstance->Key_Down(DIK_B))
-		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
 	if (m_pGameInstance->Key_Down(DIK_F8))
 	{
@@ -3387,6 +3384,10 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, 0.5f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_CODY, 0.5f);
 		}
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Rocket_MH)
@@ -3743,7 +3744,7 @@ void CCody::Falling_Dead(const _double dTimeDelta)
 	if (m_IsDeadLine == true)
 	{
 		m_dDeadTime += dTimeDelta;
-		if (m_dDeadTime >= 1.f)
+		if (m_dDeadTime >= 1.75f)
 		{
 			/* Sound */
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_RESURRECTION, m_fCodyM_Revive_Volume);
@@ -4311,6 +4312,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Holding_Enter_UFO);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_Low_UFO);
 		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding_Enter, UFO_CodyHolding_low);
+		((CMoonBaboon*)DATABASE->Get_MoonBaboon())->Set_Animation(Moon_Ufo_CodyHolding_Enter, Moon_Ufo_CodyHolding);
 
 		CTransform* pUFOTransform = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform();
 		_vector vUFOPos = XMVectorSet(64.f - 0.4f, 355.0263f + 0.8f, 195.f, 1.f);

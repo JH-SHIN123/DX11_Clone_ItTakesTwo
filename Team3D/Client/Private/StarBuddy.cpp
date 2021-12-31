@@ -100,6 +100,7 @@ _int CStarBuddy::Tick(_double dTimeDelta)
 		if (m_fLifeTime > 1.9f)
 		{
 			EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Pillar, m_pTransformCom->Get_WorldMatrix());
+			EFFECT->Add_Effect(Effect_Value::StarBuddy_Ring, m_pTransformCom->Get_WorldMatrix());
 			m_pMoveEffect->Set_Dead();
 			return EVENT_DEAD;
 		}

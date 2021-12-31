@@ -40,6 +40,7 @@ private:
 	_bool										m_IsButtonActive = false;
 	_float										m_fMove = 0.f;
 	_uint										m_iOption = 0;
+	_float										m_fPipeLockVolume = 1.f;
 
 protected:
 	/* For.Component */

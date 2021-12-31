@@ -22,6 +22,7 @@ public:
 private:
 	_double m_dChargingTime = 0.0;
 	_bool	m_IsPaticleCreate = true;
+	_float	m_fSound = 1.f;
 
 private:
 	class CUFO*										m_pBossUFO = nullptr;

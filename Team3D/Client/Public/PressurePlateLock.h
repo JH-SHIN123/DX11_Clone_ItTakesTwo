@@ -37,6 +37,7 @@ private:
 	_bool				m_IsLockDeActive = false;
 	_uint				m_iOption = 0;
 	_bool				m_bConnectEffectOnce = false;
+	_float				m_fPipeLockVolume = 1.f;
 
 protected:
 	/* For.Component */
