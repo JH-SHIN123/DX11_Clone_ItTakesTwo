@@ -265,7 +265,7 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 	if (m_IsTargetCody == true)
 	{
-		_vector vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);;
 
 		// 코디가 죽어있으면 메이를 향해서
 		_bool bTargetChange = false;
