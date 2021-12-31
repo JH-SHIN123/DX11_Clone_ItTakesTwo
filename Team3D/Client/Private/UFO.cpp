@@ -99,8 +99,6 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	Script(dTimeDelta);
-
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
 		m_IsActive = true;
@@ -163,6 +161,8 @@ _int CUFO::Tick(_double dTimeDelta)
 			Phase3_Pattern(dTimeDelta);
 			break;
 		}
+
+		Script(dTimeDelta);
 	} 
 	else
 	{
@@ -1563,12 +1563,25 @@ void CUFO::GoUp(_double dTimeDelta)
 
 void CUFO::Script(_double dTimeDelta)
 {
-	if (true == m_IsCutScene)
-		return;
-
 	m_fScriptDelay += (_float)dTimeDelta;
-	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1 ||
-		m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_2)
+	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1)
+	{
+		switch (m_iRandomScript)
+		{
+		case 0:
+			SCRIPT->VoiceFile_No39();
+			break;
+		case 1:
+			SCRIPT->VoiceFile_No41();
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No42();
+			break;
+		}
+		++m_iRandomScript;
+		m_fScriptDelay = 0.f;
+	}
+	else if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_2)
 	{
 		switch (m_iRandomScript)
 		{
@@ -1582,23 +1595,40 @@ void CUFO::Script(_double dTimeDelta)
 			SCRIPT->VoiceFile_No42();
 			break;
 		case 3:
-			if (m_ePhase == CUFO::PHASE_2)
-			{
-				SCRIPT->VoiceFile_No40();
-			}
-			break;
-		default:
+			SCRIPT->VoiceFile_No40();
 			break;
 		}
 		++m_iRandomScript;
-
-		if (m_ePhase == CUFO::PHASE_1 && 3 == m_iRandomScript)
-			m_iRandomScript = 0;
-		else if (m_iRandomScript == 4)
-			m_iRandomScript = 0;
-
 		m_fScriptDelay = 0.f;
 	}
+	else if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_3)
+	{
+		switch (m_iRandomScript)
+		{
+		case 0:
+			SCRIPT->VoiceFile_No39();
+			break;
+		case 1:
+			SCRIPT->VoiceFile_No41();
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No42();
+			break;
+		case 3:
+			SCRIPT->VoiceFile_No46();
+			break;
+		}
+		++m_iRandomScript;
+		m_fScriptDelay = 0.f;
+	}
+
+	if (m_ePhase == CUFO::PHASE_1 && 3 == m_iRandomScript)
+		m_iRandomScript = 0;
+	else if (m_ePhase == CUFO::PHASE_2 && 4 == m_iRandomScript)
+		m_iRandomScript = 0;
+	else if(m_ePhase == CUFO::PHASE_3 && 4 == m_iRandomScript)
+		m_iRandomScript = 0;
+
 }
 
 
