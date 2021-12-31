@@ -9,7 +9,8 @@
 #include "Effect_Boss_Missile_Smoke_Black.h"
 #include "Effect_Boss_Missile_Smoke_Color.h"
 #include "Script.h"
-
+#include "MainCamera.h"
+#include "SubCamera.h"
 CBoss_Missile::CBoss_Missile(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -799,6 +800,9 @@ void CBoss_Missile::Adjust_Angle(_double dTimeDelta)
 
 void CBoss_Missile::Explosion_Effect()
 {
+	static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_CamEffect(TEXT("Cam_Shake_MissileBoom"));
+	static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_CamEffect(TEXT("Cam_Shake_MissileBoom"));
+
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 	WorldMatrix.r[3] += WorldMatrix.r[2] * 2.9f;

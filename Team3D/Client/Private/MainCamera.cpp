@@ -1347,7 +1347,7 @@ _int CMainCamera::Tick_Cam_Destroy_BossCore(_double dTimeDelta)
 		XMStoreFloat3(&m_vStartCodyLook, vStartAt);
 		XMStoreFloat3(&m_vLastEye, vLastEye);
 		m_vStartCodyLook.y = m_vLastEye.y;
-		Start_CamEffect(TEXT("Cam_Shake_MissileBoom"));
+		//Start_CamEffect(TEXT("Cam_Shake_MissileBoom"));
 	}
 	
 

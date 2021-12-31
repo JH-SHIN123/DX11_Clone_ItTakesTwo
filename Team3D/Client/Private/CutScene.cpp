@@ -953,6 +953,10 @@ HRESULT CCutScene::End_CutScene_GotoMoon()
 	pCody->Set_InJoyStick();
 	pMay->Set_UFO(true);
 
+	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
+	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(
+		_float3(0.f, 0.f, 0.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
+
 	return S_OK;
 }
 

@@ -308,7 +308,6 @@ void CMoonBaboonCore::Set_Broken()
 	}
 	else
 	{
-		_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Set_Start_Destroy_BossCore();
 	}
 
