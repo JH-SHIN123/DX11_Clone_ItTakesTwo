@@ -1608,16 +1608,16 @@ void CUFO::Script(_double dTimeDelta)
 		switch (m_iRandomScript)
 		{
 		case 0:
-			SCRIPT->VoiceFile_No39();
+			SCRIPT->VoiceFile_No46();
 			break;
 		case 1:
-			SCRIPT->VoiceFile_No41();
+			SCRIPT->VoiceFile_No56();
 			break;
 		case 2:
-			SCRIPT->VoiceFile_No42();
+			SCRIPT->VoiceFile_No57();
 			break;
 		case 3:
-			SCRIPT->VoiceFile_No46();
+			SCRIPT->VoiceFile_No58();
 			break;
 		}
 		++m_iRandomScript;

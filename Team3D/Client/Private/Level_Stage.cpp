@@ -35,6 +35,9 @@
 #include "Camera.h"
 #include"CutScenePlayer.h"
 #include"Performer.h"
+#include"MainCamera.h"
+#include"SubCamera.h"
+
 #include "Level_Loading.h"
 
 #pragma endregion
@@ -161,6 +164,7 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
 		ENDINGCREDIT->Create_Environment();
 		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_EndingCredit();
 
 		UI_Create(Default, BlackScreenFadeInOut);
 		UI_Generator->Set_FadeInSpeed(Player::Default, UI::BlackScreenFadeInOut, 1000.f);

@@ -962,9 +962,11 @@ HRESULT CCutScene::End_CutScene_GotoMoon()
 HRESULT CCutScene::End_CutScene_Outro()
 {
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
-
+	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
+	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
+	pCody->Set_Ending_Ready();
+	pMay->Set_Ending_Ready();
 	m_pCutScenePlayer->Set_IsEndingCredit(true);
-	
 	return S_OK;
 }
 
@@ -1014,7 +1016,7 @@ HRESULT CCutScene::Ready_CutScene_GotoMoon()
 
 HRESULT CCutScene::Ready_CutScene_Outro()
 {
-	m_dDuration = 62.89;
+	m_dDuration = 62.9;
 	return S_OK;
 }
 
@@ -1331,16 +1333,16 @@ void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
 void CCutScene::Script_GotoMoon(_double dTimeDelta)
 {
 	_double dSoundTime = m_dTime;
-	if (dSoundTime >= 12.0 && dSoundTime < 12.0 + (_float)dTimeDelta)
+	if (dSoundTime >= 12.4 && dSoundTime < 12.4 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(212, CScript::FULL, 0.9f);
-	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(213, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 14.0 && dSoundTime < 14.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(213, CScript::FULL, 0.9f);
 	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(214, CScript::FULL, 1.9f);
-	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(214, CScript::FULL, 2.9f);
+	else if (dSoundTime >= 18.5 && dSoundTime < 18.5 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(215, CScript::FULL, 1.9f);
-	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(216, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 20.0 && dSoundTime < 20.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(216, CScript::FULL, 0.9f);
 	else if (dSoundTime >= 21.0 && dSoundTime < 21.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(217, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 23.0 && dSoundTime < 23.0 + (_float)dTimeDelta)
