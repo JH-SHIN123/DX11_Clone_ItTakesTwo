@@ -370,7 +370,7 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 			m_pModelCom->Set_DefaultVariables_Shadow();
 			m_pModelCom->Render_Model(0);
 		}
-		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding)
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && false == m_bPhantomRenderOff)
 		{
 			m_pModelCom->Render_Model(30);
 			m_pModelCom->Render_Model(31);
@@ -2135,8 +2135,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		}
 		else if (m_eTargetGameID == GameID::eBOSSUFO && true == m_IsLaserRippedOff)
 		{
-			if (210.f <= m_pModelCom->Get_CurrentTime(ANI_M_SpaceStation_BossFight_LaserRippedOff) || 
-				true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
+			if (true == m_pModelCom->Is_AnimFinished(ANI_M_SpaceStation_BossFight_LaserRippedOff))
 			{
 				m_IsRippedOffAnimPlaying = false;
 				m_IsLaserRippedOff = false;
@@ -2144,6 +2143,11 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			if ((m_pGameInstance->Key_Down(DIK_O) || m_pGameInstance->Pad_Key_Down(DIP_Y)) && false == m_IsRippedOffAnimPlaying)
 			{
+				if (SCRIPT->Get_Script_Played(35) == false)
+				{
+					SCRIPT->VoiceFile_No35();
+					SCRIPT->Set_Script_Played(35, true);
+				}
 				m_pCamera->Start_RippedOff_BossLaser();
 				
 				m_IsInterActiveUIDisable = true;
@@ -2161,6 +2165,10 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
 				UI_Delete(May, InputButton_PS_InterActive);
+				((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
+				Set_AllActiveHpBar(false);
+				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
+				UI_Generator->Set_AllActivation(false);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
@@ -2320,7 +2328,7 @@ void CMay::Pull_VerticalDoor(const _double dTimeDelta)
 
 void CMay::Rotate_Valve(const _double dTimeDelta)
 {
-
+	
 	if (m_IsEnterValve == true)
 	{
 		m_pActorCom->Set_Position(XMVectorSet(80.7704391f, 125.251999f, 195.823730f, 1.f));
@@ -2631,6 +2639,13 @@ void CMay::Set_ActiveHpBar(_bool IsCheck)
 	m_pHpBar->Set_Active(IsCheck);
 }
 
+void CMay::Set_AllActiveHpBar(_bool IsCheck)
+{
+	m_pHpBar->Set_Active(IsCheck);
+	m_pSubHpBar->Set_Active(IsCheck);
+}
+
+
 void CMay::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
@@ -2764,6 +2779,14 @@ void CMay::Warp_Wormhole(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 			m_IsWarpRotate = true;
+
+			if ((DATABASE->Get_May_Stage() == ST_RAIL || DATABASE->Get_May_Stage() == ST_PINBALL)
+				&& (DATABASE->Get_PinBallStageClear() || DATABASE->Get_RailStageClear()) 
+				&& SCRIPT->Get_Script_Played(10) == false)
+			{
+				SCRIPT->VoiceFile_No10();
+				SCRIPT->Set_Script_Played(10, true);
+			}
 		}
 
 		// 슈루룩
@@ -3526,51 +3549,15 @@ void CMay::Script_Trigger(_double dTimeDelta)
 	{
 		SCRIPT->VoiceFile_No03();
 		m_bSecondFloor_FirstIn = true;
-		//m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
-		//m_pGameInstance->Play_Sound(TEXT("03.wav"), CHANNEL_VOICE_MAY_2, m_fSecondFloor_Voice_Volume);
-		//m_IsSecondFloor_Voice_Playing = true;
 	}
 
-	//if (m_IsSecondFloor_Voice_Playing == true)
-	//{
-	//	m_fSecondFloor_Script_DelayTime += (_float)dTimeDelta;
-
-	//	// 02 우주개코원숭이 - "감옥에서 탈출했군. 이 배신자들!"
-	//	if (m_fSecondFloor_Script_DelayTime > 0.f && m_fSecondFloor_Script_Once[0] == false)
-	//	{
-	//		SCRIPT->Render_Script(2, CScript::HALF, 2.f, false);
-	//		m_fSecondFloor_Script_Once[0] = true;
-	//	}
-	//	// 03 우주개코원숭이 - "하지만 기억해라."
-	//	else if (m_fSecondFloor_Script_DelayTime > 2.1f && m_fSecondFloor_Script_Once[1] == false)
-	//	{
-	//		SCRIPT->Render_Script(3, CScript::HALF, 1.4f, false);
-	//		m_fSecondFloor_Script_Once[1] = true;
-	//	}
-	//	// 04 우주개코원숭이 - "절대 살아서 나가진 못한다!"
-	//	else if (m_fSecondFloor_Script_DelayTime > 3.6f && m_fSecondFloor_Script_Once[2] == false)
-	//	{
-	//		SCRIPT->Render_Script(4, CScript::HALF, 1.7f, false);
-	//		m_fSecondFloor_Script_Once[2] = true;
-	//	}
-	//	// 05 코디 	  - "저 친구는 좀 진정해야겠는데."
-	//	else if (m_fSecondFloor_Script_DelayTime > 5.4f && m_fSecondFloor_Script_Once[3] == false)
-	//	{
-	//		SCRIPT->Render_Script(5, CScript::HALF, 1.5f, false);
-	//		m_fSecondFloor_Script_Once[3] = true;
-	//	}
-	//	// 06 메이 	  - "녀석은 무시해! 포털이 있어!"
-	//	else if (m_fSecondFloor_Script_DelayTime > 7.f && m_fSecondFloor_Script_Once[4] == false)
-	//	{
-	//		SCRIPT->Render_Script(6, CScript::HALF, 2.f, false);
-	//		m_fSecondFloor_Script_Once[4] = true;
-	//	}
-	//	// 07 메이 	  - "저걸 이용할 수 있을 거야."
-	//	else if (m_fSecondFloor_Script_DelayTime > 9.1f && m_fSecondFloor_Script_Once[5] == false)
-	//	{
-	//		SCRIPT->Render_Script(7, CScript::HALF, 2.f, false);
-	//		m_fSecondFloor_Script_Once[5] = true;
-	//	}
-	//}
+	if (DATABASE->Get_May_Stage() == ST_RAIL && m_pActorCom->Get_IsOnGravityPath() == true)
+	{
+		if (SCRIPT->Get_Script_Played(6) == false)
+		{
+			SCRIPT->VoiceFile_No06();
+			SCRIPT->Set_Script_Played(6, true);
+		}
+	}
 }
 #pragma region

@@ -123,6 +123,9 @@ private:
 	_float m_fOpenThirdFloorTime = 0.f;
 	//For.HitRocket
 	_double	m_dHitRocketTime = 0.0;
+	//For.RippedOffBossLaser
+	_float3	m_vCamRoot_RippedOff[4];
+	_double	m_dRippdeOffTime = 0.0;
 public:
 	static CSubCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone_GameObject(void* pArg = nullptr) override;

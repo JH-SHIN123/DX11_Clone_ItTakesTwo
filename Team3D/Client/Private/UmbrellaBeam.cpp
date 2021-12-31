@@ -7,6 +7,8 @@
 #include "UmbrellaBeam_Joystick.h"
 #include "Effect_Umbrella_Pipe.h"
 #include "UI_Generator.h"
+#include "Script.h"
+
 
 CUmbrellaBeam::CUmbrellaBeam(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -63,6 +65,12 @@ HRESULT CUmbrellaBeam::NativeConstruct(void * pArg)
 	m_fVerticalAngle = 0.f;
 
 	DATABASE->Set_UmbrellaBeam(this);
+	
+	m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+	m_pGameInstance->Play_Sound(TEXT("Umbrella_Activate.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_UMBRELLABEAM);
+
 	return S_OK;
 }
 
@@ -149,24 +157,48 @@ void CUmbrellaBeam::KeyInput_Rotate(_double TimeDelta)
 	{
 		m_fVerticalAngle += (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vRight, -TimeDelta);
+
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+		}
 	}
 
 	if (m_pGameInstance->Key_Pressing(DIK_S) && 0.f <= m_fVerticalAngle)
 	{
 		m_fVerticalAngle -= (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vRight, TimeDelta);
+
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+		}
 	}
 
 	if (m_pGameInstance->Key_Pressing(DIK_D) && fMaxHorizontalAngle >= m_fHorizontalAngle)
 	{
 		m_fHorizontalAngle += (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vUp, TimeDelta);
+
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+		}
 	}
 
 	if (m_pGameInstance->Key_Pressing(DIK_A) && 0.f <= m_fHorizontalAngle)
 	{
 		m_fHorizontalAngle -= (_float)TimeDelta * fRotationPerSec;
 		m_pTransformCom->Rotate_Axis(vUp, -TimeDelta);
+
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_UMBRELLABEAM))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+			m_pGameInstance->Play_Sound(TEXT("Umbrella_Move.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+		}
 	}
 
 	m_pUmbrellaBeam_Stand->Set_Rotate(m_fHorizontalAngle);
@@ -213,11 +245,20 @@ void CUmbrellaBeam::PutGravitationalField()
 
 		UI_Delete(Cody, InputButton_Cancle);
 		UI_Delete(Cody, Arrowkeys_All);
+
+		m_pGameInstance->Stop_Sound(CHANNEL_UMBRELLABEAM);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
+		m_pGameInstance->Play_Sound(TEXT("Umbrella_Deactivate.wav"), CHANNEL_UMBRELLABEAM, m_fUmbrellaSoundVolume);
 	}
 
 	if (true == m_IsPutGravitationalField)
 	{
 		//pMay->Get_Transform()->Set_WorldMatrix(matWorld);
+		if (SCRIPT->Get_Script_Played(23) == false)
+		{
+			SCRIPT->VoiceFile_No23();
+			SCRIPT->Set_Script_Played(23, true);
+		}
 		pMay->Get_Model()->Set_Animation(ANI_M_ZeroGravity_MH);
 		pMay->Set_ActorPosition(vOffSetPos);
 		pMay->Set_ActorGravity(true, false, true);

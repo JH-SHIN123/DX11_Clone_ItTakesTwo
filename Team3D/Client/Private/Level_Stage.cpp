@@ -146,19 +146,20 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	if (false == CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro))
 	{
 		CCutScenePlayer::GetInstance()->Start_CutScene(L"CutScene_Intro");
-		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayer(CCutScene::CutSceneOption::CutScene_Intro, true);
+		CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Intro, true);
 	}
 
 #endif // __FIRST_CUTSCENE_OFF
 #endif // __PLAY_CUTSCENE
 
 	/* For.EndingCredit */
-	if (m_pGameInstance->Key_Down(DIK_END))
+	if (m_pGameInstance->Key_Down(DIK_END) || CCutScenePlayer::GetInstance()->Get_IsEndingCredit())
 	{
 		m_pGameInstance->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 		m_iLevelStep = 2; 
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
 		ENDINGCREDIT->Create_Environment();
+		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
 	}
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
@@ -1150,10 +1151,10 @@ HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC MayJumpWall;
-	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 189.9f - 0.48f, 1.f };
+	MayJumpWall.vPosition = { -815.311f - 12.f, 767.083f + 2.f, 189.9f - 0.48f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
 
-	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
+	MayJumpWall.vPosition = { -815.311f - 12.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
 
 	MayJumpWall.vPosition = { -823.88f, 768.301f, 193.517f, 1.f };

@@ -7,6 +7,7 @@
 #include "PixelCrossHair.h"
 #include "PixelUFO.h"
 #include "Effect_Generator.h"
+#include "PixelBaboon.h"
 
 CRunningMoonBaboon::CRunningMoonBaboon(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -110,10 +111,14 @@ _int CRunningMoonBaboon::Late_Tick(_double dTimeDelta)
 HRESULT CRunningMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
 {
 	CGameObject::Render(eGroup);
-	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
-	m_pModelCom->Set_DefaultVariables_Shadow();
-	m_pModelCom->Render_Model(0);
+
+	if (((CPixelBaboon*)DATABASE->Get_PixelBaboon())->Get_LifeCount() > 0)
+	{
+		NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
+		m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
+		m_pModelCom->Set_DefaultVariables_Shadow();
+		m_pModelCom->Render_Model(0);
+	}
 	return S_OK;
 }
 

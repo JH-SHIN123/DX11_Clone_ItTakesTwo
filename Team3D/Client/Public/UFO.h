@@ -52,6 +52,7 @@ public:
 	void Set_MissilePtrReset(_bool IsTargetCheck);
 	void Set_GuidedMissileIncreaseHitCount();
 	void Set_Active(_bool IsActive);
+	void Set_HpBarActive(_bool IsActive);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }
@@ -163,6 +164,11 @@ private:
 
 	/* For. MoonBaboon */
 	class CMoonBaboon*		m_pMoonBaboon = nullptr;
+
+	/* For. Random Script */
+	_uint iRandomScript = 0;
+	_float m_fScriptDelay = 0.f;
+	_uint m_iGroundPoundCount = 0;
 
 private:
 	/* For.AllPHASE */

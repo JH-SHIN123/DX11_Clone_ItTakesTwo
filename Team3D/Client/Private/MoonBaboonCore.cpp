@@ -9,6 +9,7 @@
 #include "UFO.h"
 #include"MainCamera.h"
 #include"SubCamera.h"
+#include "Script.h"
 
 _uint CMoonBaboonCore::m_iBrokenCheck = 0;
 
@@ -46,6 +47,7 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	// Effect
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"),nullptr, (CGameObject**)&m_pEffectBossCore), E_FAIL);
+	Safe_Release(m_pEffectBossCore);
 
 	DATABASE->Set_MoonBaboonCore(this);
 
@@ -78,7 +80,7 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 			if (m_dBrokenWaitingDeltaT >= 1.0)
 			{
 				m_bBrokenStart = true;
-				m_dBrokenWaitingDeltaT = 0.0;
+				m_dBrokenWaitingDeltaT = 0.0;;
 			}
 			else
 			{
@@ -266,9 +268,21 @@ void CMoonBaboonCore::Set_Broken()
 	if (m_pEffectBossCore)
 	{
 		m_pEffectBossCore->HitOn();
-		Safe_Release(m_pEffectBossCore);
 		m_pEffectBossCore = nullptr;
 	}
+
+	// 0 - 2 - 1 순으로 깨지는거 맞겠지?
+	// SOUND && SCRIPT
+	if (m_tDesc.iIndex == 2)
+	{
+		if (SCRIPT->Get_Script_Played(30) == false)
+		{
+			SCRIPT->VoiceFile_No30();
+			SCRIPT->Set_Script_Played(30, true);
+		}
+	}
+
+	//////////////////
 
 	if (m_tDesc.iIndex != 1) // 중력 발판 앞 코어 아니면
 	{
@@ -327,7 +341,7 @@ void CMoonBaboonCore::Free()
 	if (m_pEffectBossCore)
 	{
 		m_pEffectBossCore->Set_Dead();
-		Safe_Release(m_pEffectBossCore);
+		m_pEffectBossCore = nullptr;
 	}
 	Safe_Release(m_pCorePillar);
 	Safe_Release(m_pCoreButton);

@@ -254,6 +254,7 @@ public:
 	void			 Set_ControlJoystick(_bool IsCheck);
 	void			 Set_AnimationRotate(_float fAngle);
 	void			 Set_ActiveHpBar(_bool IsCheck);
+	void			 Set_AllActiveHpBar(_bool IsCheck);
 	void			 Set_HpBarReduction(_float fDamage);
 	void			 Set_ActiveMinigameHpBar(_bool IsCheck);
 	void			 Set_MinigameHpBarReduction(_float fDamage);
@@ -654,13 +655,16 @@ private:
 
 #pragma region Dead_InBossroom
 public:
-	void Respawn_InBossroom();
-	_bool Get_bDeadInBossroom() { return m_bDead_InBossroom; }
+	void	Respawn_InBossroom();
+	_bool	Get_bDeadInBossroom() { return m_bDead_InBossroom; }
+	_bool	Get_bPhantomRenderOff() { return m_bPhantomRenderOff; }
+	void	Set_bPhantomRenderOff(_bool bSwitch) { m_bPhantomRenderOff = bSwitch; }
 
 private:
 	void DeadInBossroom(const _double dTimeDelta);
 
 private:
+	_bool m_bPhantomRenderOff = false;
 	_bool m_bDead_InBossroom = false;
 #pragma endregion
 
@@ -760,5 +764,7 @@ private: /* For. Ending */
 	_float m_fFootStepDelay = 0.f;
 #pragma endregion
 
+	/* For. Script */
+	void Script_Trigger(_double dTimeDelta);
 };
 END
