@@ -431,7 +431,7 @@ void CHpBar::MayHpBar_Minigame(_double TimeDelta)
 
 void CHpBar::AdJust_Position_According_CutScene(_double TimeDelta)
 {
-	if (true == ((CUFO*)DATABASE->Get_BossUFO())->Get_Phase2InterActive())
+	if (true == ((CUFO*)DATABASE->Get_BossUFO())->Get_AdJustPosition())
 	{
 		D3D11_VIEWPORT MainViewport = m_pGameInstance->Get_ViewportInfo(1);
 		D3D11_VIEWPORT SubViewPort = m_pGameInstance->Get_ViewportInfo(2);
