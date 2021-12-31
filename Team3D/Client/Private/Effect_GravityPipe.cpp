@@ -44,7 +44,7 @@ HRESULT CEffect_GravityPipe::NativeConstruct(void * pArg)
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(62.9901505f, 35.f, 195.674637f, 1.f));
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Transform"), TEXT("Com_Transform2"), (CComponent**)&m_pPhysxTransformCom), E_FAIL);
 
-	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.85f, 2.85f, 1.f));
+	m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 2.86f, 2.85f, 1.f));
 	if (m_EffectDesc_Clone.iPlayerValue == 1)
 		m_pTransformCom->Set_Scale(XMVectorSet(2.85f, 1.8f, 2.85f, 1.f));
 
