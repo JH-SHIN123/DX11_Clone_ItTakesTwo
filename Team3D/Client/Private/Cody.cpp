@@ -293,6 +293,8 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
+	Script_Trigger(dTimeDelta);
+
 	if (m_pGameInstance->Key_Down(DIK_B))
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
@@ -476,7 +478,7 @@ HRESULT CCody::Render(RENDER_GROUP::Enum eGroup)
 			m_pModelCom->Set_DefaultVariables_Shadow();
 			m_pModelCom->Render_Model(0);
 		}
-		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && (false == m_IsHolding_Low_UFO || false == m_IsHolding_UFO))
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && (false == m_IsHolding_Low_UFO || false == m_IsHolding_UFO) && false == m_bPhantomRenderOff)
 		{
 			m_pModelCom->Render_Model(30);
 			m_pModelCom->Render_Model(32);
@@ -3253,7 +3255,7 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
-	if (false == m_bElectricWallAttach)
+	if (false == m_bElectricWallAttach)//
 		return;
 
 	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)
@@ -3279,6 +3281,13 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			/* Script && Sound */
+			if(SCRIPT->Get_Script_Played(48) == false)
+			{
+				SCRIPT->VoiceFile_No48();
+				SCRIPT->Set_Script_Played(48, true);
+			}
+
 			m_pGameInstance->Stop_Sound(CHANNEL_CHARACTER_WALLJUMP_SLIDE);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_WallJump.wav"), CHANNEL_CODYM_WALLJUMP, m_fCodyM_WallJump_Volume);
@@ -3446,6 +3455,11 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 
 			m_pModelCom->Set_Animation(ANI_C_SpacePortal_Travel);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_SpacePortal_Travel);
+			if (SCRIPT->Get_Script_Played(4) == false)
+			{
+				SCRIPT->VoiceFile_No04();
+				SCRIPT->Set_Script_Played(4, true);
+			}
 
 			m_pActorCom->Set_Position(XMLoadFloat4(&m_vWormholePos));
 		}
@@ -3467,6 +3481,11 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			vTriggerPos += vLook * 10000.f;
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+			if (SCRIPT->Get_Script_Played(5) == false)
+			{
+				SCRIPT->VoiceFile_No05();
+				SCRIPT->Set_Script_Played(5, true);
+			}
 		}
 	}
 	else
@@ -3481,6 +3500,13 @@ void CCody::Warp_Wormhole(const _double dTimeDelta)
 			m_pTransformCom->Rotate_ToTargetOnLand(vTriggerPos);
 			m_pTransformCom->Set_Scale(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 			m_IsWarpRotate = true;
+
+			// 첫번 째 스테이지 클리어 후 메인 스테이지 복귀.
+			if (SCRIPT->Get_Script_Played(18) == false && (DATABASE->Get_RailStageClear() || DATABASE->Get_PinBallStageClear()))
+			{
+				SCRIPT->VoiceFile_No18();
+				SCRIPT->Set_Script_Played(18, true);
+			}
 		}
 
 		// 슈루룩
@@ -4274,6 +4300,12 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 	if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_LARGE && false == m_IsHolding_Low_UFO)
 	{
+		if (SCRIPT->Get_Script_Played(33) == false)
+		{
+			SCRIPT->VoiceFile_No33();
+			SCRIPT->Set_Script_Played(33, true);
+		}
+
 		m_pActorCom->Set_Position(XMVectorSet(57.5f, 342.83f, 199.8f, 1.f));
 		m_pTransformCom->Set_RotateAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(293));
 		m_pModelCom->Set_Animation(ANI_C_Holding_Enter_UFO);
@@ -4301,6 +4333,12 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 
 		if (10 <= m_iKeyDownCount)
 		{
+			if (SCRIPT->Get_Script_Played(34) == false)
+			{
+				SCRIPT->VoiceFile_No34();
+				SCRIPT->Set_Script_Played(34, true);
+			}
+
 			m_pModelCom->Set_Animation(ANI_C_Holding_UFO);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
@@ -4431,3 +4469,37 @@ void CCody::SpaceShip_Respawn(const _double dTimeDelta)
 		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 	}
 }
+
+void CCody::Script_Trigger(_double dTimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (DATABASE->Get_Cody_Stage() == ST_RAIL/* && 4번째 서랍 밟았을때?*/)
+	{
+		_vector vFourthCabinetPos = {1029.05005f, 716.698914f, 191.602600f, 1.f};
+
+		_float fDist = XMVectorGetX(XMVector3Length(vFourthCabinetPos - vPosition));
+
+		if (fDist < 2.f)
+		{
+			if (SCRIPT->Get_Script_Played(7) == false)
+			{
+				SCRIPT->VoiceFile_No07();
+				SCRIPT->Set_Script_Played(7, true);
+			}
+		}
+	}
+
+	if (DATABASE->Get_RailStageClear() || DATABASE->Get_PinBallStageClear())
+	{
+		if (DATABASE->Get_Cody_Stage() == ST_GRAVITYPATH)
+		{
+			if (SCRIPT->Get_Script_Played(8) == false)
+			{
+				SCRIPT->VoiceFile_No08();
+				SCRIPT->Set_Script_Played(8, true);
+			}
+		}
+	}
+}
+#pragma region

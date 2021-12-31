@@ -121,6 +121,8 @@ void CBossDoor::Close_Door(_double dTimeDelta)
 
 	if (25.2f <= m_fDistance)
 	{
+		m_pGameInstance->Clear_LayerResources(Level::LEVEL_STAGE, TEXT("Layer_Environment"));
+
 		m_fDistance = 0.f;
 		m_bCloseDoor = false;
 		m_bClose = true;

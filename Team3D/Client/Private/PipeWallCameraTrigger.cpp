@@ -42,7 +42,7 @@ HRESULT CPipeWallCameraTrigger::NativeConstruct(void* pArg)
 
 	CTriggerActor::ARG_DESC tTriggerArg;
 	tTriggerArg.pTransform = m_pTransformCom;
-	tTriggerArg.pGeometry = new PxBoxGeometry(1.f, 3.f, 1.f);
+	tTriggerArg.pGeometry = new PxBoxGeometry(1.f, /*3.f*/6.f, 1.f);
 	tTriggerArg.pUserData = &m_UserData;
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_TriggerActor"), TEXT("Com_TriggerActor"), (CComponent**)&m_pTriggerActorCom, &tTriggerArg), E_FAIL);
 	Safe_Delete(tTriggerArg.pGeometry);

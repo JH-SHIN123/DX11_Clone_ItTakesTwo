@@ -7,7 +7,7 @@
 #define __PLAY_CUTSCENE
 
 #define __FIRST_CUTSCENE_OFF
-        
+       
 /************************************************************************/
 
 /**
@@ -46,7 +46,7 @@
 * 맵 로딩 하려면 주석 처리.
 */
 //#define __MAPLOADING_OFF
-  
+ 
 /**
 * 우주선 내부 맵만 제거
 * 프레임 살리기용
@@ -71,7 +71,7 @@
 //#define __TEST_TAEK
 //#define __TEST_YOON
 //#define __TEST_JIN
-#define __TEST_JUN
+//#define __TEST_JUN
 
 /************************************************************************/
 

@@ -29,6 +29,7 @@ public:
 
  public: /* Getter */
 	 CTransform* Get_Transform() { return m_pTransformCom; }
+	 _int		 Get_LifeCount() { return m_iLifeCount; }
 
  public: /* Setter */
 	 void Set_IsHit(_bool _IsHit) { m_IsHit = _IsHit; }

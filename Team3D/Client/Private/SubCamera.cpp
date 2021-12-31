@@ -452,8 +452,9 @@ _int CSubCamera::Tick_Cam_RippedOff_BossLaser(_double dTimeDelta)
 			MakeViewMatrixByUp(vEye, vAt), (_float)m_dRippdeOffTime));
 		
 		m_dRippdeOffTime -= dTimeDelta / 2.f;
+
 		if (m_fEyeChangeTime < 1.0f)
-			m_fEyeChangeTime += dTimeDelta;
+			m_fEyeChangeTime += (_float)dTimeDelta;
 
 		if (m_dRippdeOffTime <= -1.0)
 		{

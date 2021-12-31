@@ -16,7 +16,7 @@ CToyBoxButton::CToyBoxButton(const CToyBoxButton& rhs)
 CTransform* CToyBoxButton::Get_Transform() const
 {
 	if (nullptr == m_pTransformCom) return nullptr;
-	return m_pTransformCom;
+	return m_pTransformCom;;
 }
 
 HRESULT CToyBoxButton::NativeConstruct_Prototype()

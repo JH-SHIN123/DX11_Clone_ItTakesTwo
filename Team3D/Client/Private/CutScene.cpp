@@ -505,7 +505,9 @@ HRESULT CCutScene::Start_CutScene()
 		UI_CreateOnlyOnce(May, CutSceneBar);
 
 		UI_Generator->Set_AllActivation(false);
-		
+		static_cast<CCody*>(DATABASE->GetCody())->Set_bPhantomRenderOff(true);
+		static_cast<CMay*>(DATABASE->GetMay())->Set_bPhantomRenderOff(true);
+
 	}
 	switch (m_eCutSceneOption)
 	{
@@ -768,6 +770,9 @@ HRESULT CCutScene::Start_CutScene_GotoMoon()
 
 HRESULT CCutScene::Start_CutScene_Outro()
 {
+	CSound_Manager::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
+	CSound_Manager::GetInstance()->Sound_FadeOut(CHANNEL_BGM2, 0.f, 1.f);
+
 	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene04.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	m_bCodyEjectUFO = false;
 	m_bIsStartFilm = false;
@@ -819,6 +824,9 @@ HRESULT CCutScene::End_CutScene_Intro()
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Main.wav"), CHANNEL_BGM, 0.f, true);
 	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.15f, 3.f);
 
+	static_cast<CCody*>(DATABASE->GetCody())->Set_bPhantomRenderOff(false);
+	static_cast<CMay*>(DATABASE->GetMay())->Set_bPhantomRenderOff(false);
+
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -835,6 +843,9 @@ HRESULT CCutScene::End_CutScene_Intro()
 
 HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Set_bPhantomRenderOff(false);
+	static_cast<CMay*>(DATABASE->GetMay())->Set_bPhantomRenderOff(false);
+
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -849,6 +860,9 @@ HRESULT CCutScene::End_CutScene_Active_GravityPath_01()
 
 HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Set_bPhantomRenderOff(false);
+	static_cast<CMay*>(DATABASE->GetMay())->Set_bPhantomRenderOff(false);
+
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -867,6 +881,9 @@ HRESULT CCutScene::End_CutScene_Clear_Umbrella()
 
 HRESULT CCutScene::End_CutScene_Clear_Rail()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Set_bPhantomRenderOff(false);
+	static_cast<CMay*>(DATABASE->GetMay())->Set_bPhantomRenderOff(false);
+
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.5f, 0.f, 0.5f, 1.f), true, 1.f);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_ZeroGravity(false, false, false);
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_ZeroGravity(false, false, false);
@@ -885,6 +902,9 @@ HRESULT CCutScene::End_CutScene_Clear_Rail()
 
 HRESULT CCutScene::End_CutScene_Boss_Intro()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Set_bPhantomRenderOff(false);
+	static_cast<CMay*>(DATABASE->GetMay())->Set_bPhantomRenderOff(false);
+
 	CGameInstance::GetInstance()->Play_Sound(TEXT("Bgm_Boss.wav"), CHANNEL_BGM, 0.f, true);
 	CGameInstance::GetInstance()->Sound_FadeIn(CHANNEL_BGM, 0.15f, 3.f);
 
@@ -912,6 +932,9 @@ HRESULT CCutScene::End_CutScene_Boss_Intro()
 
 HRESULT CCutScene::End_CutScene_Eject_InUFO()
 {
+	static_cast<CCody*>(DATABASE->GetCody())->Set_bPhantomRenderOff(false);
+	static_cast<CMay*>(DATABASE->GetMay())->Set_bPhantomRenderOff(false);
+
 	return S_OK;
 }
 

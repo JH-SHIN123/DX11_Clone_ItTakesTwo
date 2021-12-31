@@ -28,12 +28,12 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 			pCycleDesc->dFinishTime = i + 0.75;
 
 			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = XMConvertToRadians(20.f	/ pCycleDesc->dFinishTime);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = -XMConvertToRadians(20.f / pCycleDesc->dFinishTime);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMaxForce = (_double)XMConvertToRadians(20.f	/ (_float)pCycleDesc->dFinishTime);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Look].dMinForce = (_double)-XMConvertToRadians(20.f / (_float)pCycleDesc->dFinishTime);
 
 			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right] = true;
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMaxForce = XMConvertToRadians(10.f / pCycleDesc->dFinishTime);
-			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMinForce = -XMConvertToRadians(10.f / pCycleDesc->dFinishTime);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMaxForce = (_double)XMConvertToRadians(10.f / pCycleDesc->dFinishTime);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Rot_Right].dMinForce = (_double)-XMConvertToRadians(10.f / pCycleDesc->dFinishTime);
 
 
 			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
