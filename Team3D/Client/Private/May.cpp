@@ -337,7 +337,8 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	InUFO(dTimeDelta);
 
 	if (true == m_IsTouchFireDoor || true == m_IsWallLaserTrap_Touch || true == m_IsDeadLine ||
-		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer) || m_bDead_InBossroom)
+		(true == m_IsWarpNextStage && m_fWarpTimer_InWormhole > m_fWarpTimer) || m_bDead_InBossroom || 
+		true == DATABASE->Get_MayReviveEffect())
 		return NO_EVENT;
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f)) 
@@ -365,12 +366,13 @@ HRESULT CMay::Render(RENDER_GROUP::Enum eGroup)
 	}
 	else
 	{
-		if (eGroup == RENDER_GROUP::RENDER_NONALPHA)
+		if (eGroup == RENDER_GROUP::RENDER_NONALPHA && false == DATABASE->Get_MayReviveEffect())
 		{
 			m_pModelCom->Set_DefaultVariables_Shadow();
 			m_pModelCom->Render_Model(0);
 		}
-		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && false == m_bPhantomRenderOff)
+		else if (eGroup == RENDER_GROUP::RENDER_ALPHA && false == m_IsEnding && false == m_bPhantomRenderOff
+			&& false == DATABASE->Get_MayReviveEffect())
 		{
 			m_pModelCom->Render_Model(30);
 			m_pModelCom->Render_Model(31);
@@ -1996,7 +1998,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("May_Dead_Burn.wav"), CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
 
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsTouchFireDoor = true;
@@ -2016,7 +2018,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 
 			m_pModelCom->Set_Animation(ANI_M_Death_Fall_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 			Enforce_IdleState();
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsWallLaserTrap_Touch = true;
@@ -2089,7 +2091,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Death_Fall_MH);
 
 			m_pActorCom->Set_ZeroGravity(true, false, true);
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead, m_pTransformCom->Get_WorldMatrix());
 			m_IsDeadLine = true;
 		}
 		else if (m_eTargetGameID == GameID::eSAVEPOINT)
@@ -2837,7 +2839,7 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 		m_pGameInstance->Set_SoundVolume(CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 		m_pGameInstance->Play_Sound(TEXT("May_Resurrection.wav"), CHANNEL_MAY_RESURRECTION, m_fMay_Resurrection_Volume);
 
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix());
 		m_pModelCom->Set_Animation(ANI_M_MH);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 		m_fDeadTime = 0.f;
@@ -2937,7 +2939,7 @@ void CMay::WallLaserTrap(const _double dTimeDelta)
 
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
-		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix());
 		m_pModelCom->Set_Animation(ANI_M_MH);
 		m_fDeadTime = 0.f;
 		m_IsCollide = false;
@@ -2988,7 +2990,7 @@ void CMay::Falling_Dead(const _double dTimeDelta)
 			m_IsDeadLine = false;
 
 			/* Effect */
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix());
 		}
 		else
 		{
@@ -3501,7 +3503,7 @@ void CMay::Respawn_InBossroom()
 	m_IsDeadLine = false;
 
 	/* Effect */
-	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+	CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Revive, m_pTransformCom->Get_WorldMatrix());
 }
 void CMay::DeadInBossroom(const _double dTimeDelta)
 {
@@ -3517,7 +3519,7 @@ void CMay::DeadInBossroom(const _double dTimeDelta)
 			UI_CreateOnlyOnce(May, RespawnCircle_May);
 
 			// Create Effect
-			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix());
 
 			// Set Blur
 			m_pGameInstance->Set_SubViewBlur(true);

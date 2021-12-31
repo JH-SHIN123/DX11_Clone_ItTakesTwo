@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Player_Dead_Particle.h"
+#include "Cody.h"
+#include "May.h"
+#include "DataStorage.h"
 
 CEffect_Player_Dead_Particle::CEffect_Player_Dead_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect(pDevice, pDeviceContext)
@@ -27,18 +30,9 @@ HRESULT CEffect_Player_Dead_Particle::NativeConstruct(void * pArg)
 
 	__super::Ready_Component(pArg);
 
-// 	if (EFFECT_DESC_CLONE::PV_CODY >= m_EffectDesc_Clone.iPlayerValue)
-// 		m_EffectDesc_Prototype.iInstanceCount = 1000;
-// 	else if (EFFECT_DESC_CLONE::PV_CODY_S == m_EffectDesc_Clone.iPlayerValue)
-// 		m_EffectDesc_Prototype.iInstanceCount = 100;
-// 	else if (EFFECT_DESC_CLONE::PV_CODY_L == m_EffectDesc_Clone.iPlayerValue)
-// 		m_EffectDesc_Prototype.iInstanceCount = 5000;
-
-	m_pModelCom = static_cast<CModel*>(m_EffectDesc_Clone.pArg);
-	Safe_AddRef(m_pModelCom);
+	Ready_TargetModel();
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Circle_Alpha"), TEXT("Com_Texture_Particle_Mask"), (CComponent**)&m_pTexturesCom_Particle_Mask), E_FAIL);
-
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Tilling_Noise"), TEXT("Com_Texture_Particle_Diss"), (CComponent**)&m_pTexturesCom_Particle_Diss), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Texture_Twirl"), TEXT("Com_Texture_Particle_Flow"), (CComponent**)&m_pTexturesCom_Particle_Flow), E_FAIL);
 
@@ -68,7 +62,10 @@ _int CEffect_Player_Dead_Particle::Late_Tick(_double TimeDelta)
 	if (0.f >= m_EffectDesc_Prototype.fLifeTime)
 		return NO_EVENT;
 
-	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
+		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
+
+	return NO_EVENT;
 }
 
 HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
@@ -83,7 +80,7 @@ HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 	*/
 	XMINT2 vTexSize = {1024, 1024};
 	_float fFlowPower = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
-	_float fRadius = 0.1f * fFlowPower;
+	_float fRadius = 0.03f * fFlowPower;
 	m_pModelCom->Set_Variable("g_vPos", &m_vTargetPos, sizeof(_float4));
 	m_pModelCom->Set_Variable("g_fTime", &m_fMoveTime, sizeof(_float));
 	m_pModelCom->Set_Variable("g_fRadius", &fRadius, sizeof(_float));
@@ -96,7 +93,7 @@ HRESULT CEffect_Player_Dead_Particle::Render(RENDER_GROUP::Enum eGroup)
 	m_pModelCom->Set_ShaderResourceView("g_DissolveTexture", m_pTexturesCom_Particle_Diss->Get_ShaderResourceView(1));
 	m_pModelCom->Set_ShaderResourceView("g_FlowTexture",	 m_pTexturesCom_Particle_Flow->Get_ShaderResourceView(0));
 	m_pModelCom->Set_ShaderResourceView("g_MaskingTexture",  m_pTexturesCom_Particle_Mask->Get_ShaderResourceView(0));
-
+	m_pModelCom->Set_DefaultVariables_Shadow();
 	m_pModelCom->Set_DefaultVariables_Perspective(m_pTransformCom->Get_WorldMatrix());
 	m_pModelCom->Render_Model(11);
 
@@ -131,6 +128,31 @@ void CEffect_Player_Dead_Particle::Instance_UV(_float TimeDelta, _int iIndex)
 
 HRESULT CEffect_Player_Dead_Particle::Ready_Instance()
 {
+	return S_OK;
+}
+
+HRESULT CEffect_Player_Dead_Particle::Ready_TargetModel()
+{
+	_int iAnimIndex = 0;
+	_double dAnimTime = 0;
+	if (EFFECT_DESC_CLONE::PV_CODY <= m_EffectDesc_Clone.iPlayerValue)
+	{
+		CModel* pModel = static_cast<CCody*>(DATABASE->GetCody())->Get_Model();
+		iAnimIndex = pModel->Get_CurAnimIndex();
+		dAnimTime  = pModel->Get_CurrentTime(iAnimIndex);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_Cody"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	}
+	else
+	{
+		CModel* pModel = static_cast<CMay*>(DATABASE->GetMay())->Get_Model();
+		iAnimIndex = pModel->Get_CurAnimIndex();
+		dAnimTime = pModel->Get_CurrentTime(iAnimIndex);
+		FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_May"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
+	}
+
+	m_pModelCom->Set_Animation(iAnimIndex, dAnimTime);
+	m_pModelCom->Update_Animation(0.016);
+
 	return S_OK;
 }
 
