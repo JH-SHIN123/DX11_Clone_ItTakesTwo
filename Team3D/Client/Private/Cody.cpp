@@ -3255,7 +3255,7 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
-	if (false == m_bElectricWallAttach)
+	if (false == m_bElectricWallAttach)//
 		return;
 
 	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)
