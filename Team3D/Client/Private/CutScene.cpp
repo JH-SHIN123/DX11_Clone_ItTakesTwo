@@ -467,7 +467,10 @@ _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 			MakeRollPitchYawMatrix({ 75.f,105.f,199.f }, { 1.f, 1.f,1.f }, { 10.f,0.f,0.f }));
 		pMoonBaboon->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 88.f, 753.5f, 202.f }, { 1.f,1.f,1.f }, { -90.f, -90.f, 0.f }));
 		pMoonBaboon->Set_CutSceneAnimation(Z_Moon_Eject_NoneMove,730.0);
-
+	}
+	if (m_dTime >= 34.96)
+	{
+		pUfo->Get_Model()->Set_CutSceneAnimation(CutScene_Eject_FlyingSaucer,1050);
 	}
 
 	
