@@ -1250,7 +1250,8 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (m_pModelCom->Is_AnimFinished(CutScene_Eject_FlyingSaucer) == true)
 	{
-		((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_CutSceneEnd(true);
+		//((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_CutSceneEnd(true);
+		((CMay*)DATABASE->GetMay())->Set_UFO(true);
 	}
 
 	if (false == m_IsEjection)

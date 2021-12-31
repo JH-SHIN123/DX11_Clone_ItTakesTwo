@@ -314,6 +314,7 @@ _int CMay::Tick(_double dTimeDelta)
 			m_dHitTime = 0.0;
 		}
 	}
+
 	return NO_EVENT;
 }
 
@@ -322,6 +323,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	CCharacter::Late_Tick(dTimeDelta);
 
 	Ride_Ending_Rocket(dTimeDelta);
+
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
@@ -2186,7 +2188,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
-			//
+
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Delete(May, InputButton_PS_InterActive);
@@ -2629,13 +2631,13 @@ void CMay::InUFO(const _double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vChairPos));
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vRight = pUFOTransform->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.8f;
-	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.8f;
-	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.8f;
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.5f;
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.5f;
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.5f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
@@ -2735,6 +2737,7 @@ void CMay::Set_UFO(_bool bCheck)
 	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(bCheck);
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_CutSceneEnd(bCheck);
 }
 
 void CMay::Warp_Wormhole(const _double dTimeDelta)

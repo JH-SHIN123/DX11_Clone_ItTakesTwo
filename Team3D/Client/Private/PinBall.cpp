@@ -208,7 +208,6 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		m_bFailed = true;
 		m_bStartGame = false;
 		m_bDeadType = false;
-		m_iDeadCount += 1;
 
 		/* Sound */
 		m_pGameInstance->Stop_Sound(CHANNEL_PINBALL);
@@ -221,26 +220,7 @@ void CPinBall::OnContact(ContactStatus::Enum eStatus, GameID::Enum eID, CGameObj
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion, m_pTransformCom->Get_WorldMatrix());
 		EFFECT->Add_Effect(Effect_Value::Cody_PinBall_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
 
-		// 핀볼 실패 후 리스폰 할 때.
-
-		if (m_iDeadCount == 1)
-		{
-			if (SCRIPT->Get_Script_Played(21) == false)
-			{
-				SCRIPT->VoiceFile_No21();
-				SCRIPT->Set_Script_Played(21, true);
-			}
-		}
-		else if (m_iDeadCount == 2)
-		{
-			if (SCRIPT->Get_Script_Played(22) == false)
-			{
-				SCRIPT->VoiceFile_No22();
-				SCRIPT->Set_Script_Played(22, true);
-			}
-		}
 	}
-
 	/* Blocked */
 	if (eStatus == ContactStatus::eFOUND && eID == GameID::Enum::eALIENSCREEN)
 	{

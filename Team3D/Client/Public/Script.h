@@ -9,7 +9,7 @@ BEGIN(Client)
 class CScript final : public CGameObject
 {
 public:
-	enum SCREEN	 { FULL, HALF, SCREEN_END };
+	enum SCREEN { FULL, HALF, ASYMMETRY, BOSS, SCREEN_END};
 
 	typedef struct tagScriptInfo
 	{
@@ -96,6 +96,9 @@ public:
 	void VoiceFile_No53();
 	void VoiceFile_No54();
 	void VoiceFile_No55();
+	void VoiceFile_No56();
+	void VoiceFile_No57();
+	void VoiceFile_No58();
 #pragma endregion
 
 public:

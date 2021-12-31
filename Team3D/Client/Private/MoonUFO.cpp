@@ -86,7 +86,7 @@ _int CMoonUFO::Late_Tick(_double dTimeDelta)
 
 HRESULT CMoonUFO::Render(RENDER_GROUP::Enum eGroup)
 {
-	if (false == m_IsMayInUFO)
+	if (false == m_IsMayInUFO || false == m_IsCutSceneEnd)
 		return S_OK;
 
 	CGameObject::Render(eGroup);
@@ -174,7 +174,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	_vector vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
 	_vector vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
 
-	if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
+	if (m_pGameInstance->Key_Pressing(DIK_RIGHT)/* || m_pGameInstance->Get_Pad_LStickX() > 44000*/)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -206,7 +206,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	//else
 		//m_bRotateRight = false;
 
-	if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
+	if (m_pGameInstance->Key_Pressing(DIK_LEFT)/* || m_pGameInstance->Get_Pad_LStickX() < 20000*/)
 	{
 		/* SCRIPT && SOUND */
 		if (m_bMoving == false)
@@ -254,7 +254,6 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 			m_pGameInstance->Play_Sound(L"UFO_Move_Start.wav", CHANNEL_MOONUFO_MOVE_START, m_fMove_Start_Volume);
 			m_bMoving = true;
 		}
-
 		if (m_bMoving && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE_START) == false)
 		{
 			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE) == false)
