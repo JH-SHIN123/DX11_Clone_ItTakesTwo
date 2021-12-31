@@ -1244,6 +1244,30 @@ PS_OUT  PS_CIRCLE(PS_IN In)
 	return Out;
 }
 
+PS_OUT  PS_LASER_TENNIS_BALL(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float4 vDiffuse = (float4)0;
+	float2 vCenter = In.vTexUV - 0.5f;
+	vCenter = abs(vCenter);
+	float fLenght = length(vCenter);
+	vDiffuse.a = 1.f;
+
+	fLenght = fLenght / 0.5f; // normalize
+	float2 vColorUV = (float2)((fLenght * -1.f) + 1.f);
+	float4 vColor = g_SecondTexture.Sample(DiffuseSampler, vColorUV);
+
+	vDiffuse.rgb = vColor.rgb * 2.f;
+	vDiffuse.a *= In.fTime;
+	Out.vColor = vDiffuse;
+
+	if (0.5f < length(vCenter))
+		discard;
+
+	return Out;
+}
+
 PS_OUT  PS_ROCKET_CIRCLE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -1505,11 +1529,11 @@ PS_OUT  PS_MAIN_MISSILE_EXPLOSION(PS_IN_DOUBLEUV In)
 	if (In.fTime > vDistortion.r)
 		Out.vColor.rgb *= vDistortion.rgb * In.fTime * 1.25f;
 
-	float2 vTexUV_3 = { vDiff.r , 0.f };
+	float2 vTexUV_3 = { vDiff.r * 0.8f , 0.f };
 	float4 vColor = g_ColorTexture.Sample(DiffuseSampler, vTexUV_3);
 
-	Out.vColor.rgb *= vColor.rgb;
-	Out.vColor.a *= In.fTime * g_fAlpha * Out.vColor.r;
+	Out.vColor.rgb *= vColor.rgb * In.fTime;
+	Out.vColor.a *= In.fTime * g_fTime * Out.vColor.r;
 
 	return Out;
 }
@@ -1780,7 +1804,7 @@ technique11		DefaultTechnique
 	{
 		SetRasterizerState(Rasterizer_NoCull);
 		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
-		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BlendState_Add, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
 		PixelShader = compile ps_5_0  PS_MAIN_MISSILE_EXPLOSION();
@@ -1944,5 +1968,15 @@ technique11		DefaultTechnique
 		VertexShader = compile vs_5_0  VS_MAIN();
 		GeometryShader = compile gs_5_0  GS_DOUBLEUV();
 		PixelShader = compile ps_5_0  PS_MAIN_COLORTEXTURE_ALHA();
+	}
+
+	pass LaserTennis_Ball // 27
+	{
+		SetRasterizerState(Rasterizer_NoCull);
+		SetDepthStencilState(DepthStecil_No_ZWrite, 0);
+		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0  VS_MAIN();
+		GeometryShader = compile gs_5_0  GS_MAIN();
+		PixelShader = compile ps_5_0  PS_LASER_TENNIS_BALL();
 	}
 }

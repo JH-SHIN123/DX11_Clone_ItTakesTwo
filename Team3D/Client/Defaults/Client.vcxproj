@@ -259,6 +259,7 @@
     <ClInclude Include="..\Public\Effect_Boss_Laser_Smoke.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Explosion.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h" />
+    <ClInclude Include="..\public\Effect_Boss_Missile_Ring.h" />
     <ClInclude Include="..\public\Effect_Boss_Missile_Smoke.h" />
     <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Black.h" />
     <ClInclude Include="..\Public\Effect_Boss_Missile_Smoke_Color.h" />
@@ -590,6 +591,7 @@
     <ClCompile Include="..\Private\Effect_Boss_Laser_Smoke.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Explosion.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp" />
+    <ClCompile Include="..\private\Effect_Boss_Missile_Ring.cpp" />
     <ClCompile Include="..\private\Effect_Boss_Missile_Smoke.cpp" />
     <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Black.cpp" />
     <ClCompile Include="..\Private\Effect_Boss_Missile_Smoke_Color.cpp" />

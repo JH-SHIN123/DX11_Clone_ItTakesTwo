@@ -170,6 +170,11 @@ HRESULT CLaserTrigger::Ready_Component(void * pArg)
 	/* Effect */
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_StarBuddyEffect"), Level::LEVEL_STAGE, TEXT("GameObject_StarBuddy_Move"), nullptr, (CGameObject**)&m_pMoveEffect), E_FAIL);
 
+	if (m_eTarget == CLaserTennis_Manager::TARGET::TARGET_CODY)
+		m_pMoveEffect->Set_ColorIndex(2); //¸ÞÀÌ²¨
+	else
+		m_pMoveEffect->Set_ColorIndex(6);
+
 	return S_OK;
 }
 

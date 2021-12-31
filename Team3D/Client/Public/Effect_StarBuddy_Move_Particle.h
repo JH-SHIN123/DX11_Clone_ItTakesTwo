@@ -17,6 +17,7 @@ public:
 	virtual HRESULT	Render(RENDER_GROUP::Enum eGroup) override;
 
 public:
+	void Set_ColorIndex(_int iColorIndex) { m_iColorIndex = iColorIndex; }
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
 	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
 
@@ -42,6 +43,7 @@ private:
 	_double m_dControlTime = 0.5; //
 	_bool m_IsActivate = true;
 	_bool m_IsDuplication = false;
+	_int m_iColorIndex = 9;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;

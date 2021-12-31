@@ -48,7 +48,7 @@ private:
 	_float3*							m_pInstance_Dir = nullptr;
 
 	_float m_fNextUV = 0.f;
-	_float  m_fInstance_SpeedPerSec = 1.2f;
+	_float  m_fInstance_SpeedPerSec = 5.f;
 
 	const _float  m_fAlphaTime_Power = 0.5f;
 	const _float  m_fSize_Power = 6.f;

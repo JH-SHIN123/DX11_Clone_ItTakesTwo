@@ -360,6 +360,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	else m_dControlLifeDeltaT += dTimeDelta;
 
 	Set_SmokeEffect(true);
+	m_pEffect_Smoke_2->Set_Color(3);
 
 	// 각도 제한 걸어야 함
 #ifdef __CONTROL_MAY_KEYBOARD
@@ -577,8 +578,8 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 	}
 	else m_dControlLifeDeltaT += dTimeDelta;
 
-
 	Set_SmokeEffect(true);
+	m_pEffect_Smoke_2->Set_Color(3);
 
 	// 각도 제한 걸어야 함
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
@@ -756,6 +757,8 @@ void CBoss_Missile::Explosion_Effect()
 
 	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, WorldMatrix);
 	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, WorldMatrix);
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Ring, WorldMatrix);
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Ring, WorldMatrix);
 
 	_int iRand = rand() % 3 + 3;
 	for(_int i = 0; i < iRand; ++i)

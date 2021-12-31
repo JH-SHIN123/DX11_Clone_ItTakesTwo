@@ -2416,8 +2416,8 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 		else if (GameID::eFIREDOOR == m_eTargetGameID && false == m_IsTouchFireDoor)
 		{
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-			m_pActorCom->Set_ZeroGravity(true, false, true);
 			Enforce_IdleState();
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsTouchFireDoor = true;
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
 			m_pGameInstance->Play_Sound(TEXT("CodyM_Dead_Burn.wav"), CHANNEL_CODYM_DEAD_BURN, m_fCodyM_Dead_Burn_Volume);
@@ -3537,13 +3537,10 @@ void CCody::Touch_FireDoor(const _double dTimeDelta) // eFIREDOOR
 		_float fTriggerPosZ = m_vTriggerTargetPos.z;
 
 		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
-		//if (fTriggerPosZ < fMyPosZ)
-		//{
-		//	vSavePosition.m128_f32[1] += 0.7f;
-		//	vSavePosition = XMVectorSetW(vSavePosition, 1.f);
-		//}
-		//else
-			vSavePosition = XMVectorSet(64.f, 0.9f, 25.f, 1.f);
+		if (fTriggerPosZ < fMyPosZ)
+			vSavePosition = XMVectorSet(64.f, 0.4f, 64.f, 1.f);
+		else
+			vSavePosition = XMVectorSet(64.f, 0.2f, 25.f, 1.f);
 	
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
@@ -3692,7 +3689,7 @@ void CCody::WallLaserTrap(const _double dTimeDelta)
 		_float fMyPosY = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1];
 		_float fTriggerY = m_vTriggerTargetPos.y;
 
-		_vector vRespawnPos = XMVectorSet(-803.f, 768.f, 193.f, 1.f);
+		_vector vRespawnPos = XMVectorSet(-803.f, 767.f, 193.f, 1.f);
 		if(fMyPosY > fTriggerY)
 			vRespawnPos = XMVectorSet(-805.f, 792.f, 198.f, 1.f);
 

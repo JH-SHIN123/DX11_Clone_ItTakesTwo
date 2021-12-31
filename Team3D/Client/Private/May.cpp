@@ -1997,8 +1997,8 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 			m_pGameInstance->Play_Sound(TEXT("May_Dead_Burn.wav"), CHANNEL_MAY_DEAD_BURN, m_fMay_Dead_Burn_Volume);
 
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::May_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-			m_pActorCom->Set_ZeroGravity(true, false, true);
 			Enforce_IdleState();
+			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_IsTouchFireDoor = true;
 		}
 		else if (GameID::eBOSSMISSILE == m_eTargetGameID && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && m_IsBossMissile_Control == false)
@@ -2819,12 +2819,9 @@ void CMay::Touch_FireDoor(const _double dTimeDelta)
 
 		_vector vSavePosition = XMLoadFloat3(&m_vSavePoint);
 		if (fTriggerPosZ < fMyPosZ)
-		{
-			vSavePosition.m128_f32[1] += 0.7f;
-			vSavePosition = XMVectorSetW(vSavePosition, 1.f);
-		}
+			vSavePosition = XMVectorSet(64.f, 0.4f, 64.f, 1.f);
 		else
-			vSavePosition = XMVectorSet(64.f, 0.9f, 25.f, 1.f);
+			vSavePosition = XMVectorSet(64.f, 0.2f, 25.f, 1.f);
 
 		m_pActorCom->Set_Position(vSavePosition);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vSavePosition);
