@@ -284,7 +284,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		m_pGameInstance->Play_Sound(L"UFO_Move_End.wav", CHANNEL_MOONUFO_MOVE_END, m_fMove_End_Volume);
 	}
 #endif
-
+	//
 	/* For.LaserGun */
 
 	_vector vUFOPos = ((CPixelUFO*)DATABASE->Get_PixelUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
