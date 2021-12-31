@@ -750,18 +750,19 @@ HRESULT CCutScene::Start_CutScene_GotoMoon()
 
 	pMay->Get_Actor()->Set_ZeroGravity(true, true, true);
 	pMay->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix({ 64.f,345.f,195.f}, { 1.f,1.f,1.f }, {90.f,0.f,0.f}));
-	pMay->Get_Actor()->Set_Position(XMVectorSet(64.f, 345.f+ 98.3895f, 195.f, 1.f));
+	pMay->Get_Actor()->Set_Position(XMVectorSet(64.f, 345.f+ 100.f, 195.f, 1.f));
 	pMay->Get_Model()->Set_Animation(ANI_M_CutScene_SpaceStation_BossFight_Eject);
 
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
 	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(
-		_float3(64.f, 357.5f + 98.3895f, 195.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
+		_float3(64.f, 357.5f + 100.f, 195.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
 	pUfo->Get_Model()->Set_Animation(CutScene_Eject_FlyingSaucer);
 	pUfo->Set_Active(true);
 
 	CMoonBaboon* pMoonBaboon = static_cast<CMoonBaboon*>(DATABASE->Get_MoonBaboon());
 	pMoonBaboon->Set_Animation(Moon_Eject, Moon_Ufo_MH);
 	pMoonBaboon->Set_Active(true);
+
 	return S_OK;
 }
 

@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Effect_StarBuddy_Explosion_BigBang.h"
 #include "Effect_Generator.h"
-
+#include "MainCamera.h"
+#include "SubCamera.h"
 CEffect_StarBuddy_Explosion_BigBang::CEffect_StarBuddy_Explosion_BigBang(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
 {
@@ -41,6 +42,9 @@ _int CEffect_StarBuddy_Explosion_BigBang::Tick(_double TimeDelta)
 	m_dLifeTime += TimeDelta;
 	if (1.2 < m_dLifeTime && true == m_IsScaling)
 	{
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_CamEffect(TEXT("Cam_Shake_BuddyBoom"));
+		static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_CamEffect(TEXT("Cam_Shake_BuddyBoom"));
+
 		EFFECT->Add_Effect(Effect_Value::StarBuddy_Explosion_Particle, m_pTransformCom->Get_WorldMatrix());
 		//////m_fScalePow = 10.f;
 		m_IsScaling = false;
@@ -48,6 +52,7 @@ _int CEffect_StarBuddy_Explosion_BigBang::Tick(_double TimeDelta)
  
 	if (true == m_IsScaling)
 	{
+		
 		m_fAlphaTime += (_float)TimeDelta * 0.75f;
 		if (1.f < m_fAlphaTime) m_fAlphaTime = 1.f;
 
