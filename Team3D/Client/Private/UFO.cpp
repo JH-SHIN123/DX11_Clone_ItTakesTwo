@@ -1235,13 +1235,6 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 
 	if (false == m_IsEjection)
 	{
-#ifdef __PLAY_CUTSCENE
-		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
-		{
-			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon, true);
-			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
-		}
-#endif
 
 		_vector vPosition = { 64.f, 357.5f, 195.f, 1.f };
 		XMStoreFloat4(&m_vStartUFOPos, vPosition);
@@ -1251,6 +1244,13 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
 
+#ifdef __PLAY_CUTSCENE
+		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
+		{
+			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon, true);
+			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_GotoMoon"));
+		}
+#endif
 		/* UI OFF */
 		UI_Generator->Set_AllActivation(false);
 		((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);

@@ -552,7 +552,9 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 
 
 	_matrix matBegin = XMLoadFloat4x4(&m_matBeginWorld);
-	_matrix matPlayer = pPlayerTransform->Get_WorldMatrix();
+	_matrix matPlayer = /*XMMatrixScaling(100.f, 100.f, 100.f)
+		* static_cast<CMoonUFO*>(DATABASE->Get_MoonUFO())->Get_Model()->Get_BoneMatrix("Chair")**/
+		pPlayerTransform->Get_WorldMatrix();
 	_vector vEye = vAt - matPlayer.r[2] * 10.f + matPlayer.r[1] * 9.f;
 	OffSetPhsX(vEye, vAt, dTimeDelta, &vEye);
 	_vector vDirMoonWithEye = XMVector3Normalize(vEye - vMoonPos);
@@ -565,15 +567,19 @@ _int CSubCamera::Tick_Cam_Free_RideSpaceShip_May(_double dTimeDelta)
 	_vector vAxis = XMQuaternionNormalize(XMQuaternionRotationAxis(XMVector3Normalize(vRight/*matPlayer.r[0]*/),-fAngle/* +  XMConvertToRadians(45.f)*/));
 
 	_vector vAxisConj = XMQuaternionNormalize(XMQuaternionConjugate(vAxis));
-	_vector vOrigin = XMQuaternionNormalize(XMQuaternionRotationMatrix(matBegin *matPlayer));
+	_vector vOrigin = XMQuaternionNormalize(XMQuaternionRotationMatrix(matBegin * matPlayer));
 	vOrigin = XMQuaternionNormalize(XMQuaternionMultiply(XMQuaternionMultiply(vAxis, vOrigin),vAxisConj));
 	
 	_matrix matRot = XMMatrixRotationQuaternion(vOrigin);
 	matRot.r[3] = vEye;
+
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::RScreen))
+	{
+		if (m_pCamHelper->Tick_CamEffect(CFilm::RScreen, dTimeDelta, matRot))
+			matRot = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::RScreen);
+	}
 	m_pTransformCom->Set_WorldMatrix(matRot);
 	
-
-
 	return NO_EVENT;
 }
 

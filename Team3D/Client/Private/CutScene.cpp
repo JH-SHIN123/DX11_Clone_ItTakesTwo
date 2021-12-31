@@ -438,13 +438,13 @@ _bool CCutScene::Tick_CutScene_GotoMoon(_double dTimeDelta)
 			XMMatrixRotationRollPitchYaw(XMConvertToRadians(-90.f), XMConvertToRadians(-90.f), 0.f)*
 			XMMatrixScaling(95.f, 95.f, 95.f)*
 			pUfo->Get_Model()->Get_BoneMatrix("Chair")* pUfo->Get_Transform()->Get_WorldMatrix();
-		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3])+2.f);
+		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3]) + 2.f);
 		pMoonBaboon->Get_Transform()->Set_WorldMatrix(matUfo);
 	}
 	if (m_dTime > 7.6)
 	{
 		_matrix matUfo = 
-			XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(270.f))*
+			XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(-270.f), XMConvertToRadians(/*0.f*/-90.f))*
 			XMMatrixScaling(100.f, 100.f, 100.f)* pUfo->Get_Model()->Get_BoneMatrix("Align")
 			*pUfo->Get_Transform()->Get_WorldMatrix() ;
 		matUfo.r[3] = XMVectorSetY(matUfo.r[3], XMVectorGetY(matUfo.r[3]));

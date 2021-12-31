@@ -1140,6 +1140,11 @@ _int CMainCamera::Tick_Cam_InJoystick(_double dTimeDelta)
 	_vector vEye = vRaderScreenPos - vRaderScreenLook * 2.2f + XMVectorSet(0.f,0.2f,-0.8f,0.f);
 
 	_matrix matResult = MakeViewMatrixByUp(vEye, vRaderScreenPos);
+	if (m_pCamHelper->Get_IsCamEffectPlaying(CFilm::LScreen))
+	{
+		if (m_pCamHelper->Tick_CamEffect(CFilm::LScreen, dTimeDelta, matResult))
+			matResult = m_pCamHelper->Get_CurApplyCamEffectMatrix(CFilm::LScreen);
+	}
 	m_pTransformCom->Set_WorldMatrix(matResult);
 
 	m_CameraDesc.fFovY = XMConvertToRadians(30.f);

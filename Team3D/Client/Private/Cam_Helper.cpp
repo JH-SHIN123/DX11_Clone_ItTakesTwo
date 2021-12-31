@@ -16,6 +16,43 @@ HRESULT CCam_Helper::NativeConstruct_Prototype()
 {
 	__super::NativeConstruct_Prototype();
 #pragma region CAM_SHAKE_BASIC	
+	CCamEffect* pCam_Shake_ShootLaser_Cody = CCamEffect::Create(TEXT("Cam_Shake_ShootLaser_Cody"));
+	{
+		_double dDuration = 0.25;
+		pCam_Shake_ShootLaser_Cody->Set_Duration(dDuration);
+		for (_double i = 0.0; i <= dDuration; i += 0.0625)
+		{
+			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+			pCycleDesc->dStartTime = i;
+			pCycleDesc->dMiddleTime = i + 0.0325;
+			pCycleDesc->dFinishTime = i + 0.0625;
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMaxForce = 0.02 / (i + 1);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -0.02 / (i + 1);
+
+			pCam_Shake_ShootLaser_Cody->Add_CamShakeCycleDesc(pCycleDesc);
+		}
+	}
+	Add_CamEffect(TEXT("Cam_Shake_ShootLaser_Cody"), pCam_Shake_ShootLaser_Cody);
+	CCamEffect* pCam_Shake_ShootLaser = CCamEffect::Create(TEXT("Cam_Shake_ShootLaser"));
+	{
+		_double dDuration = 0.25;
+		pCam_Shake_ShootLaser->Set_Duration(dDuration);
+		for (_double i = 0.0; i <= dDuration; i += 0.0625)
+		{
+			CCamEffect::CamShakeCycleDesc* pCycleDesc = new CCamEffect::CamShakeCycleDesc;
+			pCycleDesc->dStartTime = i;
+			pCycleDesc->dMiddleTime = i + 0.0325;
+			pCycleDesc->dFinishTime = i + 0.0625;
+			pCycleDesc->bOnCamShakeOption[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right] = true;
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMaxForce = 0.2 / (i + 1);
+			pCycleDesc->tCamShakeDesc[(_uint)CCamEffect::CamShakeOption::CamShake_Loc_Right].dMinForce = -0.2 / (i + 1);
+
+			pCam_Shake_ShootLaser->Add_CamShakeCycleDesc(pCycleDesc);
+		}
+	}
+	Add_CamEffect(TEXT("Cam_Shake_ShootLaser"), pCam_Shake_ShootLaser);
+
 	CCamEffect* pCam_Shake_BuddyBoom = CCamEffect::Create(TEXT("Cam_Shake_BuddyBoom"));
 	{
 		_double dDuration = 3.75;
