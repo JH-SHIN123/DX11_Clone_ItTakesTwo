@@ -1203,9 +1203,6 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
-			m_pGameInstance->Play_Sound(TEXT("InUFO.wav"), CHANNEL_IN_UFO_BGM, 0.f, true);
-			m_pGameInstance->Sound_FadeIn(CHANNEL_IN_UFO_BGM, 0.7f, 2.f);
-
 			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
