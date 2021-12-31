@@ -1561,7 +1561,7 @@ void CUFO::GoUp(_double dTimeDelta)
 		DATABASE->Set_BossFloorUp(false);
 		return;
 	}
-
+	//
 	m_pTransformCom->Go_Up(dTimeDelta);
 }
 
