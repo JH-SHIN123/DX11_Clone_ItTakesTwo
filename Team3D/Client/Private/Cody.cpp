@@ -293,9 +293,6 @@ _int CCody::Tick(_double dTimeDelta)
 {
 	CCharacter::Tick(dTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_V))
-		EFFECT->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
-
 	if (m_pGameInstance->Key_Down(DIK_F9))
 	{
 		m_pActorCom->Set_Position(XMVectorSet(889.6897f, 730.2670f, 340.345f, 1.f));

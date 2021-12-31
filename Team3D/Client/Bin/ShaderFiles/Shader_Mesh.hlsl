@@ -674,7 +674,7 @@ void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_O
 	+(vDir_Right * ((vTextureDir.g + vTextureDir.r) * 0.75f));
 
 	float3 vDir_Tan = normalize(fAvg_Tangent * 0.5f + vDir);
-	vDir = lerp(vDir_Tan, vDir, fDissolve_Weight); // 보간
+	vDir = lerp(vDir_Tan, vDir, fDissolve_Weight); // 보간v
 	vDir = normalize(vDir) * g_fFlowPower;
 
 	float4 vPseudoRandomPos = (fAvg_Pos) /*+ g_vDirection*/;
