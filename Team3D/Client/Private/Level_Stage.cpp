@@ -30,10 +30,14 @@
 #include "UFORadarSet.h"
 #include "Boss_Missile.h"
 /* Jin */
+#include "UI_Generator.h"
 /* Jun */
 #include "Camera.h"
 #include"CutScenePlayer.h"
 #include"Performer.h"
+#include"MainCamera.h"
+#include"SubCamera.h"
+
 #include "Level_Loading.h"
 
 #pragma endregion
@@ -160,7 +164,28 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
 		ENDINGCREDIT->Create_Environment();
 		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
+		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_EndingCredit();
+
+		UI_Create(Default, BlackScreenFadeInOut);
+		UI_Generator->Set_FadeInSpeed(Player::Default, UI::BlackScreenFadeInOut, 1000.f);
+		m_IsEndingFadeOut = true;
 	}
+
+	/* BlackScreen FadeOut */
+	if (true == m_IsEndingFadeOut)
+	{
+		m_dEndingFadeOutWaitTime += dTimedelta;
+
+		/*  BlackScreen 대기시간 조절 */
+		if (3.f <= m_dEndingFadeOutWaitTime)
+		{
+			UI_Generator->Set_FadeOut(Player::Default, UI::BlackScreenFadeInOut);
+			/* FadeOut 속도 조절*/
+			UI_Generator->Set_FadeOutSpeed(Player::Default, UI::BlackScreenFadeInOut, 0.5f);
+			m_IsEndingFadeOut = false;
+		}
+	}
+
 	if (m_iLevelStep == 2) { Tick_EndingCredit(dTimedelta); }
 
 	if (m_iLevelStep == 3)
@@ -1151,10 +1176,10 @@ HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC MayJumpWall;
-	MayJumpWall.vPosition = { -815.311f - 12.f, 767.083f + 2.f, 189.9f - 0.48f, 1.f };
+	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 189.9f - 0.48f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
 
-	MayJumpWall.vPosition = { -815.311f - 12.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
+	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
 
 	MayJumpWall.vPosition = { -823.88f, 768.301f, 193.517f, 1.f };

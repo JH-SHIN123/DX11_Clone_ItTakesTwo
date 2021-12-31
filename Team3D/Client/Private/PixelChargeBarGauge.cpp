@@ -47,6 +47,10 @@ _int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 	{
 		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_LB) && m_fGauge > 0.9f)
 		{
+			/* Sound */
+			m_pGameInstance->Set_SoundVolume(CHANNEL_MOONUFO_LASER, m_fLaserVolume);
+			m_pGameInstance->Play_Sound(L"UFO_Laser.wav", CHANNEL_MOONUFO_LASER, m_fLaserVolume, false);
+
 			((CMoonUFO*)DATABASE->Get_MoonUFO())->Set_ShootLaser(true);
 			((CPixelLaser*)DATABASE->Get_PixelLaser())->Set_Render_State(true);
 			m_fGauge -= 0.7f;

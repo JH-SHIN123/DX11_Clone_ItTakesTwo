@@ -78,6 +78,18 @@ HRESULT CPixelBaboon::NativeConstruct(void * pArg)
 
 	DATABASE->Set_PixelBaboon(this);
 
+	m_pGameInstance->Set_SoundVolume(CHANNEL_MOONUFO_SEARCH1, m_fSearchVolumeFar);
+	m_pGameInstance->Play_Sound(L"UFO_Search1.wav", CHANNEL_MOONUFO_SEARCH1, m_fSearchVolumeFar);
+	m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH1);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_MOONUFO_SEARCH2, m_fSearchVolumeMiddle);
+	m_pGameInstance->Play_Sound(L"UFO_Search2.wav", CHANNEL_MOONUFO_SEARCH2, m_fSearchVolumeMiddle);
+	m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH2);
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_MOONUFO_SEARCH3, m_fSearchVolumeNear);
+	m_pGameInstance->Play_Sound(L"UFO_Search3.wav", CHANNEL_MOONUFO_SEARCH3, m_fSearchVolumeNear);
+	m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH3);
+
 	return S_OK;
 }
 
@@ -134,10 +146,18 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 		}
 	}
 
-	Check_Degree_And_Distance_From_MoonUFO(dTimeDelta);
-	Check_Distance_From_UFO(dTimeDelta);
-	Set_Hearts_Pos();
-
+	if (m_iLifeCount > 0)
+	{
+		Check_Degree_And_Distance_From_MoonUFO(dTimeDelta);
+		Check_Distance_From_UFO(dTimeDelta);
+		Set_Hearts_Pos();
+	}
+	else if (m_iLifeCount == 0)
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH2);
+		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH1);
+		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH3);
+	}
 
 	return _int();
 }
@@ -253,7 +273,7 @@ void CPixelBaboon::Check_Distance_From_UFO(_double dTimeDelta)
 	_vector vMoonBaboonPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	_float vDist = XMVectorGetX(XMVector3Length(vMoonBaboonPosition - vUFOPosition));
-	
+
 	if (vDist > 0.35f)
 	{
 		/* SCRIPT && SOUND */
@@ -284,6 +304,57 @@ void CPixelBaboon::Check_Distance_From_UFO(_double dTimeDelta)
 	_vector vCrossHairPos = ((CPixelCrossHair*)DATABASE->Get_PixelCrossHair())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
 
 	_float vCompensateDist = XMVectorGetX(XMVector3Length(vMoonBaboonPosition - vCrossHairPos));
+
+	/* Sounds */
+	if (((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick() == true)
+	{
+		if (vCompensateDist > 0.25f)
+		{
+			m_fMiddleSoundDelay = 0.f;
+			m_fNearSoundDelay = 0.f;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH2);
+			m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH3);
+
+			m_fFarSoundDelay += (_float)dTimeDelta;
+
+			if (m_fFarSoundDelay > 1.f)
+			{
+				m_pGameInstance->Play_Sound(L"UFO_Search1.wav", CHANNEL_MOONUFO_SEARCH1, m_fSearchVolumeFar, false);
+				m_fFarSoundDelay = 0.f;
+			}
+		}
+		else if (vCompensateDist <= 0.25f && vCompensateDist > 0.1f)
+		{
+			m_fFarSoundDelay = 0.f;
+			m_fNearSoundDelay = 0.f;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH3);
+			m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH1);
+
+			m_fMiddleSoundDelay += (_float)dTimeDelta;
+			if (m_fMiddleSoundDelay > 0.5f)
+			{
+				m_pGameInstance->Play_Sound(L"UFO_Search2.wav", CHANNEL_MOONUFO_SEARCH2, m_fSearchVolumeMiddle, false);
+				m_fMiddleSoundDelay = 0.f;
+			}
+		}
+		else if (vCompensateDist <= 0.1f)
+		{
+			m_fFarSoundDelay = 0.f;
+			m_fMiddleSoundDelay = 0.f;
+
+			m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH1);
+			m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_SEARCH2);
+
+			m_fNearSoundDelay += (_float)dTimeDelta;
+			if (m_fNearSoundDelay > 0.4f)
+			{
+				m_pGameInstance->Play_Sound(L"UFO_Search3.wav", CHANNEL_MOONUFO_SEARCH3, m_fSearchVolumeNear, false);
+				m_fNearSoundDelay = 0.f;
+			}
+		}	
+	}
 
 	if (vCompensateDist < 0.03f && DATABASE->Get_LaserGauge() > 0.9f)
 	{

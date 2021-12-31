@@ -10,6 +10,8 @@
 #include"MainCamera.h"
 #include"SubCamera.h"
 #include "Script.h"
+#include "Cody.h"
+#include "May.h"
 
 _uint CMoonBaboonCore::m_iBrokenCheck = 0;
 
@@ -59,6 +61,11 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 		m_bPatternOn = true;
 
 	m_iBrokenCheck = 0;
+
+	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, 1.f);
+	m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, 1.f);
+
+	m_pGameInstance->Stop_Sound(CHANNEL_BOSSCORE);
 
     return S_OK;
 }
@@ -136,26 +143,6 @@ _int CMoonBaboonCore::Late_Tick(_double TimeDelta)
     return _int();
 }
 
-//void CMoonBaboonCore::Reset()
-//{
-//	if (m_bResetOnce) return;
-//	if (nullptr != m_pEffectBossCore) return;
-//
-//	if (nullptr == m_pEffectBossCore)
-//	{
-//		FAILED_CHECK(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"), nullptr, (CGameObject**)&m_pEffectBossCore));
-//	}
-//
-//	m_bBroken = false;
-//	m_bBrokenStart = false;
-//	m_dBrokenWaitingDeltaT = 0.f;
-//	m_iActiveCore = 0;
-//
-//	m_pCoreGlass->Reset();
-//
-//	m_bResetOnce = true;
-//}
-
 void CMoonBaboonCore::GoUp(_double dTimeDelta)
 {
 	if (false == m_IsGoUp)
@@ -201,6 +188,24 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 		}
 	}
 
+	CCody* pCody = (CCody*)DATABASE->GetCody();
+	CMay* pMay = (CMay*)DATABASE->GetMay();
+
+	// 죽었으면은 활성화 변경
+	if (m_iActiveCore == 1)
+	{
+		if (ON_CODY == m_eWhoIsOn && pCody->Get_bDeadInBossroom())
+		{
+			m_iActiveCore = -1;
+			if(m_pCoreButton) m_pCoreButton->Release_Button();
+		}
+		if (ON_MAY == m_eWhoIsOn && pMay->Get_bDeadInBossroom())
+		{
+			m_iActiveCore = -1;
+			if (m_pCoreButton) m_pCoreButton->Release_Button();
+		}
+	}
+
 	if (m_iActiveCore == 1)
 	{
 		if (m_fMoveDelta < m_fMoveTime)
@@ -208,6 +213,12 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_fMoveDelta += (_float)TimeDelta;
 			m_bMove = true;
+
+			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+			}
 		}
 		else
 			m_bArrived = true;
@@ -221,6 +232,12 @@ void CMoonBaboonCore::Active_Pillar(_double TimeDelta)
 			m_pTransformCom->Go_Down(TimeDelta);
 			m_fMoveDelta -= (_float)TimeDelta;
 			m_bMove = true;
+
+			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSCORE))
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+				m_pGameInstance->Play_Sound(TEXT("Boss_Core_Move.wav"), CHANNEL_BOSSCORE, m_fCoreSoundVolume);
+			}
 		}
 	}
 	else
@@ -291,10 +308,15 @@ void CMoonBaboonCore::Set_Broken()
 	}
 	else
 	{
-		_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Set_Start_Destroy_BossCore();
 	}
 
+}
+
+void CMoonBaboonCore::Set_ActiveCore(_int iActive, WHOISON eOn)
+{
+	m_iActiveCore = iActive;
+	m_eWhoIsOn = eOn;
 }
 
 void CMoonBaboonCore::Set_MoonBaboonCoreUp(_float fMaxDistance, _float fSpeed)

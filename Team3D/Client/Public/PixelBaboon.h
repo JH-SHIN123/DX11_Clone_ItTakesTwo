@@ -60,6 +60,18 @@ public:
 	 _bool	m_bStartHeartDelay = 0.f;
 	 _float	m_fHeartDelay = 0.f;
 
+
+	 /* Sounds */
+	 _float m_fSearchVolumeFar = 1.f;
+	 _float m_fSearchVolumeMiddle = 1.f;
+	 _float m_fSearchVolumeNear = 1.f;
+
+	 _float m_fFarSoundDelay = 0.f;
+	 _float m_fMiddleSoundDelay = 0.f;
+	 _float m_fNearSoundDelay = 0.f;
+
+
+
 	 CPixelHeart* m_pPixelHeart[3] = {nullptr};
 	 CPixelShield* m_pPixelShield = nullptr;
 	 CPixelArrow* m_pPixelArrow = nullptr;

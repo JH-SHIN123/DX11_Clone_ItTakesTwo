@@ -11,17 +11,17 @@ protected:
 	virtual ~CMoonUFO() = default;
 
 public:/* Getter */
-	CTransform*		Get_Transform() { return m_pTransformCom; }
-	CModel*			Get_Model()		{ return m_pModelCom; }
-	CDynamicActor*	Get_Actor() { return m_pDynamicActorCom; }
-	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
-	_float4 Get_LaserDir() const { return m_vLaserDir; }
+	CTransform*		Get_Transform()			  { return m_pTransformCom; }
+	CModel*			Get_Model()				  { return m_pModelCom; }
+	CDynamicActor*	Get_Actor()				  { return m_pDynamicActorCom; }
+	_float4			Get_LaserStartPos() const { return m_vLaserGunPos; }
+	_float4			Get_LaserDir() const	  { return m_vLaserDir; }
 
 public:/* Setter */
-	void Set_MayInUFO(_bool bCheck) { m_IsMayInUFO = bCheck; }
-	void Set_ShootLaser(_bool _bShootLaser) { m_IsShootLaser = _bShootLaser; }
+	void Set_MayInUFO(_bool bCheck)				{ m_IsMayInUFO = bCheck; }
+	void Set_ShootLaser(_bool _bShootLaser)		{ m_IsShootLaser = _bShootLaser; }
 	void Compensate_LaserDir(_bool bCompensate) { m_bCompensate = bCompensate; }
-	void Set_CutSceneEnd(_bool IsCutSceneEnd) { m_IsCutSceneEnd = IsCutSceneEnd; }
+	void Set_CutSceneEnd(_bool IsCutSceneEnd)	{ m_IsCutSceneEnd = IsCutSceneEnd; }
 
 public:
 	virtual HRESULT	NativeConstruct_Prototype() override;
@@ -59,6 +59,13 @@ private:
 	_float4				m_vLaserGunPos = {};
 	_float4				m_vLaserDir = {};
 	_bool				m_IsShootLaser = false;
+
+	/* Sounds */
+	_float m_fMove_Loop_Volume = 1.f;
+	_float m_fMove_End_Volume = 1.f;
+	_float m_fMove_Start_Volume = 1.f;
+
+	_bool	m_bMoving = false;
 
 private:
 	void	KeyInPut(_double dTimeDelta);

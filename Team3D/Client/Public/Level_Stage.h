@@ -89,8 +89,11 @@ private:
 #pragma region EndingCredit
 private:
 	_double	m_dEndingCreditAccTime = 0.0;
+	_double m_dEndingFadeOutWaitTime = 0.0;
 	_uint	m_iEndingCreditStep = 0;
 	_bool	m_IsBossStage = false;
+	_bool	m_IsEndingFadeOut = false;
+
 private: 
 	_int	Tick_EndingCredit(_double dTimedelta);
 #pragma endregion

@@ -107,6 +107,11 @@ HRESULT C3DText::Ready_Component(void * pArg)
 		m_pTransformCom->Set_Scale(XMVectorSet(3.f, 1.f, 3.f, 0.f));
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, tArg.fPosY, 0.f, 1.f));
 	}
+	else if (11 == tArg.iIndex || 12 == tArg.iIndex || 13 == tArg.iIndex || 14 == tArg.iIndex || 15 == tArg.iIndex)
+	{
+		m_pTransformCom->Set_Scale(XMVectorSet(2.f, 1.f, 2.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, tArg.fPosY, -2.f, 1.f));
+	}
 	else
 	{
 		m_pTransformCom->Set_Scale(XMVectorSet(2.f, 1.f, 2.f, 0.f));

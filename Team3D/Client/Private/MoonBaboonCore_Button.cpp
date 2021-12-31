@@ -12,6 +12,12 @@ CMoonBaboonCore_Button::CMoonBaboonCore_Button(const CMoonBaboonCore_Button& rhs
 {
 }
 
+void CMoonBaboonCore_Button::Release_Button()
+{
+	m_bReleased = true;
+	m_bPressed = false;
+}
+
 void CMoonBaboonCore_Button::Set_WorldMatrix()
 {
 	// Offset : 0, -2, 0
@@ -117,7 +123,10 @@ void CMoonBaboonCore_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 			m_bPressed = true;
 			m_bReleased = false;
 
-			m_pParent->Set_ActiveCore(1);
+			if(GameID::eMAY == eID)
+				m_pParent->Set_ActiveCore(1, CMoonBaboonCore::ON_MAY);
+			else if (GameID::eCODY == eID)
+				m_pParent->Set_ActiveCore(1, CMoonBaboonCore::ON_CODY);
 		}
 		break;
 	case Engine::TriggerStatus::eLOST:
@@ -125,7 +134,10 @@ void CMoonBaboonCore_Button::Trigger(TriggerStatus::Enum eStatus, GameID::Enum e
 			m_bReleased = true;
 			m_bPressed = false;
 
-			m_pParent->Set_ActiveCore(-1);
+			if (GameID::eMAY == eID)
+				m_pParent->Set_ActiveCore(-1, CMoonBaboonCore::ON_NONE);
+			else if (GameID::eCODY == eID)
+				m_pParent->Set_ActiveCore(-1, CMoonBaboonCore::ON_NONE);
 		}
 		break;
 	}
@@ -157,6 +169,7 @@ void CMoonBaboonCore_Button::OnPressed(_double TimeDelta)
 		{
 			m_fMoveDeltaValue -= (_float)TimeDelta * fTriggerSpeed;
 			m_vLocalPosition.y += (_float)TimeDelta * fTriggerSpeed;
+
 		}
 	}
 

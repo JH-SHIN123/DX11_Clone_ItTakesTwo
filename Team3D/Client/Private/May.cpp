@@ -22,8 +22,9 @@
 /* For.MoonUFO */
 #include "MoonUFO.h"
 #include "Moon.h"
-/* For.BossUFO */
+/* For.Boss */
 #include "UFO.h"
+#include "Moonbaboon.h"
 
 /* For.UI */
 #include "HpBar.h"
@@ -236,7 +237,7 @@ _int CMay::Tick(_double dTimeDelta)
 	DeadInBossroom(dTimeDelta);
 	_bool Test = m_pActorCom->Get_IsOnGravityPath();
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO && false == m_bDead_InBossroom)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_IsInUFO && false == m_bDead_InBossroom && false == m_IsEnding)
 	{
 		LaserTennis(dTimeDelta);
 		Wall_Jump(dTimeDelta);
@@ -313,6 +314,7 @@ _int CMay::Tick(_double dTimeDelta)
 			m_dHitTime = 0.0;
 		}
 	}
+
 	return NO_EVENT;
 }
 
@@ -321,6 +323,7 @@ _int CMay::Late_Tick(_double dTimeDelta)
 	CCharacter::Late_Tick(dTimeDelta);
 
 	Ride_Ending_Rocket(dTimeDelta);
+
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene())
 	{
 		if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1000.f))
@@ -2161,6 +2164,7 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				((CCody*)DATABASE->GetCody())->Set_AnimationRotate(190.f);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_Animation(ANI_C_CutScene_BossFight_LaserRippedOff);
 				((CCody*)DATABASE->GetCody())->Get_Model()->Set_NextAnimIndex(ANI_C_MH);
+				((CMoonBaboon*)DATABASE->Get_MoonBaboon())->Set_Animation(Moon_LaserRippedOff, Moon_Ufo_MH);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Flow);
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Particle);
@@ -2168,16 +2172,25 @@ _bool CMay::Trigger_Check(const _double dTimeDelta)
 				EFFECT->Add_Effect(Effect_Value::Boss_BrokenLaser_Lightning);
 				UI_Delete(May, InputButton_PS_InterActive);
 				((CCody*)DATABASE->GetCody())->Set_AllActiveHpBar(false);
-				Set_AllActiveHpBar(false);
 				((CUFO*)DATABASE->Get_BossUFO())->Set_HpBarActive(false);
+				Set_AllActiveHpBar(false);
 				UI_Generator->Set_AllActivation(false);
+				UI_Generator->Delete_InterActive_UI(Player::May, UI::Boss_UFO_LaserGunRing);
+
+				m_pGameInstance->Stop_Sound(CHANNEL_BOSS_UFO);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSS_UFO, 1.f);
+				m_pGameInstance->Play_Sound(TEXT("May_Destroy_LaserGun.wav"), CHANNEL_BOSS_UFO, 1.f);
+
+				m_pGameInstance->Stop_Sound(CHANNEL_VOICE_MAY_1);
+				m_pGameInstance->Set_SoundVolume(CHANNEL_VOICE_MAY_1, 1.f);
+				m_pGameInstance->Play_Sound(TEXT("May_Destroy_LaserGun_Voice.wav"), CHANNEL_VOICE_MAY_1, 1.f);
 			}
 		}
 		else if (m_eTargetGameID == GameID::eLASERTENNISPOWERCOORD && (m_pGameInstance->Pad_Key_Down(DIP_Y) || m_pGameInstance->Key_Down(DIK_O)) && false == m_bLaserTennis)
 		{
 			m_pGameInstance->Stop_Sound(CHANNEL_LASERPOWERCOORD);
 			m_pGameInstance->Play_Sound(TEXT("StartButton_Touch&Detach.wav"), CHANNEL_LASERPOWERCOORD);
-			//
+
 			LASERTENNIS->Increase_PowerCoord();
 
 			UI_Delete(May, InputButton_PS_InterActive);
@@ -2397,7 +2410,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_fGrvityPipe_Sound_Delay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false/* && m_fGrvityPipe_Sound_Delay > 1.f*/)
+				if (m_bGravityPipe_FirstIn == false && m_fGrvityPipe_Sound_Delay > 1.f)
 				{
 					SCRIPT->VoiceFile_No02();
 					m_bGravityPipe_FirstIn = true;
@@ -2620,13 +2633,13 @@ void CMay::InUFO(const _double dTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vChairPos));
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vRight = pUFOTransform->Get_State(CTransform::STATE_RIGHT);
 	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.8f;
-	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.8f;
-	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.8f;
+	vUp = XMVector3Normalize(vPosition - ((CMoon*)(DATABASE->Get_Mooon()))->Get_Position()) * 0.5f;
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp)) * 0.5f;
+	vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook)) * 0.5f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
@@ -2688,6 +2701,12 @@ void CMay::Set_InterActiveUIDisable(_bool IsCheck)
 	m_IsInterActiveUIDisable = IsCheck;
 }
 
+void CMay::Set_Ending_Ready()
+{
+	m_IsInUFO = false;
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(false);
+}
+
 void CMay::LaserTennis(const _double dTimeDelta)
 {
 	if (false == m_bLaserTennis)
@@ -2726,6 +2745,7 @@ void CMay::Set_UFO(_bool bCheck)
 	m_pModelCom->Set_NextAnimIndex(ANI_M_MH);
 
 	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(bCheck);
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_CutSceneEnd(bCheck);
 }
 
 void CMay::Warp_Wormhole(const _double dTimeDelta)
@@ -2883,6 +2903,10 @@ void CMay::BossMissile_Control(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Rocket_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Rocket_MH);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, 0.5f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_MAY, 0.5f);
 		}
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)

@@ -31,8 +31,12 @@ private:
 	_float			m_fAddAngle = 0.f;
 	_float4x4		m_matResetWorld;
 
+	_bool			m_bSoundCheck = false;
+	_bool			m_bSoundOnePlay = false;
+
 private:
 	void Movement(_double dTimeDelta);
+	void PlaySound_by_PlayerDistance();
 
 private:
 	HRESULT Ready_Component(void* pArg);

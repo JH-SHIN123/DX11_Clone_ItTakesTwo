@@ -265,6 +265,7 @@ public:
 	void			 Set_Change_Size_After_UmbrellaCutScene();
 	void			 Set_PlayerSizeSmall_INUFO();
 	void			 Set_InJoyStick();
+	void			 Set_Ending_Ready();
 
 	/* For. Ending */
 	void			Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -435,6 +436,7 @@ private:
 	_bool	 m_IsPinBall = false;
 	_bool	 m_IsReadyPinball = false;
 	_bool	 m_bPinBallScript = false;
+	_uint	 m_iDeadCount = 0;
 	/* Hye::For.Tube*/
 	_bool	 m_IsTube = false;
 	/* Hye::For.SpaceShip */
@@ -566,7 +568,9 @@ private:
 	void Pipe_WallJump(const _double dTimeDelta);
 	void ElectricWallJump(const _double dTimeDelta);
 	void BossMissile_Control(const _double dTimeDelta);
-	void Ride_Ending_Rocket(const _double dTimeDelta);
+	public:
+		void Ride_Ending_Rocket(const _double dTimeDelta);
+	private:
 
 	// Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);

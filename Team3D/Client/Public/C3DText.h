@@ -30,6 +30,7 @@ private:
 	CTriggerActor*		m_pTriggerActorCom = nullptr;
 	CTransform*			m_pCodyTransformCom = nullptr;
 	_uint				m_iIndex = 0;
+
 private:
 	HRESULT Ready_Component(void* pArg);
 	HRESULT Create_Particle();

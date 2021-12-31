@@ -21,6 +21,7 @@ private:
 	virtual ~CMoonBaboonCore_Button() = default;
 
 public:
+	void Release_Button();
 	void Set_WorldMatrix();
 	void Set_RenderPass(STATE eBtnState) { m_iRenderPass = (_uint)eBtnState; };
 
@@ -43,9 +44,11 @@ private:
 	_bool m_bReleased = false;
 
 	_float m_fMoveDeltaValue = 0.f;
+	_float  m_fCoreSoundVolume = 1.f;
 
 	_float3 m_vOffsetPosition = { 0.f, -0.2f, 0.f };
 	_float3 m_vLocalPosition = { 0.f,0.f,0.f };
+
 
 private:
 	_uint m_iRenderPass = STATE_NONEACT;

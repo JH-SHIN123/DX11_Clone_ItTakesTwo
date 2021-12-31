@@ -201,6 +201,16 @@ void CPressureBigPlate::Check_Collision_PlayerAnim()
 				if (false == pPlate->Get_ButtonActive())
 					pPlate->Set_PipeCurveRotate(true);
 			}
+
+			m_pGameInstance->Stop_Sound(CHANNEL_PIPE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_PIPE, m_fPipeVolume);
+			m_pGameInstance->Play_Sound(TEXT("Pipe_Rotate.wav"), CHANNEL_PIPE, m_fPipeVolume);
+		}
+		else if (1 == m_iOption)
+		{
+			m_pGameInstance->Stop_Sound(CHANNEL_PIPE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_PIPE, m_fPipeVolume);
+			m_pGameInstance->Play_Sound(TEXT("Pipe_Shock.wav"), CHANNEL_PIPE, m_fPipeVolume);
 		}
 	}
 }
@@ -225,6 +235,9 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		{
 			m_fMove = 0.f;
 			m_IsPowerButtonUp = false;
+			m_pGameInstance->Stop_Sound(CHANNEL_PIPE);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_PIPE, m_fPipeVolume);
+			m_pGameInstance->Play_Sound(TEXT("Pipe_ShockButton_Appear.wav"), CHANNEL_PIPE, m_fPipeVolume);
 		}
 	}
 
@@ -281,7 +294,6 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 
 	if (true == m_IsBatteryCheck && true == m_pBatteryBox->Get_BatteryHolding() && true == m_IsEffect_Done)
 	{
-
 		m_IsPowerSupplyActive = true;
 		m_IsPowerSupplyAvailable = false;
 		m_IsDoorOpen = true;
@@ -298,6 +310,7 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		{
 			m_IsBatteryCheck = false;
 			m_IsButtonActive = false;
+			m_IsEffect_Once = false;
 			m_fActiveMove = 0.f;
 		}
 	}

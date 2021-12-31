@@ -31,9 +31,9 @@
 /*For.WarpGate*/
 #include "WarpGate.h"
 
-/* For.BossUFO */
+/* For.Boss */
 #include "UFO.h"
-
+#include "MoonBaboon.h"
 #include "Script.h"
 
 /* For. UFORadarSet */
@@ -335,7 +335,7 @@ _int CCody::Tick(_double dTimeDelta)
 	KeyInput_Rail(dTimeDelta);
 	DeadInBossroom(dTimeDelta);
 
-	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit && false == m_bDead_InBossroom)
+	if (false == m_bMoveToRail && false == m_bOnRail && false == m_bEndingCredit && false == m_bDead_InBossroom && false == m_IsEnding)
 	{
 		LaserTennis(dTimeDelta);
 		ElectricWallJump(dTimeDelta);
@@ -2938,7 +2938,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f *//*&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false*/)
+				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
 				{
 					SCRIPT->VoiceFile_No01();
 					m_bGravityPipe_FirstIn = true;
@@ -3261,7 +3261,7 @@ void CCody::Pipe_WallJump(const _double dTimeDelta)
 
 void CCody::ElectricWallJump(const _double dTimeDelta)
 {
-	if (false == m_bElectricWallAttach)//
+	if (false == m_bElectricWallAttach)
 		return;
 
 	if (true == ((CElectricWall*)m_pTargetPtr)->Get_Electric() && false == m_bRespawn)
@@ -3393,6 +3393,10 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
+
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, 0.5f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_CODY, 0.5f);
 		}
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Rocket_MH)
@@ -3419,7 +3423,7 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 
 void CCody::Ride_Ending_Rocket(const _double dTimeDelta)
 {
-	if (m_IsEnding == true)
+	if (m_IsEnding == true || m_bEndingCredit == true)
 	{
 		/* 3초후 시작 */
 		m_dStartTime += dTimeDelta;
@@ -3647,6 +3651,11 @@ void CCody::Set_InJoyStick()
 	m_pActorCom->Set_Position(vOffSetPosition);
 	m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
 	m_IsInJoyStick = true;
+}
+void CCody::Set_Ending_Ready()
+{
+	m_IsInJoyStick = false;
+	m_pActorCom->Set_IsPlayerInUFO(false);
 }
 void CCody::Set_HpBarReduction(_float fDamage)
 {
@@ -4314,6 +4323,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		m_pModelCom->Set_Animation(ANI_C_Holding_Enter_UFO);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_Low_UFO);
 		((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding_Enter, UFO_CodyHolding_low);
+		((CMoonBaboon*)DATABASE->Get_MoonBaboon())->Set_Animation(Moon_Ufo_CodyHolding_Enter, Moon_Ufo_CodyHolding);
 
 		CTransform* pUFOTransform = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform();
 		_vector vUFOPos = XMVectorSet(64.f - 0.4f, 355.0263f + 0.8f, 195.f, 1.f);
@@ -4334,6 +4344,14 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_E))
 			++m_iKeyDownCount;
 
+		UI_CreateOnlyOnce(Cody, InputButton_BossHolding);
+
+		_matrix UFOBone = ((CUFO*)DATABASE->Get_BossUFO())->Get_Model()->Get_BoneMatrix("Base");
+		_matrix UFOBoneWorld = UFOBone * ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_WorldMatrix();
+		_vector UFOBonePos = UFOBoneWorld.r[3];
+
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_BossHolding, UFOBonePos);
+
 		if (10 <= m_iKeyDownCount)
 		{
 			if (SCRIPT->Get_Script_Played(34) == false)
@@ -4347,6 +4365,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
 			((CMay*)DATABASE->GetMay())->Set_InterActiveUIDisable(false);
+			UI_Delete(Cody, InputButton_BossHolding);
 			m_IsHolding_High_UFO = true;
 		}
 	}
@@ -4428,15 +4447,23 @@ void CCody::PinBall_Respawn(const _double dTimeDelta)
 	m_pModelCom->Set_Animation(ANI_C_MH);
 	m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 
-	if (false == ((CPinBall_Handle*)(DATABASE->Get_Pinball_Handle()))->Get_Goal())
+	++m_iDeadCount;
+	// 핀볼 실패 후 리스폰 할 때.
+	if (m_iDeadCount == 1)
 	{
-		/* Sound */
-		/* 메이가 잘못했을 때 */
-		if (false == ((CPinBall*)DATABASE->Get_Pinball())->Get_DeadType())
-			SCRIPT->VoiceFile_No22();
-		/* 코디가 잘못했을 때 */
-		else
+		if (SCRIPT->Get_Script_Played(21) == false)
+		{
 			SCRIPT->VoiceFile_No21();
+			SCRIPT->Set_Script_Played(21, true);
+		}
+	}
+	else if (m_iDeadCount == 2)
+	{
+		if (SCRIPT->Get_Script_Played(22) == false)
+		{
+			SCRIPT->VoiceFile_No22();
+			SCRIPT->Set_Script_Played(22, true);
+		}
 	}
 
 	m_IsPinBall = false;

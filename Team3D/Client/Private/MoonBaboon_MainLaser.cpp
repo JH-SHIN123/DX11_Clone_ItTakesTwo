@@ -3,6 +3,9 @@
 #include "DataStorage.h"
 #include "Laser_TypeB.h"
 
+#include "May.h"
+#include "Cody.h"
+
 CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -54,6 +57,9 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 		Laser_AttackPattern(TimeDelta);
 	else if(false == m_IsLaserOperation && true == DATABASE->Get_LaserTypeB_Recovery())
 		Laser_Down(TimeDelta);
+
+	if (true == m_IsLaserUp)
+		SoundVolumeRatio_ProportionalDistance();
 
 	GoUp(TimeDelta);
 
@@ -125,6 +131,12 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 			m_pTransformCom->Go_Up(TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
 			//m_pStaticActorCom->Update_StaticActor();
+
+			if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
+			{
+				m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, 1.f);
+				m_pGameInstance->Play_Sound(TEXT("Boss_LaserTurret_Move.wav"), CHANNEL_BOSSLASER, 1.f);
+			}
 		}
 	}
 	else if (1 == m_iPatternState)
@@ -132,30 +144,13 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 		if (m_dPatternDeltaT >= 10.0)
 		{
 			m_dPatternDeltaT = 0.0;
-			m_iPatternState = 2;
-
-			for (auto pLaserTypeB : m_vecLaser_TypeB)
-				pLaserTypeB->Set_RotateSpeed(-40.f);
-		}
-		else
-		{
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f,1.f,0.f,0.f) ,TimeDelta);
-			m_dPatternDeltaT += TimeDelta;
-		}
-	}
-	else if (2 == m_iPatternState)
-	{
-		if (m_dPatternDeltaT >= 10.0)
-		{
-			m_dPatternDeltaT = 0.0;
-			m_iPatternState = 1;
 
 			for (auto pLaserTypeB : m_vecLaser_TypeB)
 				pLaserTypeB->Set_RotateSpeed(40.f);
 		}
 		else
 		{
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -TimeDelta);
+			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f,1.f,0.f,0.f) ,TimeDelta);
 			m_dPatternDeltaT += TimeDelta;
 		}
 	}
@@ -180,6 +175,10 @@ void CMoonBaboon_MainLaser::Laser_AttackPattern(_double TimeDelta)
 			m_vecLaser_TypeB[i]->Set_RotateSpeed(40.f);
 		}
 
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, 1.f);
+		m_pGameInstance->Play_Sound(TEXT("Boss_LaserTurret_Shot.wav"), CHANNEL_BOSSLASER, 1.f);
+
 		m_IsLaserCreate = false;
 	}
 }
@@ -191,6 +190,12 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 		m_pTransformCom->Go_Down(TimeDelta);
 		m_dDownTime += TimeDelta;
 		/*m_pStaticActorCom->Update_StaticActor();*/
+
+		if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
+		{
+			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, 1.f);
+			m_pGameInstance->Play_Sound(TEXT("Boss_LaserTurret_Move.wav"), CHANNEL_BOSSLASER, 1.f);
+		}
 	}
 	else
 	{
@@ -202,6 +207,28 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 		/* 다음에도 또 올라와야하기 때문에 초기화 해주자 ㅇㅇ */
 		m_dPatternDeltaT = 0.0;
 		m_iPatternState = 0;
+	}
+}
+
+void CMoonBaboon_MainLaser::SoundVolumeRatio_ProportionalDistance()
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vCodyPos = ((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+	_vector vMayPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+	_float fCodyDistance = fabs(XMVectorGetX(XMVector3Length(vPos - vCodyPos)));
+	_float fMayDistance = fabs(XMVectorGetX(XMVector3Length(vPos - vMayPos)));
+
+	_float fDistance = min(fCodyDistance, fMayDistance);
+
+	/* 메인 레이저로부터 벽까지의 총 거리 */
+	_float fMaxDistance = 59.f;
+	_float fSoundVolumeRatio = 1.f - fDistance / fMaxDistance;
+
+	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
+	{
+		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSLASER, fSoundVolumeRatio);
+		m_pGameInstance->Play_Sound(TEXT("Boss_LaserTurret_Laser.wav"), CHANNEL_BOSSLASER, fSoundVolumeRatio);
 	}
 }
 

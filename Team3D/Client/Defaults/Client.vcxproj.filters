@@ -636,6 +636,9 @@
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle">
       <UniqueIdentifier>{f9eacdc2-4e96-4dbc-bb27-2475ddb8a8bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\03.Ring">
+      <UniqueIdentifier>{26a6314d-a341-4f3a-9b70-2ff9c43ebe24}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon">
       <UniqueIdentifier>{04b8cf76-c60a-407b-a996-8889f01df05c}</UniqueIdentifier>
     </Filter>
@@ -1199,9 +1202,6 @@
     </Filter>
     <Filter Include="99.Defaults">
       <UniqueIdentifier>{bd08a84f-5227-402a-b34d-cb600cdb4b97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\03.Ring">
-      <UniqueIdentifier>{26a6314d-a341-4f3a-9b70-2ff9c43ebe24}</UniqueIdentifier>
     </Filter>
     <!--99.Defaults 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -1772,6 +1772,9 @@
     <ClInclude Include="..\public\Effect_Boss_Missile_Particle.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Boss_Missile_Ring.h">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\03.Ring</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Effect_MoonBaboon_Shield.h">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\00.Shield</Filter>
     </ClInclude>
@@ -2227,9 +2230,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>99.Defaults</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Effect_Boss_Missile_Ring.h">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\03.Ring</Filter>
     </ClInclude>
     <!--targetver.h 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>
@@ -2797,6 +2797,9 @@
     <ClCompile Include="..\private\Effect_Boss_Missile_Particle.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\02.Particle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Boss_Missile_Ring.cpp">
+      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\03.Ring</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Effect_MoonBaboon_Shield.cpp">
       <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\MoonBaboon\00.Shield</Filter>
     </ClCompile>
@@ -3228,9 +3231,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Defaults</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Effect_Boss_Missile_Ring.cpp">
-      <Filter>02.GameObject\05.Effect/Particle\2D/Point\Boss\Missile\03.Ring</Filter>
     </ClCompile>
     <!--stdafx.cpp 아래부터 필터들을 제자리에 배치하세요-->
   </ItemGroup>

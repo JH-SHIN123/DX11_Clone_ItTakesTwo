@@ -218,6 +218,7 @@ public:
 	void	Set_MinigameHpBarReduction(_float fDamage);
 	void	Set_Player_Instance_Dead();
 	void	Set_InterActiveUIDisable(_bool IsCheck);
+	void	Set_Ending_Ready();
 
 	/* For. Ending */
 	void	Set_EndingRocketOffSetPos(_fvector vRocketOffSetPos) { m_vEndingRocketOffSetPos = vRocketOffSetPos; }
@@ -498,7 +499,10 @@ private:
 	void Hook_UFO(const _double dTimeDelta);
 	void Wall_Jump(const _double dTimeDelta);
 	void BossMissile_Control(const _double dTimeDelta);
-	void Ride_Ending_Rocket(const _double dTimeDelta);
+
+	public:
+		void Ride_Ending_Rocket(const _double dTimeDelta);
+	private:
 
 	//Á¤È£
 	void Warp_Wormhole(const _double dTimeDelta);
