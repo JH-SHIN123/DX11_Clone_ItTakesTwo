@@ -1104,15 +1104,17 @@ PS_OUT_CUSTOMBLUR	PS_3DTEXT(PS_IN In)
 
 	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(Wrap_MinMagMipLinear_Sampler, In.vTexUV);
 
-	if(1 == vMtrlDiffuse.r)
-		Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
-	else if(1 == vMtrlDiffuse.g)
-		Out.vDiffuse = vector(0.f, 1.f, 0.2f, 1.f);
-	else if(1 == vMtrlDiffuse.b)
-		Out.vDiffuse = vector(1.f, 1.f, 0.f, 1.f);
+	//if(1 == vMtrlDiffuse.r)
+	//	Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	//else if(1 == vMtrlDiffuse.g)
+	//	Out.vDiffuse = vector(0.f, 1.f, 0.2f, 1.f);
+	//else if(1 == vMtrlDiffuse.b)
+	//	Out.vDiffuse = vector(1.f, 1.f, 0.f, 1.f);
+
+	Out.vDiffuse = vMtrlDiffuse;
 	Out.vDiffuse.w = 1.f;
 
-	Out.vBlurValue = 0.5f;
+	Out.vBlurValue =1.f;
 
 	return Out;
 }

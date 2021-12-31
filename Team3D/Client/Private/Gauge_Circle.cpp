@@ -78,18 +78,28 @@ _int CGauge_Circle::Late_Tick(_double TimeDelta)
 			m_IsUICreateOn = true;
 	}
 
-	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eCODY)
+	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eCODY && m_iOption == 1)
 	{
 		m_IsActive = false;
 		UI_CreateOnlyOnce(Cody, InputButton_InterActive_Rail);
 		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive_Rail, XMLoadFloat4(&m_vTargetPos));
 	}
+	else if (true == m_IsUICreateOn && m_ePlayerID == GameID::eCODY && m_iOption == 0)
+	{
+		m_IsActive = false;
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_InterActive, XMLoadFloat4(&m_vTargetPos));
+	}
 
-	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eMAY)
+	if (true == m_IsUICreateOn && m_ePlayerID == GameID::eMAY && m_iOption == 1)
 	{
 		m_IsActive = false;
 		UI_CreateOnlyOnce(May, InputButton_InterActive_Rail);
 		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive_Rail, XMLoadFloat4(&m_vTargetPos));
+	}
+	else if (true == m_IsUICreateOn && m_ePlayerID == GameID::eMAY && m_iOption == 0)
+	{
+		m_IsActive = false;
+		UI_Generator->Set_TargetPos(Player::May, UI::InputButton_InterActive, XMLoadFloat4(&m_vTargetPos));
 	}
 
 	if (false == m_IsActive)

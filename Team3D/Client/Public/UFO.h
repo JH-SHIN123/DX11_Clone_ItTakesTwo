@@ -85,6 +85,8 @@ private:
 	_bool					m_IsHit = false;
 	_bool					m_IsActive = false;
 	_bool					m_IsFirstAngleSetting = true;
+	_bool					m_IsCodyCollide = false;
+	_bool					m_IsMayCollide = false;
 
 	/* For.PHASE_1 Pattern */
 	_bool					m_IsCoreExplosion = false;

@@ -6,6 +6,7 @@
 #include "Cody.h"
 #include "UFO.h"
 #include "Effect_Generator.h"
+#include "MainCamera.h"
 
 CEndingRocket::CEndingRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,9 +31,7 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STATIC, TEXT("Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom), E_FAIL);
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_Model_EndingRocket"), TEXT("Com_Model"), (CComponent**)&m_pModelCom), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(2.f, -500.f, -1.f, 1.f));
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -500.f, 0.f, 1.f));
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(60.f, 0.f, 15.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(2.1f, -500.f, -1.f, 1.f));
 	m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f));
 
 	m_fCurSpeed = ENDING_ROCKET_SPEED;
@@ -61,6 +60,10 @@ _int CEndingRocket::Tick(_double dTimeDelta)
 
 _int CEndingRocket::Late_Tick(_double dTimeDelta)
 {
+	/* 카메라 */
+	if (m_bStartMove)
+		((CMainCamera*)DATABASE->Get_MainCam())->Tick_Cam_Ending(dTimeDelta);
+
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
 
@@ -98,9 +101,6 @@ void CEndingRocket::Movement(_double dTimeDelta)
 	/* 부스트 */
 	if (true == m_bBoost)
 	{
-		//if (0.0 == m_dBoostTime)
-		//	EFFECT->Add_Effect(Effect_Value::EndingRocket_Boost);
-
 		m_dBoostTime += dTimeDelta;
 
 		if (2.0 <= m_dBoostTime)
@@ -108,7 +108,6 @@ void CEndingRocket::Movement(_double dTimeDelta)
 			m_bBoost = false;
 			m_dBoostTime = 0.0;
 		}
-		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 	}
 	else
 	{
@@ -116,47 +115,9 @@ void CEndingRocket::Movement(_double dTimeDelta)
 			m_fCurSpeed -= fTimeDelta * 22.5f;
 		else
 			m_fCurSpeed = ENDING_ROCKET_SPEED;
-
-		m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 	}
 
-	/* 키조작 */
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-	{
-		if (m_fUp < 0.7f)
-		{
-			m_fDown -= fTimeDelta;
-			m_fUp += fTimeDelta;
-			m_pTransformCom->Go_Up(fTimeDelta * 4.f);
-		}
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-	{
-		if (m_fLeft < 1.3f)
-		{
-			m_fRight -= fTimeDelta;
-			m_fLeft += fTimeDelta;
-			m_pTransformCom->Go_Left(fTimeDelta * 4.f);
-		}
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-	{
-		if (m_fDown < 0.7f)
-		{
-			m_fUp -= fTimeDelta;
-			m_fDown += fTimeDelta;
-			m_pTransformCom->Go_Down(fTimeDelta * 4.f);
-		}
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-	{
-		if (m_fRight < 1.3f)
-		{
-			m_fLeft -= fTimeDelta;
-			m_fRight += fTimeDelta;
-			m_pTransformCom->Go_Right(fTimeDelta * 4.f);
-		}
-	}
+	m_pTransformCom->Go_Straight(fTimeDelta * m_fCurSpeed);
 }
 
 HRESULT CEndingRocket::Render_ShadowDepth()

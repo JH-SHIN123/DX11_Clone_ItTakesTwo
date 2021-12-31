@@ -297,7 +297,7 @@ _int CCody::Tick(_double dTimeDelta)
 		m_pActorCom->Set_Position(XMVectorSet(-814.f, 810.8f, 228.21f, 1.f));
 
 	if (m_pGameInstance->Key_Down(DIK_F9))
-		UI_CreateOnlyOnce(Cody, RespawnCircle);
+		UI_CreateOnlyOnce(May, RespawnCircle_May);
 	 
 	if (CCutScenePlayer::GetInstance()->Get_IsPlayCutScene() && 
 		CCutScenePlayer::GetInstance()->Get_CurCutScene() != CCutScene::CutSceneOption::CutScene_Eject_InUFO)
@@ -2671,17 +2671,7 @@ _bool CCody::Trigger_Check(const _double dTimeDelta)
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F9) && m_IsInJoyStick == false && m_eCurPlayerSize == SIZE_SMALL)
-	{
-		m_pActorCom->Set_ZeroGravity(true, true, true);
-		m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
-		m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
-		_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
-		_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
-
-		m_pActorCom->Set_Position(vOffSetPosition);
-		m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
-		m_IsInJoyStick = true;
-	}
+		Set_InJoyStick();
 
 	// Trigger 여따가 싹다모아~
 	if (m_bOnRailEnd || m_IsHitStarBuddy || m_IsHitRocket || m_IsActivateRobotLever || m_IsPushingBattery || m_IsEnterValve || m_IsInGravityPipe
@@ -3582,6 +3572,18 @@ void CCody::Set_Change_Size_After_UmbrellaCutScene()
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&m_vScale));
 	m_pActorCom->Set_IsPlayerSizeSmall(false);
 }
+void CCody::Set_InJoyStick()
+{
+	m_pActorCom->Set_ZeroGravity(true, true, true);
+	m_pModelCom->Set_Animation(ANI_C_Bhv_ArcadeScreenLever_MH);
+	m_pModelCom->Set_NextAnimIndex(ANI_C_Bhv_ArcadeScreenLever_MH);
+	_vector vTargetPosition = XMVectorSet(64.0174942f, 601.063843f + 0.076f, 1011.77844f, 1.f);
+	_vector vOffSetPosition = XMVectorSet(64.0174942f + 0.04f, 601.063843f + 0.076f, 1011.77844f - 0.04f - 0.5f, 1.f);
+
+	m_pActorCom->Set_Position(vOffSetPosition);
+	m_pTransformCom->Rotate_ToTargetOnLand(vTargetPosition);
+	m_IsInJoyStick = true;
+}
 void CCody::Set_HpBarReduction(_float fDamage)
 {
 	if (nullptr == m_pHpBar || nullptr == m_pSubHpBar)
@@ -3722,7 +3724,6 @@ void CCody::KeyInput_Rail(_double dTimeDelta)
 		m_eCurPlayerSize == SIZE_MEDIUM && false == m_IsDeadLine)
 	{
 		Start_SpaceRail();
-		UI_Delete(Cody, InputButton_InterActive_Rail);
 	}
 
 	if (m_bOnRail)
@@ -3951,7 +3952,6 @@ void CCody::ShowRailTargetTriggerUI()
 		m_pGauge_Circle->Set_Active(false);
 		UI_Delete(Cody, InputButton_InterActive_Rail);
 		m_pGauge_Circle->Set_DefaultSetting();
-
 	}
 }
 #pragma endregion
@@ -4151,6 +4151,9 @@ void CCody::Set_RadiarBlur(_bool bActive)
 void CCody::Respawn_InBossroom()
 {
 	m_pHpBar->Reset();
+	m_pSubHpBar->Reset();
+	m_pSubHpBar->Set_Active(false);
+
 	m_bDead_InBossroom = false;
 	m_pGameInstance->Set_MainViewBlur(false);
 
@@ -4185,7 +4188,7 @@ void CCody::DeadInBossroom(const _double dTimeDelta)
 		if (false == m_bDead_InBossroom)
 		{
 			// Create Respawn UI
-			UI_CreateOnlyOnce(Cody, RespawnCircle);
+			UI_CreateOnlyOnce(Cody, RespawnCircle_Cody);
 
 			// Create Effect
 			CEffect_Generator::GetInstance()->Add_Effect(Effect_Value::Cody_Dead_Fire, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
@@ -4244,7 +4247,8 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		pUFOTransform->Set_State(CTransform::STATE_POSITION, vUFOPos);
 
 		m_IsHolding_Low_UFO = true;
-
+		m_IsInterActiveUICreate = true;
+		UI_Delete(Cody, InputButton_InterActive);
 	}
 	else if (CUFO::PHASE_1 == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhase() && m_pGameInstance->Key_Down(DIK_E) &&
 		m_eCurPlayerSize == CCody::SIZE_MEDIUM && false == m_IsHolding_Low_UFO)
@@ -4263,6 +4267,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Holding_UFO);
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
+			((CMay*)DATABASE->GetMay())->Set_InterActiveUIDisable(false);
 			m_IsHolding_High_UFO = true;
 		}
 	}
