@@ -111,7 +111,8 @@ void CInputButton_Frame::Set_ScaleEffect()
 void CInputButton_Frame::SetUp_Option()
 {
 	if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_F")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_Dot")) ||
-		!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_Triangle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_R1")))
+		!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_Triangle")) || !lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_Frame_PS_R1")) ||
+		!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_BossHolding_E")))
 	{
 		m_iOption = 1;
 		m_iShaderPassNum = 1;
@@ -213,6 +214,13 @@ void CInputButton_Frame::Render_Font()
 	{
 		m_pEngFont->Render_Font(TEXT("Q"), _float2(279.f, 657.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.35f);
 		m_pFont->Render_Font(TEXT("Ãë¼Ò"), _float2(330.f, 660.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.33f);
+	}
+	else if (!lstrcmp(m_UIDesc.szUITag, TEXT("InputButton_BossHolding_E")))
+	{
+		tFontDesc.vPosition = { m_UIDesc.vPos.x , m_UIDesc.vPos.y };
+		tFontDesc.vScale = { m_vFontScale.x, m_vFontScale.y };
+
+		UI_Generator->Render_Font(TEXT("E"), tFontDesc, m_ePlayerID);
 	}
 }
 
