@@ -47,6 +47,7 @@ HRESULT CMoonBaboonCore::NativeConstruct(void* pArg)
 
 	// Effect
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_Effect_BossCore"), Level::LEVEL_STAGE, TEXT("GameObject_2D_Boss_Core"),nullptr, (CGameObject**)&m_pEffectBossCore), E_FAIL);
+	Safe_Release(m_pEffectBossCore);
 
 	DATABASE->Set_MoonBaboonCore(this);
 
@@ -79,7 +80,7 @@ _int CMoonBaboonCore::Tick(_double TimeDelta)
 			if (m_dBrokenWaitingDeltaT >= 1.0)
 			{
 				m_bBrokenStart = true;
-				m_dBrokenWaitingDeltaT = 0.0;
+				m_dBrokenWaitingDeltaT = 0.0;;
 			}
 			else
 			{
@@ -267,7 +268,6 @@ void CMoonBaboonCore::Set_Broken()
 	if (m_pEffectBossCore)
 	{
 		m_pEffectBossCore->HitOn();
-		Safe_Release(m_pEffectBossCore);
 		m_pEffectBossCore = nullptr;
 	}
 
@@ -341,7 +341,7 @@ void CMoonBaboonCore::Free()
 	if (m_pEffectBossCore)
 	{
 		m_pEffectBossCore->Set_Dead();
-		Safe_Release(m_pEffectBossCore);
+		m_pEffectBossCore = nullptr;
 	}
 	Safe_Release(m_pCorePillar);
 	Safe_Release(m_pCoreButton);

@@ -55,10 +55,6 @@ private:
 	GameID::Enum		m_PlayerID = GameID::eSTARBUDDY;
 
 private:
-	class CGauge_Circle*		m_pCodyGauge_Circle = nullptr;
-	class CGauge_Circle*		m_pMayGauge_Circle = nullptr;
-
-private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
 	CModel*				m_pModelCom = nullptr;

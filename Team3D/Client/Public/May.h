@@ -211,6 +211,7 @@ public:
 	void	Set_Escape_From_Rocket(_bool bEscape) { m_bEscapeFromRocket = bEscape; }
 	void	Set_LaserRippedOff(); /* BossUFO */
 	void	Set_ActiveHpBar(_bool IsCheck);
+	void	Set_AllActiveHpBar(_bool IsCheck);
 	void	Set_HpBarReduction(_float fDamage);
 	void	Set_ActiveMinigameHpBar(_bool IsCheck);
 	void	Set_MinigameHpBarReset();
@@ -567,11 +568,15 @@ private:
 #pragma region Dead_InBossroom
 public:
 	void Respawn_InBossroom();
+	_bool Get_bDeadInBossroom() { return m_bDead_InBossroom; }
+	_bool	Get_bPhantomRenderOff() { return m_bPhantomRenderOff; }
+	void	Set_bPhantomRenderOff(_bool bSwitch) { m_bPhantomRenderOff = bSwitch; }
 
 private:
 	void DeadInBossroom(const _double dTimeDelta);
 
 private:
+	_bool m_bPhantomRenderOff = false;
 	_bool m_bDead_InBossroom = false;
 #pragma endregion
 

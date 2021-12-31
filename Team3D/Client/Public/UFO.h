@@ -30,6 +30,9 @@ public:
 	/* For.Trigger */
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
+	/*Getter*/
+	_bool			Get_IsRidLaserGun() { return m_IsLaserGunRid; }
+
 public:
 	virtual HRESULT Render_ShadowDepth() override;
 	HRESULT Add_GameObject_ToRenderGroup();
@@ -49,6 +52,7 @@ public:
 	void Set_MissilePtrReset(_bool IsTargetCheck);
 	void Set_GuidedMissileIncreaseHitCount();
 	void Set_Active(_bool IsActive);
+	void Set_HpBarActive(_bool IsActive);
 
 public:
 	CTransform* Get_Transform() const { return m_pTransformCom; }

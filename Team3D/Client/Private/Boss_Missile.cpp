@@ -100,6 +100,29 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 
 		return EVENT_DEAD;
 	}
+	/* Se - 땅에 방치된 경우 */
+	else if (m_dDroppedTime >= 7.0)
+	{
+		if (m_IsTargetCody)
+		{ 
+			UI_Delete(Cody, InputButton_InterActive); 
+			UI_Generator->Delete_InterActive_UI(Player::Cody, UI::Boss_Missile_Cody);
+		}
+		else 
+		{ 
+			UI_Delete(May, InputButton_PS_InterActive); 
+			UI_Generator->Delete_InterActive_UI(Player::May, UI::Boss_Missile_May);
+		}
+
+		((CUFO*)DATABASE->Get_BossUFO())->Set_MissilePtrReset(m_IsTargetCody);
+		Explosion_Effect();
+
+		return EVENT_DEAD;
+	}
+
+	if (m_isDropped && !m_bCodyControl && !m_bMayControl)
+		m_dDroppedTime += dTimeDelta;
+	/* ~Se - 땅에 방치된 경우 */
 
 	if (m_IsCrashed == false)
 		m_fAttackTime += (_float)dTimeDelta;
@@ -108,6 +131,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	{
 		m_IsFalling = true;
 		m_fAttackTime = 0.f;
+		m_isDropped = true; /* Se */
 	}
 
 	if (m_IsCrashed == false)
@@ -159,7 +183,7 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 	m_pEffect_Smoke_1->Set_Pos(vPos);
 	m_pEffect_Smoke_2->Set_Pos(vPos);
 
-	return _int();
+	return NO_EVENT;
 }
 
 _int CBoss_Missile::Late_Tick(_double dTimeDelta)
@@ -224,6 +248,12 @@ HRESULT CBoss_Missile::Render_ShadowDepth()
 
 void CBoss_Missile::Set_MissileDead()
 {
+	if (m_dControlLifeDeltaT == 0.0 && m_isDropped == true)
+	{
+		m_dDroppedTime += 7.0;
+		return;
+	}
+
 	if (m_bCodyControl == true && m_bMayControl == false)
 	{
 		((CCody*)DATABASE->GetCody())->Set_Escape_From_Rocket(true);
@@ -240,9 +270,22 @@ void CBoss_Missile::Set_MissileDead()
 
 void CBoss_Missile::Combat_Move(_double dTimeDelta)
 {
+	CCody*	pCody = (CCody*)DATABASE->GetCody();
+	CMay*	pMay = (CMay*)DATABASE->GetMay();
+	if (nullptr == pCody || nullptr == pMay) return;
+
 	if (m_IsTargetCody == true)
 	{
-		_vector vTargetPos = ((CCody*)DATABASE->GetCody())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);;
+
+		// 코디가 죽어있으면 메이를 향해서
+		_bool bTargetChange = false;
+		if (pCody->Get_bDeadInBossroom() && false == m_bCodyControl)
+		{
+			bTargetChange = true;
+			vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		}
+
 		vTargetPos = XMVectorSetY(vTargetPos, vTargetPos.m128_f32[1] + 1.5f);
 		_vector vRocketPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
@@ -255,7 +298,10 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		{
 			m_bPlayerExplosion = true;
 #ifndef __PLAYER_INVINCIBLE_BOSSROOM
-			((CCody*)DATABASE->GetCody())->Set_HpBarReduction(120);
+			if (bTargetChange)
+				((CMay*)DATABASE->GetMay())->Set_HpBarReduction(120);
+			else
+				((CCody*)DATABASE->GetCody())->Set_HpBarReduction(120);
 #endif //__PLAYER_INVINCIBLE_BOSSROOM
 			
 		}
@@ -267,7 +313,16 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 	}
 	else
 	{
-		_vector vTargetPos = ((CMay*)DATABASE->GetMay())->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		_vector vTargetPos = pMay->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+
+		// 메이가 죽어있으면 코디를 향해서
+		_bool bTargetChange = false;
+		if (pMay->Get_bDeadInBossroom() && false == m_bMayControl)
+		{
+			bTargetChange = true;
+			vTargetPos = pCody->Get_Transform()->Get_State(CTransform::STATE_POSITION);
+		}
+
 		vTargetPos = XMVectorSetY(vTargetPos, vTargetPos.m128_f32[1] + 1.5f);
 		_vector vRocketPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
@@ -280,7 +335,10 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 		{
 			m_bPlayerExplosion = true;
 #ifndef __PLAYER_INVINCIBLE_BOSSROOM
-			((CMay*)DATABASE->GetMay())->Set_HpBarReduction(120);
+			if (bTargetChange)
+				((CCody*)DATABASE->GetCody())->Set_HpBarReduction(120);
+			else
+				((CMay*)DATABASE->GetMay())->Set_HpBarReduction(120);
 #endif //__PLAYER_INVINCIBLE_BOSSROOM
 		}
 		else
@@ -294,6 +352,13 @@ void CBoss_Missile::Combat_Move(_double dTimeDelta)
 
 void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 {
+	if (m_dControlLifeDeltaT >= 17.0)
+	{
+		m_IsCollide_Wall_Floor = true;
+		return;
+	}
+	else m_dControlLifeDeltaT += dTimeDelta;
+
 	Set_SmokeEffect(true);
 
 	// 각도 제한 걸어야 함
@@ -319,71 +384,77 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	if (m_bMayControl && ((CMay*)DATABASE->GetMay())->Get_CurState() == ANI_M_Rocket_MH)
 	{
-
-		if (m_fMoveAcceleration < 10.f)
-			m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
-
-		_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
-
-		// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
-		// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
-		// m_pGameInstance->Get_Pad_LStickY() < 20000 (Down)
-		// m_pGameInstance->Get_Pad_LStickY() > 44000 (Up)
-
-		if (fDegree >= 30.f)
+		if (!m_bSetAngle_PlayerControl)
 		{
-			if (m_pGameInstance->Key_Pressing(DIK_DOWN))
+			if (m_fAngle_PlayerControl > -20.f)
 			{
-				if (m_fRotateAcceleration < 0.6f)
-					m_fRotateAcceleration += (_float)dTimeDelta * 0.5f;
-
-				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * m_fRotateAcceleration);
+				_float fAngle = (_float)dTimeDelta * -80.f;
+				m_fAngle_PlayerControl += fAngle;
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(fAngle));
 			}
+			else if (m_dWaitTime_PlayerControl < 0.4)
+			{
+				m_dWaitTime_PlayerControl += dTimeDelta;
+			}
+			else
+				m_bSetAngle_PlayerControl = true;
 		}
-		if (fDegree <= 165.f)
+		else
 		{
-			if (m_pGameInstance->Key_Pressing(DIK_UP))
+			//if (m_fMoveAcceleration < 10.f)
+			//	m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
+
+			_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+			_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
+
+			// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
+			// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
+			// m_pGameInstance->Get_Pad_LStickY() < 20000 (Down)
+			// m_pGameInstance->Get_Pad_LStickY() > 44000 (Up)
+
+			if (fDegree >= 30.f)
+			{
+				if (m_pGameInstance->Key_Pressing(DIK_DOWN))
+				{
+					if (m_fRotateAcceleration < 0.6f)
+						m_fRotateAcceleration += (_float)dTimeDelta * 0.5f;
+
+					m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * m_fRotateAcceleration);
+				}
+			}
+			if (fDegree <= 165.f)
+			{
+				if (m_pGameInstance->Key_Pressing(DIK_UP))
+				{
+					if (m_fRotateAcceleration < 0.6f)
+						m_fRotateAcceleration += (_float)dTimeDelta* 0.5f;
+
+					m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * m_fRotateAcceleration);
+				}
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_LEFT))
 			{
 				if (m_fRotateAcceleration < 0.6f)
 					m_fRotateAcceleration += (_float)dTimeDelta* 0.5f;
 
-				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * m_fRotateAcceleration);
+				m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta * m_fRotateAcceleration);
 			}
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+			{
+				if (m_fRotateAcceleration < 0.6f)
+					m_fRotateAcceleration += (_float)dTimeDelta * 0.5f;
+
+				m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * m_fRotateAcceleration);
+			}
+
+
+			if ((m_pGameInstance->Key_Up(DIK_W) || m_pGameInstance->Key_Up(DIK_S) || m_pGameInstance->Key_Up(DIK_A) || m_pGameInstance->Key_Up(DIK_D)))
+				m_fRotateAcceleration = 0.f;
+
+			m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
 		}
-		if (m_pGameInstance->Key_Pressing(DIK_LEFT))
-		{
-			if (m_fRotateAcceleration < 0.6f)
-				m_fRotateAcceleration += (_float)dTimeDelta* 0.5f;
-
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta * m_fRotateAcceleration);
-		}
-		if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
-		{
-			if (m_fRotateAcceleration < 0.6f)
-				m_fRotateAcceleration += (_float)dTimeDelta * 0.5f;
-
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * m_fRotateAcceleration);
-		}
-
-
-		if ((m_pGameInstance->Key_Up(DIK_W) || m_pGameInstance->Key_Up(DIK_S) || m_pGameInstance->Key_Up(DIK_A) || m_pGameInstance->Key_Up(DIK_D)))
-			m_fRotateAcceleration = 0.f;
-
-		m_pTransformCom->Go_Straight(dTimeDelta * m_fMoveAcceleration);
-	}
-
-	m_fCollideTime += (_float)dTimeDelta;
-
-	if (3.f <= m_fCollideTime)
-	{
-		m_pGameInstance->Raycast(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), MH_PxVec3(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK))),
-			10.f, m_MissileRaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
-
-		if (m_MissileRaycastBuffer.getAnyHit(0).distance < 1.f)
-			m_IsCollide_Wall_Floor = true;
 	}
 
 #else
@@ -410,67 +481,103 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	if (m_bMayControl && ((CMay*)DATABASE->GetMay())->Get_CurState() == ANI_M_Rocket_MH)
 	{
-
-		if (m_fMoveAcceleration < 10.f)
-			m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
-
-		_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
-
-		// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
-		// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
-		// m_pGameInstance->Get_Pad_LStickY() < 20000 (Up)
-		// m_pGameInstance->Get_Pad_LStickY() > 44000 (Down)
-
-		if (fDegree >= 15.f)
+		if (!m_bSetAngle_PlayerControl)
 		{
-			if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 44000)
+			if (m_fAngle_PlayerControl > -20.f)
 			{
-				if (m_fRotateAcceleration < 1.f)
-					m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
-
-				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * m_fRotateAcceleration);
+				_float fAngle = (_float)dTimeDelta * -80.f;
+				m_fAngle_PlayerControl += fAngle;
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(fAngle));
 			}
+			else if (m_dWaitTime_PlayerControl < 0.4)
+			{
+				m_dWaitTime_PlayerControl += dTimeDelta;
+			}
+			else
+				m_bSetAngle_PlayerControl = true;
 		}
-		if (fDegree <= 165.f)
+		else
 		{
-			if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
+			//if (m_fMoveAcceleration < 10.f)
+			//	m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
+
+			_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+			_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
+
+			// m_pGameInstance->Get_Pad_LStickX() > 44000 (Right)
+			// m_pGameInstance->Get_Pad_LStickX() < 20000 (Left)
+			// m_pGameInstance->Get_Pad_LStickY() < 20000 (Up)
+			// m_pGameInstance->Get_Pad_LStickY() > 44000 (Down)
+
+			if (fDegree >= 15.f)
+			{
+				if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 44000)
+				{
+					if (m_fRotateAcceleration < 1.f)
+						m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
+
+					m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * m_fRotateAcceleration);
+				}
+			}
+			if (fDegree <= 165.f)
+			{
+				if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
+				{
+					if (m_fRotateAcceleration < 1.f)
+						m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
+
+					m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * m_fRotateAcceleration);
+				}
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
 			{
 				if (m_fRotateAcceleration < 1.f)
 					m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
 
-				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * m_fRotateAcceleration);
+				m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta * m_fRotateAcceleration);
 			}
+			if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
+			{
+				if (m_fRotateAcceleration < 1.f)
+					m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
+
+				m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * m_fRotateAcceleration);
+			}
+
+
+			//if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
+			//	m_fRotateAcceleration = 0.f;
+
+
+			m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
 		}
-		if (m_pGameInstance->Key_Pressing(DIK_LEFT) || m_pGameInstance->Get_Pad_LStickX() < 20000)
-		{
-			if (m_fRotateAcceleration < 1.f)
-				m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
-
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta * m_fRotateAcceleration);
-		}
-		if (m_pGameInstance->Key_Pressing(DIK_RIGHT) || m_pGameInstance->Get_Pad_LStickX() > 44000)
-		{
-			if (m_fRotateAcceleration < 1.f)
-				m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
-
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * m_fRotateAcceleration);
-		}
-
-
-		//if (m_pGameInstance->Get_Pad_LStickX() > 44000 || m_pGameInstance->Get_Pad_LStickX() < 20000 || m_pGameInstance->Get_Pad_LStickY() < 20000 || m_pGameInstance->Get_Pad_LStickY() > 44000)
-		//	m_fRotateAcceleration = 0.f;
-
-
-		m_pTransformCom->Go_Straight(dTimeDelta * m_fMoveAcceleration);
 	}
 #endif
+
+	m_fCollideTime += (_float)dTimeDelta;
+
+	if (3.f <= m_fCollideTime)
+	{
+		m_pGameInstance->Raycast(MH_PxVec3(m_pTransformCom->Get_State(CTransform::STATE_POSITION)), MH_PxVec3(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK))),
+			10.f, m_MissileRaycastBuffer, PxHitFlag::eDISTANCE | PxHitFlag::ePOSITION);
+
+		if (m_MissileRaycastBuffer.getAnyHit(0).distance < 1.f)
+			m_IsCollide_Wall_Floor = true;
+	}
 }
 
 void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 {
+	if (m_dControlLifeDeltaT >= 17.0)
+	{
+		m_IsCollide_Wall_Floor = true;
+		return;
+	}
+	else m_dControlLifeDeltaT += dTimeDelta;
+
+
 	Set_SmokeEffect(true);
 
 	// 각도 제한 걸어야 함
@@ -495,56 +602,73 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 
 	if (m_bCodyControl && ((CCody*)DATABASE->GetCody())->Get_CurState() == ANI_C_Rocket_MH)
 	{
-
-		if (m_fMoveAcceleration < 10.f)
-			m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
-
-		_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-		_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
-
-
-		if (fDegree >= 30.f)
+		if (!m_bSetAngle_PlayerControl)
 		{
-			if (m_pGameInstance->Key_Pressing(DIK_S))
+			if (m_fAngle_PlayerControl > -20.f)
 			{
-				if (m_fRotateAcceleration < 1.f)
-					m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
-
-				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * m_fRotateAcceleration);
+				_float fAngle = (_float)dTimeDelta * -80.f;
+				m_fAngle_PlayerControl += fAngle;
+				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(fAngle));
 			}
+			else if (m_dWaitTime_PlayerControl < 0.4)
+			{
+				m_dWaitTime_PlayerControl += dTimeDelta;
+			}
+			else
+				m_bSetAngle_PlayerControl = true;
 		}
-		if (fDegree <= 165.f)
+		else
 		{
-			if (m_pGameInstance->Key_Pressing(DIK_W))
+			//if (m_fMoveAcceleration < 10.f)
+			//	m_fMoveAcceleration += (_float)dTimeDelta * 4.f;
+
+			_vector vUp = XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			_vector vRocketLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+			_float fDegree = XMConvertToDegrees(XMVectorGetX(XMVector3AngleBetweenNormals(vUp, vRocketLook)));
+
+
+			if (fDegree >= 30.f)
+			{
+				if (m_pGameInstance->Key_Pressing(DIK_S))
+				{
+					if (m_fRotateAcceleration < 1.f)
+						m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
+
+					m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -dTimeDelta * m_fRotateAcceleration);
+				}
+			}
+			if (fDegree <= 165.f)
+			{
+				if (m_pGameInstance->Key_Pressing(DIK_W))
+				{
+					if (m_fRotateAcceleration < 1.f)
+						m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
+
+					m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * m_fRotateAcceleration);
+				}
+			}
+			if (m_pGameInstance->Key_Pressing(DIK_A))
 			{
 				if (m_fRotateAcceleration < 1.f)
 					m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
 
-				m_pTransformCom->Rotate_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * m_fRotateAcceleration);
+				m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta * m_fRotateAcceleration);
 			}
+			if (m_pGameInstance->Key_Pressing(DIK_D))
+			{
+				if (m_fRotateAcceleration < 1.f)
+					m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
+
+				m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * m_fRotateAcceleration);
+			}
+
+
+			if (m_pGameInstance->Key_Up(DIK_W) || m_pGameInstance->Key_Up(DIK_S) || m_pGameInstance->Key_Up(DIK_A) || m_pGameInstance->Key_Up(DIK_D))
+				m_fRotateAcceleration = 0.f;
+
+			m_pTransformCom->Go_Straight(dTimeDelta * 10.f);
 		}
-		if (m_pGameInstance->Key_Pressing(DIK_A))
-		{
-			if (m_fRotateAcceleration < 1.f)
-				m_fRotateAcceleration += (_float)dTimeDelta* 2.f;
-
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), -dTimeDelta * m_fRotateAcceleration);
-		}
-		if (m_pGameInstance->Key_Pressing(DIK_D))
-		{
-			if (m_fRotateAcceleration < 1.f)
-				m_fRotateAcceleration += (_float)dTimeDelta * 2.f;
-
-			m_pTransformCom->Rotate_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * m_fRotateAcceleration);
-		}
-
-
-		if (m_pGameInstance->Key_Up(DIK_W) || m_pGameInstance->Key_Up(DIK_S) || m_pGameInstance->Key_Up(DIK_A) || m_pGameInstance->Key_Up(DIK_D))
-			m_fRotateAcceleration = 0.f;
-
-		m_pTransformCom->Go_Straight(dTimeDelta * m_fMoveAcceleration);
 	}
 
 	m_fCollideTime += (_float)dTimeDelta;
