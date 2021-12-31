@@ -453,114 +453,6 @@ struct GS_OUT_DOUBLE_UV
 	float2 vTexUV		: TEXCOORD0;
 	*/
 };
-[maxvertexcount(12)]//// point
-void GS_MAIN_POINT(point GS_IN In[1], inout TriangleStream<GS_OUT_DOUBLE_UV> TriStream)
-{
-	GS_OUT_DOUBLE_UV Out[8]; ;
-	//In[0].vPosition = In[0].vPosition + normalize(In[0].vNormal) * g_fTime;
-
-	float3		vLook = normalize(g_vMainCamPosition - In[0].vPosition).xyz;
-	float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
-	float3		vRight = normalize(cross(vAxisY, vLook));
-	float3		vUp = normalize(cross(vLook, vRight));
-	matrix		matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
-	float2		vHalfSize = g_vParticleSize;
-	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
-	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
-
-	[unroll]
-	for (uint i = 0; i < 8; ++i)
-	{
-		Out[i] = (GS_OUT_DOUBLE_UV)0;
-		Out[i].vTexUV = In[0].vTexUV;
-		Out[i].vNormal = In[0].vNormal;
-		Out[i].vTangent = In[0].vTangent;
-		Out[i].vBiNormal = In[0].vBiNormal;
-	}
-	/* 좌상 */
-	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
-	Out[0].vPosition = mul(Out[0].vPosition, matVP);
-	Out[0].vTexUV_2 = float2(g_vTextureUV_LTRB.x, g_vTextureUV_LTRB.y);
-	Out[0].vProjPosition = Out[0].vPosition;
-	Out[0].iViewportIndex = 1;
-	TriStream.Append(Out[0]);
-
-	/* 우상 */
-	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
-	Out[1].vPosition = mul(Out[1].vPosition, matVP);
-	Out[1].vTexUV_2 = float2(g_vTextureUV_LTRB.z, g_vTextureUV_LTRB.y);
-	Out[1].vProjPosition = Out[1].vPosition;
-	Out[1].iViewportIndex = 1;
-	TriStream.Append(Out[1]);
-
-	/* 우하 */
-	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
-	Out[2].vPosition = mul(Out[2].vPosition, matVP);
-	Out[2].vTexUV_2 = float2(g_vTextureUV_LTRB.z, g_vTextureUV_LTRB.w);
-	Out[2].vProjPosition = Out[2].vPosition;
-	Out[2].iViewportIndex = 1;
-	TriStream.Append(Out[2]);
-
-	TriStream.RestartStrip();
-
-	/* 좌하 */
-	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
-	Out[3].vPosition = mul(Out[3].vPosition, matVP);
-	Out[3].vTexUV_2 = float2(g_vTextureUV_LTRB.x, g_vTextureUV_LTRB.w);
-	Out[3].vProjPosition = Out[3].vPosition;
-	Out[3].iViewportIndex = 1;
-	TriStream.Append(Out[0]);
-	TriStream.Append(Out[2]);
-	TriStream.Append(Out[3]);
-
-	TriStream.RestartStrip();
-	// Sub View 0,1
-
-	vLook = normalize(g_vSubCamPosition - In[0].vPosition).xyz;
-	vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
-	vRight = normalize(cross(vAxisY, vLook));
-	vUp = normalize(cross(vLook, vRight));
-	matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
-
-	vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
-	vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
-
-	Out[4].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
-	Out[4].vPosition = mul(Out[4].vPosition, matVP);
-	Out[4].vTexUV_2 = float2(g_vTextureUV_LTRB.x, g_vTextureUV_LTRB.y);
-	Out[4].vProjPosition = Out[4].vPosition;
-	Out[4].iViewportIndex = 2;
-	TriStream.Append(Out[4]);
-
-	/* 우상 */
-	Out[5].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
-	Out[5].vPosition = mul(Out[5].vPosition, matVP);
-	Out[5].vTexUV_2 = float2(g_vTextureUV_LTRB.z, g_vTextureUV_LTRB.y);
-	Out[5].vProjPosition = Out[5].vPosition;
-	Out[5].iViewportIndex = 2;
-	TriStream.Append(Out[5]);
-
-	/* 우하 */
-	Out[6].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
-	Out[6].vPosition = mul(Out[6].vPosition, matVP);
-	Out[6].vTexUV_2 = float2(g_vTextureUV_LTRB.z, g_vTextureUV_LTRB.w);
-	Out[6].vProjPosition = Out[6].vPosition;
-	Out[6].iViewportIndex = 2;
-	TriStream.Append(Out[6]);
-
-	TriStream.RestartStrip();
-
-	/* 좌하 */
-	Out[7].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
-	Out[7].vPosition = mul(Out[7].vPosition, matVP);
-	Out[7].vTexUV_2 = float2(g_vTextureUV_LTRB.x, g_vTextureUV_LTRB.w);
-	Out[7].vProjPosition = Out[7].vPosition;
-	Out[7].iViewportIndex = 2;
-	TriStream.Append(Out[4]);
-	TriStream.Append(Out[6]);
-	TriStream.Append(Out[7]);
-}
-
 [maxvertexcount(12)]//// triangle
 void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUBLE_UV> TriStream)
 {
@@ -727,6 +619,178 @@ void GS_MAIN_ASH_DISSOLVE(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUB
 		}
 	}
 }
+
+[maxvertexcount(12)]//// triangle
+void GS_MAIN_ASH_DISSOLVE_NORMAL(triangle GS_IN In[3], inout TriangleStream<GS_OUT_DOUBLE_UV> TriStream)
+{
+	GS_OUT_DOUBLE_UV		Out[8];
+
+	[unroll]
+	for (int k = 0; k < 8; ++k)
+		Out[k] = (GS_OUT_DOUBLE_UV)0;
+
+	// 평균
+	float2 fAvg_UV = (In[0].vTexUV + In[1].vTexUV + In[2].vTexUV) / 3;
+	float4 fAvg_Normal = (In[0].vNormal + In[1].vNormal + In[2].vNormal) / 3;
+	float3 fAvg_BiNormal = (In[0].vBiNormal + In[1].vBiNormal + In[2].vBiNormal) / 3;
+	float3 fAvg_Tangent = (In[0].vTangent + In[1].vTangent + In[2].vTangent) / 3;
+	float4 fAvg_Pos = (In[0].vPosition + In[1].vPosition + In[2].vPosition) / 3;
+	fAvg_Pos.w = 1.f;
+
+	// 가장 00에 가까운놈을 기준으로 UV다시 세팅
+	float2 vTexUV_Less = In[0].vTexUV;
+	float fTexUV_Dist = length(In[0].vTexUV);
+	[unroll]
+	for (int i = 0; i < 3; ++i)
+	{
+		if (fTexUV_Dist > length(In[i].vTexUV))
+		{
+			fTexUV_Dist = length(In[i].vTexUV);
+			vTexUV_Less = In[i].vTexUV;
+		}
+	}
+	vTexUV_Less = fAvg_UV - vTexUV_Less;
+	float4 vTextureUV_LTRB = (float4)0; // 적당한 UV
+	vTextureUV_LTRB.x = fAvg_UV.x - vTexUV_Less.x;
+	vTextureUV_LTRB.y = fAvg_UV.y - vTexUV_Less.y;
+	vTextureUV_LTRB.z = fAvg_UV.x + vTexUV_Less.x;
+	vTextureUV_LTRB.w = fAvg_UV.y + vTexUV_Less.y;
+
+	// 시간값에 따른 가중치 
+	int3 vTexPos = (int3)0;
+	modf(fAvg_UV.x * g_vTextureSize.x, vTexPos.x);
+	modf(fAvg_UV.y * g_vTextureSize.y, vTexPos.y);
+	float fDissolve_Value = g_DissolveTexture.Load(vTexPos).r;
+	float fDissolve_Weight = clamp(g_fDissolveTime * 2.f - fDissolve_Value, 0, 1);
+
+	float3 vWorldPos = g_WorldMatrix._41_42_43 + g_WorldMatrix._21_22_23;
+	float3 vDir_Right = normalize(fAvg_Pos - vWorldPos);
+
+	modf(fAvg_UV.x * g_vTextureSize_2.x, vTexPos.x);
+	modf(fAvg_UV.y * g_vTextureSize_2.y, vTexPos.y);
+	float4 vTextureDir = g_FlowTexture.Load(vTexPos) * g_fFlowPower;
+	float3 vDir = (normalize(g_WorldMatrix._31_32_33) * vTextureDir.r * -1.f)
+		+ (normalize(g_WorldMatrix._21_22_23) * vTextureDir.g * 2.f);
+	+(vDir_Right * ((vTextureDir.g + vTextureDir.r) * 0.75f));
+
+	float3 vDir_Tan = normalize(fAvg_Tangent * 0.5f + vDir);
+	vDir = lerp(vDir_Tan, vDir, fDissolve_Weight); // 보간
+	vDir = normalize(vDir) * g_fFlowPower;
+
+	float4 vPseudoRandomPos = (fAvg_Pos) /*+ g_vDirection*/;
+	vPseudoRandomPos.xyz += (vDir.xyz * g_fTime * 1.5f); // 확장 가중치
+
+	float4 vPos = lerp(fAvg_Pos, vPseudoRandomPos, fDissolve_Weight); // 보간
+	float fSize = lerp(g_fRadius, 0, fDissolve_Weight); // 각자의 사이즈를 보간
+
+	if (g_iViewportDrawInfo & 1)
+	{
+		if (fDissolve_Weight > 0)
+		{
+			float3		vLook = normalize(g_vMainCamPosition - vPos).xyz;
+			float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
+			float3		vRight = normalize(cross(vAxisY, vLook));
+			float3		vUp = normalize(cross(vLook, vRight));
+			matrix		matVP = mul(g_MainViewMatrix, g_MainProjMatrix);
+
+			float		fHalfSize = fSize * 0.5f;
+
+			float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	fHalfSize;
+			float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	fHalfSize;
+
+			Out[0].vPosition = vPos + vWolrdPointPos_X + vWolrdPointPos_Y;
+			Out[1].vPosition = vPos - vWolrdPointPos_X + vWolrdPointPos_Y;
+			Out[2].vPosition = vPos - vWolrdPointPos_X - vWolrdPointPos_Y;
+			Out[3].vPosition = vPos + vWolrdPointPos_X - vWolrdPointPos_Y;
+
+			Out[0].vTexUV = float2(vTextureUV_LTRB.x, vTextureUV_LTRB.y);
+			Out[1].vTexUV = float2(vTextureUV_LTRB.z, vTextureUV_LTRB.y);
+			Out[2].vTexUV = float2(vTextureUV_LTRB.z, vTextureUV_LTRB.w);
+			Out[3].vTexUV = float2(vTextureUV_LTRB.x, vTextureUV_LTRB.w);
+
+			Out[0].vTexUV_2 = float2(0.f, 0.f);
+			Out[1].vTexUV_2 = float2(1.f, 0.f);
+			Out[2].vTexUV_2 = float2(1.f, 1.f);
+			Out[3].vTexUV_2 = float2(0.f, 1.f);
+
+			for (uint l = 0; l < 4; ++l)
+			{
+				Out[l].vWorldPosition = Out[l].vPosition;
+				Out[l].vPosition = mul(Out[l].vPosition, matVP);
+				Out[l].vProjPosition = Out[l].vPosition;
+
+				Out[l].vNormal = fAvg_Normal;
+				Out[l].vTangent = fAvg_Tangent;
+				Out[l].vBiNormal = fAvg_BiNormal;
+				Out[l].iViewportIndex = 1;
+			}
+
+			TriStream.Append(Out[0]);
+			TriStream.Append(Out[1]);
+			TriStream.Append(Out[2]);
+			TriStream.RestartStrip();
+
+			TriStream.Append(Out[0]);
+			TriStream.Append(Out[2]);
+			TriStream.Append(Out[3]);
+			TriStream.RestartStrip();
+		}
+	}
+
+	if (g_iViewportDrawInfo & 2)
+	{
+		if (fDissolve_Weight > 0)
+		{
+			float3		vLook = normalize(g_vSubCamPosition - vPos).xyz;
+			float3		vAxisY = vector(0.f, 1.f, 0.f, 0.f).xyz;
+			float3		vRight = normalize(cross(vAxisY, vLook));
+			float3		vUp = normalize(cross(vLook, vRight));
+			matrix		matVP = mul(g_SubViewMatrix, g_SubProjMatrix);
+
+			float		fHalfSize = fSize * 0.5f;
+
+			float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	fHalfSize;
+			float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	fHalfSize;
+
+			Out[4].vPosition = vPos + vWolrdPointPos_X + vWolrdPointPos_Y;
+			Out[5].vPosition = vPos - vWolrdPointPos_X + vWolrdPointPos_Y;
+			Out[6].vPosition = vPos - vWolrdPointPos_X - vWolrdPointPos_Y;
+			Out[7].vPosition = vPos + vWolrdPointPos_X - vWolrdPointPos_Y;
+
+			Out[4].vTexUV = float2(vTextureUV_LTRB.x, vTextureUV_LTRB.y);
+			Out[5].vTexUV = float2(vTextureUV_LTRB.z, vTextureUV_LTRB.y);
+			Out[6].vTexUV = float2(vTextureUV_LTRB.z, vTextureUV_LTRB.w);
+			Out[7].vTexUV = float2(vTextureUV_LTRB.x, vTextureUV_LTRB.w);
+
+			Out[4].vTexUV_2 = float2(0.f, 0.f);
+			Out[5].vTexUV_2 = float2(1.f, 0.f);
+			Out[6].vTexUV_2 = float2(1.f, 1.f);
+			Out[7].vTexUV_2 = float2(0.f, 1.f);
+
+			for (uint m = 4; m < 8; ++m)
+			{
+				Out[m].vWorldPosition = Out[m].vPosition;
+				Out[m].vPosition = mul(Out[m].vPosition, matVP);
+				Out[m].vProjPosition = Out[m].vPosition;
+
+				Out[m].vNormal = fAvg_Normal;
+				Out[m].vTangent = fAvg_Tangent;
+				Out[m].vBiNormal = fAvg_BiNormal;
+				Out[m].iViewportIndex = 2;
+			}
+
+			TriStream.Append(Out[4]);
+			TriStream.Append(Out[5]);
+			TriStream.Append(Out[6]);
+			TriStream.RestartStrip();
+
+			TriStream.Append(Out[4]);
+			TriStream.Append(Out[6]);
+			TriStream.Append(Out[7]);
+		}
+	}
+}
+
 /* ________________________________________________________________________________*/
 /* _____________________________________Volume_____________________________________*/
 [maxvertexcount(6)]
@@ -1659,9 +1723,9 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN_EFFECT_POSDIR();
-		GeometryShader = compile gs_5_0 GS_MAIN_POINT();
-		PixelShader = compile ps_5_0 PS_EFFECT_MASKING_ALPHAGROUP();
+		VertexShader = compile vs_5_0 VS_MAIN_EFFECT();
+		GeometryShader = compile gs_5_0 GS_MAIN_ASH_DISSOLVE_NORMAL();
+		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
 	}
 	// 13
 	pass Skinned_Triangle_Ash_Dissolve // Effect
@@ -1669,9 +1733,9 @@ technique11 DefaultTechnique
 		SetRasterizerState(Rasterizer_Solid);
 		SetDepthStencilState(DepthStecil_Default, 0);
 		SetBlendState(BlendState_Alpha, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_MAIN_EFFECT_POSDIR();
-		GeometryShader = compile gs_5_0 GS_MAIN_POINT();
-		PixelShader = compile ps_5_0 PS_EFFECT_MASKING_ALPHAGROUP();
+		VertexShader = compile vs_5_0 VS_MAIN_EFFECT();
+		GeometryShader = compile gs_5_0 GS_MAIN_ASH_DISSOLVE_NORMAL();
+		PixelShader = compile ps_5_0 PS_EFFECT_MASKING();
 	}
 	// 14
 	pass Default_Laserbutton_Blue

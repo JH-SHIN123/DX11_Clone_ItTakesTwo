@@ -294,7 +294,7 @@ _int CCody::Tick(_double dTimeDelta)
 	CCharacter::Tick(dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_V))
-		EFFECT->Add_Effect(Effect_Value::Cody_Dead, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
+		EFFECT->Add_Effect(Effect_Value::Cody_Revive, m_pTransformCom->Get_WorldMatrix(), m_pModelCom);
 
 	if (m_pGameInstance->Key_Down(DIK_F9))
 	{
