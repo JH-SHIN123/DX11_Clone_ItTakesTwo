@@ -98,7 +98,6 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	/* For. Script && Sound */
 	Script(dTimeDelta);
 
 	if (m_pGameInstance->Key_Down(DIK_HOME))
@@ -1559,44 +1558,44 @@ void CUFO::GoUp(_double dTimeDelta)
 		DATABASE->Set_BossFloorUp(false);
 		return;
 	}
-
+	//
 	m_pTransformCom->Go_Up(dTimeDelta);
 }
 
 void CUFO::Script(_double dTimeDelta)
 {
-	m_fScriptDelay += (_float)dTimeDelta;
-	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
-	{
-		switch (iRandomScript)
-		{
-		case 0:
-			SCRIPT->VoiceFile_No39();
-			break;
-		case 1:
-			if (m_ePhase == CUFO::PHASE_2)
-			{
-				SCRIPT->VoiceFile_No40();
-			}
-			break;
-		case 2:
-			SCRIPT->VoiceFile_No41();
-			break;
-		case 3:
-			SCRIPT->VoiceFile_No42();
-			break;
-		case 4:
-			SCRIPT->VoiceFile_No46();
-			break;
-		default:
-			break;
-		}
-		++iRandomScript;
-		if (iRandomScript == 5)
-			iRandomScript = 0;
+	//m_fScriptDelay += (_float)dTimeDelta;
+	//if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
+	//{
+	//	switch (iRandomScript)
+	//	{
+	//	case 0:
+	//		SCRIPT->VoiceFile_No39();
+	//		break;
+	//	case 1:
+	//		if (m_ePhase == CUFO::PHASE_2)
+	//		{
+	//			SCRIPT->VoiceFile_No40();
+	//		}
+	//		break;
+	//	case 2:
+	//		SCRIPT->VoiceFile_No41();
+	//		break;
+	//	case 3:
+	//		SCRIPT->VoiceFile_No42();
+	//		break;
+	//	case 4:
+	//		SCRIPT->VoiceFile_No46();
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//	++iRandomScript;
+	//	if (iRandomScript == 5)
+	//		iRandomScript = 0;
 
-		m_fScriptDelay = 0.f;
-	}
+	//	m_fScriptDelay = 0.f;
+	//}
 }
 
 

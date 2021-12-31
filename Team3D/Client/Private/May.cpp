@@ -2406,7 +2406,7 @@ void CMay::In_GravityPipe(const _double dTimeDelta)
 				m_fGrvityPipe_Sound_Delay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false/* && m_fGrvityPipe_Sound_Delay > 1.f*/)
+				if (m_bGravityPipe_FirstIn == false && m_fGrvityPipe_Sound_Delay > 1.f)
 				{
 					SCRIPT->VoiceFile_No02();
 					m_bGravityPipe_FirstIn = true;
