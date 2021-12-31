@@ -229,7 +229,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	} 
 	//else
 		//m_bRotateLeft = false;
-
+	//
 	if (m_pGameInstance->Key_Pressing(DIK_UP) || m_pGameInstance->Get_Pad_LStickY() < 20000)
 	{
 		/* SCRIPT && SOUND */
