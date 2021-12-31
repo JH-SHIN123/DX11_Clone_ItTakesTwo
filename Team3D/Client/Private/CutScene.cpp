@@ -740,7 +740,6 @@ HRESULT CCutScene::Start_CutScene_Eject_UFO()
 
 HRESULT CCutScene::Start_CutScene_GotoMoon()
 {
-	CSound_Manager::GetInstance()->Stop_Sound(CHANNEL_IN_UFO_BGM);
 	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene03.wav"), CHANNEL_CUTSCENE, 1.f, false);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_GotoMoon");
 	
@@ -1330,16 +1329,16 @@ void CCutScene::Script_Eject_InUFO(_double dTimeDelta)
 void CCutScene::Script_GotoMoon(_double dTimeDelta)
 {
 	_double dSoundTime = m_dTime;
-	if (dSoundTime >= 12.0 && dSoundTime < 12.0 + (_float)dTimeDelta)
+	if (dSoundTime >= 12.4 && dSoundTime < 12.4 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(212, CScript::FULL, 0.9f);
-	else if (dSoundTime >= 13.0 && dSoundTime < 13.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(213, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 14.0 && dSoundTime < 14.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(213, CScript::FULL, 0.9f);
 	else if (dSoundTime >= 15.0 && dSoundTime < 15.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(214, CScript::FULL, 1.9f);
-	else if (dSoundTime >= 17.0 && dSoundTime < 17.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(214, CScript::FULL, 2.9f);
+	else if (dSoundTime >= 18.5 && dSoundTime < 18.5 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(215, CScript::FULL, 1.9f);
-	else if (dSoundTime >= 19.0 && dSoundTime < 19.0 + (_float)dTimeDelta)
-		SCRIPT->Render_Script(216, CScript::FULL, 1.9f);
+	else if (dSoundTime >= 20.0 && dSoundTime < 20.0 + (_float)dTimeDelta)
+		SCRIPT->Render_Script(216, CScript::FULL, 0.9f);
 	else if (dSoundTime >= 21.0 && dSoundTime < 21.0 + (_float)dTimeDelta)
 		SCRIPT->Render_Script(217, CScript::FULL, 1.9f);
 	else if (dSoundTime >= 23.0 && dSoundTime < 23.0 + (_float)dTimeDelta)

@@ -2929,7 +2929,7 @@ void CCody::In_GravityPipe(const _double dTimeDelta)
 				m_fGravityPipe_SoundDelay += (_float)dTimeDelta;
 				m_pActorCom->Set_ZeroGravity(true, true, false);
 
-				if (m_bGravityPipe_FirstIn == false /*&& m_fGravityPipe_SoundDelay > 2.f *//*&& CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false*/)
+				if (m_bGravityPipe_FirstIn == false && m_fGravityPipe_SoundDelay > 2.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false)
 				{
 					SCRIPT->VoiceFile_No01();
 					m_bGravityPipe_FirstIn = true;
@@ -4333,6 +4333,14 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_E))
 			++m_iKeyDownCount;
 
+		UI_CreateOnlyOnce(Cody, InputButton_BossHolding);
+
+		_matrix UFOBone = ((CUFO*)DATABASE->Get_BossUFO())->Get_Model()->Get_BoneMatrix("Base");
+		_matrix UFOBoneWorld = UFOBone * ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_WorldMatrix();
+		_vector UFOBonePos = UFOBoneWorld.r[3];
+
+		UI_Generator->Set_TargetPos(Player::Cody, UI::InputButton_BossHolding, UFOBonePos);
+
 		if (10 <= m_iKeyDownCount)
 		{
 			if (SCRIPT->Get_Script_Played(34) == false)
@@ -4346,6 +4354,7 @@ void CCody::Holding_BossUFO(const _double dTimeDelta)
 			((CUFO*)DATABASE->Get_BossUFO())->Set_UFOAnimation(UFO_CodyHolding, UFO_CodyHolding);
 			((CMay*)DATABASE->GetMay())->Set_LaserRippedOff();
 			((CMay*)DATABASE->GetMay())->Set_InterActiveUIDisable(false);
+			UI_Delete(Cody, InputButton_BossHolding);
 			m_IsHolding_High_UFO = true;
 		}
 	}

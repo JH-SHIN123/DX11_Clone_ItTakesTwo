@@ -1155,10 +1155,10 @@ HRESULT CLevel_Stage::Ready_Layer_DummyWall(const _tchar * pLayerTag)
 HRESULT CLevel_Stage::Ready_Layer_MayJumpWall(const _tchar * pLayerTag)
 {
 	ROBOTDESC MayJumpWall;
-	MayJumpWall.vPosition = { -815.311f - 12.f, 767.083f + 2.f, 189.9f - 0.48f, 1.f };
+	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 189.9f - 0.48f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
 
-	MayJumpWall.vPosition = { -815.311f - 12.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
+	MayJumpWall.vPosition = { -815.311f - 13.f, 767.083f + 2.f, 198.37f - 2.4f, 1.f };
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, pLayerTag, Level::LEVEL_STAGE, TEXT("GameObject_MayJumpWall"), &MayJumpWall), E_FAIL);
 
 	MayJumpWall.vPosition = { -823.88f, 768.301f, 193.517f, 1.f };

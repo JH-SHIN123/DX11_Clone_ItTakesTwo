@@ -60,6 +60,13 @@ private:
 	_float4				m_vLaserDir = {};
 	_bool				m_IsShootLaser = false;
 
+	/* Sounds */
+	_float m_fMove_Loop_Volume = 1.f;
+	_float m_fMove_End_Volume = 1.f;
+	_float m_fMove_Start_Volume = 1.f;
+
+	_bool	m_bMoving = false;
+
 private:
 	void	KeyInPut(_double dTimeDelta);
 	void	Calculate_Matrix(_double dTimeDelta);

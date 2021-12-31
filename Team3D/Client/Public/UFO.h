@@ -56,9 +56,10 @@ public:
 	_float4 Get_LaserStartPos() const { return m_vLaserGunPos; }
 	_float4 Get_LaserDir() const { return m_vLaserDir; }
 	UFO_PHASE Get_BossPhase() const { return m_ePhase; }
-	_bool	 Get_IsCutScene() { return m_IsCutScene; }
+	_bool	 Get_IsCutScene() const { return m_IsCutScene; }
 	UFO_PATTERN Get_BossPatern() const { return m_ePattern; }
 	_bool	Get_Phase2InterActive() const { return m_IsPhase2InterActive; }
+	_bool	Get_AdJustPosition() const { return m_IsAdJustPosition; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;
@@ -108,6 +109,7 @@ private:
 	_bool					m_IsTriggerActive = false;
 	_bool					m_IsCodySetPos = false;
 	_bool					m_IsPhase2InterActive = false;
+	_bool					m_IsAdJustPosition = false;
 	_uint					m_iGuidedMissileHitCount = 0;
 	
 	class CBoss_Missile*	m_pCodyMissile = nullptr;
@@ -170,7 +172,7 @@ private:
 	class CMoonBaboon*		m_pMoonBaboon = nullptr;
 
 	/* For. Random Script */
-	_uint iRandomScript = 0;
+	_uint m_iRandomScript = 0;
 	_float m_fScriptDelay = 0.f;
 	_uint m_iGroundPoundCount = 0;
 
