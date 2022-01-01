@@ -29,6 +29,7 @@ public:
 
 public: /* Setter */
 	void Set_LaserHit(_bool IsLaserHit) { m_IsLaserHit = IsLaserHit; }
+	void Set_IsCutScene(_bool bCheck) { m_IsCutScene = bCheck; }
 
 private:
 	void	Movement(_double dTimeDelta);
@@ -52,6 +53,8 @@ private:
 	_float					m_fJetAcceleration = 0.f;
 	_float					m_fShieldTime = 0.f;
 	_float					m_fJetPackTime = 0.f;
+
+	_bool					m_IsCutScene = true;
 
 private:
 	HRESULT Ready_Component(void* pArg);

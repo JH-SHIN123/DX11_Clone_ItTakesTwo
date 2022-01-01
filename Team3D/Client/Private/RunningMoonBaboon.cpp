@@ -125,7 +125,7 @@ HRESULT CRunningMoonBaboon::Render(RENDER_GROUP::Enum eGroup)
 HRESULT CRunningMoonBaboon::Render_ShadowDepth()
 {
 	NULL_CHECK_RETURN(m_pModelCom, E_FAIL);
-	if (((CPixelBaboon*)DATABASE->Get_PixelBaboon())->Get_LifeCount() > 0)
+	if (((CPixelBaboon*)DATABASE->Get_PixelBaboon())->Get_LifeCount() > 0 && m_IsCutScene == false)
 	{
 		m_pModelCom->Set_DefaultVariables_ShadowDepth(m_pTransformCom->Get_WorldMatrix());
 
