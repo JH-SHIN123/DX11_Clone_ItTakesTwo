@@ -83,6 +83,8 @@ _int CEffect_EndingRocket_Smoke::Tick(_double TimeDelta)
 _int CEffect_EndingRocket_Smoke::Late_Tick(_double TimeDelta)
 {
 	//Check_TargetMatrix();
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_Matrix));
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
@@ -113,9 +115,9 @@ void CEffect_EndingRocket_Smoke::Set_WorldMatrix(_fmatrix WorldMatrix)
 	for (_int i = 0; i < 3; ++i)
 		World.r[i] = XMVector3Normalize(World.r[i]);
 
-	World.r[3] += World.r[2] * 0.3f;
+	World.r[3] += World.r[2] * 0.221f;
 
-	m_pTransformCom->Set_WorldMatrix(World);
+	XMStoreFloat4x4(&m_Matrix, World);
 }
 
 void CEffect_EndingRocket_Smoke::Check_Instance(_double TimeDelta)

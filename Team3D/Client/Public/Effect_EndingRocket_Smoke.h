@@ -44,6 +44,7 @@ private:
 	_bool m_IsActivate = true;
 	_bool m_IsBoosting = false;
 	_float m_fBoostTime = 0.f;
+	_float4x4 m_Matrix;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
