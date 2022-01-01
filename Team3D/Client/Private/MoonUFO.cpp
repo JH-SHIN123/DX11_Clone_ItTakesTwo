@@ -66,6 +66,12 @@ _int CMoonUFO::Tick(_double dTimeDelta)
 		KeyInPut(dTimeDelta);
 		Calculate_Matrix(dTimeDelta);
 	}
+	else
+	{
+		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE_END);
+		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE_START);
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MOONUFO_MOVE, 0.f);
+	}
 
 	m_pModelCom->Update_Animation(dTimeDelta);
 

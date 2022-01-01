@@ -334,7 +334,7 @@ _int CMainCamera::Tick_Cam_Ending(_double dTimeDelta)
 	_vector vUp = pPlayerTransform->Get_State(CTransform::STATE_UP);
 	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-	_vector vCamPos = XMVectorSet(0.f, XMVectorGetY(vPlayerPos) + 6.f, 0.f, 1.f); 
+	_vector vCamPos = XMVectorSet(0.f, XMVectorGetY(vPlayerPos) + 7.f, 0.f, 1.f); 
 	_vector vAt = XMVectorSet(0.f, XMVectorGetY(vPlayerPos), 0.f,1.f);
 
 	m_pTransformCom->Set_WorldMatrix(MakeViewMatrixByUp(vCamPos, vAt,XMVectorSet(0.f,0.f,1.f,0.f)));
