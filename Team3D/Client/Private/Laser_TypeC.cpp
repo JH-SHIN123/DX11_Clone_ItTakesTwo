@@ -120,6 +120,7 @@ _int CLaser_TypeC::Tick(_double dTimeDelta)
 			if (m_dCreateEffectDelay <= 0.0)
 			{
 				//충돌 시 생성할 이펙트
+				//m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_LaserTypeA"), Level::LEVEL_STAGE, TEXT("GameObject_LaserTypeA"));
 
 				//이펙트 생성 주기
 				m_dCreateEffectCycle = m_dCreateEffectCycle;
