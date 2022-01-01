@@ -116,7 +116,7 @@ void CEffect_EndingRocket_Smoke::Set_WorldMatrix(_fmatrix WorldMatrix)
 		World.r[i] = XMVector3Normalize(World.r[i]);
 
 	_vector vAxisY = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	World.r[3] -= vAxisY * 0.7f;
+	World.r[3] -= vAxisY * 0.85f;
 
 	//m_pTransformCom->Set_WorldMatrix(World);
 	XMStoreFloat4x4(&m_Matrix, World);
