@@ -301,7 +301,7 @@ _bool CCutScene::Tick_CutScene_Boss_Intro(_double dTimeDelta)
 	CCody* pCody = static_cast<CCody*>(DATABASE->GetCody());
 	CMay* pMay = static_cast<CMay*>(DATABASE->GetMay());
 	if(m_dTime > 1.5f && m_dTime < 1.5f + dTimeDelta)
-		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 1.f, false);
+		CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene02.wav"), CHANNEL_CUTSCENE, 1.2f, false);
 	if (m_iCutSceneTake == 0)
 	{
 		if (m_dTime < 25.02)
@@ -553,7 +553,7 @@ HRESULT CCutScene::Start_CutScene()
 
 HRESULT CCutScene::Start_CutScene_Intro()
 {
-	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 1.f, false);
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene01.wav"), CHANNEL_CUTSCENE, 1.2f, false);
 	static_cast<CCody*>(DATABASE->GetCody())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
 	static_cast<CMay*>(DATABASE->GetMay())->Get_Actor()->Set_Position(XMVectorSet(0.f, -100.f, -100.f, 1.f));
 
@@ -742,7 +742,7 @@ HRESULT CCutScene::Start_CutScene_GotoMoon()
 {
 	CSound_Manager::GetInstance()->Stop_Sound(CHANNEL_IN_UFO_BGM);
 
-	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene03.wav"), CHANNEL_CUTSCENE, 1.f, false);
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene03.wav"), CHANNEL_CUTSCENE, 1.7f, false);
 	static_cast<CSubCamera*>(CDataStorage::GetInstance()->Get_SubCam())->Start_Film(L"Film_GotoMoon");
 	
 	m_pCutScenePlayer->Set_ViewPort(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, 1.f, 1.f),false);
@@ -778,7 +778,7 @@ HRESULT CCutScene::Start_CutScene_Outro()
 	CSound_Manager::GetInstance()->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 	CSound_Manager::GetInstance()->Sound_FadeOut(CHANNEL_BGM2, 0.f, 1.f);
 
-	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene04.wav"), CHANNEL_CUTSCENE, 1.f, false);
+	CSound_Manager::GetInstance()->Play_Sound(TEXT("CutScene04.wav"), CHANNEL_CUTSCENE, 1.2f, false);
 	m_bCodyEjectUFO = false;
 	m_bIsStartFilm = false;
 	m_fCodyMove_EjectUfoTime = 0.f;

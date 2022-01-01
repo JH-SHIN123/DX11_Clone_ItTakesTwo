@@ -82,9 +82,9 @@ HRESULT CMainApp::Run_App()
 		if (m_pGameInstance->Mouse_Down(CInput_Device::DIM_MB))
 			m_bMouseLock = !m_bMouseLock;
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 		Show_FPS(dTimeDelta);
-//#endif
+#endif
 
 	}
 
@@ -228,7 +228,7 @@ void CMainApp::Free()
 	CGameInstance::GetInstance()->Release_Engine();
 }
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 void CMainApp::Show_FPS(_double dTimeDelta)
 {
 	++m_iRenderCount;
@@ -242,4 +242,4 @@ void CMainApp::Show_FPS(_double dTimeDelta)
 		m_iRenderCount = 0;
 	}
 }
-//#endif
+#endif
