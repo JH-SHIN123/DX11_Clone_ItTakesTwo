@@ -20,7 +20,7 @@ public:
 	void Set_Pos(_fvector vPos);
 	void Set_Boosting() { m_IsBoosting = true; }
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
-	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
+	void Set_WorldMatrix(_fmatrix WorldMatrix);
 
 private:
 	void Check_Instance(_double TimeDelta);

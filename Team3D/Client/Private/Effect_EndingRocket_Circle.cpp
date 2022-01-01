@@ -97,6 +97,18 @@ void CEffect_EndingRocket_Circle::Set_Pos(_fvector vPos)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
+void CEffect_EndingRocket_Circle::Set_WorldMatrix(_fmatrix WorldMatrix)
+{
+	_matrix World = WorldMatrix;
+
+	for (_int i = 0; i < 3; ++i)
+		World.r[i] = XMVector3Normalize(World.r[i]);
+
+	World.r[3] += World.r[2] * 0.22f;
+
+	m_pTransformCom->Set_WorldMatrix(World);
+}
+
 void CEffect_EndingRocket_Circle::Check_Instance(_double TimeDelta)
 {
 	_float4 vMyPos;

@@ -113,7 +113,7 @@ void CEffect_EndingRocket_Smoke::Set_WorldMatrix(_fmatrix WorldMatrix)
 	for (_int i = 0; i < 3; ++i)
 		World.r[i] = XMVector3Normalize(World.r[i]);
 
-	World.r[3] += World.r[2] * 0.4f;
+	World.r[3] += World.r[2] * 0.3f;
 
 	m_pTransformCom->Set_WorldMatrix(World);
 }
