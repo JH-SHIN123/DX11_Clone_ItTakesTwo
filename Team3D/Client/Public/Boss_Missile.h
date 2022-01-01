@@ -39,6 +39,9 @@ public:
 	virtual void	Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGameObject* pGameObject) override;
 
 public:
+	void Set_PhaseEndDead();
+
+public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 	_bool Get_BossExplosion() const { return m_bBossExplosion; }
 
@@ -81,6 +84,7 @@ private:
 	_bool m_bPlayerExplosion = false;
 	_bool m_bBossExplosion = false;
 	_bool m_IsCollide_Wall_Floor = false;
+	_bool m_IsPhaseEndDead = false;
 
 	_float m_fAttackTime = 0.f;
 	_float m_fSpeed = 0.f;

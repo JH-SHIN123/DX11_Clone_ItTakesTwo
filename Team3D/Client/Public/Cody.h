@@ -554,7 +554,7 @@ private:
 	_vector m_vRocketOffSetPos = {};
 	_matrix m_matRocketMatrix = {};
 	_bool	m_bLandHigh = false;
-
+	_bool	m_IsSoundOnce = false;
 
 	// YYY
 	void Hit_StarBuddy(const _double dTimeDelta);

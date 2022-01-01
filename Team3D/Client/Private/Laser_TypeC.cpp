@@ -99,15 +99,20 @@ _int CLaser_TypeC::Tick(_double dTimeDelta)
 				}
 				else
 				{
-					if (SCRIPT->Get_Script_Played(54) == false)
+					if (false == m_IsScriptOnce)
 					{
-						SCRIPT->VoiceFile_No54();
-						SCRIPT->Set_Script_Played(54, true);
-					}
-					else if (SCRIPT->Get_Script_Played(55) == false)
-					{
-						SCRIPT->VoiceFile_No55();
-						SCRIPT->Set_Script_Played(55, true);
+						if (SCRIPT->Get_Script_Played(55) == false)
+						{
+							SCRIPT->VoiceFile_No55();
+							SCRIPT->Set_Script_Played(55, true);
+						}
+						else if (SCRIPT->Get_Script_Played(54) == false)
+						{
+							SCRIPT->VoiceFile_No54();
+							SCRIPT->Set_Script_Played(54, true);
+						}
+
+						m_IsScriptOnce = true;
 					}
 				}
 			}

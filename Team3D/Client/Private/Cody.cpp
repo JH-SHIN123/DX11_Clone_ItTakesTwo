@@ -3406,7 +3406,7 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 
 		}
 
-		if (m_pModelCom->Is_AnimFinished(ANI_C_Rocket_Enter))
+		if (m_pModelCom->Is_AnimFinished(ANI_C_Rocket_Enter) && false == m_IsSoundOnce)
 		{
 			m_pModelCom->Set_Animation(ANI_C_Rocket_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_Rocket_MH);
@@ -3414,6 +3414,7 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_CODY);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, 0.5f);
 			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_CODY, 0.5f);
+			m_IsSoundOnce = true;
 		}
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_C_Rocket_MH)
@@ -3434,6 +3435,7 @@ void CCody::BossMissile_Control(const _double dTimeDelta)
 		m_pActorCom->Jump_Start(2.2f);
 		m_pModelCom->Set_Animation(ANI_C_Jump_Falling);
 		m_pModelCom->Set_NextAnimIndex(ANI_C_Jump_Land_High);
+		m_IsSoundOnce = false;
 	}
 
 }

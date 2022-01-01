@@ -265,6 +265,7 @@ HRESULT CLoading::Assign()
 			m_ProcessingThreadList.emplace_back(iWorkIndex);
 			g_mutex.unlock();
 
+
 			m_arrThreadArgs[iWorkIndex].pLoading = this;
 			m_arrThreadArgs[iWorkIndex].iThreadIndex = iWorkIndex;
 

@@ -632,13 +632,22 @@ void CUFO::Phase2_Pattern(_double dTimeDelta)
 		{
 		case Engine::GameID::eCODY:
 			static_cast<CSubCamera*>(DATABASE->Get_SubCam())->Start_HitRocket_Boss();
-			if (m_pCodyMissile) m_pCodyMissile->Set_MissileDead();
+			if (nullptr != m_pMayMissile)
+			{
+				m_pMayMissile->Set_PhaseEndDead();
+				Set_MissilePtrReset(false);
+			}
 			break;
 		case Engine::GameID::eMAY:
 			static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_HitRocket_Boss();
-			if (m_pMayMissile) m_pMayMissile->Set_MissileDead();
+			if (nullptr != m_pCodyMissile)
+			{
+				m_pCodyMissile->Set_PhaseEndDead();
+				Set_MissilePtrReset(true);
+			}
 			break;
 		}
+
 		m_pModelCom->Set_Animation(CutScene_RocketPhaseFinished_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_RocketKnockDown_MH);
 		m_pMoonBaboon->Set_Animation(CutScene_RocketPhaseFinished_MoonBaboon, Moon_Ufo_KnockDownMH);

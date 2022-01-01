@@ -24,6 +24,7 @@ private:
 	_bool	m_IsPaticleCreate = true;
 	_uint   m_iOption = 0;
 	_bool	m_IsHitMoonBaboon = false;
+	_bool	m_IsScriptOnce = false;
 
 private:
 	class CMoonUFO*									m_pMoonUFO = nullptr;

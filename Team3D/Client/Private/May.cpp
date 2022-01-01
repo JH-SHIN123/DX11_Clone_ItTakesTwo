@@ -2905,7 +2905,7 @@ void CMay::BossMissile_Control(const _double dTimeDelta)
 
 		}
 
-		if (m_pModelCom->Is_AnimFinished(ANI_M_Rocket_Enter))
+		if (m_pModelCom->Is_AnimFinished(ANI_M_Rocket_Enter) && false == m_IsSoundOnce)
 		{
 			m_pModelCom->Set_Animation(ANI_M_Rocket_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_M_Rocket_MH);
@@ -2913,6 +2913,7 @@ void CMay::BossMissile_Control(const _double dTimeDelta)
 			m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
 			m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, 0.5f);
 			m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_MAY, 0.5f);
+			m_IsSoundOnce = true;
 		}
 
 		if (m_pModelCom->Get_CurAnimIndex() == ANI_M_Rocket_MH)
@@ -2933,6 +2934,7 @@ void CMay::BossMissile_Control(const _double dTimeDelta)
 		m_pActorCom->Jump_Start(3.5f);
 		m_pModelCom->Set_Animation(ANI_M_Rocket_Exit);
 		m_pModelCom->Set_NextAnimIndex(ANI_M_Jump_Land_High);
+		m_IsSoundOnce = false;
 	}
 }
 

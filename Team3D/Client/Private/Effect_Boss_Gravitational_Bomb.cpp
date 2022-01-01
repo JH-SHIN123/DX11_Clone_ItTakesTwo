@@ -127,7 +127,7 @@ _int CEffect_Boss_Gravitational_Bomb::Tick(_double TimeDelta)
 
 	if (true == DATABASE->Get_BossFloorUp())
 	{
-		_float fDist = (_float)TimeDelta * 10.f;
+		_float fDist = (_float)TimeDelta * 8.5f;
 		vPos.m128_f32[1] += fDist;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 	}

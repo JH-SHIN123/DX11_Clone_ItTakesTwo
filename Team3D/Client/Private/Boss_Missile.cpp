@@ -62,6 +62,12 @@ HRESULT CBoss_Missile::NativeConstruct(void * pArg)
 
 _int CBoss_Missile::Tick(_double dTimeDelta)
 {
+	if (true == m_IsPhaseEndDead)
+	{
+		Explosion_Effect();
+		return EVENT_DEAD;
+	}
+
 	if (m_bPlayerExplosion == true)
 	{
 		Explosion_Effect();
@@ -168,10 +174,6 @@ _int CBoss_Missile::Tick(_double dTimeDelta)
 			SCRIPT->VoiceFile_No37();
 			SCRIPT->Set_Script_Played(37, true);
 		}
-
-		//m_pGameInstance->Stop_Sound(CHANNEL_BOSSMISSILE_MAY);
-		//m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, 0.5f);
-		//m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Ride.wav"), CHANNEL_BOSSMISSILE_MAY, 0.5f);
 	}
 	else if (m_IsCrashed == true && true == m_IsCodyCollide && true == m_IsTargetCody && m_pGameInstance->Key_Down(DIK_E))
 	{
@@ -259,6 +261,11 @@ void CBoss_Missile::Trigger(TriggerStatus::Enum eStatus, GameID::Enum eID, CGame
 		((CMay*)pGameObject)->SetTriggerID(GameID::Enum::eBOSSMISSILE, false, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		m_IsMayCollide = false;
 	}
+}
+
+void CBoss_Missile::Set_PhaseEndDead()
+{
+	m_IsPhaseEndDead = true;
 }
 
 HRESULT CBoss_Missile::Render_ShadowDepth()
@@ -399,12 +406,6 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	Set_SmokeEffect(true);
 	m_pEffect_Smoke_2->Set_Color(3);
-
-	//if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
-	//{
-	//	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
-	//	m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_MAY, m_fMissileSoundVolume);
-	//}
 
 	// 각도 제한 걸어야 함
 #ifdef __CONTROL_MAY_KEYBOARD
@@ -624,12 +625,6 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 
 	Set_SmokeEffect(true);
 	m_pEffect_Smoke_2->Set_Color(3);
-
-	//if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
-	//{
-	//	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
-	//	m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
-	//}
 
 	// 각도 제한 걸어야 함
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);

@@ -486,6 +486,7 @@ private:
 	_bool	m_IsMoveToRocket = false;
 	_bool   m_bEscapeFromRocket = false;
 	_bool	m_bLandHigh = false;
+	_bool	m_IsSoundOnce = false;
 
 	// touch WallLaserTrap
 	_bool m_IsWallLaserTrap_Touch = false;
