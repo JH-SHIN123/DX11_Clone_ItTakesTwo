@@ -299,16 +299,16 @@ void  GS_MAIN_NO_BILL(/*입력*/ point  VS_OUT_NO_BILL In[1], /*출력*/ inout Trian
 	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
 	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
 
-	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y * 0.7f;
 	Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
 
-	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y * 0.7f;
 	Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
 
-	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X;
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y * 0.3f;
 	Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
 
-	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X;
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y * 0.3f;
 	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
 
 	Out[4].vPosition = Out[0].vPosition;

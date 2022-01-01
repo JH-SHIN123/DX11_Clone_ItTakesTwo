@@ -33,7 +33,10 @@ HRESULT CEffect_EndingRocket_Smoke::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	Check_TargetMatrix();
+	_matrix WorldMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
+	WorldMatrix = __super::Normalize_Matrix(WorldMatrix);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+
 	Ready_InstanceBuffer();
 
 	return S_OK;
@@ -72,7 +75,6 @@ _int CEffect_EndingRocket_Smoke::Tick(_double TimeDelta)
 	}
 
 
-	Check_TargetMatrix();
 	Check_Instance(TimeDelta);
 
 	return NO_EVENT;
@@ -80,6 +82,7 @@ _int CEffect_EndingRocket_Smoke::Tick(_double TimeDelta)
 
 _int CEffect_EndingRocket_Smoke::Late_Tick(_double TimeDelta)
 {
+	//Check_TargetMatrix();
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
@@ -101,6 +104,18 @@ HRESULT CEffect_EndingRocket_Smoke::Render(RENDER_GROUP::Enum eGroup)
 void CEffect_EndingRocket_Smoke::Set_Pos(_fvector vPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+}
+
+void CEffect_EndingRocket_Smoke::Set_WorldMatrix(_fmatrix WorldMatrix)
+{
+	_matrix World = WorldMatrix;
+
+	for (_int i = 0; i < 3; ++i)
+		World.r[i] = XMVector3Normalize(World.r[i]);
+
+	World.r[3] += World.r[2] * 0.4f;
+
+	m_pTransformCom->Set_WorldMatrix(World);
 }
 
 void CEffect_EndingRocket_Smoke::Check_Instance(_double TimeDelta)

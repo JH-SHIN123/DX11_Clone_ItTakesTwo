@@ -29,7 +29,7 @@ HRESULT CEffect_EndingRocket_Circle::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	Check_TargetMatrix();
+// 	Check_TargetMatrix();
 	Ready_InstanceBuffer();
 
 	return S_OK;
@@ -66,7 +66,6 @@ _int CEffect_EndingRocket_Circle::Tick(_double TimeDelta)
 	}
 
 
-	Check_TargetMatrix();
 	Check_Instance(TimeDelta);
 
 	return NO_EVENT;
@@ -74,6 +73,7 @@ _int CEffect_EndingRocket_Circle::Tick(_double TimeDelta)
 
 _int CEffect_EndingRocket_Circle::Late_Tick(_double TimeDelta)
 {
+	//Check_TargetMatrix();
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
