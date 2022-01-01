@@ -294,21 +294,21 @@ void  GS_MAIN_NO_BILL(/*입력*/ point  VS_OUT_NO_BILL In[1], /*출력*/ inout Trian
 	float3		vRight	= In[0].vRight;
 	float3		vUp		= In[0].vUp;
 
-	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y * 0.5f);
+	float2		vHalfSize = float2(In[0].vSize.x * 0.5f, In[0].vSize.y);
 
 	float4		vWolrdPointPos_X = vector(vRight, 0.f)	*	vHalfSize.x;
 	float4		vWolrdPointPos_Y = vector(vUp, 0.f)		*	vHalfSize.y;
 
-	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[0].vPosition = In[0].vPosition + vWolrdPointPos_X + vWolrdPointPos_Y * 0.8f;
 	Out[0].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.y);
 
-	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y;
+	Out[1].vPosition = In[0].vPosition - vWolrdPointPos_X + vWolrdPointPos_Y * 0.8f;
 	Out[1].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.y);
 
-	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[2].vPosition = In[0].vPosition - vWolrdPointPos_X - vWolrdPointPos_Y * 0.2f;
 	Out[2].vTexUV = float2(In[0].vTextureUV_LTRB.z, In[0].vTextureUV_LTRB.w);
 
-	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y;
+	Out[3].vPosition = In[0].vPosition + vWolrdPointPos_X - vWolrdPointPos_Y * 0.2f;
 	Out[3].vTexUV = float2(In[0].vTextureUV_LTRB.x, In[0].vTextureUV_LTRB.w);
 
 	Out[4].vPosition = Out[0].vPosition;
@@ -1271,6 +1271,8 @@ PS_OUT  PS_LASER_TENNIS_BALL(PS_IN In)
 PS_OUT  PS_ROCKET_CIRCLE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
+
+	return Out;
 
 	float4 vDiffuse = (float4)0;
 	float2 vCenter = In.vTexUV - 0.5f;

@@ -947,6 +947,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	{
 		m_bGroundPound = true;
 		m_IsJumping = false;
+		m_bPlayGroundPound_Effect = false;
 
 		if (m_eCurPlayerSize != SIZE_LARGE)
 		{
@@ -2068,6 +2069,11 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 			//m_bCanMove = true;
 			m_bAfterGroundPound = true;
 		}
+		if (false == m_bPlayGroundPound_Effect && ANI_C_Bhv_GroundPound_Land_Exit == m_pModelCom->Get_CurAnimIndex() && 0.3 < m_pModelCom->Get_ProgressAnim())
+		{
+			EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pTransformCom->Get_WorldMatrix());
+			m_bPlayGroundPound_Effect = true;
+		}
 	}
 	else
 	{
@@ -2090,6 +2096,11 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 			m_bCanMove = true;
 			m_iJumpCount = 0;
 		}
+		if (false == m_bPlayGroundPound_Effect && ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit == m_pModelCom->Get_CurAnimIndex() && 0.3 < m_pModelCom->Get_ProgressAnim())
+		{
+			EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pTransformCom->Get_WorldMatrix());
+			m_bPlayGroundPound_Effect = true;
+		}
 	}
 
 	if (m_eCurPlayerSize != SIZE_LARGE)
@@ -2099,6 +2110,7 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 
 		if (m_iAfterGroundPoundCount >= 10) // 1.5초 경직
 		{
+			m_bPlayGroundPound_Effect = false;
 			m_iAfterGroundPoundCount = 0;
 			m_bAfterGroundPound = false;
 			m_bCanMove = true;
@@ -2111,6 +2123,7 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 
 		if (m_iAfterGroundPoundCount >= 90) // 1.5초 경직
 		{
+			m_bPlayGroundPound_Effect = false;
 			m_iAfterGroundPoundCount = 0;
 			m_bAfterGroundPound = false;
 			m_bCanMove = true;

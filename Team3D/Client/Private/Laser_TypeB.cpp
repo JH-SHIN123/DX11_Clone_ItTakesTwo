@@ -28,6 +28,7 @@ HRESULT CLaser_TypeB::NativeConstruct(void * pArg)
 	CLaser::NativeConstruct(pArg);
 
 	m_fShootSpeed = 30.f;
+	m_fLaserEndSpeed = 30.f;
 
 	return S_OK;
 }
@@ -170,7 +171,7 @@ _int CLaser_TypeB::Tick(_double dTimeDelta)
 	/* 레이저 종료 시*/
 	else
 	{
-		m_fLaserSizeY -= 30.f * (_float)dTimeDelta;
+		m_fLaserSizeY -= m_fLaserEndSpeed * (_float)dTimeDelta;
 		XMStoreFloat4(&m_vEndPoint, XMLoadFloat4(&m_vStartPoint) + XMLoadFloat4(&m_vLaserDir) * m_fLaserSizeY);
 
 		if (m_fLaserSizeY < 0.f)
@@ -285,6 +286,11 @@ void CLaser_TypeB::Set_LaserTypeBUp(_float fMaxDistance, _float fSpeed)
 	m_fMaxY = fMaxDistance;
 	m_IsGoUp = true;
 	m_fUpSpeed = fSpeed;
+}
+
+void CLaser_TypeB::Set_LaserEndSpeed(_float fSpeed)
+{
+	m_fLaserEndSpeed = fSpeed;
 }
 
 void CLaser_TypeB::GoUp(_double dTimeDelta)

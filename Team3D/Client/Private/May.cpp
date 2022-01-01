@@ -1794,6 +1794,11 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 		//m_bCanMove = true;
 		m_bAfterGroundPound = true;
 	}
+	if (false == m_bPlayGroundPound_Effect && ANI_M_GroundPound_Land_Exit == m_pModelCom->Get_CurAnimIndex() && 0.3 < m_pModelCom->Get_ProgressAnim())
+	{
+		EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pTransformCom->Get_WorldMatrix());
+		m_bPlayGroundPound_Effect = true;
+	}
 	if (m_bAfterGroundPound == true)
 		m_iAfterGroundPoundCount += 1;
 
@@ -1802,6 +1807,7 @@ void CMay::Ground_Pound(const _double dTimeDelta)
 		m_iAfterGroundPoundCount = 0;
 		m_bAfterGroundPound = false;
 		m_bCanMove = true;
+		m_bPlayGroundPound_Effect = false;
 	}
 }
 

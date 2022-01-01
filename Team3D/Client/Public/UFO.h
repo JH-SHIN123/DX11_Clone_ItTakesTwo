@@ -60,6 +60,7 @@ public:
 	UFO_PATTERN Get_BossPatern() const { return m_ePattern; }
 	_bool	Get_Phase2InterActive() const { return m_IsPhase2InterActive; }
 	_bool	Get_AdJustPosition() const { return m_IsAdJustPosition; }
+	_bool	Get_BossPhaseEnd() const { return m_IsBossPhaseEnd; }
 
 private:
 	UFO_TARGET				m_eTarget = TARGET_END;
@@ -126,6 +127,7 @@ private:
 	_bool					m_IsEjection = false;
 	_bool					m_IsLaserDown = false;
 	_bool					m_IsGroundPoundEffectCreate = false;
+	_bool					m_IsBossPhaseEnd = false;
 	_float4					m_vGroundPoundTargetPos;
 
 	vector<class CMoonBaboon_SubLaser*>	m_vecSubLaser;

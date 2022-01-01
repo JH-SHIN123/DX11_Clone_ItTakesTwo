@@ -5,6 +5,7 @@
 
 #include "May.h"
 #include "Cody.h"
+#include "UFO.h"
 
 CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -58,7 +59,7 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 	else if(false == m_IsLaserOperation && true == DATABASE->Get_LaserTypeB_Recovery())
 		Laser_Down(TimeDelta);
 
-	if (true == m_IsLaserUp)
+	if (true == m_IsLaserUp && false == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhaseEnd())
 		SoundVolumeRatio_ProportionalDistance();
 
 	GoUp(TimeDelta);
@@ -110,8 +111,12 @@ void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
 	if (false == m_IsLaserOperation)
 	{
 		for (auto pLaserTypeB : m_vecLaser_TypeB)
+		{
 			pLaserTypeB->Set_Dead();
 
+			if (((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhaseEnd())
+				pLaserTypeB->Set_LaserEndSpeed(60.f);
+		}
 		m_vecLaser_TypeB.clear();
 	}
 }
@@ -203,6 +208,9 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 		m_IsLaserCreate = true;
 		m_dDownTime = 0.0;
 		DATABASE->Set_LaserTypeB_Recovery(false);
+
+		if (true == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
 
 		/* 다음에도 또 올라와야하기 때문에 초기화 해주자 ㅇㅇ */
 		m_dPatternDeltaT = 0.0;
