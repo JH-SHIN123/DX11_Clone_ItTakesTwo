@@ -169,6 +169,9 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		UI_Create(Default, BlackScreenFadeInOut);
 		UI_Generator->Set_FadeInSpeed(Player::Default, UI::BlackScreenFadeInOut, 1000.f);
 		m_IsEndingFadeOut = true;
+
+		/* 모든 UI렌더 끄기 알파스크린 제외 */
+		UI_Generator->Set_AllActivation(false);
 	}
 
 	/* BlackScreen FadeOut */

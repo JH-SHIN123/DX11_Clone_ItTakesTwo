@@ -26,6 +26,7 @@ public:
 	void SetUp_SubLaserDirection(_uint iOption);
 	void Set_RotateSpeed(_float fSpeed);
 	void Set_LaserTypeBUp(_float fMaxDistance, _float fSpeed);
+	void Set_LaserEndSpeed(_float fSpeed);
 
 public:
 	_bool Get_LaserRecovery() const { return m_IsLaserRecovery; }
@@ -33,6 +34,7 @@ public:
 private:
 	_float						m_fAngle = 0.f;
 	_float						m_fRotateSpeed = 0.f;
+	_float						m_fLaserEndSpeed = 0.f;
 	_uint						m_iOption = 0;
 	_float4x4					m_matRotY;
 	_bool						m_IsLaserRecovery = false;

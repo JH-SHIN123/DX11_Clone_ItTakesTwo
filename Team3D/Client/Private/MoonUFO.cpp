@@ -46,11 +46,11 @@ HRESULT CMoonUFO::NativeConstruct(void * pArg)
 	m_pGameInstance->Play_Sound(L"UFO_Move.wav", CHANNEL_MOONUFO_MOVE, m_fMove_Loop_Volume, true);
 	//m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE);
 
-	m_fMove_End_Volume = 1.f;
+	m_fMove_End_Volume = 2.5f;
 	m_pGameInstance->Play_Sound(L"UFO_Move_End.wav", CHANNEL_MOONUFO_MOVE_END, m_fMove_End_Volume);
 	m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE_END);
 
-	m_fMove_Start_Volume = 1.f;
+	m_fMove_Start_Volume = 2.5f;
 	m_pGameInstance->Play_Sound(L"UFO_Move_Start.wav", CHANNEL_MOONUFO_MOVE_START, m_fMove_Start_Volume);
 	m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE_START);
 
@@ -276,23 +276,11 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		m_pGameInstance->Play_Sound(L"UFO_Move_End.wav", CHANNEL_MOONUFO_MOVE_END, m_fMove_End_Volume);
 	}
 #else
+	_bool bKeyInput = false;
+
 	if (m_pGameInstance->Get_Pad_LStickX() > 44000)
 	{
-		/* SCRIPT && SOUND */
-		if (m_bMoving == false)
-		{
-			m_pGameInstance->Play_Sound(L"UFO_Move_Start.wav", CHANNEL_MOONUFO_MOVE_START, m_fMove_Start_Volume);
-			m_bMoving = true;
-		}
-
-		if (m_bMoving && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE_START) == false)
-		{
-			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE) == false)
-			{
-				m_pGameInstance->Play_Sound(L"UFO_Move.wav", CHANNEL_MOONUFO_MOVE, m_fMove_Loop_Volume, true);
-			}
-		}
-
+		bKeyInput = true;
 
 		_bool IsMayUFO = ((CMay*)DATABASE->GetMay())->Get_IsInUFO();
 		_bool IsCodyUFO = ((CCody*)DATABASE->GetCody())->Get_IsInArcadeJoyStick();
@@ -303,76 +291,41 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		}
 
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * UFOFORCE, XMVectorGetY(vRight) * UFOFORCE, XMVectorGetZ(vRight) * UFOFORCE));
-		//m_bRotateRight = true;
 	}
-	//else
-		//m_bRotateRight = false;
-
 
 	if (m_pGameInstance->Get_Pad_LStickX() < 20000)
 	{
-		/* SCRIPT && SOUND */
-		if (m_bMoving == false)
-		{
-			m_pGameInstance->Play_Sound(L"UFO_Move_Start.wav", CHANNEL_MOONUFO_MOVE_START, m_fMove_Start_Volume);
-			m_bMoving = true;
-		}
-
-		if (m_bMoving && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE_START) == false)
-		{
-			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE) == false)
-			{
-				m_pGameInstance->Play_Sound(L"UFO_Move.wav", CHANNEL_MOONUFO_MOVE, m_fMove_Loop_Volume, true);
-			}
-		}
+		bKeyInput = true;
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vRight) * -UFOFORCE, XMVectorGetY(vRight)  * -UFOFORCE, XMVectorGetZ(vRight) * -UFOFORCE));
-		//m_bRotateLeft = true;
 	} 
-	//else
-		//m_bRotateLeft = false;
-	//
+
 	if (m_pGameInstance->Get_Pad_LStickY() < 20000)
 	{
-		/* SCRIPT && SOUND */
-		if (m_bMoving == false)
-		{
-			m_pGameInstance->Play_Sound(L"UFO_Move_Start.wav", CHANNEL_MOONUFO_MOVE_START, m_fMove_Start_Volume);
-			m_bMoving = true;
-		}
-
-		if (m_bMoving && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE_START) == false)
-		{
-			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE) == false)
-			{
-				m_pGameInstance->Play_Sound(L"UFO_Move.wav", CHANNEL_MOONUFO_MOVE, m_fMove_Loop_Volume, true);
-			}
-		}
+		bKeyInput = true;
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * UFOFORCE, XMVectorGetY(vLook) * UFOFORCE, XMVectorGetZ(vLook) * UFOFORCE));
 	}
+
 	if (m_pGameInstance->Get_Pad_LStickY() > 44000)
 	{
-		/* SCRIPT && SOUND */
-		if (m_bMoving == false)
-		{
-			m_pGameInstance->Play_Sound(L"UFO_Move_Start.wav", CHANNEL_MOONUFO_MOVE_START, m_fMove_Start_Volume);
-			m_bMoving = true;
-		}
-
-		if (m_bMoving && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE_START) == false)
-		{
-			if (CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE) == false)
-			{
-				m_pGameInstance->Play_Sound(L"UFO_Move.wav", CHANNEL_MOONUFO_MOVE, m_fMove_Loop_Volume, true);
-			}
-		}
+		bKeyInput = true;
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -UFOFORCE, XMVectorGetY(vLook) * -UFOFORCE, XMVectorGetZ(vLook) * -UFOFORCE));
 	}
 
-	if ((m_pGameInstance->Get_Pad_LStickY() > 20000 && m_pGameInstance->Get_Pad_LStickY() < 40000) && (m_pGameInstance->Get_Pad_LStickX() > 20000 && m_pGameInstance->Get_Pad_LStickX() < 40000))
+	/* SCRIPT && SOUND */
+	if (bKeyInput == true && m_bMoving == false)
+	{
+		m_pGameInstance->Play_Sound(L"UFO_Move_Start.wav", CHANNEL_MOONUFO_MOVE_START, m_fMove_Start_Volume);
+		m_bMoving = true;
+	}
+
+	if (bKeyInput && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_MOONUFO_MOVE_START) == false)
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MOONUFO_MOVE, 2.5f);
+
+	if (bKeyInput == false && m_bMoving == true)
 	{
 		m_bMoving = false;
+		m_pGameInstance->Set_SoundVolume(CHANNEL_MOONUFO_MOVE, 0.f);
 		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE_START);
-		m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_MOVE);
 		m_pGameInstance->Play_Sound(L"UFO_Move_End.wav", CHANNEL_MOONUFO_MOVE_END, m_fMove_End_Volume);
 	}
 #endif

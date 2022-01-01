@@ -625,11 +625,11 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 	Set_SmokeEffect(true);
 	m_pEffect_Smoke_2->Set_Color(3);
 
-	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
-	{
-		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
-	}
+	//if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
+	//{
+	//	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+	//	m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+	//}
 
 	// 각도 제한 걸어야 함
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);

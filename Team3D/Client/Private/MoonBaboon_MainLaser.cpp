@@ -5,6 +5,7 @@
 
 #include "May.h"
 #include "Cody.h"
+#include "UFO.h"
 
 CMoonBaboon_MainLaser::CMoonBaboon_MainLaser(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -58,7 +59,7 @@ _int CMoonBaboon_MainLaser::Tick(_double TimeDelta)
 	else if(false == m_IsLaserOperation && true == DATABASE->Get_LaserTypeB_Recovery())
 		Laser_Down(TimeDelta);
 
-	if (true == m_IsLaserUp)
+	if (true == m_IsLaserUp && false == ((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhaseEnd())
 		SoundVolumeRatio_ProportionalDistance();
 
 	GoUp(TimeDelta);
@@ -110,8 +111,12 @@ void CMoonBaboon_MainLaser::Set_LaserOperation(_bool IsActive)
 	if (false == m_IsLaserOperation)
 	{
 		for (auto pLaserTypeB : m_vecLaser_TypeB)
+		{
 			pLaserTypeB->Set_Dead();
 
+			if (((CUFO*)DATABASE->Get_BossUFO())->Get_BossPhaseEnd())
+				pLaserTypeB->Set_LaserEndSpeed(60.f);
+		}
 		m_vecLaser_TypeB.clear();
 	}
 }

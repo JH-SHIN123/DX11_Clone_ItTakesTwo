@@ -555,7 +555,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			if (2 == m_iPhaseChangeCount)
 			{
 				_float fMaxDistance = 100.f;
-				DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
+				DATABASE->GoUp_BossFloor(fMaxDistance, 8.5f);
 			}
 		}
 	}
@@ -830,7 +830,7 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp() && false == m_IsGoingLastFloor)
 	{
 		_float fMaxDistance = 100.f;
-		DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
+		DATABASE->GoUp_BossFloor(fMaxDistance, 8.5f);
 		m_IsGoingLastFloor = true;
 	}
 
@@ -1267,6 +1267,7 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
+		m_IsBossPhaseEnd = true;
 
 #ifdef __PLAY_CUTSCENE
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
