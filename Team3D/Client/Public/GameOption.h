@@ -2,7 +2,7 @@
  
 /************************************************************************/
 
-#define __FULLSCREEN
+//#define __FULLSCREEN
 //#define __START_LEVEL_LOGO
 #define __PLAY_CUTSCENE
 #define __FIRST_CUTSCENE_OFF
@@ -70,7 +70,7 @@
 //#define __TEST_TAEK
 //#define __TEST_YOON
 //#define __TEST_JIN
-#define __TEST_JUN
+//#define __TEST_JUN
 
 /************************************************************************/
 

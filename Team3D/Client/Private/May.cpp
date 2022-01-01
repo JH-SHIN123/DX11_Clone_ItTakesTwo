@@ -2703,18 +2703,8 @@ void CMay::Set_InterActiveUIDisable(_bool IsCheck)
 
 void CMay::Set_Ending_Ready()
 {
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
-	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
-	Set_UFO(false);
-
-	//m_IsInUFO = false;
-	//Set_UFO(false);
-	//((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(false);
+	m_IsInUFO = false;
+	((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(false);
 }
 
 void CMay::LaserTennis(const _double dTimeDelta)

@@ -127,10 +127,10 @@ _int CPixelBaboon::Tick(_double dTimeDelta)
 #ifdef __PLAY_CUTSCENE
 			if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Outro) == false)
 			{
+				((CMoonUFO*)(DATABASE->Get_MoonUFO()))->Set_MayInUFO(false);
 				CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Outro"));
 				CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Outro,true);
 			}
-
 #endif
 			m_pPixelHeart[0]->Set_LifeCountRenderOff(true);    
 		}

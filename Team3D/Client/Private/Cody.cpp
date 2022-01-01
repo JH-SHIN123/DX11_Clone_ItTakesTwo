@@ -3283,7 +3283,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
 		}
-		m_fElectricWallToWallSpeed = 55.f;
+		m_fElectricWallToWallSpeed = 65.f;
+		//m_fElectricWallToWallSpeed = 55.f;
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
@@ -3323,7 +3324,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_bElectricWallAttach = false;
 			m_IsElectricWallJumping = false;
 			m_fElectricWallJumpingTime = 0.f;
-			m_fElectricWallToWallSpeed = 55.f;
+			m_fElectricWallToWallSpeed = 65.f;
+			//m_fElectricWallToWallSpeed = 55.f;
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(179.f));
 		}
 		if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == true)
@@ -3336,7 +3338,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bElectricWallAttach = true;
 			m_IsElectricWallJumping = false;
-			m_fElectricWallToWallSpeed = 55.f;
+			m_fElectricWallToWallSpeed = 65.f;
+			//m_fElectricWallToWallSpeed = 55.f;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
 		}
@@ -3350,7 +3353,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_bElectricWallAttach = false;
 			m_IsElectricWallJumping = false;
-			m_fElectricWallToWallSpeed = 55.f;
+			m_fElectricWallToWallSpeed = 65.f;
+			//m_fElectricWallToWallSpeed = 55.f;
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_pActorCom->Set_WallCollide(false);
