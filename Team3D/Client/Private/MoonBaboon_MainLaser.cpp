@@ -204,6 +204,9 @@ void CMoonBaboon_MainLaser::Laser_Down(_double TimeDelta)
 		m_dDownTime = 0.0;
 		DATABASE->Set_LaserTypeB_Recovery(false);
 
+		if (true == m_pGameInstance->IsPlaying(CHANNEL_BOSSLASER))
+			m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
+
 		/* 다음에도 또 올라와야하기 때문에 초기화 해주자 ㅇㅇ */
 		m_dPatternDeltaT = 0.0;
 		m_iPatternState = 0;

@@ -61,9 +61,9 @@ private:
 	_bool				m_IsShootLaser = false;
 
 	/* Sounds */
-	_float m_fMove_Loop_Volume = 1.f;
-	_float m_fMove_End_Volume = 1.f;
-	_float m_fMove_Start_Volume = 1.f;
+	_float m_fMove_Loop_Volume = 0.f;
+	_float m_fMove_End_Volume = 0.f;
+	_float m_fMove_Start_Volume = 0.f;
 
 	_bool	m_bMoving = false;
 

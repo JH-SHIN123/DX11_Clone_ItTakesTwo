@@ -59,7 +59,10 @@ _int CPixelChargeBarGauge::Tick(_double dTimeDelta)
 		if (m_fGauge < 1.f)
 			m_fGauge += (_float)dTimeDelta * 0.5f;
 		else if (m_fGauge > 1.f)
+		{
 			m_fGauge = 1.f;
+			m_pGameInstance->Stop_Sound(CHANNEL_MOONUFO_LASER);
+		}
 	}
 
 	DATABASE->Set_LaserGauge(m_fGauge);
