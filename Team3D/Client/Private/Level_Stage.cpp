@@ -77,6 +77,7 @@ HRESULT CLevel_Stage::NativeConstruct()
 	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles_Controll_Room(TEXT("Layer_Env_Particle")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles_Moon(TEXT("Layer_Env_Particle")), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles_Boss(TEXT("Layer_Env_Particle")), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Env_Particles_UFO_InSide(TEXT("Layer_Env_Particle")), E_FAIL);
 	/* Hye */
 	FAILED_CHECK_RETURN(Ready_Layer_Planet(TEXT("Layer_Planet")), E_FAIL);
 	/* Taek */
@@ -756,6 +757,32 @@ HRESULT CLevel_Stage::Ready_Layer_Env_Particles_Boss(const _tchar * pLayerTag)
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
 	//Arg_Desc.iTexIndex = 9;
 	//FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+#pragma endregion
+
+	return S_OK;
+}
+HRESULT CLevel_Stage::Ready_Layer_Env_Particles_UFO_InSide(const _tchar * pLayerTag)
+{
+	_tchar szProtoTypeName[MAX_PATH] = TEXT("GameObject_2D_Env_Particle_Field");
+	CEffect_Env_Particle_Field::ARG_DESC Arg_Desc;
+
+	Arg_Desc.IsPillar = true;
+	Arg_Desc.vPosition = { 64.f, 598.f, 1000.f, 1.f };
+	Arg_Desc.vRadiusXYZ = { 5.f, 3.f, 5.f };
+
+#pragma region Particle
+	Arg_Desc.iInstanceCount = 300;
+	Arg_Desc.iTexIndex = 1;
+	Arg_Desc.fSpeedPerSec = 0.04f;
+	Arg_Desc.vDefaultSize = { 0.0025f, 0.0025f };
+	Arg_Desc.fReSizing_Power = 0.02f;
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, L"Layer_Env_Particle", Level::LEVEL_STAGE, szProtoTypeName, &Arg_Desc), E_FAIL);
+#pragma endregion
+
+#pragma region Star
+#pragma endregion
+
+#pragma region Dust
 #pragma endregion
 
 	return S_OK;

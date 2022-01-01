@@ -24,6 +24,14 @@ HRESULT CEffect_Landing_Smoke::NativeConstruct(void * pArg)
 {
 	__super::NativeConstruct(pArg);
 
+	_float fSize = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+
+	
+	XMStoreFloat4(&m_pInstanceBuffer[0].vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	m_pInstanceBuffer[0].vSize.x *= fSize;
+	m_pInstanceBuffer[0].vSize.y *= fSize;
+
 	return S_OK;
 }
 
@@ -35,6 +43,8 @@ _int CEffect_Landing_Smoke::Tick(_double TimeDelta)
 
 	Control_Instance((_float)TimeDelta);
 
+	m_pInstanceBuffer[0].vSize.x += (_float)TimeDelta * 0.5f;
+	m_pInstanceBuffer[0].vSize.y += (_float)TimeDelta * 0.5f;
 
 	return _int();
 }
@@ -109,19 +119,7 @@ void CEffect_Landing_Smoke::Instance_UV(_float TimeDelta, _int iIndex)
 
 void CEffect_Landing_Smoke::Control_Alpha(_double TimeDelta)
 {
-// 	if (false == m_IsDisapear)
-// 	{
-// 		m_dAlphaTime += TimeDelta * 50.0;
-// 		if (0.6 >= m_dAlphaTime)
-// 		{
-// 			m_dAlphaTime = 0.6;
-// 			m_IsDisapear = true;
-// 		}
-// 	}
-// 	else
-		m_dAlphaTime -= TimeDelta ;
-
-	
+	m_dAlphaTime -= TimeDelta ;	
 }
 
 void CEffect_Landing_Smoke::Control_Instance(_double TimeDelta)

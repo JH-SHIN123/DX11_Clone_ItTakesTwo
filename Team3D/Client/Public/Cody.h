@@ -359,6 +359,7 @@ private:
 	_bool m_bAfterGroundPound = false;
 	_uint m_iAfterGroundPoundCount = 0;
 	_float m_fGroundPoundAirDelay = 0.f; // 체공시간.
+	_bool m_bPlayGroundPound_Effect = false;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;

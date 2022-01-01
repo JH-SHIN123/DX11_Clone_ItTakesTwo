@@ -33,7 +33,10 @@ HRESULT CEffect_EndingRocket_Smoke::NativeConstruct(void * pArg)
 
 	FAILED_CHECK_RETURN(CGameObject::Add_Component(Level::LEVEL_STAGE, TEXT("Component_VIBuffer_PointInstance_Custom_STT"), TEXT("Com_VIBuffer"), (CComponent**)&m_pPointInstanceCom_STT), E_FAIL);
 
-	Check_TargetMatrix();
+	_matrix WorldMatrix = XMLoadFloat4x4(&m_EffectDesc_Clone.WorldMatrix);
+	WorldMatrix = __super::Normalize_Matrix(WorldMatrix);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+
 	Ready_InstanceBuffer();
 
 	return S_OK;
@@ -72,7 +75,6 @@ _int CEffect_EndingRocket_Smoke::Tick(_double TimeDelta)
 	}
 
 
-	Check_TargetMatrix();
 	Check_Instance(TimeDelta);
 
 	return NO_EVENT;
@@ -80,6 +82,9 @@ _int CEffect_EndingRocket_Smoke::Tick(_double TimeDelta)
 
 _int CEffect_EndingRocket_Smoke::Late_Tick(_double TimeDelta)
 {
+	//Check_TargetMatrix();
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_Matrix));
+
 	return m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_EFFECT, this);
 }
 
@@ -101,6 +106,18 @@ HRESULT CEffect_EndingRocket_Smoke::Render(RENDER_GROUP::Enum eGroup)
 void CEffect_EndingRocket_Smoke::Set_Pos(_fvector vPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+}
+
+void CEffect_EndingRocket_Smoke::Set_WorldMatrix(_fmatrix WorldMatrix)
+{
+	_matrix World = WorldMatrix;
+
+	for (_int i = 0; i < 3; ++i)
+		World.r[i] = XMVector3Normalize(World.r[i]);
+
+	World.r[3] += World.r[2] * 0.221f;
+
+	XMStoreFloat4x4(&m_Matrix, World);
 }
 
 void CEffect_EndingRocket_Smoke::Check_Instance(_double TimeDelta)
@@ -222,17 +239,13 @@ HRESULT CEffect_EndingRocket_Smoke::Ready_InstanceBuffer()
 
 void CEffect_EndingRocket_Smoke::Check_TargetMatrix()
 {
-	_matrix MyMatrix = XMMatrixIdentity();
 	_matrix WorldMatrix = static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix();
-
-	MyMatrix.r[3] = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
 	for (_int i = 0; i < 3; ++i)
 		WorldMatrix.r[i] = XMVector3Normalize(WorldMatrix.r[i]);
+	WorldMatrix.r[3] += WorldMatrix.r[2] * 0.2f;
 
-	MyMatrix = MyMatrix * WorldMatrix;
-
-	m_pTransformCom->Set_WorldMatrix(MyMatrix);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 }
 
 _matrix CEffect_EndingRocket_Smoke::Rotate_WorldMatrix(_fmatrix WorldMatrix, _float fDegree, CTransform::STATE eState)
