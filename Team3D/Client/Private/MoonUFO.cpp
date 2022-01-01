@@ -173,7 +173,7 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	_vector vLook	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 	_vector vUp		= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
 	_vector vRight	= XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
-
+	//
 #ifdef __CONTROL_MAY_KEYBOARD
 	if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
 	{
