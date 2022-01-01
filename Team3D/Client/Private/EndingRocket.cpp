@@ -7,6 +7,8 @@
 #include "UFO.h"
 #include "Effect_Generator.h"
 #include "MainCamera.h"
+#include "Effect_EndingRocket_Smoke.h"
+#include "Effect_EndingRocket_Circle.h"
 
 CEndingRocket::CEndingRocket(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -38,9 +40,11 @@ HRESULT CEndingRocket::NativeConstruct(void * pArg)
 
 	DATABASE->Set_EndingRocket(this);
 
-	EFFECT->Add_Effect(Effect_Value::EndingRocket_Smoke, m_pTransformCom->Get_WorldMatrix());
-	EFFECT->Add_Effect(Effect_Value::EndingRocket_Circle, m_pTransformCom->Get_WorldMatrix());
-
+	EFFECT_DESC_CLONE Data;
+	XMStoreFloat4x4(&Data.WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingRocket_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_EndingRocket_Smoke"), &Data, (CGameObject**)&m_pEffect_Boost);
+	m_pGameInstance->Add_GameObject_Clone(Level::LEVEL_STAGE, TEXT("Layer_EndingRocket_Effect"), Level::LEVEL_STAGE, TEXT("GameObject_2D_EndingRocket_Circle"), nullptr, (CGameObject**)&m_pEffect_Cirlce);
+	
 	return S_OK;
 }
 
@@ -55,6 +59,10 @@ _int CEndingRocket::Tick(_double dTimeDelta)
 		Ready_Players(dTimeDelta);
 	}
 
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	m_pEffect_Boost->Set_WorldMatrix(WorldMatrix);
+ 	m_pEffect_Cirlce->Set_WorldMatrix(WorldMatrix);
+
 	return _int();
 }
 
@@ -63,6 +71,10 @@ _int CEndingRocket::Late_Tick(_double dTimeDelta)
 	/* Ä«¸Þ¶ó */
 	if (m_bStartMove)
 		((CMainCamera*)DATABASE->Get_MainCam())->Tick_Cam_Ending(dTimeDelta);
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	m_pEffect_Boost->Set_WorldMatrix(WorldMatrix);
+	//m_pEffect_Cirlce->Set_WorldMatrix(WorldMatrix);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);
@@ -92,6 +104,17 @@ void CEndingRocket::Ready_Players(_double dTimeDelta)
 	vMayOffset = XMVectorSetW(vMayOffset, 1.f);
 	((CMay*)DATABASE->GetMay())->Set_EndingRocketMatrix(m_pTransformCom->Get_WorldMatrix());
 	((CMay*)DATABASE->GetMay())->Set_EndingRocketOffSetPos(vMayOffset);
+
+	//if (false == m_IsBoostEffect)
+	//{
+	//	m_IsBoostEffect = true;
+	//	EFFECT->Add_Effect(Effect_Value::EndingRocket_Smoke, WorldMatrix);
+	//	EFFECT->Add_Effect(Effect_Value::EndingRocket_Circle, WorldMatrix);
+	//
+	//}
+
+
+	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 }
 
 void CEndingRocket::Movement(_double dTimeDelta)
@@ -163,6 +186,8 @@ void CEndingRocket::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pEffect_Boost);
+	Safe_Release(m_pEffect_Cirlce);
 
 	__super::Free();
 }

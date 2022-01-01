@@ -46,6 +46,7 @@ private:
 	_double m_dBoostTime = 0.0;
 	_float	m_fCurSpeed = 0.f;
 	_bool	m_bStartMove = false;
+	_bool m_IsBoostEffect = false;
 
 private:
 	/* For.Component */
@@ -53,6 +54,10 @@ private:
 	CTransform*			m_pTransformCom			= nullptr;
 	CModel*				m_pModelCom				= nullptr;
 	CTriggerActor*		m_pTriggerActorCom		= nullptr;
+
+private: // Effect
+	class CEffect_EndingRocket_Smoke*  m_pEffect_Boost  = nullptr;
+	class CEffect_EndingRocket_Circle* m_pEffect_Cirlce = nullptr;
 
 public:
 	static CEndingRocket* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

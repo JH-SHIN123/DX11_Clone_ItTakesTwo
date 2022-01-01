@@ -555,7 +555,7 @@ void CUFO::Phase1_InterAction(_double dTimeDelta)
 			if (2 == m_iPhaseChangeCount)
 			{
 				_float fMaxDistance = 100.f;
-				DATABASE->GoUp_BossFloor(fMaxDistance, 10.f);
+				DATABASE->GoUp_BossFloor(fMaxDistance, 8.5f);
 			}
 		}
 	}
@@ -829,7 +829,8 @@ void CUFO::Phase3_Pattern(_double dTimeDelta)
 
 	if (true == ((CMoonBaboon_MainLaser*)DATABASE->Get_MoonBaboon_MainLaser())->Get_LaserUp() && false == m_IsGoingLastFloor)
 	{
-		DATABASE->GoUp_BossFloor(100.f, 15.f);
+		_float fMaxDistance = 100.f;
+		DATABASE->GoUp_BossFloor(fMaxDistance, 8.5f);
 		m_IsGoingLastFloor = true;
 	}
 
@@ -902,7 +903,7 @@ void CUFO::GroundPound_Pattern(_double dTimeDelta)
 		m_fGroundPoundTime += (_float)dTimeDelta;
 
 	/* GroundPound가 시작됬을 때 메이의 포스 저장 */
-	if (3.f <= m_fGroundPoundTime && false == m_IsGroundPound)
+	if (6.f <= m_fGroundPoundTime && false == m_IsGroundPound)
 	{
 		XMStoreFloat4(&m_vGroundPoundTargetPos, m_pMayTransform->Get_State(CTransform::STATE_POSITION));
 		m_IsGroundPound = true;
@@ -1266,6 +1267,7 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		m_pModelCom->Set_Animation(CutScene_Eject_FlyingSaucer);
 		m_pModelCom->Set_NextAnimIndex(UFO_MH);
 		m_IsEjection = true;
+		m_IsBossPhaseEnd = true;
 
 #ifdef __PLAY_CUTSCENE
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_GotoMoon) == false)
@@ -1281,6 +1283,7 @@ HRESULT CUFO::Phase3_End(_double dTimeDelta)
 		((CMay*)DATABASE->GetMay())->Set_AllActiveHpBar(false);
 		Set_HpBarActive(false);
 
+		m_pGameInstance->Stop_Sound(CHANNEL_BOSSLASER);
 		m_pGameInstance->Set_MainViewFog(false);
 	}
 

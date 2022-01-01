@@ -947,6 +947,7 @@ void CCody::KeyInput(_double dTimeDelta)
 	{
 		m_bGroundPound = true;
 		m_IsJumping = false;
+		m_bPlayGroundPound_Effect = false;
 
 		if (m_eCurPlayerSize != SIZE_LARGE)
 		{
@@ -2068,6 +2069,11 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 			//m_bCanMove = true;
 			m_bAfterGroundPound = true;
 		}
+		if (false == m_bPlayGroundPound_Effect && ANI_C_Bhv_GroundPound_Land_Exit == m_pModelCom->Get_CurAnimIndex() && 0.3 < m_pModelCom->Get_ProgressAnim())
+		{
+			EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pTransformCom->Get_WorldMatrix());
+			m_bPlayGroundPound_Effect = true;
+		}
 	}
 	else
 	{
@@ -2090,6 +2096,11 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 			m_bCanMove = true;
 			m_iJumpCount = 0;
 		}
+		if (false == m_bPlayGroundPound_Effect && ANI_C_Bhv_ChangeSize_GroundPound_Land_Exit == m_pModelCom->Get_CurAnimIndex() && 0.3 < m_pModelCom->Get_ProgressAnim())
+		{
+			EFFECT->Add_Effect(Effect_Value::Landing_Smoke, m_pTransformCom->Get_WorldMatrix());
+			m_bPlayGroundPound_Effect = true;
+		}
 	}
 
 	if (m_eCurPlayerSize != SIZE_LARGE)
@@ -2099,6 +2110,7 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 
 		if (m_iAfterGroundPoundCount >= 10) // 1.5초 경직
 		{
+			m_bPlayGroundPound_Effect = false;
 			m_iAfterGroundPoundCount = 0;
 			m_bAfterGroundPound = false;
 			m_bCanMove = true;
@@ -2111,6 +2123,7 @@ void CCody::Ground_Pound(const _double dTimeDelta)
 
 		if (m_iAfterGroundPoundCount >= 90) // 1.5초 경직
 		{
+			m_bPlayGroundPound_Effect = false;
 			m_iAfterGroundPoundCount = 0;
 			m_bAfterGroundPound = false;
 			m_bCanMove = true;
@@ -3283,7 +3296,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_pGameInstance->Set_SoundVolume(CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
 			m_pGameInstance->Play_Sound(TEXT("Character_WallJump_Slide.wav"), CHANNEL_CHARACTER_WALLJUMP_SLIDE, m_fCody_WallJump_Slide_Volume);
 		}
-		m_fElectricWallToWallSpeed = 55.f;
+		m_fElectricWallToWallSpeed = 65.f;
+		//m_fElectricWallToWallSpeed = 55.f;
 		m_pActorCom->Move((-m_pTransformCom->Get_State(CTransform::STATE_UP) / 50.f), dTimeDelta);
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
@@ -3323,7 +3337,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_bElectricWallAttach = false;
 			m_IsElectricWallJumping = false;
 			m_fElectricWallJumpingTime = 0.f;
-			m_fElectricWallToWallSpeed = 55.f;
+			m_fElectricWallToWallSpeed = 65.f;
+			//m_fElectricWallToWallSpeed = 55.f;
 			m_pTransformCom->Set_RotateAxis(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(179.f));
 		}
 		if (m_pActorCom->Get_IsWallCollide() == true && m_IsCollide == true)
@@ -3336,7 +3351,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(true, false, true);
 			m_bElectricWallAttach = true;
 			m_IsElectricWallJumping = false;
-			m_fElectricWallToWallSpeed = 55.f;
+			m_fElectricWallToWallSpeed = 65.f;
+			//m_fElectricWallToWallSpeed = 55.f;
 			m_pModelCom->Set_Animation(ANI_C_WallSlide_Enter);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_WallSlide_MH);
 		}
@@ -3350,7 +3366,8 @@ void CCody::ElectricWallJump(const _double dTimeDelta)
 			m_pActorCom->Set_ZeroGravity(false, false, false);
 			m_bElectricWallAttach = false;
 			m_IsElectricWallJumping = false;
-			m_fElectricWallToWallSpeed = 55.f;
+			m_fElectricWallToWallSpeed = 65.f;
+			//m_fElectricWallToWallSpeed = 55.f;
 			m_pModelCom->Set_Animation(ANI_C_MH);
 			m_pModelCom->Set_NextAnimIndex(ANI_C_MH);
 			m_pActorCom->Set_WallCollide(false);

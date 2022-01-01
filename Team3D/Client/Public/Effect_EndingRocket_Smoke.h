@@ -20,7 +20,7 @@ public:
 	void Set_Pos(_fvector vPos);
 	void Set_Boosting() { m_IsBoosting = true; }
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
-	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
+	void Set_WorldMatrix(_fmatrix WorldMatrix);
 
 private:
 	void Check_Instance(_double TimeDelta);
@@ -44,6 +44,7 @@ private:
 	_bool m_IsActivate = true;
 	_bool m_IsBoosting = false;
 	_float m_fBoostTime = 0.f;
+	_float4x4 m_Matrix;
 
 private:
 	CVIBuffer_PointInstance_Custom_STT* m_pPointInstanceCom_STT = nullptr;
@@ -54,11 +55,11 @@ private:
 	_float m_fNextUV = 0.f;
 
 	const _float  m_fAlphaTime_Power = 0.5f;
-	const _float  m_fSize_Power = 0.75f;
+	const _float  m_fSize_Power = 2.f;
 	const _float  m_fInstance_SpeedPerSec = 0.5f;
 	const _double m_dInstance_Pos_Update_Time = 0.75;
-	const _float2 m_vDefaultSize = { 1.12f, 4.f };
-	const _float2 m_vBoostingSize = { 2.f, 12.f };
+	const _float2 m_vDefaultSize = { 0.8f, 1.6f };
+	const _float2 m_vBoostingSize = { 2.f, 6.f };
 
 public:
 	static CEffect_EndingRocket_Smoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, void* pArg);

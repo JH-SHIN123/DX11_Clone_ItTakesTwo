@@ -2,12 +2,12 @@
  
 /************************************************************************/
 
-//#define __FULLSCREEN
-//#define __START_LEVEL_LOGO
+#define __FULLSCREEN
+#define __START_LEVEL_LOGO
 #define __PLAY_CUTSCENE
 
-#define __FIRST_CUTSCENE_OFF
-
+//#define __FIRST_CUTSCENE_OFF
+ 
 /************************************************************************/
 
 /**

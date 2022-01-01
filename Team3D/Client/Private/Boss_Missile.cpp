@@ -509,7 +509,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	_vector vDir = vUFOPos - vMissilePos;
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-	if (fDist < 4.f)
+	if (fDist < 10.f)
 	{
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eMAY);
 		m_bBossExplosion = true;
@@ -556,7 +556,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 			// m_pGameInstance->Get_Pad_LStickY() < 20000 (Up)
 			// m_pGameInstance->Get_Pad_LStickY() > 44000 (Down)
 
-			if (fDegree >= 15.f)
+			if (fDegree >= 30.f)
 			{
 				if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 44000)
 				{
@@ -625,11 +625,11 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 	Set_SmokeEffect(true);
 	m_pEffect_Smoke_2->Set_Color(3);
 
-	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
-	{
-		m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
-		m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
-	}
+	//if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
+	//{
+	//	m_pGameInstance->Set_SoundVolume(CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+	//	m_pGameInstance->Play_Sound(TEXT("Boss_Rocket_Riding.wav"), CHANNEL_BOSSMISSILE_CODY, m_fMissileSoundVolume);
+	//}
 
 	// 각도 제한 걸어야 함
 	_vector vUFOPos = ((CUFO*)DATABASE->Get_BossUFO())->Get_Transform()->Get_State(CTransform::STATE_POSITION);

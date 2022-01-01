@@ -42,6 +42,7 @@ private:
 	HRESULT Ready_Layer_Env_Particles_Controll_Room(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Env_Particles_Moon(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Env_Particles_Boss(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Env_Particles_UFO_InSide(const _tchar* pLayerTag);
 	/* Hye */
 	HRESULT Ready_Layer_Planet(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Script(const _tchar* pLayerTag);
