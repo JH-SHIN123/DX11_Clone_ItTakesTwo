@@ -325,6 +325,7 @@ private:
 	_bool m_bPlayGroundPoundOnce = false;
 	_bool m_bCanMove = true;
 	_bool m_bGroundPound = false;
+	_bool m_bPlayGroundPound_Effect = false;
 
 	// IDLE 상태 길어지면 대기 상태 애니메이션 딜레이.
 	_float	m_fIdleTime = 0.f;

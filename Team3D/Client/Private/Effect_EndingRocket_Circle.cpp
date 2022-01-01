@@ -155,19 +155,14 @@ HRESULT CEffect_EndingRocket_Circle::Ready_InstanceBuffer()
 
 void CEffect_EndingRocket_Circle::Check_TargetMatrix()
 {
-	_matrix MyMatrix = XMMatrixIdentity();
 	_matrix WorldMatrix = static_cast<CEndingRocket*>(DATABASE->Get_EndingRocket())->Get_Transform()->Get_WorldMatrix();
-
-	MyMatrix.r[3] = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
 	for (_int i = 0; i < 3; ++i)
 		WorldMatrix.r[i] = XMVector3Normalize(WorldMatrix.r[i]);
 
-	MyMatrix = MyMatrix * WorldMatrix;
+	WorldMatrix.r[3] += WorldMatrix.r[2] * 0.2f;
 
-	MyMatrix.r[3] += WorldMatrix.r[2] * 0.7f;
-
-	m_pTransformCom->Set_WorldMatrix(MyMatrix);
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
 }
 
 _matrix CEffect_EndingRocket_Circle::Rotate_WorldMatrix(_fmatrix WorldMatrix, _float fDegree, CTransform::STATE eState)
