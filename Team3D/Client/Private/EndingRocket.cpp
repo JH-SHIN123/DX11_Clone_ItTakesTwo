@@ -61,7 +61,7 @@ _int CEndingRocket::Tick(_double dTimeDelta)
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	m_pEffect_Boost->Set_WorldMatrix(WorldMatrix);
-	m_pEffect_Cirlce->Set_WorldMatrix(WorldMatrix);
+ 	m_pEffect_Cirlce->Set_WorldMatrix(WorldMatrix);
 
 	return _int();
 }
@@ -72,9 +72,9 @@ _int CEndingRocket::Late_Tick(_double dTimeDelta)
 	if (m_bStartMove)
 		((CMainCamera*)DATABASE->Get_MainCam())->Tick_Cam_Ending(dTimeDelta);
 
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	m_pEffect_Boost->Set_WorldMatrix(WorldMatrix);
-	m_pEffect_Cirlce->Set_WorldMatrix(WorldMatrix);
+	//_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	//m_pEffect_Boost->Set_WorldMatrix(WorldMatrix);
+	//m_pEffect_Cirlce->Set_WorldMatrix(WorldMatrix);
 
 	if (0 < m_pModelCom->Culling(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 		m_pRendererCom->Add_GameObject_ToRenderGroup(RENDER_GROUP::RENDER_NONALPHA, this);

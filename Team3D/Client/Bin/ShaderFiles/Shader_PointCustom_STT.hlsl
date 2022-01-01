@@ -1272,6 +1272,8 @@ PS_OUT  PS_ROCKET_CIRCLE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
+	return Out;
+
 	float4 vDiffuse = (float4)0;
 	float2 vCenter = In.vTexUV - 0.5f;
 	vCenter = abs(vCenter);
