@@ -229,7 +229,6 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 	} 
 	//else
 		//m_bRotateLeft = false;
-
 	if (m_pGameInstance->Key_Pressing(DIK_UP))
 	{
 		/* SCRIPT && SOUND */
@@ -359,7 +358,6 @@ void CMoonUFO::KeyInPut(_double dTimeDelta)
 		m_pDynamicActorCom->Get_Actor()->addForce(PxVec3(XMVectorGetX(vLook) * -UFOFORCE, XMVectorGetY(vLook) * -UFOFORCE, XMVectorGetZ(vLook) * -UFOFORCE));
 	}
 #endif
-
 
 #ifdef __CONTROL_MAY_KEYBOARD
 	if ((m_pGameInstance->Key_Up(DIK_UP) && !m_pGameInstance->Key_Pressing(DIK_DOWN) && !m_pGameInstance->Key_Pressing(DIK_RIGHT) && !m_pGameInstance->Key_Pressing(DIK_LEFT))

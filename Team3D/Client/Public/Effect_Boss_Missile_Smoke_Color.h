@@ -20,6 +20,7 @@ public:
 	void Set_Pos(_fvector vPos);
 	void Set_IsActivate(_bool IsActivate) { m_IsActivate = IsActivate; }
 	void Set_WorldMatrix(_fmatrix WorldMatrix) { m_pTransformCom->Set_WorldMatrix(WorldMatrix); }
+	void Set_Color(_int iTexIndex) { m_iTexIndex = iTexIndex; }
 
 private:
 	void Check_Instance(_double TimeDelta);
@@ -49,6 +50,7 @@ private:
 	_double*							m_pInstance_Update_TextureUV_Time = nullptr;
 
 	_float m_fNextUV = 0.f;
+	_int m_iTexIndex = 7;
 
 	const XMINT2  m_vTexUV = { 8,8 };
 	const _float  m_fAlphaTime_Power = 0.5f;

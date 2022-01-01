@@ -398,6 +398,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 	else m_dControlLifeDeltaT += dTimeDelta;
 
 	Set_SmokeEffect(true);
+	m_pEffect_Smoke_2->Set_Color(3);
 
 	//if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_MAY))
 	//{
@@ -621,8 +622,8 @@ void CBoss_Missile::CodyControl_Move(_double dTimeDelta)
 	}
 	else m_dControlLifeDeltaT += dTimeDelta;
 
-
 	Set_SmokeEffect(true);
+	m_pEffect_Smoke_2->Set_Color(3);
 
 	if (false == m_pGameInstance->IsPlaying(CHANNEL_BOSSMISSILE_CODY))
 	{
@@ -809,6 +810,8 @@ void CBoss_Missile::Explosion_Effect()
 
 	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, WorldMatrix);
 	EFFECT->Add_Effect(Effect_Value::BossMissile_Explosion, WorldMatrix);
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Ring, WorldMatrix);
+	EFFECT->Add_Effect(Effect_Value::BossMissile_Ring, WorldMatrix);
 
 	_int iRand = rand() % 3 + 3;
 	for(_int i = 0; i < iRand; ++i)

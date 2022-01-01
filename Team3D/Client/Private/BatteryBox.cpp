@@ -3,6 +3,7 @@
 #include "Cody.h"
 #include "May.h"
 #include "ControlRoom_Battery.h"
+#include "DataStorage.h"
 
 CBatteryBox::CBatteryBox(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)

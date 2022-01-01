@@ -294,7 +294,6 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 
 	if (true == m_IsBatteryCheck && true == m_pBatteryBox->Get_BatteryHolding() && true == m_IsEffect_Done)
 	{
-
 		m_IsPowerSupplyActive = true;
 		m_IsPowerSupplyAvailable = false;
 		m_IsDoorOpen = true;
@@ -311,6 +310,7 @@ void CPressureBigPlate::PowerConnectionButton_Active(_double TimeDelta)
 		{
 			m_IsBatteryCheck = false;
 			m_IsButtonActive = false;
+			m_IsEffect_Once = false;
 			m_fActiveMove = 0.f;
 		}
 	}

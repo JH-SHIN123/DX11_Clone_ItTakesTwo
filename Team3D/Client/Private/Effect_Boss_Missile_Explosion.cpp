@@ -15,7 +15,7 @@ CEffect_Boss_Missile_Explosion::CEffect_Boss_Missile_Explosion(const CEffect_Bos
 
 HRESULT CEffect_Boss_Missile_Explosion::NativeConstruct_Prototype(void * pArg)
 {
-	m_EffectDesc_Prototype.iInstanceCount = 10;
+	m_EffectDesc_Prototype.iInstanceCount = 15;
 	return S_OK;
 }
 
@@ -104,7 +104,7 @@ void CEffect_Boss_Missile_Explosion::Check_Instance(_double TimeDelta)
 	for (_int iIndex = 0; iIndex < m_EffectDesc_Prototype.iInstanceCount; ++iIndex)
 	{
 		m_pInstanceBuffer_STT[iIndex].fTime -= (_float)TimeDelta * 0.8f;
-		if (0.1f >= m_pInstanceBuffer_STT[iIndex].fTime)
+		if (0.f >= m_pInstanceBuffer_STT[iIndex].fTime)
 		{
 			m_pInstanceBuffer_STT[iIndex].fTime = 0.f;
 			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
@@ -146,9 +146,7 @@ void CEffect_Boss_Missile_Explosion::Instance_UV(_float TimeDelta, _int iIndex)
 		m_pInstance_Update_TextureUV_Time[iIndex] = 0.05;
 
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.x += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
 		m_pInstanceBuffer_STT[iIndex].vTextureUV.z += m_fNextUV;
-		m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
 
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.y)
 		{
@@ -165,6 +163,8 @@ void CEffect_Boss_Missile_Explosion::Instance_UV(_float TimeDelta, _int iIndex)
 
 		if (1.f <= m_pInstanceBuffer_STT[iIndex].vTextureUV.x)
 		{
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.y += m_fNextUV;
+			m_pInstanceBuffer_STT[iIndex].vTextureUV.w += m_fNextUV;
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.x = 0.f;
 			m_pInstanceBuffer_STT[iIndex].vTextureUV.z = m_fNextUV;
 		}

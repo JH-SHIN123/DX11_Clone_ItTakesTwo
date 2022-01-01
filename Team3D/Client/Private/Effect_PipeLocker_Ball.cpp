@@ -3,6 +3,7 @@
 #include "DataStorage.h"
 #include "Effect_PipeLocker_Particle.h"
 #include "PressureBigPlate.h"
+#include "ControlRoom_Battery.h"
 
 CEffect_PipeLocker_Ball::CEffect_PipeLocker_Ball(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CInGameEffect_Model(pDevice, pDeviceContext)
@@ -47,7 +48,9 @@ _int CEffect_PipeLocker_Ball::Tick(_double TimeDelta)
 {
 	if (m_isDead)
 	{
-		static_cast<CPressureBigPlate*>(DATABASE->Get_PressureBigPlate())->Set_Effect(true);
+		if(true == ((CControlRoom_Battery*)DATABASE->Get_ControlRoom_Battery())->Get_BatteryHolding())
+			static_cast<CPressureBigPlate*>(DATABASE->Get_PressureBigPlate())->Set_Effect(true);
+
 		return EVENT_DEAD;
 	}
 

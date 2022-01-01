@@ -103,8 +103,8 @@ void CEffect_Boss_Laser_Explosion::Check_Instance(_double TimeDelta)
 			m_pInstanceBuffer_STT[iIndex].vSize = { 0.f, 0.f };
 		}
 
-		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 0.4f;
-		m_pInstanceBuffer_STT[iIndex].vSize.y -= (_float)TimeDelta * 0.4f;
+		m_pInstanceBuffer_STT[iIndex].vSize.x -= (_float)TimeDelta * 0.8f;
+		m_pInstanceBuffer_STT[iIndex].vSize.y -= (_float)TimeDelta * 0.8f;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.x) m_pInstanceBuffer_STT[iIndex].vSize.x = 0.f;
 		if (0.f >= m_pInstanceBuffer_STT[iIndex].vSize.y) m_pInstanceBuffer_STT[iIndex].vSize.y = 0.f;
 
@@ -129,7 +129,7 @@ void CEffect_Boss_Laser_Explosion::Instance_Pos(_float TimeDelta, _fmatrix Paren
 	_vector vDir = XMLoadFloat3(&m_pInstanceBuffer_Dir[iIndex]);
 	_vector vPos = XMLoadFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition) + vDir * TimeDelta * 10.f * (m_pInstanceBuffer_STT[iIndex].fTime * m_pInstanceBuffer_STT[iIndex].fTime);
 
-	vPos.m128_f32[1] += TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 2.f * vDir.m128_f32[1];
+	//vPos.m128_f32[1] += TimeDelta * (1.f - m_pInstanceBuffer_STT[iIndex].fTime) * 2.f * vDir.m128_f32[1];
 
 	XMStoreFloat4(&m_pInstanceBuffer_STT[iIndex].vPosition, vPos);
 }

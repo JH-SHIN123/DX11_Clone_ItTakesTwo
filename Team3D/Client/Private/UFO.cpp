@@ -99,8 +99,6 @@ _int CUFO::Tick(_double dTimeDelta)
 {
 	CGameObject::Tick(dTimeDelta);
 
-	Script(dTimeDelta);
-
 	if (m_pGameInstance->Key_Down(DIK_HOME))
 	{
 		m_IsActive = true;
@@ -163,6 +161,8 @@ _int CUFO::Tick(_double dTimeDelta)
 			Phase3_Pattern(dTimeDelta);
 			break;
 		}
+
+		Script(dTimeDelta);
 	} 
 	else
 	{
@@ -1201,6 +1201,9 @@ HRESULT CUFO::Phase2_End(_double dTimeDelta)
 	{
 		if (CCutScenePlayer::GetInstance()->Get_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO) == false)
 		{
+			m_pGameInstance->Play_Sound(TEXT("InUFO.wav"), CHANNEL_IN_UFO_BGM, 0.f, true);
+			m_pGameInstance->Sound_FadeIn(CHANNEL_IN_UFO_BGM, 0.7f, 2.f);
+
 			CCutScenePlayer::GetInstance()->Set_IsCutScenePlayed(CCutScene::CutSceneOption::CutScene_Eject_InUFO, true);
 			CCutScenePlayer::GetInstance()->Start_CutScene(TEXT("CutScene_Eject_InUFO"));
 		}
@@ -1564,13 +1567,26 @@ void CUFO::GoUp(_double dTimeDelta)
 
 void CUFO::Script(_double dTimeDelta)
 {
-	if (true == m_IsCutScene)
-		return;
-
 	/* ¼öÁ¤ */
 	m_fScriptDelay += (_float)dTimeDelta;
-	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1 ||
-		m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_2)
+	if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_1)
+	{
+		switch (m_iRandomScript)
+		{
+		case 0:
+			SCRIPT->VoiceFile_No39();
+			break;
+		case 1:
+			SCRIPT->VoiceFile_No41();
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No42();
+			break;
+		}
+		++m_iRandomScript;
+		m_fScriptDelay = 0.f;
+	}
+	else if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_2)
 	{
 		switch (m_iRandomScript)
 		{
@@ -1584,23 +1600,40 @@ void CUFO::Script(_double dTimeDelta)
 			SCRIPT->VoiceFile_No42();
 			break;
 		case 3:
-			if (m_ePhase == CUFO::PHASE_2)
-			{
-				SCRIPT->VoiceFile_No40();
-			}
-			break;
-		default:
+			SCRIPT->VoiceFile_No40();
 			break;
 		}
 		++m_iRandomScript;
-
-		if (m_ePhase == CUFO::PHASE_1 && 3 == m_iRandomScript)
-			m_iRandomScript = 0;
-		else if (m_iRandomScript == 4)
-			m_iRandomScript = 0;
-
 		m_fScriptDelay = 0.f;
 	}
+	else if (m_fScriptDelay > 10.f && CSound_Manager::GetInstance()->Is_Playing(CHANNEL_VOICE) == false && m_ePhase == CUFO::PHASE_3)
+	{
+		switch (m_iRandomScript)
+		{
+		case 0:
+			SCRIPT->VoiceFile_No46();
+			break;
+		case 1:
+			SCRIPT->VoiceFile_No56();
+			break;
+		case 2:
+			SCRIPT->VoiceFile_No57();
+			break;
+		case 3:
+			SCRIPT->VoiceFile_No58();
+			break;
+		}
+		++m_iRandomScript;
+		m_fScriptDelay = 0.f;
+	}
+
+	if (m_ePhase == CUFO::PHASE_1 && 3 == m_iRandomScript)
+		m_iRandomScript = 0;
+	else if (m_ePhase == CUFO::PHASE_2 && 4 == m_iRandomScript)
+		m_iRandomScript = 0;
+	else if(m_ePhase == CUFO::PHASE_3 && 4 == m_iRandomScript)
+		m_iRandomScript = 0;
+
 }
 
 

@@ -25,13 +25,15 @@ public:
 
 private:
 	HRESULT Ready_Instance();
+	HRESULT Ready_TargetModel();
 	_float4 Set_particleUV(_int iIndex, _int U, _int V);
 	void	Set_VtxColor(_int iIndex, _uint iVtxIndex);
 	void	SetUp_Rand_Dir();
+	void	TargetMatrix_Check();
 
 private:
 	_double m_dAlphaTime = 1.5;
-	_double m_dRotateTime = 0.0;
+	_double m_dRotateTime = 0.0001;
 	_bool	m_IsDisapear = false;
 	CTextures* m_pTexturesCom_Particle_Diss = nullptr;
 	CTextures* m_pTexturesCom_Particle_Flow = nullptr;
