@@ -17,6 +17,7 @@
 #include"ControlRoom_Monitor.h"
 #include"GameInstance.h"
 #include "Effect_Generator.h"
+#include "RunningMoonBaboon.h"
 CCutScene::CCutScene()
 {
 }
@@ -957,6 +958,8 @@ HRESULT CCutScene::End_CutScene_GotoMoon()
 	CUFO* pUfo = static_cast<CUFO*>(DATABASE->Get_BossUFO());
 	pUfo->Get_Transform()->Set_WorldMatrix(MakeRollPitchYawMatrix(
 		_float3(0.f, 0.f, 0.f), _float3(1.f, 1.f, 1.f), _float3(90.f, 0.f, 0.f)));
+
+	((CRunningMoonBaboon*)DATABASE->Get_RunningMoonBaboon())->Set_IsCutScene(false);
 
 	return S_OK;
 }
