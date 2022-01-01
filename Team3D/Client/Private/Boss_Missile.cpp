@@ -509,7 +509,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 
 	_vector vDir = vUFOPos - vMissilePos;
 	_float  fDist = XMVectorGetX(XMVector3Length(vDir));
-	if (fDist < 4.f)
+	if (fDist < 10.f)
 	{
 		((CUFO*)DATABASE->Get_BossUFO())->Set_Who_Collide_Last(GameID::eMAY);
 		m_bBossExplosion = true;
@@ -556,7 +556,7 @@ void CBoss_Missile::MayControl_Move(_double dTimeDelta)
 			// m_pGameInstance->Get_Pad_LStickY() < 20000 (Up)
 			// m_pGameInstance->Get_Pad_LStickY() > 44000 (Down)
 
-			if (fDegree >= 15.f)
+			if (fDegree >= 30.f)
 			{
 				if (m_pGameInstance->Key_Pressing(DIK_DOWN) || m_pGameInstance->Get_Pad_LStickY() > 44000)
 				{
