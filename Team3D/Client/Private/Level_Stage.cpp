@@ -160,6 +160,9 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 	/* For.EndingCredit */
 	if (m_pGameInstance->Key_Down(DIK_END) || CCutScenePlayer::GetInstance()->Get_IsEndingCredit())
 	{
+		UI_Create(Default, BlackScreenFadeInOut);
+		UI_Generator->Set_FadeInSpeed(Player::Default, UI::BlackScreenFadeInOut, 1000.f);
+
 		m_pGameInstance->Sound_FadeOut(CHANNEL_BGM, 0.f, 1.f);
 		m_iLevelStep = 2; 
 		m_pGameInstance->Play_Sound(TEXT("EndingCredit_BGM.wav"), CHANNEL_TYPE::CHANNEL_ENDINGCREDIT, 0.2f);
@@ -167,8 +170,6 @@ _int CLevel_Stage::Tick(_double dTimedelta)
 		CCutScenePlayer::GetInstance()->Set_IsEndingCredit(false);
 		static_cast<CMainCamera*>(DATABASE->Get_MainCam())->Start_EndingCredit();
 
-		UI_Create(Default, BlackScreenFadeInOut);
-		UI_Generator->Set_FadeInSpeed(Player::Default, UI::BlackScreenFadeInOut, 1000.f);
 		m_IsEndingFadeOut = true;
 
 		/* 모든 UI렌더 끄기 알파스크린 제외 */
